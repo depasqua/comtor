@@ -1,0 +1,7 @@
+[michael@fae bin]$ javadoc -classpath ../classes -doclet comtor.LengthFeatureDoclet -docletpath ../classes ../src/comtor/examples/HelloWorld.java
+Loading source file ../src/comtor/examples/HelloWorld.java...
+Constructing Javadoc information...
+method: readMe (27 chars)
+method: main (68 chars)
+comtor.examples.HelloWorld: 47 characters.
+[michael@fae bin]$
