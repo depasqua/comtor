@@ -18,8 +18,9 @@
  *	 59 Temple Place, Suite 330 
  *	 Boston, MA  02111-1307  USA
  *
- * $Id: LongestCommonSubstring.java,v 1.1 2006-07-12 23:12:57 locasto Exp $
+ * $Id: LongestCommonSubstring.java,v 1.2 2006-07-12 23:13:17 locasto Exp $
  **************************************************************************/
+package comtor.examples;
 
 import java.util.ArrayList;
 import java.util.Collections;
