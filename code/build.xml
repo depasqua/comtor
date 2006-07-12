@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--
+  Build file to allow ant (http://jakarta.apache.org/ant/) to build the code.
+
+  $Id: build.xml,v 1.1.1.1 2006/07/10 16:22:02 locasto2 Exp $
+-->
+
+<!-- Define a project to compile with a default target of
+     'compile' and define the base directory to be the 
+     directory build.xml is located in.
+ -->
+<project name="comtor" default="compile" basedir=".">
+  <description>
+    build me
+  </description>
+
+  <!-- Define some basic properties for later on. -->
+  <property name="src" location="src"/>
+  <property name="classes" location="classes"/>
+
+  <!-- Build up a classpath file path for later use. -->
+  <path id="comtor.class.path">
+    <pathelement path="${java.class.path}/"/>
+    <pathelement path="${classes}"/>
+    <pathelement path="${java.home}/jre/lib/tools.jar"/>
+  </path>
+
+  <!-- the special init target makes sure our environment is ok -->
+  <target name="init">
+    <mkdir dir="${classes}"/>
+  </target>
+
+  <!-- the default target. Compile our source files -->
+  <target name="compile" depends="init" description="compile the source">
+   <javac srcdir="${src}" destdir="${classes}" debug="on">
+      <classpath refid="comtor.class.path" /> 
+   </javac>
+  </target>
+
+  <!-- The always useful 'clean' target, which is invoked by
+       calling 'ant clean'
+    -->
+  <target name="clean" description="clean src backups and obj files">
+    <delete quiet="false">
+      <fileset dir="./classes/" defaultexcludes="no" includes="**/*.class"/>
+    </delete>
+    <delete quiet="false">
+      <fileset defaultexcludes="no" dir="." includes="**/*~" />
+    </delete>
+    <echo message="Done." />
+  </target>
+</project>
