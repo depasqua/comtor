@@ -1,0 +1,20 @@
+$Id: TODO,v 1.1 2006-07-17 15:32:34 locasto Exp $
+--------------------------------------------------------------------------
+
+[TASKS]
+
+ * develop the base feature tool set
+ * develop the "controlflow" tag
+ * run experiments on student and open-source codebases
+ * manual inspection to get an "expert" opinion on how good a code
+    base is, compare with what the basic features say (or don't say).
+ * publish code
+ * write paper
+ * stand up small web server (one file at a time, provided by URL).
+
+[ISSUES]
+ 
+ * deal with unevenly documented codebases
+ * come up with JAR submission format or other (maybe an XML document at
+   a URL that describes how to obtain the source of the student/prof/dev's
+   application?)
