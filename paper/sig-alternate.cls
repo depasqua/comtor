@@ -1351,7 +1351,7 @@
 \def\crdata#1{\global\acmcopyr{#1}}
 \def\permission#1{\global\boilerplate{#1}}
 %
-\global\boilerplate={Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page.  To copy otherwise, to republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee.\\{\it NSPW 2006}, Sept. 18--21, 2006. Schloss Dagstuhl, Germany.}
+\global\boilerplate={Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page.  To copy otherwise, to republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee.\\{\it SIGCSE 2007}, March 7--10, 2007. Kentucky, USA.}
 \newtoks\copyrightetc
 \global\copyrightetc{Copyright \the\copyrtyr\ ACM \the\acmcopyr\ ...\$5.00}
 
