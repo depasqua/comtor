@@ -5,3 +5,11 @@ method: readMe (27 chars)
 method: main (68 chars)
 comtor.examples.HelloWorld: 47 characters.
 [michael@fae bin]$
+
+---
+
+[michael@fae code]$ javadoc -classpath classes/ -doclet comtor.PercentageMethods -docletpath classes/ src/comtor/examples/HelloWorld.java
+Loading source file src/comtor/examples/HelloWorld.java...
+Constructing Javadoc information...
+0.667 percent (2/3) of class comtor.examples.HelloWorld's methods are commented.
+[michael@fae code]$ 
