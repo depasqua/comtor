@@ -18,7 +18,7 @@
  *	 59 Temple Place, Suite 330 
  *	 Boston, MA  02111-1307  USA
  *
- * $Id: PercentageMethods.java,v 1.1 2006-07-17 15:33:10 locasto Exp $
+ * $Id: PercentageMethods.java,v 1.2 2006-07-18 16:46:19 locasto Exp $
  **************************************************************************/
 package comtor;
 
@@ -37,36 +37,50 @@ public final class PercentageMethods
 
 
    /**
-    * Entry point. XXX change implementation
+    * Examine each class, obtain each method. See if rawComment text
+    * has a length more than zero. If so, count it in the total frequency
+    * of commented methods for that class. Obtain percentage of commented
+    * methods per class.
     *
     * @param rootDoc  the root of the documentation tree
     * @returns some boolean value
     */
    public static boolean start(RootDoc rootDoc)
    {
-      long commentLengthSum = 0L;
-      long avgCommentLength = 0L;
-      long commentLength = 0L;
+      long methodsCommented = 0L;
+      double percentCommented = 0.0;
       ClassDoc[] classes = rootDoc.classes();
       MethodDoc[] methods = new MethodDoc[0];
       for(int i=0;i<classes.length;i++)
       {
-         avgCommentLength = 0L;
-         commentLengthSum = 0L;
-         commentLength = 0L;
          methods = classes[i].methods();
          for(int j=0;j<methods.length;j++)
          {
-            commentLength = methods[j].getRawCommentText().length();
-            commentLengthSum+=commentLength;
-            System.out.println("method: "+methods[j].name()
-                               +" ("+commentLength+" chars)");
+            if(methods[j].getRawCommentText().length() > 0)
+            {
+               methodsCommented++;
+            }
          }
          if(0!=methods.length)
-            avgCommentLength = (commentLengthSum/methods.length);
-         else
-            avgCommentLength = 0;
-         System.out.println(classes[i]+": "+avgCommentLength+" characters.");
+         {
+            percentCommented = (double)((1.0*methodsCommented)/methods.length);
+            System.out.format("%3.3f percent (%d/%d) of class %s\'s methods are commented.%n", percentCommented, methodsCommented, methods.length, classes[i]);
+            /*
+            System.out.println(percentCommented
+                               +" percent ("+methodsCommented
+                               +"/"
+                               +methods.length
+                               +") of class " 
+                               +classes[i]
+                               +"\'s methods are commented.");
+            */
+         }else{
+            System.out.println("class " 
+                               +classes[i]
+                               +"has no JavaDoc\'d methods.");
+         }
+         percentCommented = 0.0;
+         methodsCommented = 0;         
       }
       return true;
    }

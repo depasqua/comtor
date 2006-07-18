@@ -46,12 +46,23 @@ public final class HelloWorld
       m_data = "time id: "+System.currentTimeMillis();
    }
 
+   public void thisIsUnCommented()
+   {
+      //do a bunch of complicated stuff here.
+      double d = 7.8;
+      double f = 9.0;
+      double x = (double)d/f;
+      System.out.println(x);
+   }
+
    /**
     * Another pointless method.
     */
    public void readMe()
    {
-
+      int x = 5;
+      if(x!=5)
+         readMe();
    }
 
    /**
