@@ -1,4 +1,4 @@
-$Id: TODO,v 1.1 2006-07-17 15:32:34 locasto Exp $
+$Id: TODO,v 1.2 2006-07-19 18:20:48 locasto Exp $
 --------------------------------------------------------------------------
 
 [TASKS]
@@ -18,3 +18,34 @@ $Id: TODO,v 1.1 2006-07-17 15:32:34 locasto Exp $
  * come up with JAR submission format or other (maybe an XML document at
    a URL that describes how to obtain the source of the student/prof/dev's
    application?)
+
+[FEATURES]
+
+ Basic Features
+
+ * "well-formed Javadocs" : get it for free?
+ * "average comment length" per class
+ * "neatness" of comments: edges lined up and uniform.
+    - line breaks and punctuation
+ * "percentage of methods" commented in a class
+ * "average ratio of comment length to method length/size"
+ * "level of connectivity" (@link tags) and references to other sibling
+    packages and classes, amount of cross-reference
+ * "textual references" to local variables within the commented scope.
+    This feature is a basic measure of the "relevance" of a comment to
+    what it comments.
+
+ New Tags
+
+ * "precondition"
+ * "postcondition"
+ * "controlflow" : a regular expression documenting the method
+    transitions taken to reach this method
+
+ Higher-level Features
+
+ * "contains a test case or example use code" detailing how the method
+    should be invoked and what other state setup is necessary to invoke,
+    consume the output, and cleanup.
+ * all the above features tracked across time (measure how relevant the
+   comment is to the codebase, and how "stale" the comment is).
