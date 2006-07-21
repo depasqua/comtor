@@ -1,0 +1,23 @@
+Basic Comment Mentor Installation
+=================================
+
+[Summary]
+
+This file contains both installation and removal instructions for comtor.
+
+Comment Mentor has two major deployment cases. The first is a command-line
+version, which is somewhat less involved to install and deploy. The second
+is a web application that requires some web server setup.
+
+[Short Version, Command Line]
+
+ 1) unpack comtor.tar.gz (if you are reading this file, you probably did so)
+ 2) cd comtor/
+ 3) cd code/
+ 4) ant
+
+[Long Version, Command Line]
+
+[Short Version, Web Application]
+
+[Long Version, Web Application]

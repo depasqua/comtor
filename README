@@ -1,0 +1,29 @@
+Release Notes for Comment Mentor
+````````````````````````````````
+
+See the file INSTALL for installation and removal instructions.
+See the file LICENSE for comtor's license.
+If you are planning on doing development for comtor, see the file DEV_README.
+
+[Executive Summary]
+
+Comment Mentor is a tool for automatically assessing the quality of source
+code comments. It currently works on JavaDoc-style comments for Java code.
+It is built with the Apache Ant tool and is known to work with the JDK 5.x.
+Comment Mentor measures a number of features of source code comments and
+rates the features of your code against standard code bases that have been
+evaluated by hand. A summary and detailed report of how your comments stack
+up against this test suite is generated.
+
+Comment Mentor includes a number of tools, including:
+
+ * CommentLength   : average comment length per class
+ * PercentMethods  : percent of methods documented in a class
+ * ControlFlow     : checks for the new @controlflow JavaDoc tag
+ * PrePostTool     : checks for the new @precondition and @postconditions
+                      tags
+ * XXX
+
+Thanks, and enjoy using Comment Mentor.
+
+ - the comtor devs
