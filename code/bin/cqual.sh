@@ -1,17 +1,32 @@
 #!/bin/bash
 #
-# Copyright 2005 Michael Locasto
+# Copyright 2006 Michael Locasto
 #
-# $Id: cqual.sh,v 1.1.1.1 2006/07/10 16:22:02 locasto2 Exp $
-#
-# Eventually, like Valgrind, have a number of tools that measure each
-# feature. Select between the tools here.
+# $Id$
 #
 JAVA_HOME=/usr/java/jdk1.5.0_02
 CQUAL_HOME=../
 LIB_DIR="$CQUAL_HOME"/lib
 RUNTIME_CLASSPATH="$SEMC_HOME"/classes/:
 JAVADOC="$JAVA_HOME"/bin/javadoc
+
+repmes() {
+    opt_in_disclaimer="\nYou have chosen to report the results of your comment quality measurement.\nThis report contains personally identifiable information. The information\ncollected is being used strictly to support the research of the comment \nquality tool itself, and your personal information (your Unix user ID)\nwill not be used in any other way, nor will the rating you submit have\nany impact on your grade.";
+    echo -e $opt_in_disclaimer;
+    echo "";
+    read -p "Do you accept the terms of use? (Y/n) " myanswer;
+    echo $myanswer;
+    mydate=`date +%s`;
+    mykernel=`uname -r`;
+    echo "date=  " $mydate;
+    echo "kernel=" $mykernel;
+    echo "USER=  " $USER;
+    echo "PID=   " $PID;
+    echo "PID-d= " $$;
+    echo "PWD=   " $PWD;
+    echo "CWD=   " $CWD;
+    echo "args=   " $@;
+}
 
 simple() {
     javadoc -classpath ../classes -doclet comtor.SimpleCommentQualityDoclet -docletpath ../classes ../src/comtor/examples/HelloWorld.java
@@ -24,6 +39,12 @@ lengthfeature() {
 }
 
 case "$1" in
+    --report-measurement)
+        repmes
+        ;;
+    -r)
+        repmes
+        ;;
     simple)
         simple
         ;;
@@ -31,7 +52,7 @@ case "$1" in
         lengthfeature
         ;;
     *)
-        echo $"Usage $0 {simple|length}"
+        echo $"Usage $0 {--report-measurement|-r|simple|length}"
         exit 1
 esac
 
