@@ -1,4 +1,4 @@
-$Id: TODO,v 1.2 2006-07-19 18:20:48 locasto Exp $
+$Id: TODO,v 1.3 2006-08-07 22:16:52 locasto Exp $
 --------------------------------------------------------------------------
 
 [TASKS]
@@ -8,6 +8,18 @@ $Id: TODO,v 1.2 2006-07-19 18:20:48 locasto Exp $
  * run experiments on student and open-source codebases
  * manual inspection to get an "expert" opinion on how good a code
     base is, compare with what the basic features say (or don't say).
+ * insert data collection capabilities into the cmd line version that
+   we make available on the TCNJ file system for local student users.
+    Record:
+      * username
+      * file set & paths
+      * time of start
+      * time to finish
+      * machine ID
+      * machine uptime
+      * machine load
+      * unique transaction ID
+      * results of feature measurement
  * publish code
  * write paper
  * stand up small web server (one file at a time, provided by URL).
