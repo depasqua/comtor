@@ -33,6 +33,10 @@ simple() {
    return 0
 }
 
+cflow() {
+    javadoc -classpath ../classes -doclet comtor.ControlFlowDoclet -docletpath ../classes ../src/comtor/examples/CntrlFlow.java
+}
+
 lengthfeature() {
     javadoc -classpath ../classes -doclet comtor.LengthFeatureDoclet -docletpath ../classes $@
     return 0
@@ -48,11 +52,14 @@ case "$1" in
     simple)
         simple
         ;;
+    cflow)
+        cflow
+        ;;
     length)
         lengthfeature
         ;;
     *)
-        echo $"Usage $0 {--report-measurement|-r|simple|length}"
+        echo $"Usage $0 {--report-measurement|-r|simple|length|cflow}"
         exit 1
 esac
 
