@@ -1,38 +1,37 @@
 /***************************************************************************
- *  Comment Mentor: A Comment Quality Assessment Tool
- *  Copyright (C) 2005 Michael E. Locasto
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful, but
- *  WITHOUT ANY WARRANTY; without even the implied warranty of 
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
- *  General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the:
- *  Free Software Foundation, Inc.
- *  59 Temple Place, Suite 330 
- *  Boston, MA  02111-1307  USA
- *
- * $Id: CheckForTags.java,v 1.3 2006-10-11 15:58:40 brigand2 Exp $
- **************************************************************************/
+  *  Comment Mentor: A Comment Quality Assessment Tool
+  *  Copyright (C) 2005 Michael E. Locasto
+  *
+  *  This program is free software; you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+  *  the Free Software Foundation; either version 2 of the License, or
+  *  (at your option) any later version.
+  *
+  *  This program is distributed in the hope that it will be useful, but
+  *  WITHOUT ANY WARRANTY; without even the implied warranty of 
+  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+  *  General Public License for more details.
+  *
+  *  You should have received a copy of the GNU General Public License
+  *  along with this program; if not, write to the:
+  *  Free Software Foundation, Inc.
+  *  59 Temple Place, Suite 330 
+  *  Boston, MA  02111-1307  USA
+  *
+  * $Id: CheckForTags.java,v 1.4 2006-10-17 22:12:16 brigand2 Exp $
+  **************************************************************************/
 
 import com.sun.javadoc.*;
+import java.util.*;
 
 /**
- * The <code>CheckForTags</code> class is a tool
- * to check for JavaDocs with returns, throw, and
- * param tags.
+ * The <code>CheckForTags</code> class is a tool to check
+ * for JavaDocs with returns, throw, and param tags.
  *
  * @author Joe Brigandi
  */
 public final class CheckForTags
-{
-  
+{ 
   /**
    * Examine each class, obtain each method. Check for
    * returns tag. Check for throw tag. Check for param tags.
@@ -42,29 +41,29 @@ public final class CheckForTags
    */
   public static boolean start(RootDoc rootDoc)
   {
+    Properties prop = new Properties();
     ClassDoc[] classes = rootDoc.classes();
-    MethodDoc[] methods = new MethodDoc[0];
     
     for(int i=0; i < classes.length; i++)
     {
+      prop.setProperty("" + i, "Entered class " + classes[i].name());
+      MethodDoc[] methods = new MethodDoc[0];
       methods = classes[i].methods();
+      
       for(int j=0; j < methods.length; j++)
       {
         Parameter[] parameter = new Parameter[0];
         parameter = methods[j].parameters();
+        prop.setProperty(i + "." + j, "Entered method " + methods[j].name());
         
-        System.out.println("\nEntering method " + methods[j].name() + "...complete");
-        
-        //param tags
+/////////////////param tags/////////////////
         String param = "@param";
         Tag[] paramTags = methods[j].tags(param);
         
-        if(parameter.length==paramTags.length)
-        {
+        if(parameter.length>=paramTags.length)
+        {        
           for(int r=0; r < parameter.length; r++)
-          {
-            System.out.println("Retrieving parameter: " + parameter[r].typeName() + " " + parameter[r].name());
-            
+          { 
             boolean check = false;
             for(int k=0; k < paramTags.length; k++) 
             {
@@ -72,55 +71,87 @@ public final class CheckForTags
                 check = true;
               if(check)
               {
-                System.out.println("Parameter check...complete");
+                prop.setProperty(i + "." + j + ".a" + r, "Processing parameter '" + parameter[r].name() + "'...complete");
                 break;
               }
             }
             if(!check)
-              System.out.println("Parameter check...missing");
+              prop.setProperty(i + "." + j + ".a" + r, "Processing parameter '" + parameter[r].name() + "'...missing");
           }
         }
-        else
-          System.out.println("Number of parameters in the method (" + parameter.length + ") do not match the number of parameters in the comments (" + paramTags.length + ")");
+        else if(parameter.length < paramTags.length)
+        {
+          prop.setProperty(i + "." + j + ".a", "Processing parameters...too many param tags");
+        }
         
-        //return tags
+/////////////////return tags/////////////////
         String returnParam = "@return";
         Tag[] returnTags = methods[j].tags(returnParam);
         String returntype = methods[j].returnType().typeName();
         
-        System.out.print("Processing return tag...");
         if(returntype=="void")
         {
           if(returnTags.length==0)
-            System.out.println("complete");
+            prop.setProperty(i + "." + j + ".b", "Processing return tag...complete");
           else
-            System.out.println("failed");
+            prop.setProperty(i + "." + j + ".b", "Processing return tag...no return tag needed for void");
         }
         else
         {
           if(returnTags.length==1)
           {
             if(returnTags[0].text().startsWith(returntype))
-              System.out.println("complete");
+              prop.setProperty(i + "." + j + ".b", "Processing return tag...complete");
             else
-              System.out.println("types differ");
+              prop.setProperty(i + "." + j + ".b", "Processing return tag...types differ");
           }
           else if(returnTags.length==0) 
-            System.out.println("missing");
+            prop.setProperty(i + "." + j + ".b", "Processing return tag...missing");
           
           else if(returnTags.length > 1)
-            System.out.println("too many return tags");
+            prop.setProperty(i + "." + j + ".b", "Processing return tag...too many return tags");
         }
         
-        //throws tags
-        //ClassDoc[] exceptions = methods[j].thrownExceptions();
-        Type[] type = methods[j].thrownExceptionTypes();
-        for(int w=0; w < type.length; w++)
+/////////////////throws tags/////////////////
+        String throwParam = "@throws";
+        Tag[] throwsTags = methods[j].tags(throwParam);
+        ClassDoc[] exceptions = methods[j].thrownExceptions();
+        
+        if(exceptions.length>=throwsTags.length)
         {
-          System.out.println(type[w].typeName());
+          for(int s=0; s < exceptions.length; s++)
+          {
+            boolean check = false;
+            for(int q=0; q < throwsTags.length; q++)
+            {
+              if(throwsTags[q].text().startsWith(exceptions[s].name()))
+                check = true;
+              if(check)
+              {
+                prop.setProperty(i + "." + j + ".c" + s, "Processing exception '" + exceptions[s].name() + "'...complete");
+                break;
+              }
+            }
+            if(!check)
+              prop.setProperty(i + "." + j + ".c" + s, "Processing exception '" + exceptions[s].name() + "'...missing");
+          }
+        }
+        else if(exceptions.length < throwsTags.length)
+        {
+          prop.setProperty(i + "." + j + ".c", "Processing exceptions...too many throw tags");
         }
       }
     }
+    
+    String[] arr = new String[0];
+    arr = prop.keySet().toArray(arr);
+    Arrays.sort(arr);
+    
+    for(int i=0; i < arr.length; i++){
+      if(arr[i] != null)
+        System.out.println(arr[i] + "   " + prop.getProperty("" + arr[i]));
+    } 
+    
     return true;
   }
 }
