@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: CheckForTags.java,v 1.4 2006-10-17 22:12:16 brigand2 Exp $
+  * $Id: CheckForTags.java,v 1.5 2006-10-18 05:46:17 brigand2 Exp $
   **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -80,9 +80,7 @@ public final class CheckForTags
           }
         }
         else if(parameter.length < paramTags.length)
-        {
           prop.setProperty(i + "." + j + ".a", "Processing parameters...too many param tags");
-        }
         
 /////////////////return tags/////////////////
         String returnParam = "@return";
@@ -141,17 +139,15 @@ public final class CheckForTags
           prop.setProperty(i + "." + j + ".c", "Processing exceptions...too many throw tags");
         }
       }
-    }
-    
-    String[] arr = new String[0];
-    arr = prop.keySet().toArray(arr);
-    Arrays.sort(arr);
-    
-    for(int i=0; i < arr.length; i++){
-      if(arr[i] != null)
-        System.out.println(arr[i] + "   " + prop.getProperty("" + arr[i]));
-    } 
-    
+    }    
     return true;
+  }
+  
+  /**
+   * accessor method for property list
+   * @return Properties list
+   */
+  public Properties getPropertyList() { 
+    return prop;
   }
 }
