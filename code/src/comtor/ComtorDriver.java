@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: ComtorDriver.java,v 1.1 2006-10-25 03:57:19 brigand2 Exp $
+  * $Id: ComtorDriver.java,v 1.2 2006-10-25 04:07:23 brigand2 Exp $
   **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -44,8 +44,6 @@ public final class ComtorDriver
       CheckForTags run = new CheckForTags(); 
       list = run.makeList(rootDoc); 
       
-      
-      //Once the property list is returned, the following code sorts and displays it
       String[] arr = new String[0];
       arr = list.keySet().toArray(arr);
       Arrays.sort(arr);
