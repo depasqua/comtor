@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: CheckForTags.java,v 1.5 2006-10-18 05:46:17 brigand2 Exp $
+  * $Id: CheckForTags.java,v 1.6 2006-10-25 03:58:14 brigand2 Exp $
   **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -30,18 +30,19 @@ import java.util.*;
  *
  * @author Joe Brigandi
  */
-public final class CheckForTags
+public class CheckForTags
 { 
+  Properties prop = new Properties();
+  
   /**
    * Examine each class, obtain each method. Check for
    * returns tag. Check for throw tag. Check for param tags.
    *
    * @param rootDoc  the root of the documentation tree
-   * @returns boolean value
+   * @returns Properties list
    */
-  public static boolean start(RootDoc rootDoc)
+  public Properties makeList(RootDoc rootDoc)
   {
-    Properties prop = new Properties();
     ClassDoc[] classes = rootDoc.classes();
     
     for(int i=0; i < classes.length; i++)
@@ -140,14 +141,6 @@ public final class CheckForTags
         }
       }
     }    
-    return true;
-  }
-  
-  /**
-   * accessor method for property list
-   * @return Properties list
-   */
-  public Properties getPropertyList() { 
     return prop;
   }
 }
