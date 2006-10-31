@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: ComtorDriver.java,v 1.2 2006-10-25 04:07:23 brigand2 Exp $
+  * $Id: ComtorDriver.java,v 1.3 2006-10-31 19:50:37 brigand2 Exp $
   **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -51,7 +51,7 @@ public final class ComtorDriver
       for(int i=0; i < arr.length; i++)
       {
         if(arr[i] != null)
-          prt.println(arr[i] + "   " + list.getProperty("" + arr[i]));
+          prt.println(arr[i] + "  " + list.getProperty("" + arr[i]));
       }
       
       prt.close();

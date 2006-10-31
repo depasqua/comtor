@@ -18,7 +18,7 @@
  *  59 Temple Place, Suite 330 
  *  Boston, MA  02111-1307  USA
  *
- * $Id: CommentAvgRatio.java,v 1.1 2006-10-11 15:53:37 brigand2 Exp $
+ * $Id: CommentAvgRatio.java,v 1.2 2006-10-31 19:50:37 brigand2 Exp $
  **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -56,7 +56,7 @@ public final class CommentAvgRatio
       for(int j=0; j < methods.length; j++)
       {
         commentLength = methods[j].getRawCommentText().length();
-        methodLength = methods[j].length();
+        methodLength = methods[j].getRawText().length();
         ratio = commentLength/methodLength;
         System.out.println("method: " + methods[j].name() + " ("+ratio+" chars)");
         avgRatio+=ratio;

@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: CheckForTags.java,v 1.6 2006-10-25 03:58:14 brigand2 Exp $
+  * $Id: CheckForTags.java,v 1.7 2006-10-31 19:50:37 brigand2 Exp $
   **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -47,41 +47,13 @@ public class CheckForTags
     
     for(int i=0; i < classes.length; i++)
     {
-      prop.setProperty("" + i, "Entered class " + classes[i].name());
+      prop.setProperty("" + i, "class: " + classes[i].name());
       MethodDoc[] methods = new MethodDoc[0];
       methods = classes[i].methods();
       
       for(int j=0; j < methods.length; j++)
       {
-        Parameter[] parameter = new Parameter[0];
-        parameter = methods[j].parameters();
-        prop.setProperty(i + "." + j, "Entered method " + methods[j].name());
-        
-/////////////////param tags/////////////////
-        String param = "@param";
-        Tag[] paramTags = methods[j].tags(param);
-        
-        if(parameter.length>=paramTags.length)
-        {        
-          for(int r=0; r < parameter.length; r++)
-          { 
-            boolean check = false;
-            for(int k=0; k < paramTags.length; k++) 
-            {
-              if(paramTags[k].text().startsWith(parameter[r].name()))
-                check = true;
-              if(check)
-              {
-                prop.setProperty(i + "." + j + ".a" + r, "Processing parameter '" + parameter[r].name() + "'...complete");
-                break;
-              }
-            }
-            if(!check)
-              prop.setProperty(i + "." + j + ".a" + r, "Processing parameter '" + parameter[r].name() + "'...missing");
-          }
-        }
-        else if(parameter.length < paramTags.length)
-          prop.setProperty(i + "." + j + ".a", "Processing parameters...too many param tags");
+        prop.setProperty(i + "." + j, "method: " + methods[j].name());
         
 /////////////////return tags/////////////////
         String returnParam = "@return";
@@ -91,53 +63,103 @@ public class CheckForTags
         if(returntype=="void")
         {
           if(returnTags.length==0)
-            prop.setProperty(i + "." + j + ".b", "Processing return tag...complete");
+            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s @return tag and declared return type. The declared return type is void and there is no @return tag present in the comments.");
           else
-            prop.setProperty(i + "." + j + ".b", "Processing return tag...no return tag needed for void");
+            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s @return tag and declared return type. The declared return type is void but an @return tag is present in the comments. There should be no @return tag since the declared return type is void.");
         }
         else
         {
           if(returnTags.length==1)
-          {
-            if(returnTags[0].text().startsWith(returntype))
-              prop.setProperty(i + "." + j + ".b", "Processing return tag...complete");
-            else
-              prop.setProperty(i + "." + j + ".b", "Processing return tag...types differ");
-          }
+            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s @return tag and declared return type. The declared return type is " + returntype + " and there is an @return tag present in the comments.");
           else if(returnTags.length==0) 
-            prop.setProperty(i + "." + j + ".b", "Processing return tag...missing");
-          
+            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s @return tag and declared return type. The declared return type is " + returntype + " but there is no @return tag present in the comments.");
           else if(returnTags.length > 1)
-            prop.setProperty(i + "." + j + ".b", "Processing return tag...too many return tags");
+            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s @return tag and declared return type. The declared return type is " + returntype + " but there is " + returnTags.length + " @return tags present in the comments.  There should only be one @return tag.");
+        }
+        
+/////////////////param tags/////////////////
+        String param = "@param";
+        Parameter[] parameter = new Parameter[0];
+        parameter = methods[j].parameters();
+        Tag[] paramTags = methods[j].tags(param);
+        int paramCount=0;
+        
+        for(int s=0; s < parameter.length; s++)
+        { 
+          boolean check = false;
+          for(int q=0; q < paramTags.length; q++) 
+          {
+            if(paramTags[q].text().startsWith(parameter[s].name()))
+              check = true;
+            if(check)
+            {
+              prop.setProperty(i + "." + j + ".b" + paramCount, "Analyzed method " + methods[j].name() + "'s parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". The paramter and paramter type match the @param tag in the comments.");
+              paramCount++;
+              break;
+            }
+          }
+          if(!check)
+          {
+            prop.setProperty(i + "." + j + ".b" + paramCount, "Analyzed method " + methods[j].name() + "'s parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". There is no @param tag present for this paramter.");
+            paramCount++;
+          }
+        }
+        
+        for(int s=0; s < paramTags.length; s++)
+        {
+          boolean check = false;
+          for(int q=0; q < parameter.length; q++)
+          {
+            if(paramTags[s].text().startsWith(parameter[q].name()))
+              check = true;
+          }
+          if(!check)
+          {
+            prop.setProperty(i + "." + j + ".b" + paramCount, "Analyzed method " + methods[j].name() + "'s @param tag " + paramTags[s].text() + ". There is no parameter in the method for the this @param tag.");
+            paramCount++;
+          }
         }
         
 /////////////////throws tags/////////////////
         String throwParam = "@throws";
         Tag[] throwsTags = methods[j].tags(throwParam);
         ClassDoc[] exceptions = methods[j].thrownExceptions();
+        int throwsCount=0;
         
-        if(exceptions.length>=throwsTags.length)
+        for(int s=0; s < exceptions.length; s++)
         {
-          for(int s=0; s < exceptions.length; s++)
+          boolean check = false;
+          for(int q=0; q < throwsTags.length; q++)
           {
-            boolean check = false;
-            for(int q=0; q < throwsTags.length; q++)
+            if(throwsTags[q].text().startsWith(exceptions[s].name()))
+              check = true;
+            if(check)
             {
-              if(throwsTags[q].text().startsWith(exceptions[s].name()))
-                check = true;
-              if(check)
-              {
-                prop.setProperty(i + "." + j + ".c" + s, "Processing exception '" + exceptions[s].name() + "'...complete");
-                break;
-              }
+              prop.setProperty(i + "." + j + ".c" + throwsCount, "Analyzed method " + methods[j].name() + "'s exception " + exceptions[s].name() + ". The exception matches the @throws tag in the comments.");
+              throwsCount++;
+              break;
             }
-            if(!check)
-              prop.setProperty(i + "." + j + ".c" + s, "Processing exception '" + exceptions[s].name() + "'...missing");
+          }
+          if(!check)
+          {
+            prop.setProperty(i + "." + j + ".c" + throwsCount, "Analyzed method " + methods[j].name() + "'s exception " + exceptions[s].name() + ". There is no @throws tag present for this exception");
+            throwsCount++;
           }
         }
-        else if(exceptions.length < throwsTags.length)
+        
+        for(int s=0; s < throwsTags.length; s++)
         {
-          prop.setProperty(i + "." + j + ".c", "Processing exceptions...too many throw tags");
+          boolean check = false;
+          for(int q=0; q < exceptions.length; q++)
+          {
+            if(throwsTags[s].text().startsWith(exceptions[q].name()))
+              check = true;
+          }
+          if(!check)
+          {
+            prop.setProperty(i + "." + j + ".c" + throwsCount, "Analyzed method " + methods[j].name() + "'s @throws tag " + throwsTags[s].text() + ". There is no exception in the method for this @throws tag.");
+            throwsCount++;
+          }
         }
       }
     }    
