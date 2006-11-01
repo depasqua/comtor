@@ -18,7 +18,7 @@
  *  59 Temple Place, Suite 330 
  *  Boston, MA  02111-1307  USA
  *
- * $Id: CommentAvgRatio.java,v 1.2 2006-10-31 19:50:37 brigand2 Exp $
+ * $Id: CommentAvgRatio.java,v 1.3 2006-11-01 05:05:26 brigand2 Exp $
  **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -32,7 +32,6 @@ import com.sun.javadoc.*;
  */
 public final class CommentAvgRatio
 {
-  
   /**
    * Examine each class, obtain each method. Get comment length.
    * Get method length. Calculate ratio of comment length to 
@@ -44,7 +43,7 @@ public final class CommentAvgRatio
   public static boolean start(RootDoc rootDoc)
   {
     long commentLength = 0;
-    long methodLength = 0;
+    //long methodLength = 0;
     long ratio = 0;
     long avgRatio = 0;
     ClassDoc[] classes = rootDoc.classes();
@@ -56,13 +55,13 @@ public final class CommentAvgRatio
       for(int j=0; j < methods.length; j++)
       {
         commentLength = methods[j].getRawCommentText().length();
-        methodLength = methods[j].getRawText().length();
-        ratio = commentLength/methodLength;
-        System.out.println("method: " + methods[j].name() + " ("+ratio+" chars)");
-        avgRatio+=ratio;
+        //methodLength = methods[j].getRawText().length();
+        //ratio = commentLength/methodLength;
+        //System.out.println("method: " + methods[j].name() + " ("+ratio+" chars)");
+        //avgRatio+=ratio;
       }
     }
-    System.out.println("average ratio of comment length to method length: " + avgRatio);
+    //System.out.println("average ratio of comment length to method length: " + avgRatio);
     return true;
   }
 }
