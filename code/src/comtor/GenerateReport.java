@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: GenerateReport.java,v 1.1 2006-10-31 20:08:23 brigand2 Exp $
+  * $Id: GenerateReport.java,v 1.2 2006-11-01 05:05:08 brigand2 Exp $
   **************************************************************************/
 
 /**
@@ -28,5 +28,7 @@
  * @author Joe Brigandi
  */
 public class GenerateReport{
+  //get vector
   
+  //generate report from property lists
 }
