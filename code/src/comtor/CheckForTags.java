@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: CheckForTags.java,v 1.7 2006-10-31 19:50:37 brigand2 Exp $
+  * $Id: CheckForTags.java,v 1.8 2006-11-01 05:04:00 brigand2 Exp $
   **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -63,18 +63,18 @@ public class CheckForTags
         if(returntype=="void")
         {
           if(returnTags.length==0)
-            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s @return tag and declared return type. The declared return type is void and there is no @return tag present in the comments.");
+            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s declared return type and @return tag. The declared return type is void and there is no @return tag present in the comments.");
           else
-            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s @return tag and declared return type. The declared return type is void but an @return tag is present in the comments. There should be no @return tag since the declared return type is void.");
+            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s declared return type and @return tag. The declared return type is void but an @return tag is present in the comments. There should be no @return tag since the declared return type is void.");
         }
         else
         {
           if(returnTags.length==1)
-            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s @return tag and declared return type. The declared return type is " + returntype + " and there is an @return tag present in the comments.");
+            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s declared return type and @return tag. The declared return type is " + returntype + " and there is an @return tag present in the comments.");
           else if(returnTags.length==0) 
-            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s @return tag and declared return type. The declared return type is " + returntype + " but there is no @return tag present in the comments.");
+            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s declared return type and @return tag. The declared return type is " + returntype + " but there is no @return tag present in the comments.");
           else if(returnTags.length > 1)
-            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s @return tag and declared return type. The declared return type is " + returntype + " but there is " + returnTags.length + " @return tags present in the comments.  There should only be one @return tag.");
+            prop.setProperty(i + "." + j + ".a", "Analyzed method " + methods[j].name() + "'s declared return type and @return tag. The declared return type is " + returntype + " but there is " + returnTags.length + " @return tags present in the comments.  There should only be one @return tag.");
         }
         
 /////////////////param tags/////////////////
@@ -142,7 +142,7 @@ public class CheckForTags
           }
           if(!check)
           {
-            prop.setProperty(i + "." + j + ".c" + throwsCount, "Analyzed method " + methods[j].name() + "'s exception " + exceptions[s].name() + ". There is no @throws tag present for this exception");
+            prop.setProperty(i + "." + j + ".c" + throwsCount, "Analyzed method " + methods[j].name() + "'s exception " + exceptions[s].name() + ". There is no @throws tag present for this exception.");
             throwsCount++;
           }
         }
