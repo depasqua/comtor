@@ -18,8 +18,11 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: GenerateReport.java,v 1.2 2006-11-01 05:05:08 brigand2 Exp $
+  * $Id: GenerateReport.java,v 1.3 2006-11-07 04:32:20 brigand2 Exp $
   **************************************************************************/
+
+import java.io.*;
+import java.util.*;
 
 /**
  * The <code>GenerateReport</code> class is a tool to
@@ -27,8 +30,39 @@
  *
  * @author Joe Brigandi
  */
-public class GenerateReport{
-  //get vector
-  
-  //generate report from property lists
+public class GenerateReport
+{
+  public void generateReport(Vector v)
+  {
+    try
+    {
+      FileWriter outstream = new FileWriter("Comtor Report.txt");
+      PrintWriter prt = new PrintWriter(outstream);            
+      
+      int size = v.size();
+      for(int i=0; i < size; i++)
+      {
+        Properties list = new Properties();
+        list = v.get(0);
+      
+        String[] arr = new String[0];
+        arr = list.keySet().toArray(arr);
+        Arrays.sort(arr);
+        
+        for(int j=0; j < arr.length; j++)
+        {
+          if(arr[j] != null)
+            prt.println(list.getProperty("" + arr[j]));
+        }
+      }
+      
+      prt.close();
+      outstream.close();
+    }
+    catch(Exception ex) 
+    {
+      System.err.print("!!!An exception was thrown!!!");
+      System.err.println(ex.toString());
+    }
+  }
 }
