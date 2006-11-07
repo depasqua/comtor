@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: GenerateReport.java,v 1.3 2006-11-07 04:32:20 brigand2 Exp $
+  * $Id: GenerateReport.java,v 1.4 2006-11-07 04:39:04 brigand2 Exp $
   **************************************************************************/
 
 import java.io.*;
@@ -32,6 +32,12 @@ import java.util.*;
  */
 public class GenerateReport
 {
+  /**
+   * Takes a vector full of property lists and
+   * generates a report.
+   *
+   * @param v is a Vector of property lists
+   */
   public void generateReport(Vector v)
   {
     try

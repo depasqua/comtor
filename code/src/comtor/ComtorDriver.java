@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: ComtorDriver.java,v 1.5 2006-11-07 04:33:38 brigand2 Exp $
+  * $Id: ComtorDriver.java,v 1.6 2006-11-07 04:39:01 brigand2 Exp $
   **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -26,12 +26,21 @@ import java.util.*;
 
 /**
  * The <code>ComtorDriver</code> class is a tool to
- * run doclets and return a property list.
+ * run doclets and pass a vector of property lists to
+ * the report generator.
  *
  * @author Joe Brigandi
  */
 public final class ComtorDriver
 { 
+  /**
+   * Accepts a property list from the called doclets
+   * and puts them in a vector.  It then passes the 
+   * vector to the report generator.
+   *
+   * @param rootDoc  the root of the documentation tree
+   * @returns boolean value
+   */
   public static boolean start(RootDoc rootDoc)
   {        
     Vector v = new Vector();
