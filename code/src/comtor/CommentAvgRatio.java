@@ -18,10 +18,11 @@
  *  59 Temple Place, Suite 330 
  *  Boston, MA  02111-1307  USA
  *
- * $Id: CommentAvgRatio.java,v 1.3 2006-11-01 05:05:26 brigand2 Exp $
+ * $Id: CommentAvgRatio.java,v 1.4 2006-11-07 04:32:34 brigand2 Exp $
  **************************************************************************/
 
 import com.sun.javadoc.*;
+import java.util.*;
 
 /**
  * The <code>CommentAvgRatio</code> class is a tool to
@@ -32,36 +33,36 @@ import com.sun.javadoc.*;
  */
 public final class CommentAvgRatio
 {
+  Properties prop = new Properties();
+  long commentLength=0;
+  
   /**
-   * Examine each class, obtain each method. Get comment length.
-   * Get method length. Calculate ratio of comment length to 
-   * method length. Calculate average of the ratios.
+   * Examine each class and its methods. Calculate the length 
+   * of each method's comments. 
    *
    * @param rootDoc  the root of the documentation tree
    * @returns boolean value
    */
-  public static boolean start(RootDoc rootDoc)
+  public Properties analyze(RootDoc rootDoc)
   {
-    long commentLength = 0;
-    //long methodLength = 0;
-    long ratio = 0;
-    long avgRatio = 0;
     ClassDoc[] classes = rootDoc.classes();
-    MethodDoc[] methods = new MethodDoc[0];
     
     for(int i=0; i < classes.length; i++)
     {
+      long total=0;
+      
+      MethodDoc[] methods = new MethodDoc[0];
       methods = classes[i].methods();
       for(int j=0; j < methods.length; j++)
       {
         commentLength = methods[j].getRawCommentText().length();
-        //methodLength = methods[j].getRawText().length();
-        //ratio = commentLength/methodLength;
-        //System.out.println("method: " + methods[j].name() + " ("+ratio+" chars)");
-        //avgRatio+=ratio;
+        prop.setProperty(i + "." + j, "The length of comments for the method '" + methods[j].name() + "' is " + commentLength + " characters.");
+        total+=commentLength;
       }
+      long average=0;
+      average = total/methods.length;
+      prop.setProperty("" + i, "The average length of comments for the class '" + classes[i].name() + "' is " + average + " characters.");
     }
-    //System.out.println("average ratio of comment length to method length: " + avgRatio);
-    return true;
+    return prop;
   }
 }
