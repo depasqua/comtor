@@ -18,12 +18,11 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: ComtorDriver.java,v 1.4 2006-11-01 05:04:38 brigand2 Exp $
+  * $Id: ComtorDriver.java,v 1.5 2006-11-07 04:33:38 brigand2 Exp $
   **************************************************************************/
 
 import com.sun.javadoc.*;
 import java.util.*;
-import java.io.*;
 
 /**
  * The <code>ComtorDriver</code> class is a tool to
@@ -34,34 +33,19 @@ import java.io.*;
 public final class ComtorDriver
 { 
   public static boolean start(RootDoc rootDoc)
-  {
-    try
-    {
-      FileWriter outstream = new FileWriter("report.txt");
-      PrintWriter prt = new PrintWriter(outstream);            
-      
-      Properties list = new Properties();
-      CheckForTags run = new CheckForTags(); 
-      list = run.makeList(rootDoc); 
-
-      String[] arr = new String[0];
-      arr = list.keySet().toArray(arr);
-      Arrays.sort(arr);
-      
-      for(int i=0; i < arr.length; i++)
-      {
-        if(arr[i] != null)
-          prt.println(list.getProperty("" + arr[i]));
-      }
+  {        
+    Vector v = new Vector();
     
-      prt.close();
-      outstream.close();
-    }
-    catch(Exception ex) 
-    {
-      System.err.print("!!!An exception was thrown!!!");
-      System.err.println(ex.toString());
-    }
+    CheckForTags cft = new CheckForTags(); 
+    Properties cftList = cft.analyze(rootDoc); 
+    v.addElement(cftList);
+    
+    CommentAvgRatio car = new CommentAvgRatio();
+    Properties carList = car.analyze(rootDoc);
+    v.addElement(carList);
+    
+    GenerateReport report = new GenerateReport();
+    report.generateReport(v);
     
     return true;
   }
