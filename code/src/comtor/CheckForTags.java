@@ -18,11 +18,12 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: CheckForTags.java,v 1.8 2006-11-01 05:04:00 brigand2 Exp $
+  * $Id: CheckForTags.java,v 1.9 2006-11-09 02:48:45 brigand2 Exp $
   **************************************************************************/
 
 import com.sun.javadoc.*;
 import java.util.*;
+import java.text.*;
 
 /**
  * The <code>CheckForTags</code> class is a tool to check
@@ -41,9 +42,15 @@ public class CheckForTags
    * @param rootDoc  the root of the documentation tree
    * @returns Properties list
    */
-  public Properties makeList(RootDoc rootDoc)
+  public Properties analyze(RootDoc rootDoc)
   {
-    ClassDoc[] classes = rootDoc.classes();
+	prop.setProperty("title", "Check for Tags");
+	prop.setProperty("description", "This doclet checks for proper use of JavaDocs with returns, throw, and param tags.");
+	DateFormat dateFormat = new SimpleDateFormat("M/d/yy h:mm a");
+	java.util.Date date = new java.util.Date();
+	prop.setProperty("date", "" + dateFormat.format(date));
+    
+	ClassDoc[] classes = rootDoc.classes();
     
     for(int i=0; i < classes.length; i++)
     {

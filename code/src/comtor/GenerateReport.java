@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: GenerateReport.java,v 1.4 2006-11-07 04:39:04 brigand2 Exp $
+  * $Id: GenerateReport.java,v 1.5 2006-11-09 02:48:46 brigand2 Exp $
   **************************************************************************/
 
 import java.io.*;
@@ -49,22 +49,26 @@ public class GenerateReport
       for(int i=0; i < size; i++)
       {
         Properties list = new Properties();
-        list = v.get(0);
+        list = (Properties)v.get(i);
       
         String[] arr = new String[0];
         arr = list.keySet().toArray(arr);
         Arrays.sort(arr);
-        
+		
         for(int j=0; j < arr.length; j++)
         {
           if(arr[j] != null)
             prt.println(list.getProperty("" + arr[j]));
         }
+        prt.println("");
+        prt.println("-----------------------------------------");
+        prt.println("");
       }
       
       prt.close();
       outstream.close();
     }
+    
     catch(Exception ex) 
     {
       System.err.print("!!!An exception was thrown!!!");
