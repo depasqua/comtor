@@ -18,12 +18,12 @@
  *	 59 Temple Place, Suite 330 
  *	 Boston, MA  02111-1307  USA
  *
- * $Id: PercentageMethods.java,v 1.2 2006-07-18 16:46:19 locasto Exp $
+ * $Id: PercentageMethods.java,v 1.3 2006-11-11 03:49:43 brigand2 Exp $
  **************************************************************************/
-package comtor;
-
 
 import com.sun.javadoc.*;
+import java.util.*;
+import java.text.*;
 
 /**
  * The <code>PercentageMethods</code> class is a tool to
@@ -32,10 +32,10 @@ import com.sun.javadoc.*;
  *
  * @author Michael Locasto
  */
-public final class PercentageMethods
+public class PercentageMethods
 {
-
-
+	Properties prop = new Properties();
+	
    /**
     * Examine each class, obtain each method. See if rawComment text
     * has a length more than zero. If so, count it in the total frequency
@@ -45,9 +45,15 @@ public final class PercentageMethods
     * @param rootDoc  the root of the documentation tree
     * @returns some boolean value
     */
-   public static boolean start(RootDoc rootDoc)
+   public Properties analyze(RootDoc rootDoc)
    {
-      long methodsCommented = 0L;
+	 prop.setProperty("title", "Percentage Methods");
+	 prop.setProperty("description", "This doclet calculates the percentage of commented methods per class.");
+	 DateFormat dateFormat = new SimpleDateFormat("M/d/yy h:mm a");
+	 java.util.Date date = new java.util.Date();
+	 prop.setProperty("date", "" + dateFormat.format(date)); 
+	   
+      int methodsCommented = 0;
       double percentCommented = 0.0;
       ClassDoc[] classes = rootDoc.classes();
       MethodDoc[] methods = new MethodDoc[0];
@@ -57,31 +63,23 @@ public final class PercentageMethods
          for(int j=0;j<methods.length;j++)
          {
             if(methods[j].getRawCommentText().length() > 0)
-            {
                methodsCommented++;
-            }
          }
          if(0!=methods.length)
          {
             percentCommented = (double)((1.0*methodsCommented)/methods.length);
-            System.out.format("%3.3f percent (%d/%d) of class %s\'s methods are commented.%n", percentCommented, methodsCommented, methods.length, classes[i]);
-            /*
-            System.out.println(percentCommented
-                               +" percent ("+methodsCommented
-                               +"/"
-                               +methods.length
-                               +") of class " 
-                               +classes[i]
-                               +"\'s methods are commented.");
-            */
-         }else{
-            System.out.println("class " 
-                               +classes[i]
-                               +"has no JavaDoc\'d methods.");
+			prop.setProperty("" + i, Math.round(percentCommented*100) + " percent (" + methodsCommented + "/" + methods.length + ") of class " + classes[i].name() + "\'s methods are commented.");
+            //System.out.format("%3.3f percent (%d/%d) of class %s\'s methods are commented.%n", percentCommented, methodsCommented, methods.length, classes[i]);
+            //System.out.println(percentCommented +" percent ("+methodsCommented +"/" +methods.length +") of class " +classes[i] +"\'s methods are commented."); 
          }
-         percentCommented = 0.0;
-         methodsCommented = 0;         
+		 else
+		 {
+			 prop.setProperty("" + i, "class: " + classes[i].name() + "has no JavaDoc\'d methods.");
+            //System.out.println("class " +classes[i] +"has no JavaDoc\'d methods.");
+         }
+         methodsCommented = 0;
+         percentCommented = 0.0;         
       }
-      return true;
+      return prop;
    }
 }
