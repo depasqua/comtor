@@ -18,11 +18,13 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: ComtorDriver.java,v 1.6 2006-11-07 04:39:01 brigand2 Exp $
+  * $Id: ComtorDriver.java,v 1.7 2006-11-11 03:50:55 brigand2 Exp $
   **************************************************************************/
 
 import com.sun.javadoc.*;
 import java.util.*;
+import java.lang.*;
+import java.awt.*;
 
 /**
  * The <code>ComtorDriver</code> class is a tool to
@@ -31,7 +33,7 @@ import java.util.*;
  *
  * @author Joe Brigandi
  */
-public final class ComtorDriver
+public abstract class ComtorDriver implements Doclets
 { 
   /**
    * Accepts a property list from the called doclets
@@ -45,6 +47,12 @@ public final class ComtorDriver
   {        
     Vector v = new Vector();
     
+	//String str = "CheckForTags";
+    //Class c = Class.forName(str);
+    //Object o = c.newInstance();
+	//Properties list = o.analyze(rootDoc);
+	//v.addElement(list);
+	
     CheckForTags cft = new CheckForTags(); 
     Properties cftList = cft.analyze(rootDoc); 
     v.addElement(cftList);
@@ -52,6 +60,10 @@ public final class ComtorDriver
     CommentAvgRatio car = new CommentAvgRatio();
     Properties carList = car.analyze(rootDoc);
     v.addElement(carList);
+	
+	PercentageMethods pm = new PercentageMethods();
+	Properties pmList = pm.analyze(rootDoc);
+	v.addElement(pmList);
     
     GenerateReport report = new GenerateReport();
     report.generateReport(v);
