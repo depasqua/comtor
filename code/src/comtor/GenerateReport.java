@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: GenerateReport.java,v 1.5 2006-11-09 02:48:46 brigand2 Exp $
+  * $Id: GenerateReport.java,v 1.6 2006-11-11 03:49:13 brigand2 Exp $
   **************************************************************************/
 
 import java.io.*;
@@ -55,13 +55,18 @@ public class GenerateReport
         arr = list.keySet().toArray(arr);
         Arrays.sort(arr);
 		
-        for(int j=0; j < arr.length; j++)
+		prt.println("Title: " + list.getProperty("title"));
+		prt.println("Description: " + list.getProperty("description"));
+		prt.println("Date: " + list.getProperty("date"));
+		prt.println("");
+		
+        for(int j=0; j < arr.length-3; j++)
         {
           if(arr[j] != null)
             prt.println(list.getProperty("" + arr[j]));
         }
         prt.println("");
-        prt.println("-----------------------------------------");
+        prt.println("");
         prt.println("");
       }
       
