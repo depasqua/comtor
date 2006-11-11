@@ -18,11 +18,12 @@
  *  59 Temple Place, Suite 330 
  *  Boston, MA  02111-1307  USA
  *
- * $Id: CommentAvgRatio.java,v 1.5 2006-11-09 02:48:46 brigand2 Exp $
+ * $Id: CommentAvgRatio.java,v 1.6 2006-11-11 03:50:04 brigand2 Exp $
  **************************************************************************/
 
 import com.sun.javadoc.*;
 import java.util.*;
+import java.text.*;
 
 /**
  * The <code>CommentAvgRatio</code> class is a tool to
@@ -45,6 +46,12 @@ public final class CommentAvgRatio
    */
   public Properties analyze(RootDoc rootDoc)
   {
+	prop.setProperty("title", "Comment Average Ratio");
+	prop.setProperty("description", "This doclet calculates the number of characters for each method's comments in the class.");
+	DateFormat dateFormat = new SimpleDateFormat("M/d/yy h:mm a");
+	java.util.Date date = new java.util.Date();
+	prop.setProperty("date", "" + dateFormat.format(date));
+	
     ClassDoc[] classes = rootDoc.classes();
     
     for(int i=0; i < classes.length; i++)
