@@ -18,13 +18,12 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: ComtorDriver.java,v 1.8 2006-11-14 16:24:37 depasqua Exp $
+  * $Id: ComtorDriver.java,v 1.9 2006-11-14 22:19:13 brigand2 Exp $
   **************************************************************************/
 
 import com.sun.javadoc.*;
 import java.util.*;
-import java.lang.*;
-import java.awt.*;
+import java.io.*;
 
 /**
  * The <code>ComtorDriver</code> class is a tool to
@@ -44,29 +43,43 @@ public class ComtorDriver
    * @returns boolean value
    */
   public static boolean start(RootDoc rootDoc)
-  {        
-    Vector v = new Vector();
-    Class c = Class.forName("CheckForTags");
-    ComtorDoclet cd = (ComtorDoclet) c.newInstance();
-    Properties list = cd.analyze(rootDoc);
-    v.addElement(list);
+  {
+	  try
+	  {
+          Vector v = new Vector();
+		  Scanner scan = new Scanner(new File("Doclets.txt"));
+		  String docletName;
+		  while(scan.hasNext())
+		  {
+			  docletName = scan.nextLine();
+			  Class c = Class.forName(docletName);
+			  ComtorDoclet cd = (ComtorDoclet) c.newInstance();
+			  Properties list = cd.analyze(rootDoc);
+			  v.addElement(list);
+		  }
+		  
+		  GenerateReport report = new GenerateReport();
+		  report.generateReport(v);
+		  
+		  scan.close();
+	  }
+	  catch(ClassNotFoundException cnfe)
+	  {
+		  System.err.println(cnfe.toString());
+	  }
+	  catch(InstantiationException ie)
+	  {
+		  System.err.println(ie.toString());
+	  }
+	  catch(IllegalAccessException iae)
+	  {
+		  System.err.println(iae.toString());
+	  }
+	  catch(IOException ioe)
+	  {
+          System.err.println(ioe.toString());
+      }
 
-/**	
-    CheckForTags cft = new CheckForTags(); 
-    Properties cftList = cft.analyze(rootDoc); 
-    v.addElement(cftList);
-    
-    CommentAvgRatio car = new CommentAvgRatio();
-    Properties carList = car.analyze(rootDoc);
-    v.addElement(carList);
-	
-	PercentageMethods pm = new PercentageMethods();
-	Properties pmList = pm.analyze(rootDoc);
-	v.addElement(pmList);
-**/ 
-    GenerateReport report = new GenerateReport();
-    report.generateReport(v);
-    
-    return true;
+	  return true;
   }
 }
