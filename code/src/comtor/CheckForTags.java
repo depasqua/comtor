@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: CheckForTags.java,v 1.10 2006-11-11 03:48:29 brigand2 Exp $
+  * $Id: CheckForTags.java,v 1.11 2006-11-14 16:24:37 depasqua Exp $
   **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -31,7 +31,7 @@ import java.text.*;
  *
  * @author Joe Brigandi
  */
-public class CheckForTags
+public class CheckForTags implements ComtorDoclet
 { 
   Properties prop = new Properties();
   

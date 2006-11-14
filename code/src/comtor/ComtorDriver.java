@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: ComtorDriver.java,v 1.7 2006-11-11 03:50:55 brigand2 Exp $
+  * $Id: ComtorDriver.java,v 1.8 2006-11-14 16:24:37 depasqua Exp $
   **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -33,7 +33,7 @@ import java.awt.*;
  *
  * @author Joe Brigandi
  */
-public abstract class ComtorDriver implements Doclets
+public class ComtorDriver
 { 
   /**
    * Accepts a property list from the called doclets
@@ -46,13 +46,12 @@ public abstract class ComtorDriver implements Doclets
   public static boolean start(RootDoc rootDoc)
   {        
     Vector v = new Vector();
-    
-	//String str = "CheckForTags";
-    //Class c = Class.forName(str);
-    //Object o = c.newInstance();
-	//Properties list = o.analyze(rootDoc);
-	//v.addElement(list);
-	
+    Class c = Class.forName("CheckForTags");
+    ComtorDoclet cd = (ComtorDoclet) c.newInstance();
+    Properties list = cd.analyze(rootDoc);
+    v.addElement(list);
+
+/**	
     CheckForTags cft = new CheckForTags(); 
     Properties cftList = cft.analyze(rootDoc); 
     v.addElement(cftList);
@@ -64,7 +63,7 @@ public abstract class ComtorDriver implements Doclets
 	PercentageMethods pm = new PercentageMethods();
 	Properties pmList = pm.analyze(rootDoc);
 	v.addElement(pmList);
-    
+**/ 
     GenerateReport report = new GenerateReport();
     report.generateReport(v);
     
