@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: GenerateReport.java,v 1.6 2006-11-11 03:49:13 brigand2 Exp $
+  * $Id: GenerateReport.java,v 1.7 2006-11-14 22:18:48 brigand2 Exp $
   **************************************************************************/
 
 import java.io.*;
@@ -42,11 +42,16 @@ public class GenerateReport
   {
     try
     {
-      FileWriter outstream = new FileWriter("Comtor Report.txt");
-      PrintWriter prt = new PrintWriter(outstream);            
+      PrintWriter prt = new PrintWriter(new FileWriter("ComtorReport.html"));            
       
-      int size = v.size();
-      for(int i=0; i < size; i++)
+      prt.println("<html>");
+	  prt.println("<head>"); 
+	  prt.println("<title>");
+	  prt.println("</title>");
+	  prt.println("</head>");
+	  prt.println("<body>");
+
+      for(int i=0; i < v.size(); i++)
       {
         Properties list = new Properties();
         list = (Properties)v.get(i);
@@ -55,23 +60,25 @@ public class GenerateReport
         arr = list.keySet().toArray(arr);
         Arrays.sort(arr);
 		
-		prt.println("Title: " + list.getProperty("title"));
-		prt.println("Description: " + list.getProperty("description"));
-		prt.println("Date: " + list.getProperty("date"));
-		prt.println("");
+		prt.println("<h3>");
+		prt.println(list.getProperty("title") + "<br />");
+		prt.println(list.getProperty("description") + "<br />");
+		prt.println(list.getProperty("date") + "<br />");
+		prt.println("</h3>");
+		prt.println("<p>");
 		
         for(int j=0; j < arr.length-3; j++)
         {
           if(arr[j] != null)
-            prt.println(list.getProperty("" + arr[j]));
+            prt.println(list.getProperty("" + arr[j]) + "<br />");
         }
-        prt.println("");
-        prt.println("");
-        prt.println("");
+		prt.println("</p>");
       }
       
+	  prt.println("</body>");
+	  prt.println("</html>");
+	  
       prt.close();
-      outstream.close();
     }
     
     catch(Exception ex) 
