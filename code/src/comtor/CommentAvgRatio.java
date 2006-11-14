@@ -18,7 +18,7 @@
  *  59 Temple Place, Suite 330 
  *  Boston, MA  02111-1307  USA
  *
- * $Id: CommentAvgRatio.java,v 1.6 2006-11-11 03:50:04 brigand2 Exp $
+ * $Id: CommentAvgRatio.java,v 1.7 2006-11-14 21:41:20 brigand2 Exp $
  **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -32,7 +32,7 @@ import java.text.*;
  *
  * @author Joe Brigandi
  */
-public final class CommentAvgRatio
+public final class CommentAvgRatio implements ComtorDoclet
 {
   Properties prop = new Properties();
   long commentLength=0;

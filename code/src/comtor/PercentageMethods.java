@@ -18,7 +18,7 @@
  *	 59 Temple Place, Suite 330 
  *	 Boston, MA  02111-1307  USA
  *
- * $Id: PercentageMethods.java,v 1.3 2006-11-11 03:49:43 brigand2 Exp $
+ * $Id: PercentageMethods.java,v 1.4 2006-11-14 21:41:20 brigand2 Exp $
  **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -32,7 +32,7 @@ import java.text.*;
  *
  * @author Michael Locasto
  */
-public class PercentageMethods
+public class PercentageMethods implements ComtorDoclet
 {
 	Properties prop = new Properties();
 	
