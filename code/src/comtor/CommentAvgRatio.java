@@ -18,7 +18,7 @@
  *  59 Temple Place, Suite 330 
  *  Boston, MA  02111-1307  USA
  *
- * $Id: CommentAvgRatio.java,v 1.7 2006-11-14 21:41:20 brigand2 Exp $
+ * $Id: CommentAvgRatio.java,v 1.8 2006-11-14 22:43:16 brigand2 Exp $
  **************************************************************************/
 
 import com.sun.javadoc.*;
@@ -57,30 +57,38 @@ public final class CommentAvgRatio implements ComtorDoclet
     for(int i=0; i < classes.length; i++)
     {
       prop.setProperty("" + i, "class: " + classes[i].name());
-      long total=0;
+      int total=0;
       
       MethodDoc[] methods = new MethodDoc[0];
       methods = classes[i].methods();
       for(int j=0; j < methods.length; j++)
       {
-        commentLength = methods[j].getRawCommentText().length();
+        Scanner scan = new Scanner(methods[j].getRawCommentText());
+		int count=0;
+		while(scan.hasNext()) 
+		{ 
+			scan.next();
+			count++;
+		}
+		commentLength = count;
+		
         if(j<10)
-          prop.setProperty(i + ".00" + j, "The length of comments for the method '" + methods[j].name() + "' is " + commentLength + " characters.");
+          prop.setProperty(i + ".00" + j, "The length of comments for the method '" + methods[j].name() + "' is " + commentLength + " words.");
         else if(j<100)
-          prop.setProperty(i + ".0" + j, "The length of comments for the method '" + methods[j].name() + "' is " + commentLength + " characters.");
+          prop.setProperty(i + ".0" + j, "The length of comments for the method '" + methods[j].name() + "' is " + commentLength + " words.");
         else
-          prop.setProperty(i + "." + j, "The length of comments for the method '" + methods[j].name() + "' is " + commentLength + " characters.");
+          prop.setProperty(i + "." + j, "The length of comments for the method '" + methods[j].name() + "' is " + commentLength + " words.");
         
         total+=commentLength;
       }
-      long average=0;
-      average = total/methods.length;
-      if(methods.length<10)
-        prop.setProperty(i + ".00" + methods.length, "The average length of comments for the class '" + classes[i].name() + "' is " + average + " characters.");
+      
+	  int average = total/methods.length;
+	  if(methods.length<10)
+        prop.setProperty(i + ".00" + methods.length, "The average length of comments for the class '" + classes[i].name() + "' is " + average + " words.");
       else if(methods.length<100)
-        prop.setProperty(i + ".0" + methods.length, "The average length of comments for the class '" + classes[i].name() + "' is " + average + " characters.");
+        prop.setProperty(i + ".0" + methods.length, "The average length of comments for the class '" + classes[i].name() + "' is " + average + " words.");
       else
-        prop.setProperty(i + "." + methods.length, "The average length of comments for the class '" + classes[i].name() + "' is " + average + " characters.");
+        prop.setProperty(i + "." + methods.length, "The average length of comments for the class '" + classes[i].name() + "' is " + average + " words.");
     }
     return prop;
   }
