@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: GenerateReport.java,v 1.7 2006-11-14 22:18:48 brigand2 Exp $
+  * $Id: GenerateReport.java,v 1.8 2006-11-15 05:23:50 brigand2 Exp $
   **************************************************************************/
 
 import java.io.*;
@@ -46,8 +46,9 @@ public class GenerateReport
       
       prt.println("<html>");
 	  prt.println("<head>"); 
-	  prt.println("<title>");
-	  prt.println("</title>");
+	  prt.println("<title></title>");
+	  prt.println("<style type=text/css>");
+	  prt.println("</style>");
 	  prt.println("</head>");
 	  prt.println("<body>");
 
