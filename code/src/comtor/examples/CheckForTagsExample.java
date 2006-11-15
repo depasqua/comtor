@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id:$
+  * $Id: CheckForTagsExample.java,v 1.2 2006/10/31 20:08:33 brigand2 Exp $
   **************************************************************************/
 
 import java.io.*;
@@ -34,6 +34,20 @@ public class CheckForTagsExample
 {
   public static void main(String[] args)
   {}
+
+//////////CONSTRUCTORS//////////
+  /**
+   * Correct Example for default constructor
+   */
+  public CheckForTagsExample()
+  {}
+
+  /**
+   * Correct Example with params
+   * @param name
+   */
+   public CheckForTagsExample(String name, int age)
+   {}
 
 //////////RETURN TAGS//////////
   /**
