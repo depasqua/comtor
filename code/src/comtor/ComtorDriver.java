@@ -18,10 +18,12 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: ComtorDriver.java,v 1.9 2006-11-14 22:19:13 brigand2 Exp $
+  * $Id: ComtorDriver.java,v 1.10 2007-01-04 13:44:27 depasqua Exp $
   **************************************************************************/
+package comtor;
 
 import com.sun.javadoc.*;
+import comtor.analyzers.*;
 import java.util.*;
 import java.io.*;
 

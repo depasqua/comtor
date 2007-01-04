@@ -18,9 +18,11 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: GenerateReport.java,v 1.8 2006-11-15 05:23:50 brigand2 Exp $
+  * $Id: GenerateReport.java,v 1.9 2007-01-04 13:44:27 depasqua Exp $
   **************************************************************************/
+package comtor;
 
+import comtor.analyzers.*;
 import java.io.*;
 import java.util.*;
 
