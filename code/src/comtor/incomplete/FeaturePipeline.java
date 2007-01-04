@@ -18,51 +18,70 @@
  *	 59 Temple Place, Suite 330 
  *	 Boston, MA  02111-1307  USA
  *
- * $Id: ControlFlowDoclet.java,v 1.1 2006-08-16 22:24:02 locasto Exp $
+ * $Id: FeaturePipeline.java,v 1.1 2006/09/08 02:00:26 locasto Exp $
  **************************************************************************/
 package comtor;
 
-
 import com.sun.javadoc.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
- * 
- * 
- * 
+ * The <code>FeaturePipeline</code> class is the core
+ * of the Comtor software: it defines the ordering and
+ * invocation of all the tools on the Javadoc comment
+ * collection.
  *
  * @author Michael Locasto
  */
-public final class ControlFlowDoclet
+public final class FeaturePipeline
 {
 
-   /** The control flow tag declarator. */
-   private static String m_tagName = "controlflow";
+   private ArrayList<CommentQualityRecord> m_commentQualityRecords;
 
+   private ArrayList<FeatureTool> m_pipeline;
+
+   private void readConfig()
+   {
+
+   }
+
+   private void my_initialize()
+   {
+      
+
+   }
 
    /**
-    * Entry point.
+    * The entry point for processing provides an
+    * object to access the various attributes of all
+    * the classes being documented.
     *
     * @param rootDoc  the root of the documentation tree
-    * @returns some boolean value
+    * @return some boolean value
     */
    public static boolean start(RootDoc rootDoc)
    {
-      ClassDoc[] classes = rootDoc.classes();
-      MethodDoc[] methods = new MethodDoc[0];
-      for(int i=0;i<classes.length;i++)
+      ClassDoc[] classes;
+      Iterator i = null;
+      readConfig();
+      my_initialize();
+      classes = rootDoc.classes();
+      i = m_pipeline.values().iterator();
+
+      while(i.hasNext())
       {
-         methods = classes[i].methods();
-         for(int j=0;j<methods.length;j++)
+         tool = (FeatureTool)i.next();
+         for(int i=0;i<classes.length;i++)
          {
-            Tag[] tags = methods[j].tags(m_tagName);
-            if(tags.length > 0)
-            {
-               System.out.println("method: "+methods[j].name()
-                                  +" ("+tags[0].text()+" chars)");
-            }
-            
+            m_commentQualityRecords.add(tool.process(classes[i]));
          }
       }
+
+      //correlate/aggregate quality reports
+
+      //display quality reports
+
       return true;
    }
 }

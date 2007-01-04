@@ -18,7 +18,7 @@
  *	 59 Temple Place, Suite 330 
  *	 Boston, MA  02111-1307  USA
  *
- * $Id: CommentQualityRecord.java,v 1.1 2006-09-08 02:00:26 locasto Exp $
+ * $Id: CommentQualityRecord.java,v 1.1 2006/09/08 02:00:26 locasto Exp $
  **************************************************************************/
 package comtor;
 
