@@ -18,9 +18,11 @@
  *  59 Temple Place, Suite 330 
  *  Boston, MA  02111-1307  USA
  *
- * $Id: CommentAvgRatio.java,v 1.8 2006-11-14 22:43:16 brigand2 Exp $
+ * $Id: CommentAvgRatio.java,v 1.8 2006/11/14 22:43:16 brigand2 Exp $
  **************************************************************************/
+package comtor.analyzers;
 
+import comtor.*;
 import com.sun.javadoc.*;
 import java.util.*;
 import java.text.*;

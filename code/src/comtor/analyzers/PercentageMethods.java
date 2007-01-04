@@ -18,9 +18,11 @@
  *	 59 Temple Place, Suite 330 
  *	 Boston, MA  02111-1307  USA
  *
- * $Id: PercentageMethods.java,v 1.4 2006-11-14 21:41:20 brigand2 Exp $
+ * $Id: PercentageMethods.java,v 1.4 2006/11/14 21:41:20 brigand2 Exp $
  **************************************************************************/
+package comtor.analyzers;
 
+import comtor.*;
 import com.sun.javadoc.*;
 import java.util.*;
 import java.text.*;

@@ -18,9 +18,11 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: CheckForTags.java,v 1.12 2006-11-15 06:19:41 brigand2 Exp $
+  * $Id: CheckForTags.java,v 1.12 2006/11/15 06:19:41 brigand2 Exp $
   **************************************************************************/
+package comtor.analyzers;
 
+import comtor.*;
 import com.sun.javadoc.*;
 import java.util.*;
 import java.text.*;
