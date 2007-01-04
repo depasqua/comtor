@@ -9,14 +9,14 @@
      'compile' and define the base directory to be the 
      directory build.xml is located in.
  -->
+
 <project name="comtor" default="compile" basedir=".">
-  <description>
-    build me
-  </description>
+  <description>Builds the comtor application.</description>
 
   <!-- Define some basic properties for later on. -->
   <property name="src" location="src"/>
   <property name="classes" location="classes"/>
+
 
   <!-- Build up a classpath file path for later use. -->
   <path id="comtor.class.path">
@@ -25,28 +25,30 @@
     <pathelement path="${java.home}/jre/lib/tools.jar"/>
   </path>
 
+
   <!-- the special init target makes sure our environment is ok -->
   <target name="init">
     <mkdir dir="${classes}"/>
   </target>
 
-  <!-- the default target. Compile our source files -->
-  <target name="compile" depends="init" description="compile the source">
-   <javac srcdir="${src}" destdir="${classes}" debug="on">
-      <classpath refid="comtor.class.path" /> 
+
+  <!-- Compile the source files -->
+  <target name="compile" depends="init" description="Compile the source">
+   <javac srcdir="${src}" destdir="${classes}" debug="on" excludes="comtor/incomplete/**">
+      <classpath refid="comtor.class.path"/> 
    </javac>
   </target>
 
-  <!-- The always useful 'clean' target, which is invoked by
-       calling 'ant clean'
-    -->
-  <target name="clean" description="clean src backups and obj files">
-    <delete quiet="false">
-      <fileset dir="./classes/" defaultexcludes="no" includes="**/*.class"/>
+
+  <!-- Removes the class files and source backups -->
+  <target name="clean" description="Clean source backups and obj files">
+    <delete quiet="false" dir="${classes}">
     </delete>
+
     <delete quiet="false">
-      <fileset defaultexcludes="no" dir="." includes="**/*~" />
+      <fileset dir="." includes="**/*~" />
     </delete>
+
     <echo message="Done." />
   </target>
 </project>
