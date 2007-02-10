@@ -1,0 +1,3 @@
+comtor.analyzers.CheckForTags
+comtor.analyzers.PercentageMethods
+comtor.analyzers.CommentAvgRatio
