@@ -34,7 +34,7 @@
 
   <!-- Compile the source files -->
   <target name="compile" depends="init" description="Compile the source">
-   <javac srcdir="${src}" destdir="${classes}" debug="on" excludes="comtor/incomplete/**">
+   <javac srcdir="${src}" destdir="${classes}" debug="on" excludes="comtor/incomplete/** comtor/examples/**">
       <classpath refid="comtor.class.path"/> 
    </javac>
   </target>
@@ -42,13 +42,27 @@
 
   <!-- Removes the class files and source backups -->
   <target name="clean" description="Clean source backups and obj files">
-    <delete quiet="false" dir="${classes}">
-    </delete>
+    <delete quiet="false" dir="${classes}"/>
 
     <delete quiet="false">
       <fileset dir="." includes="**/*~" />
     </delete>
+    
+    <delete quiet="false" dir="reports"/>
 
     <echo message="Done." />
+  </target>
+  
+  
+  <!-- Executes the application using the files contained in the examples directory -->
+  <target name="run" description="Executes the application using files in the examples directory" depends="compile">
+    <!-- Make the output directory -->
+    <mkdir dir="reports"/>
+    
+    <javadoc doclet="comtor.ComtorDriver" docletpath="${classes}">
+       <fileset dir="${src}/comtor/examples">
+           <include name="**/*.java"/>
+       </fileset>
+    </javadoc>
   </target>
 </project>
