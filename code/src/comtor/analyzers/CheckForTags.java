@@ -46,24 +46,22 @@ public class CheckForTags implements ComtorDoclet
    */
   public Properties analyze(RootDoc rootDoc)
   {
-	prop.setProperty("title", "Check for Tags");
-	prop.setProperty("description", "This doclet checks for proper use of JavaDoc comments with returns, throw, and param tags.");
-	DateFormat dateFormat = new SimpleDateFormat("M/d/yy h:mm a");
-	java.util.Date date = new java.util.Date();
-	prop.setProperty("date", "" + dateFormat.format(date));
+    prop.setProperty("title", "Check For Tags");
+    prop.setProperty("description", "Checks for the proper use of return, throw, and param tags.");
     
-	ClassDoc[] classes = rootDoc.classes();
+    ClassDoc[] classes = rootDoc.classes();
     
     for(int i=0; i < classes.length; i++)
     {
-      prop.setProperty("" + i, "class: " + classes[i].name());
+      String classID = numberFormat(i);
+      prop.setProperty("" + classID, "Class: " + classes[i].name());
       MethodDoc[] methods = new MethodDoc[0];
       methods = classes[i].methods();
       
       for(int j=0; j < methods.length; j++)
       {
-		String key = numberFormat(j);
-        prop.setProperty(i + "." + key, "method: " + methods[j].name());
+        String methodID = numberFormat(j);
+        prop.setProperty(classID + "." + methodID, "Method: " + methods[j].name());
         
 /////////////////return tags/////////////////
         String returnParam = "@return";
@@ -73,18 +71,18 @@ public class CheckForTags implements ComtorDoclet
         if(returntype=="void")
         {
           if(returnTags.length==0)
-            prop.setProperty(i + "." + key + ".b", "Analyzed method " + methods[j].name() + "'s declared return type and @return tag. The declared return type is void and there is no @return tag present in the comments.");
+            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "'s declared return type and <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@return</a> tag. The declared return type is void and there is no <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@return</a> tag present in the comments.");
           else
-            prop.setProperty(i + "." + key + ".b", "Analyzed method " + methods[j].name() + "'s declared return type and @return tag. The declared return type is void but an @return tag is present in the comments. There should be no @return tag since the declared return type is void.");
+            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "'s declared return type and <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@return</a> tag. The declared return type is void but an <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@return</a> tag is present in the comments. There should be no <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@return</a> tag since the declared return type is void.");
         }
         else
         {
           if(returnTags.length==1)
-            prop.setProperty(i + "." + key + ".b", "Analyzed method " + methods[j].name() + "'s declared return type and @return tag. The declared return type is " + returntype + " and there is an @return tag present in the comments.");
+            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "'s declared return type and <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@return</a> tag. The declared return type is " + returntype + " and there is an <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@return</a> tag present in the comments.");
           else if(returnTags.length==0) 
-            prop.setProperty(i + "." + key + ".b", "Analyzed method " + methods[j].name() + "'s declared return type and @return tag. The declared return type is " + returntype + " but there is no @return tag present in the comments.");
+            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "'s declared return type and <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@return</a> tag. The declared return type is " + returntype + " but there is no <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@return</a> tag present in the comments.");
           else if(returnTags.length > 1)
-            prop.setProperty(i + "." + key + ".b", "Analyzed method " + methods[j].name() + "'s declared return type and @return tag. The declared return type is " + returntype + " but there is " + returnTags.length + " @return tags present in the comments.  There should only be one @return tag.");
+            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "'s declared return type and <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@return</a> tag. The declared return type is " + returntype + " but there is " + returnTags.length + " <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@return</a> tags present in the comments.  There should only be one <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@return</a> tag.");
         }
         
 /////////////////param tags/////////////////
@@ -103,16 +101,16 @@ public class CheckForTags implements ComtorDoclet
               check = true;
             if(check)
             {
-			  String count = numberFormat(paramCount);
-              prop.setProperty(i + "." + key + ".c" + count, "Analyzed method " + methods[j].name() + "'s parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". The paramter and paramter type match the @param tag in the comments.");
+              String count = numberFormat(paramCount);
+              prop.setProperty(classID + "." + methodID + ".c" + count, "Analyzed method " + methods[j].name() + "'s parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". The paramter and paramter type match the <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@param</a> tag in the comments.");
               paramCount++;
               break;
             }
           }
           if(!check)
           {
-			String count = numberFormat(paramCount);
-            prop.setProperty(i + "." + key + ".c" + count, "Analyzed method " + methods[j].name() + "'s parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". There is no @param tag present for this paramter.");
+            String count = numberFormat(paramCount);
+            prop.setProperty(classID + "." + methodID + ".c" + count, "Analyzed method " + methods[j].name() + "'s parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". There is no <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@param</a> tag present for this paramter.");
             paramCount++;
           }
         }
@@ -127,8 +125,8 @@ public class CheckForTags implements ComtorDoclet
           }
           if(!check)
           {
-			String count = numberFormat(paramCount);
-            prop.setProperty(i + "." + key + ".c" + count, "Analyzed method " + methods[j].name() + "'s @param tag " + paramTags[s].text() + ". There is no parameter in the method for the this @param tag.");
+            String count = numberFormat(paramCount);
+            prop.setProperty(classID + "." + methodID + ".c" + count, "Analyzed method " + methods[j].name() + "'s <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@param</a> tag " + paramTags[s].text() + ". There is no parameter in the method for the this <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@param</a> tag.");
             paramCount++;
           }
         }
@@ -148,16 +146,16 @@ public class CheckForTags implements ComtorDoclet
               check = true;
             if(check)
             {
-			  String num = numberFormat(throwsCount);
-              prop.setProperty(i + "." + key + ".d" + num, "Analyzed method " + methods[j].name() + "'s exception " + exceptions[s].name() + ". The exception matches the @throws tag in the comments.");
+              String num = numberFormat(throwsCount);
+              prop.setProperty(classID + "." + methodID + ".d" + num, "Analyzed method " + methods[j].name() + "'s exception " + exceptions[s].name() + ". The exception matches the <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@throws</a> tag in the comments.");
               throwsCount++;
               break;
             }
           }
           if(!check)
           {
-			String num = numberFormat(throwsCount);
-            prop.setProperty(i + "." + key + ".d" + num, "Analyzed method " + methods[j].name() + "'s exception " + exceptions[s].name() + ". There is no @throws tag present for this exception.");
+            String num = numberFormat(throwsCount);
+            prop.setProperty(classID + "." + methodID + ".d" + num, "Analyzed method " + methods[j].name() + "'s exception " + exceptions[s].name() + ". There is no <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@throws</a> tag present for this exception.");
             throwsCount++;
           }
         }
@@ -172,20 +170,20 @@ public class CheckForTags implements ComtorDoclet
           }
           if(!check)
           {
-			String num = numberFormat(throwsCount);
-            prop.setProperty(i + "." + key + ".d" + num, "Analyzed method " + methods[j].name() + "'s @throws tag " + throwsTags[s].text() + ". There is no exception in the method for this @throws tag.");
+            String num = numberFormat(throwsCount);
+            prop.setProperty(classID + "." + methodID + ".d" + num, "Analyzed method " + methods[j].name() + "'s <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@throws</a> tag " + throwsTags[s].text() + ". There is no exception in the method for this <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@throws</a> tag.");
             throwsCount++;
           }
         }
       }
-	  
+      
       ConstructorDoc[] constructors = new ConstructorDoc[0];
-      constructors = classes[i].constructors();	  
-	  for(int j=0; j < constructors.length; j++)
-	  {
-		String key = numberFormat(j);
+      constructors = classes[i].constructors();   
+      for(int j=0; j < constructors.length; j++)
+      {
+        String methodID = numberFormat(j);
         
-		String param = "@param";
+        String param = "@param";
         Parameter[] parameter = new Parameter[0];
         parameter = constructors[j].parameters();
         Tag[] paramTags = constructors[j].tags(param);
@@ -200,16 +198,16 @@ public class CheckForTags implements ComtorDoclet
               check = true;
             if(check)
             {
-			  String count = numberFormat(paramCount);
-              prop.setProperty(i + "." + key + ".a" + count, "Analyzed constructor's parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". The paramter and paramter type match the @param tag in the comments.");
+              String count = numberFormat(paramCount);
+              prop.setProperty(classID + "." + methodID + ".a" + count, "Analyzed constructor's parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". The paramter and paramter type match the <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@param</a> tag in the comments.");
               paramCount++;
               break;
             }
           }
           if(!check)
           {
-			String count = numberFormat(paramCount);
-            prop.setProperty(i + "." + key + ".a" + count, "Analyzed constructor's parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". There is no @param tag present for this paramter.");
+            String count = numberFormat(paramCount);
+            prop.setProperty(classID + "." + methodID + ".a" + count, "Analyzed constructor's parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". There is no <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@param</a> tag present for this paramter.");
             paramCount++;
           }
         }
@@ -224,26 +222,26 @@ public class CheckForTags implements ComtorDoclet
           }
           if(!check)
           {
-			String count = numberFormat(paramCount);
-            prop.setProperty(i + "." + key + ".a" + count, "Analyzed constructor's @param tag " + paramTags[s].text() + ". There is no parameter in the method for the this @param tag.");
+            String count = numberFormat(paramCount);
+            prop.setProperty(classID + "." + methodID + ".a" + count, "Analyzed constructor's <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@param</a> tag " + paramTags[s].text() + ". There is no parameter in the method for the this <a href=\"http://java.sun.com/j2se/1.3/docs/tooldocs/win32/javadoc.html#javadoctags\">@param</a> tag.");
             paramCount++;
           }
         }  
-	  }
+      }
     }    
     return prop;
   }
   
   private String numberFormat(int value)
   {
-	  String newValue;
-	  if(value<10)
-		  newValue = "00" + value;
-	  else if(value<100)
-		  newValue = "0" + value;
-	  else
-		  newValue = "" + value;
-	  
-	  return newValue;
+    String newValue;
+    if(value<10)
+      newValue = "00" + value;
+    else if(value<100)
+      newValue = "0" + value;
+    else
+      newValue = "" + value;
+    
+    return newValue;
   }
 }
