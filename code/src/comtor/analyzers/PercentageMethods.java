@@ -50,7 +50,10 @@ public class PercentageMethods implements ComtorDoclet
   public Properties analyze(RootDoc rootDoc)
   {
     prop.setProperty("title", "Percentage Methods");
-    prop.setProperty("description", "Calculates the percentage of commented methods per class.");
+    prop.setProperty("description", "Calculate the percentage of commented methods in a given class.");
+    DateFormat dateFormat = new SimpleDateFormat("M/d/yy h:mm a");
+    java.util.Date date = new java.util.Date();
+    prop.setProperty("date", "" + dateFormat.format(date)); 
     
     int methodsCommented = 0;
     double percentCommented = 0.0;
@@ -59,6 +62,7 @@ public class PercentageMethods implements ComtorDoclet
     for(int i=0;i<classes.length;i++)
     {
       String classID = numberFormat(i);
+      prop.setProperty("" + classID, "Class: " + classes[i].name());
       methods = classes[i].methods();
       for(int j=0;j<methods.length;j++)
       {
@@ -68,14 +72,11 @@ public class PercentageMethods implements ComtorDoclet
       if(0!=methods.length)
       {
         percentCommented = (double)((1.0*methodsCommented)/methods.length);
-        prop.setProperty("" + classID, "Class: " + classes[i].name());
-        prop.setProperty(classID + "." + classID, Math.round(percentCommented*100) + " percent (" + methodsCommented + "/" + methods.length + ") of class " + classes[i].name() + "\'s methods are commented.");
+        prop.setProperty("" + classID + ".000", Math.round(percentCommented*100) + " percent (" + methodsCommented + "/" + methods.length + ") of class " + classes[i].name() + "\'s methods are commented.");
       }
       else
-      {
-        prop.setProperty("" + classID, "Class: " + classes[i].name());
-        prop.setProperty(classID + "." + classID, "Class: " + classes[i].name() + "has no JavaDoc\'d methods.");
-      }
+        prop.setProperty("" + classID + ".000", "Class: " + classes[i].name() + "has no JavaDoc\'d methods.");
+      
       methodsCommented = 0;
       percentCommented = 0.0;         
     }
