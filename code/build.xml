@@ -13,6 +13,7 @@
 <project name="comtor" default="compile" basedir=".">
   <description>Builds the comtor application.</description>
 
+  
   <!-- Define some basic properties for later on. -->
   <property name="src" location="src"/>
   <property name="classes" location="classes"/>
