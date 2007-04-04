@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: GenerateReport.java,v 1.13 2007-04-03 16:02:05 brigand2 Exp $
+  * $Id: GenerateReport.java,v 1.14 2007-04-04 04:06:06 brigand2 Exp $
   **************************************************************************/
 package comtor;
 
@@ -75,10 +75,7 @@ public class GenerateReport
       prt.println("<body>");
       
       prt.println("<?");
-      prt.println("$dbhost = 'localhost';");
-      prt.println("$dbusername = 'brigand2';");
-      prt.println("$dbpassword = 'joeBrig';");
-      prt.println("$connect = mysql_connect($dbhost, $dbusername, $dbpassword);");
+      prt.println("mysql_connect('localhost', 'brigand2', 'joeBrig');");
       prt.println("mysql_select_db('comtor');");
       prt.println("?>");
 
