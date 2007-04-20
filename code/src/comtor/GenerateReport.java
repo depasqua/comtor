@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: GenerateReport.java,v 1.14 2007-04-04 04:06:06 brigand2 Exp $
+  * $Id: GenerateReport.java,v 1.15 2007-04-20 05:27:39 brigand2 Exp $
   **************************************************************************/
 package comtor;
 
@@ -90,6 +90,10 @@ public class GenerateReport
       prt.println("</h3>");
       
       String dir = System.getProperty("user.dir");
+      BufferedReader rd = new BufferedReader(new FileReader(dir + "/userID.txt"));
+      String userID = rd.readLine();     
+      rd.close();      
+      
       BufferedReader br = new BufferedReader(new FileReader(dir + "/source.txt"));    
       String line;
       prt.println("Java Source Code...<br />");
@@ -102,7 +106,7 @@ public class GenerateReport
         BufferedReader in = new BufferedReader(new FileReader(line));
         String str;
         while ((str = in.readLine()) != null) {
-          prt.println(str + "<br />");
+          prt.println("<pre>" + str + "</pre>");
         }
         in.close();
         
@@ -129,8 +133,16 @@ public class GenerateReport
         arr = list.keySet().toArray(arr);
         Arrays.sort(arr);
         
+        String report = list.getProperty("title");
         prt.println("<a name=\"" + list.getProperty("title") + "\"></a><div id=\"report\">");
         prt.println("Report: " + list.getProperty("title") + " (" + list.getProperty("description") + ")<br />");
+        prt.println("<?");
+        prt.println("$select = mysql_query(\"SELECT reportID FROM reports WHERE reportName='" + report + "'\");");
+        prt.println("$row = mysql_fetch_array($select);");
+        prt.println("$reportID = $row['reportID'];");
+        //prt.println("mysql_query(\"INSERT INTO data(userID, reportID, attribute, value) VALUES ('" + userID + "', '$reportID', 'title', '" + list.getProperty("title") + "')\");");
+        //prt.println("mysql_query(\"INSERT INTO data(userID, reportID, attribute, value) VALUES ('" + userID + "', '$reportID', 'description', '" + list.getProperty("description") + "')\");");
+        prt.println("?>");
         
         for(int j=0; j < arr.length-2; j++)
         {
@@ -143,13 +155,9 @@ public class GenerateReport
               prt.println("<div id=\"method\"><li>" + list.getProperty("" + arr[j]) + "</div>");
             else if(temp.length() > 7)
               prt.println("<div id=\"comment\">- " + list.getProperty("" + arr[j]) + "</div>");
-            
-            String report = list.getProperty("title");
+           
             prt.println("<?");
-            prt.println("$select = mysql_query(\"SELECT reportID FROM reports WHERE reportName='" + report + "'\");");
-            prt.println("$row = mysql_fetch_array($select);");
-            prt.println("$reportID = $row['reportID'];");
-            prt.println("mysql_query(\"INSERT INTO data(reportID, attribute, value) VALUES ('$reportID', '" + arr[j] + "', '" + list.getProperty("" + arr[j]) + "')\");");
+            prt.println("mysql_query(\"INSERT INTO data(userID, reportID, attribute, value) VALUES ('" + userID + "', '$reportID', '" + arr[j] + "', '" + list.getProperty("" + arr[j]) + "')\");");
             prt.println("?>");
           }
         }
