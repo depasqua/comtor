@@ -49,7 +49,7 @@ public final class CommentAvgRatio implements ComtorDoclet
   public Properties analyze(RootDoc rootDoc)
   {
     prop.setProperty("title", "Comment Average Ratio");
-    prop.setProperty("description", "Calculate the length of each method's comments in a given class.");
+    prop.setProperty("description", "Calculate the length of each methods comments in a given class.");
     DateFormat dateFormat = new SimpleDateFormat("M/d/yy h:mm a");
     java.util.Date date = new java.util.Date();
     prop.setProperty("date", "" + dateFormat.format(date));
@@ -75,16 +75,16 @@ public final class CommentAvgRatio implements ComtorDoclet
           count++;
         }
         commentLength = count;
-        prop.setProperty(classID + "." + methodID, "The length of comments for the method '" + methods[j].name() + "' is " + commentLength + " words.");
+        prop.setProperty(classID + "." + methodID, "The length of comments for the method " + methods[j].name() + " is " + commentLength + " words.");
         total+=commentLength;
       }
       
       String methodLength = numberFormat(methods.length);
       if(methods.length==0)
-        prop.setProperty(i + "." + methodLength, "There are no methods in the class '" + classes[i].name() + "'.");
+        prop.setProperty(i + "." + methodLength, "There are no methods in the class " + classes[i].name() + ".");
       else{
         int average = total/methods.length;
-        prop.setProperty(classID + "." + methodLength, "The average length of comments for the class '" + classes[i].name() + "' is " + average + " words.");
+        prop.setProperty(classID + "." + methodLength, "The average length of comments for the class " + classes[i].name() + " is " + average + " words.");
       }
     }
     return prop;

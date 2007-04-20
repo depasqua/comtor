@@ -74,18 +74,18 @@ public class CheckForTags implements ComtorDoclet
         if(returntype=="void")
         {
           if(returnTags.length==0)
-            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "\'s declared return type and @return tag. The declared return type is void and there is no @return tag present in the comments.");
+            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "s declared return type and @return tag. The declared return type is void and there is no @return tag present in the comments.");
           else
-            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "\'s declared return type and @return tag. The declared return type is void but an @return tag is present in the comments. There should be no @return tag since the declared return type is void.");
+            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "s declared return type and @return tag. The declared return type is void but an @return tag is present in the comments. There should be no @return tag since the declared return type is void.");
         }
         else
         {
           if(returnTags.length==1)
-            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "\'s declared return type and @return tag. The declared return type is " + returntype + " and there is an @return tag present in the comments.");
+            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "s declared return type and @return tag. The declared return type is " + returntype + " and there is an @return tag present in the comments.");
           else if(returnTags.length==0) 
-            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "\'s declared return type and @return tag. The declared return type is " + returntype + " but there is no @return tag present in the comments.");
+            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "s declared return type and @return tag. The declared return type is " + returntype + " but there is no @return tag present in the comments.");
           else if(returnTags.length > 1)
-            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "\'s declared return type and @return tag. The declared return type is " + returntype + " but there is " + returnTags.length + " @return tags present in the comments.  There should only be one @return tag.");
+            prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "s declared return type and @return tag. The declared return type is " + returntype + " but there is " + returnTags.length + " @return tags present in the comments.  There should only be one @return tag.");
         }
         
 /////////////////param tags/////////////////
@@ -105,7 +105,7 @@ public class CheckForTags implements ComtorDoclet
             if(check)
             {
               String count = numberFormat(paramCount);
-              prop.setProperty(classID + "." + methodID + ".c" + count, "Analyzed method " + methods[j].name() + "\'s parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". The paramter and paramter type match the @param tag in the comments.");
+              prop.setProperty(classID + "." + methodID + ".c" + count, "Analyzed method " + methods[j].name() + "s parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". The paramter and paramter type match the @param tag in the comments.");
               paramCount++;
               break;
             }
@@ -113,7 +113,7 @@ public class CheckForTags implements ComtorDoclet
           if(!check)
           {
             String count = numberFormat(paramCount);
-            prop.setProperty(classID + "." + methodID + ".c" + count, "Analyzed method " + methods[j].name() + "\'s parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". There is no @param tag present for this paramter.");
+            prop.setProperty(classID + "." + methodID + ".c" + count, "Analyzed method " + methods[j].name() + "s parameter " + parameter[s].typeName() + " " + parameter[s].name() + ". There is no @param tag present for this paramter.");
             paramCount++;
           }
         }
@@ -129,7 +129,7 @@ public class CheckForTags implements ComtorDoclet
           if(!check)
           {
             String count = numberFormat(paramCount);
-            prop.setProperty(classID + "." + methodID + ".c" + count, "Analyzed method " + methods[j].name() + "\'s @param tag " + paramTags[s].text() + ". There is no parameter in the method for the this @param tag.");
+            prop.setProperty(classID + "." + methodID + ".c" + count, "Analyzed method " + methods[j].name() + "s @param tag " + paramTags[s].text() + ". There is no parameter in the method for the this @param tag.");
             paramCount++;
           }
         }
@@ -150,7 +150,7 @@ public class CheckForTags implements ComtorDoclet
             if(check)
             {
               String num = numberFormat(throwsCount);
-              prop.setProperty(classID + "." + methodID + ".d" + num, "Analyzed method " + methods[j].name() + "\'s exception " + exceptions[s].name() + ". The exception matches the @throws tag in the comments.");
+              prop.setProperty(classID + "." + methodID + ".d" + num, "Analyzed method " + methods[j].name() + "s exception " + exceptions[s].name() + ". The exception matches the @throws tag in the comments.");
               throwsCount++;
               break;
             }
@@ -158,7 +158,7 @@ public class CheckForTags implements ComtorDoclet
           if(!check)
           {
             String num = numberFormat(throwsCount);
-            prop.setProperty(classID + "." + methodID + ".d" + num, "Analyzed method " + methods[j].name() + "\'s exception " + exceptions[s].name() + ". There is no @throws tag present for this exception.");
+            prop.setProperty(classID + "." + methodID + ".d" + num, "Analyzed method " + methods[j].name() + "s exception " + exceptions[s].name() + ". There is no @throws tag present for this exception.");
             throwsCount++;
           }
         }
@@ -174,7 +174,7 @@ public class CheckForTags implements ComtorDoclet
           if(!check)
           {
             String num = numberFormat(throwsCount);
-            prop.setProperty(classID + "." + methodID + ".d" + num, "Analyzed method " + methods[j].name() + "\'s @throws tag " + throwsTags[s].text() + ". There is no exception in the method for this @throws tag.");
+            prop.setProperty(classID + "." + methodID + ".d" + num, "Analyzed method " + methods[j].name() + "s @throws tag " + throwsTags[s].text() + ". There is no exception in the method for this @throws tag.");
             throwsCount++;
           }
         }
