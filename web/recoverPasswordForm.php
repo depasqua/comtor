@@ -1,9 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/template.dwt.php" codeOutsideHTMLIsLocked="false" -->
 <head>
 <meta name="generator" content="HTML Tidy, see www.w3.org">
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<!-- InstanceBeginEditable name="doctitle" -->
 <title>Comment Mentor</title>
+<!-- InstanceEndEditable -->
+<!-- InstanceBeginEditable name="head" -->
 <script type="text/javascript">
 function verify() {
 var themessage = "You are required to complete the following fields: ";
@@ -26,86 +29,112 @@ return false;
 }
 }
 </script>
+<!-- InstanceEndEditable -->
 </head>
 
 <body>
-  <center>
+<center>
 
 <hr noshade="noshade" width="65%"/>
 <code> /* // # rem ' /** (* // */ // rem ' # # /**/ */ (* *) ' rem *) </code>
 <hr noshade="noshade" width="65%"/>
 
-    <table cellpadding="1" cellspacing="0" border="0" width="95%">
-    <tr></tr>
-    <tr>
-    <td align="center">
-    <table id="frame" cellpadding="3" cellspacing="3" border="0">
-    <tr>
-      <td>&nbsp;</td>
-      <td>
-        <table cellpadding="0" cellspacing="0">
-         <tr>
-           <td align="center">
-            <img alt="ComTor" src="comtor.png" border="0">
-           </td>
-         </tr>
-        </table>
-      </td>
-      <td>&nbsp;</td>
-    </tr>
-    </table>
-    </td>
-    </tr>
-    </table>
+<table cellpadding="1" cellspacing="0" border="0" width="95%">
+ <tr></tr>
+ <tr>
+  <td align="center">
+	<table id="frame" cellpadding="3" cellspacing="3" border="0">
+	 <tr>
+	  <td>&nbsp;</td>
+	  <td>
+		<table cellpadding="0" cellspacing="0">
+		 <tr>
+		  <td align="center">
+		  <img alt="ComTor" src="img/comtor.png" border="0">
+		  </td>
+		 </tr>
+		</table>
+	  </td>
+	  <td>&nbsp;</td>
+	 </tr>
+	</table>
+  </td>
+ </tr>
+</table>
 
-<br/><br/>
+<br><br>
+	
+<table cellpadding="1" cellspacing="1" border="0">
+ <tr>
+  <td>[<a href="topten.jsp">Top 10 Comments</a>] </td>
+  <td>[<a href="moderate.jsp">Moderate Comments</a>] </td>
+  <td>[<a href="features.php">Features We Measure</a>] </td>
+  <td>[<a href="faq.php">FAQ</a>] </td>
+  <td>[<a href="comtor.tar.gz">Download</a>] </td>
+ </tr>
+</table>
+<table cellpadding="1" cellspacing="1" border="0">
+ <tr>
+  <td>[<a href="index.php">Home</a>] </td>
+	<?	
+  	if(isset($_SESSION['userID']) && ($_SESSION['userID'] != ""))
+	{
+	  ?><td>[<a href="changePasswordForm.php">Change Password</a>] </td>
+		<td>[<a href="reports.php">View Report</a>] </td>
+	 	<td>[<a href="disableAccount.php">Disable Account</a>] </td>
+	 	<td>[<a href="logout.php">Logout</a>] </td><?
+	}
+	else
+	{
+		?><td>[<a href="registerForm.php">Create An Account</a>] </td>
+  		<td>[<a href="recoverPasswordForm.php">Password Recovery]</a> </td><?
+	}
+	?>
+ </tr>
+</table><?
 
-  <table cellpadding="1" cellspacing="1" border="0">
-   <tr>
-     <td>[<a href="topten.jsp">Top 10 Comments</a>] </td>
-	 <td>[<a href="moderate.jsp">Moderate Comments</a>] </td>
-     <td>[<a href="features.html">Features We Measure</a>] </td>
-     <td>[<a href="faq.html">FAQ</a>] </td>
-     <td>[<a href="comtor.tar.gz">Download</a>] </td>
-   </tr>
-  </table>
-  <table cellpadding="1" cellspacing="1" border="0">
-   <tr>
-   	 <td>[<a href="index.php">Home</a>] </td>
-     <td>[<a href="signup.php">Create An Account</a>] </td>
-     <td>[<a href="recoverPasswordForm.php">Password Recovery]</a> </td>
-   </tr>
-  </table>
+if($_SESSION['acctType']=="admin")
+{?>
+<table cellpadding="1" cellspacing="1" border="0">
+ <tr>
+  <td>[<a href="manageAccounts.php">Account Management</a>] </td>
+  <td>[<a href="adminReports.php">Admin Reports</a>] </td>
+ </tr>
+</table><?
+}?> 
 
-<br/><br/>
+<br><br>
+	
+<!-- InstanceBeginEditable name="EditRegion" -->
 
-  <table>
-   <tr>
-     <td align="center">Enter your email address and your password will be mailed to you.</td>
-   </tr>
-  </table>
+<table>
+ <tr>
+  <td align="center">Enter your email address and your password will be mailed to you.</td>
+ </tr>
+</table>
   
-  <br>
+<br>
 
-   <form action="recoverPassword.php" method="post" name="form">
-	<table id="frame">
-	 <tr>
-	  <td>Email:</td>
-	 <tr>
-	  <td><input type="text" name="email"></td>
-	 <tr>
-      <td><input type="submit" name="submit" value="Submit" onClick="return verify();"></td>
-    </table>
-   </form>
-   
-<br/><br/>   
+<form action="recoverPassword.php" method="post" name="form">
+<table id="frame">
+ <tr>
+  <td>Email:</td>
+ <tr>
+  <td><input type="text" name="email"></td>
+ <tr>
+  <td><input type="submit" name="submit" value="Submit" onClick="return verify();"></td>
+</table>
+</form>
 
+<!-- InstanceEndEditable -->
+
+<br><br>
 <hr noshade="noshade" width="65%"/>
 <font size="2">
-<a href="about.html">About Comment Mentor</a> | &copy; 2006 TCNJ
+<a href="about.php">About Comment Mentor</a> | &copy; 2006 TCNJ
 </font>
 <br/><br/>
-<a href="http://www.tcnj.edu"><img src="tcnj_logo-small.gif" border="0"></a>
+<a href="http://www.tcnj.edu"><img src="img/tcnj_logo-small.gif" border="0"></a>
 </center>
 </body>
-</html>
+<!-- InstanceEnd --></html>

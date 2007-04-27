@@ -1,57 +1,29 @@
 <?
-if(!isset($_POST['submit'])){	
+session_start();
+if(!isset($_SESSION['userID'])) {
 	header("Location: http://csjava/~brigand2/");
 	exit;
 }
 
-//form data
-$email = $_POST['email'];
-$password = stripslashes($_POST['password']);
-		
-//connect to database
-mysql_connect('localhost', 'brigand2', 'joeBrig');
-mysql_select_db('comtor');
-		
-//validate email and password
-$result = mysql_query("SELECT * FROM users WHERE email='$email'");
-if (mysql_num_rows($result) == 0) {
-	$message = "Username does not exist!";
+if((isset($_GET['id'])) && ($_SESSION['acctType'] == "admin"))
+{
+	$userID = $_GET['id'];
 }
 else {
-$row = mysql_fetch_array($result);
-$userID = $row['userID'];
-$acctStatus = $row['acctStatus'];
+	$userID = $_SESSION['userID'];
+}
 
-if($acctStatus == enabled)
-{		
-	$cryptPassword = crypt($password, 'cm');
-	if($cryptPassword == $row['password'])
-	{
-		//if first login, set validated date and time
-		if($row['validatedDT'] == NULL)
-		{
-			mysql_query("UPDATE users SET validatedDT=NOW(), lastLogin=NOW() WHERE userID='$userID'");
-		}
-		else
-		{
-			mysql_query("UPDATE users SET lastLogin=NOW() WHERE userID='$userID'");
-		}
-			
-		session_start();	
-		$_SESSION['userID'] = $userID;
-		$_SESSION['acctType'] = $row['acctType'];
-		//redirect to comment mentor
-		header("Location: http://csjava/~brigand2/index.php");
-		exit;
-	}
-	else
-	{
-		$message = "Incorrect password!";
-	}
+if($_GET['confirm'] == "yes")
+{
+	mysql_connect('localhost', 'brigand2', 'joeBrig');
+	mysql_select_db('comtor');
+		
+	mysql_query("UPDATE users SET acctStatus='disabled' WHERE userID='$userID'");
+	$message = "The account has been disabled!";
+	if($_SESSION['acctType'] != "admin"){session_destroy();}
 }
-else{
-$message = "Username does not exist!";
-}
+else {
+	$message = "Are you sure you want to disable the account? <a href=\"disableAccount.php?id=$userID&confirm=yes\">Yes</a> <a href=\"index.php\">No</a>";
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -144,9 +116,7 @@ if($_SESSION['acctType']=="admin")
 
 <table>
  <tr>
-  <td align="center">
-   <? echo $message; ?><br><a href="loginForm.php">Back to login</a>.
-  </td>
+  <td align="center"><? echo $message; ?></td>
  </tr>
 </table>
 

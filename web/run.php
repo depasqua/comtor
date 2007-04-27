@@ -1,57 +1,74 @@
 <?
-if(!isset($_POST['submit'])){	
+session_start();
+if(!isset($_SESSION['userID'])) {
 	header("Location: http://csjava/~brigand2/");
 	exit;
 }
+$userID = $_SESSION['userID'];
 
-//form data
-$email = $_POST['email'];
-$password = stripslashes($_POST['password']);
-		
-//connect to database
-mysql_connect('localhost', 'brigand2', 'joeBrig');
-mysql_select_db('comtor');
-		
-//validate email and password
-$result = mysql_query("SELECT * FROM users WHERE email='$email'");
-if (mysql_num_rows($result) == 0) {
-	$message = "Username does not exist!";
-}
-else {
-$row = mysql_fetch_array($result);
-$userID = $row['userID'];
-$acctStatus = $row['acctStatus'];
+$dir = "/home/brigand2/public_html/";
 
-if($acctStatus == enabled)
-{		
-	$cryptPassword = crypt($password, 'cm');
-	if($cryptPassword == $row['password'])
-	{
-		//if first login, set validated date and time
-		if($row['validatedDT'] == NULL)
-		{
-			mysql_query("UPDATE users SET validatedDT=NOW(), lastLogin=NOW() WHERE userID='$userID'");
-		}
-		else
-		{
-			mysql_query("UPDATE users SET lastLogin=NOW() WHERE userID='$userID'");
-		}
-			
-		session_start();	
-		$_SESSION['userID'] = $userID;
-		$_SESSION['acctType'] = $row['acctType'];
-		//redirect to comment mentor
-		header("Location: http://csjava/~brigand2/index.php");
-		exit;
-	}
-	else
-	{
-		$message = "Incorrect password!";
-	}
+//store IP address of host
+$ip = $_SERVER['REMOTE_ADDR'];
+
+//store info about jar file
+$fileSize = $_FILES['file']['size'];
+$fileName = str_replace(" ", "", $_FILES['file']['name']);
+
+$message = "";
+
+//check to make sure the file is present
+if(isset($_FILES['file']) == false OR $_FILES['file']['error'] == UPLOAD_ERR_NO_FILE){
+	$message = "You need to upload a jar file!<br>";
 }
-else{
-$message = "Username does not exist!";
+
+//check to make sure it's a jar file
+function file_extension($filename)
+{
+    return end(explode(".", $filename));
 }
+$ext = file_extension($fileName);
+if($ext != jar){
+	$message = "You need to upload a jar file!<br>";
+}
+
+//check to make sure at least one doclet was selected
+if(isset($_POST['doclet']) == false){
+	$message = $message . "You need to select at least one analyzer!";
+}
+
+if($message == "") {
+	
+//the tmp_name begins with '/tmp/' so only grab the remaining substring
+$tempFileName = substr($_FILES['file']['tmp_name'], 5);
+
+//upload the jar file
+move_uploaded_file($_FILES['file']['tmp_name'], $dir . $fileName);
+
+//generate Doclets.txt for the temp dir
+$myFile = $dir . $tempFileName . ".txt";
+$fh = fopen($myFile, 'a');
+
+if(isset($_POST['doclet'])){
+	$doclet = $_POST['doclet'];
+	$count = count($doclet);
+	$i = 0;
+	
+	while ($i < $count){
+		$nextDoclet = $doclet[$i] . "\n";
+		fwrite($fh, $nextDoclet);
+      	$i++;
+   	}
+}
+fclose($fh);
+
+//starts a script to run javadoc
+exec($dir . "scripts/javadoc.sh " . $tempFileName . " " . $fileName . " " . $userID);
+
+//display report
+header('Content-Type: text/html; charset=ISO-8859-1');
+readfile($dir . $tempFileName . '/ComtorReport.php');
+exit;
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -145,7 +162,7 @@ if($_SESSION['acctType']=="admin")
 <table>
  <tr>
   <td align="center">
-   <? echo $message; ?><br><a href="loginForm.php">Back to login</a>.
+	<? echo $message; ?><br><a href="index.php">Go back</a>.
   </td>
  </tr>
 </table>

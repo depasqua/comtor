@@ -2,7 +2,6 @@
 session_start();
 session_destroy();
 
-//redirect to comment mentor
-header("Location: http://csjava/~brigand2/index.php");
+header("Location: http://csjava/~brigand2/");
 exit;
 ?>

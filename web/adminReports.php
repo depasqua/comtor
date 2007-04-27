@@ -1,57 +1,8 @@
 <?
-if(!isset($_POST['submit'])){	
+session_start();
+if(!isset($_SESSION['userID']) || ($_SESSION['acctType'] != "admin")) {
 	header("Location: http://csjava/~brigand2/");
 	exit;
-}
-
-//form data
-$email = $_POST['email'];
-$password = stripslashes($_POST['password']);
-		
-//connect to database
-mysql_connect('localhost', 'brigand2', 'joeBrig');
-mysql_select_db('comtor');
-		
-//validate email and password
-$result = mysql_query("SELECT * FROM users WHERE email='$email'");
-if (mysql_num_rows($result) == 0) {
-	$message = "Username does not exist!";
-}
-else {
-$row = mysql_fetch_array($result);
-$userID = $row['userID'];
-$acctStatus = $row['acctStatus'];
-
-if($acctStatus == enabled)
-{		
-	$cryptPassword = crypt($password, 'cm');
-	if($cryptPassword == $row['password'])
-	{
-		//if first login, set validated date and time
-		if($row['validatedDT'] == NULL)
-		{
-			mysql_query("UPDATE users SET validatedDT=NOW(), lastLogin=NOW() WHERE userID='$userID'");
-		}
-		else
-		{
-			mysql_query("UPDATE users SET lastLogin=NOW() WHERE userID='$userID'");
-		}
-			
-		session_start();	
-		$_SESSION['userID'] = $userID;
-		$_SESSION['acctType'] = $row['acctType'];
-		//redirect to comment mentor
-		header("Location: http://csjava/~brigand2/index.php");
-		exit;
-	}
-	else
-	{
-		$message = "Incorrect password!";
-	}
-}
-else{
-$message = "Username does not exist!";
-}
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -63,7 +14,10 @@ $message = "Username does not exist!";
 <title>Comment Mentor</title>
 <!-- InstanceEndEditable -->
 <!-- InstanceBeginEditable name="head" -->
-
+<style type=text/css>
+#body{width:65%;}
+#class{font-size: 18px; font-weight: bold}
+</style>
 <!-- InstanceEndEditable -->
 </head>
 
@@ -142,13 +96,26 @@ if($_SESSION['acctType']=="admin")
 	
 <!-- InstanceBeginEditable name="EditRegion" -->
 
-<table>
- <tr>
-  <td align="center">
-   <? echo $message; ?><br><a href="loginForm.php">Back to login</a>.
-  </td>
- </tr>
-</table>
+<div id="body">
+<div id="class">--System Usage--</div>
+<?
+mysql_connect('localhost', 'brigand2', 'joeBrig');
+mysql_select_db('comtor');
+
+$query = mysql_query("SELECT * FROM reports");
+while($row = mysql_fetch_assoc($query))
+{
+	$name = $row['reportName'];
+	$id = $row['reportID'];
+	
+	echo "<br>" . $name . " - ";
+	
+	$query2 = mysql_query("SELECT reportID FROM data WHERE reportID='$id' GROUP BY dateTime, userID");
+	$numRows = mysql_num_rows($query2);
+	echo "selected " . $numRows . " times<br>";
+}
+?>
+</div>
 
 <!-- InstanceEndEditable -->
 
