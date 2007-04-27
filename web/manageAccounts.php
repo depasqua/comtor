@@ -109,7 +109,7 @@ while($row = mysql_fetch_assoc($query))
 		
 	?><tr><td><? if($row['acctType'] == "admin"){echo "*";} echo $row['name'] . " (" . $row['school'] . ")"; ?></td>
 	<td align="left"><a href="reports.php?id=<? echo $userID; ?>">[view]</a></td>
-	<td align="left"><a href="makeAdmin.php?id=<? echo $userID; ?>">[admin]</a></td>
+	<td align="left"><a href="changeAcctType.php?id=<? echo $userID; ?>">[admin]</a></td>
 	<td align="left"><a href="deleteAccount.php?id=<? echo $userID; ?>">[delete]</a></td>
 	<td align="left"><a href="disableAccount.php?id=<? echo $userID; ?>">[disable]</a></td></tr><?
 }
@@ -127,7 +127,7 @@ while($row = mysql_fetch_assoc($query))
 		
 	?><tr><td><? echo $row['name'] . " (" . $row['school'] . ")"; ?></td>
 	<td align="left"><a href="reports.php?id=<? echo $userID; ?>">[view]</a></td>
-	<td align="left"><a href="makeAdmin.php?id=<? echo $userID; ?>">[admin]</a></td>
+	<td align="left"><a href="changeAcctType.php?id=<? echo $userID; ?>">[admin]</a></td>
 	<td align="left"><a href="deleteAccount.php?id=<? echo $userID; ?>">[delete]</a></td>
 	<td align="left"><a href="enableAccount.php?id=<? echo $userID; ?>">[enable]</a></td></tr><?
 }

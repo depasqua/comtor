@@ -1,4 +1,5 @@
 <?
+//check for session id
 session_start();
 if(!isset($_SESSION['userID'])) {
 	header("Location: http://csjava/~brigand2/");
@@ -15,7 +16,7 @@ if(!isset($_SESSION['userID'])) {
 <!-- InstanceEndEditable -->
 <!-- InstanceBeginEditable name="head" -->
 <style type=text/css>
-#body{width:75%;}
+#body{width:80%;}
 #report{border:double; padding: 10px; font-size: 20px; text-align:left; margin-bottom:15px;}
 #reportList {width:300px;  margin-left:auto; margin-right:auto;}
 #class{font-size: 18px; font-weight: bold}
@@ -106,6 +107,7 @@ if($_SESSION['acctType']=="admin")
 mysql_connect('localhost', 'brigand2', 'joeBrig');
 mysql_select_db('comtor');
 
+//checks for admin permissions, else use current user id
 if((isset($_GET['id'])) && ($_SESSION['acctType'] == "admin"))
 {
 	$userID = $_GET['id'];
@@ -114,6 +116,7 @@ else {
 	$userID = $_SESSION['userID'];
 }
 
+//query data for current user
 $userInfo = mysql_query("SELECT * FROM users WHERE userID='$userID'");
 $row = mysql_fetch_array($userInfo);
 ?><div id="reportList"><?
@@ -122,9 +125,10 @@ echo $row['email'] . "<br>";
 echo $row['school'] . "<br><br>";
 ?></div><?
 
-// if there is a date selected
+// if there is no report selected...
 if(!isset($_GET['report'])) {
 	?><div id="class">--System Usage--</div><?
+	//display name of report
 	$query = mysql_query("SELECT * FROM reports");
 	while($row = mysql_fetch_assoc($query))
 	{
@@ -133,11 +137,13 @@ if(!isset($_GET['report'])) {
 		
 		echo "" . $name . " - ";
 		
+		//calculate and display number of times the report was run
 		$query2 = mysql_query("SELECT reportID FROM data WHERE reportID='$id' AND userID='$userID' GROUP BY dateTime, userID");
 		$numRows = mysql_num_rows($query2);
 		echo "selected " . $numRows . " times<br>";
 	}
 	
+	//display list of reports
 	?><br><div id="class">--Reports--</div><?
 	$times = mysql_query("SELECT dateTime FROM data WHERE userID='$userID' GROUP BY dateTime ORDER BY dateTime desc");
 	while($row = mysql_fetch_assoc($times)) {
@@ -146,68 +152,41 @@ if(!isset($_GET['report'])) {
 		?><div id="reportList"><? echo "<a href=\"reports.php?id=$userID&report=$dateTime\"> $displayDateTime </a><br>"; ?></div><?
 	}
 }	
-else {
+//display report...
+else
+{
 	$dateTime = $_GET['report'];
 	$userID = $_GET['id'];
 	
-	$report1 = mysql_query("SELECT * FROM data WHERE userID='$userID' AND reportID=1 AND dateTime='$dateTime' ORDER BY attribute");
-	if (mysql_num_rows($report1) > 0) {
-		?><div id="report"><? echo "Report: Check For Tags";
+	$query = mysql_query("SELECT * FROM reports");
+	while($row = mysql_fetch_assoc($query))
+	{
+		$reportID = $row['reportID'];
+		$name = $row['reportName'];
+		$description = $row['reportDescription'];
 	
-		while($row = mysql_fetch_assoc($report1)) {
-			$index = $row['attribute'];
-				if(strlen($index) == 3) {
-					?><hr><div id="class"><? echo $row['value']; ?></div><?
-				}
-				else if(strlen($index) == 7) {
-					?><div id="method"><? echo $row['value']; ?></div><?
-				}
-				else if(strlen($index) > 7) {
-					?><div id="comment"><? echo $row['value']; ?></div><?
-				}	
-		}
-		?></div><?
-	}
+		$report = mysql_query("SELECT * FROM data WHERE userID='$userID' AND reportID='$reportID' AND dateTime='$dateTime' ORDER BY attribute");
+		if (mysql_num_rows($report) > 0) {
+			?><div id="report"><? echo $name . " (" . $description . ")";
 		
-	$report2 = mysql_query("SELECT * FROM data WHERE userID='$userID' AND reportID=2 AND dateTime='$dateTime' ORDER BY attribute");
-	if (mysql_num_rows($report2) > 0) {
-		?><div id="report"><? echo "Report: Percentage Methods";
-	
-		while($row = mysql_fetch_assoc($report2)) {
-			$index = $row['attribute'];
-				if(strlen($index) == 3) {
-					?><hr><div id="class"><? echo $row['value']; ?></div><?
-				}
-				else if(strlen($index) == 7) {
-					?><div id="method"><? echo $row['value']; ?></div><?
-				}
-				else if(strlen($index) > 7) {
-					?><div id="comment"><? echo $row['value']; ?></div><?
-				}	
+			while($row = mysql_fetch_assoc($report)) {
+				$index = $row['attribute'];
+					if(strlen($index) == 3) {
+						?><hr><div id="class"><? echo $row['value']; ?></div><?
+					}
+					else if(strlen($index) == 7) {
+						?><div id="method"><? echo $row['value']; ?></div><?
+					}
+					else if(strlen($index) > 7) {
+						?><div id="comment"><? echo $row['value']; ?></div><?
+					}	
+			}
+			?></div><?
 		}
-		?></div><?
 	}
-	
-	$report3 = mysql_query("SELECT * FROM data WHERE userID='$userID' AND reportID=3 AND dateTime='$dateTime' ORDER BY attribute");
-	if (mysql_num_rows($report3) > 0) {
-		?><div id="report"><? echo "Report: Comment Average Ratio";
-	
-		while($row = mysql_fetch_assoc($report3)) {
-			$index = $row['attribute'];
-				if(strlen($index) == 3) {
-					?><hr><div id="class"><? echo $row['value']; ?></div><?
-				}
-				else if(strlen($index) == 7) {
-					?><div id="method"><? echo $row['value']; ?></div><?
-				}
-				else if(strlen($index) > 7) {
-					?><div id="comment"><? echo $row['value']; ?></div><?
-				}	
-		}
-		?></div><?
-	}
-}
+}	
 
+//formate date
 function formatDateTime($timestamp)
 {
     $year=substr($timestamp,0,4);
