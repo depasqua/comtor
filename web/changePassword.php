@@ -1,9 +1,9 @@
 <?
 if(!isset($_POST['submit'])){	
-	header("Location: http://csjava/~brigand2/");
-	exit;
+	include("redirect.php");
 }
 
+//get session id
 session_start();
 $userID = $_SESSION['userID'];
 
@@ -13,17 +13,20 @@ $newPassword = trim($_POST['newPassword']);
 $confirmPassword = trim($_POST['confirmPassword']);
 		
 //connect to database
-mysql_connect('localhost', 'brigand2', 'joeBrig');
-mysql_select_db('comtor');
+include("connect.php");
 
+//select current password
 $result = mysql_query("SELECT password FROM users WHERE userID='$userID'");
 $row = mysql_fetch_array($result);
 $currentPassword = $row['password'];
 
 $cryptPassword = crypt($oldPassword, 'cm');
+//check to see if the password from the user matches the password in the database
 if($currentPassword == $cryptPassword) {
+	//check to see if the 2 new passwords match
 	if($newPassword == $confirmPassword) {
 		$newPassword = crypt($newPassword, 'cm');
+		//update new password
 		mysql_query("UPDATE users SET password='$newPassword', passwordChangeDT=NOW() WHERE userID='$userID'");
 		$message = "Password changed successfully!<br><a href=\"index.php\">Go back to the homepage</a>.";
 	}

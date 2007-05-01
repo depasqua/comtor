@@ -1,7 +1,6 @@
 <?
 if(!isset($_POST['submit'])){	
-	header("Location: http://csjava/~brigand2/");
-	exit;
+	include("redirect.php");
 }
 
 require_once 'Text/Password.php';
@@ -11,9 +10,9 @@ require_once 'Mail.php';
 $email = $_POST['email'];
 		
 //connect to database
-mysql_connect('localhost', 'brigand2', 'joeBrig');
-mysql_select_db('comtor');
+include("connect.php");
 
+//checks to see if email is in the database
 $result = mysql_query("SELECT email FROM users WHERE email='$email'");
 if (mysql_num_rows($result) == 0) {
 	$message = "Username does not exist! <a href=\"recoverPasswordForm.php\">Go back</a>.";
@@ -23,9 +22,10 @@ else {
 $tempPassword = Text_Password::create();
 $cryptPassword = crypt($tempPassword, 'cm');
 
+//update password
 mysql_query("UPDATE users SET password='$cryptPassword' WHERE email='$email'");
 
-//email password to user
+//email new password to user
 $headers['From'] = 'CommentMentor@tcnj.edu';
 $headers['To'] = $email;
 $headers['Subject'] = 'Account Information';

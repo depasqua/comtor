@@ -1,7 +1,6 @@
 <?
 if(!isset($_POST['submit'])){	
-	header("Location: http://csjava/~brigand2/");
-	exit;
+	include("redirect.php");
 }
 
 //form data
@@ -9,8 +8,7 @@ $email = $_POST['email'];
 $password = stripslashes($_POST['password']);
 		
 //connect to database
-mysql_connect('localhost', 'brigand2', 'joeBrig');
-mysql_select_db('comtor');
+include("connect.php");
 		
 //validate email and password
 $result = mysql_query("SELECT * FROM users WHERE email='$email'");
@@ -18,40 +16,39 @@ if (mysql_num_rows($result) == 0) {
 	$message = "Username does not exist!";
 }
 else {
-$row = mysql_fetch_array($result);
-$userID = $row['userID'];
-$acctStatus = $row['acctStatus'];
-
-if($acctStatus == enabled)
-{		
-	$cryptPassword = crypt($password, 'cm');
-	if($cryptPassword == $row['password'])
-	{
-		//if first login, set validated date and time
-		if($row['validatedDT'] == NULL)
+	$row = mysql_fetch_array($result);
+	$userID = $row['userID'];
+	$acctStatus = $row['acctStatus'];
+	
+	//check for account status
+	if($acctStatus == enabled)
+	{		
+		//crypt password and check result against user's current password
+		$cryptPassword = crypt($password, 'cm');
+		if($cryptPassword == $row['password'])
 		{
-			mysql_query("UPDATE users SET validatedDT=NOW(), lastLogin=NOW() WHERE userID='$userID'");
+			//if first login, set validated date and time
+			if($row['validatedDT'] == NULL){
+				mysql_query("UPDATE users SET validatedDT=NOW(), lastLogin=NOW() WHERE userID='$userID'");
+			}
+			//set last login
+			else{
+				mysql_query("UPDATE users SET lastLogin=NOW() WHERE userID='$userID'");
+			}
+				
+			session_start();	
+			//start session and set ID, account type
+			$_SESSION['userID'] = $userID;
+			$_SESSION['acctType'] = $row['acctType'];
+			include("redirect.php");
 		}
-		else
-		{
-			mysql_query("UPDATE users SET lastLogin=NOW() WHERE userID='$userID'");
+		else{
+			$message = "Incorrect password!";
 		}
-			
-		session_start();	
-		$_SESSION['userID'] = $userID;
-		$_SESSION['acctType'] = $row['acctType'];
-		//redirect to comment mentor
-		header("Location: http://csjava/~brigand2/index.php");
-		exit;
 	}
-	else
-	{
-		$message = "Incorrect password!";
+	else{
+		$message = "Username does not exist!";
 	}
-}
-else{
-$message = "Username does not exist!";
-}
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

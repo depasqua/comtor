@@ -1,21 +1,25 @@
 <?
 session_start();
+//check for admin permissions
 if(!isset($_SESSION['userID']) || ($_SESSION['acctType'] != "admin")) {
-	header("Location: http://csjava/~brigand2/");
-	exit;
+	include("redirect.php");
 }
 
+//set user id
 $userID = $_GET['id'];
 
+//if the user confirmed the enabling of an account
 if($_GET['confirm'] == "yes")
 {
-	mysql_connect('localhost', 'brigand2', 'joeBrig');
-	mysql_select_db('comtor');
+	//connect to database
+	include("connect.php");
 		
+	//enable the account
 	mysql_query("UPDATE users SET acctStatus='enabled' WHERE userID='$userID'");
 	$message = "The account has been enabled!";
 	if($_SESSION['acctType'] != "admin"){session_destroy();}
 }
+//if the user hasn't confirmed yet, double check to make sure they want to enable the account
 else {
 	$message = "Are you sure you want to enable the account? <a href=\"enableAccount.php?id=$userID&confirm=yes\">Yes</a> <a href=\"index.php\">No</a>";
 }

@@ -1,12 +1,15 @@
 <?
 session_start();
+//check for session id
 if(!isset($_SESSION['userID'])) {
 	header("Location: http://csjava/~brigand2/loginForm.php");
 	exit;
 }
 
+//open text file with list of doclets and descriptions
 $docletList = fopen('doclets.txt', 'r');
 
+//store list of doclets in an array
 $i = 0;
 while(!feof($docletList)) {
 	$docletName = fgets($docletList);
@@ -125,7 +128,8 @@ if($_SESSION['acctType']=="admin")
 </table>
 	
 <table id="frame" cellpadding="0" cellspacing="5" border="0">
-<? foreach ($docletsArray as $doclet){ 
+<? 	//tokenize the text file of doclets
+	foreach ($docletsArray as $doclet){ 
 	$displayName = strtok($doclet, "\t");
 	$realName = strtok("\t");
 	$description = strtok("\t");

@@ -1,10 +1,11 @@
 <?
 session_start();
+//check for session id
 if(!isset($_SESSION['userID'])) {
-	header("Location: http://csjava/~brigand2/");
-	exit;
+	include("redirect.php");
 }
 
+//check for admin permissions, otherwise use current user id
 if((isset($_GET['id'])) && ($_SESSION['acctType'] == "admin"))
 {
 	$userID = $_GET['id'];
@@ -13,15 +14,18 @@ else {
 	$userID = $_SESSION['userID'];
 }
 
+//if the user confirmed the disabling of an account
 if($_GET['confirm'] == "yes")
 {
-	mysql_connect('localhost', 'brigand2', 'joeBrig');
-	mysql_select_db('comtor');
+	//connect to database
+	include("connect.php");
 		
+	//disable the account
 	mysql_query("UPDATE users SET acctStatus='disabled' WHERE userID='$userID'");
 	$message = "The account has been disabled!";
 	if($_SESSION['acctType'] != "admin"){session_destroy();}
 }
+//if the user hasn't confirmed yet, double check to make sure they want to disable the account
 else {
 	$message = "Are you sure you want to disable the account? <a href=\"disableAccount.php?id=$userID&confirm=yes\">Yes</a> <a href=\"index.php\">No</a>";
 }

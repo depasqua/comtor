@@ -2,8 +2,7 @@
 //check for session id
 session_start();
 if(!isset($_SESSION['userID'])) {
-	header("Location: http://csjava/~brigand2/");
-	exit;
+	include("redirect.php");
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -104,8 +103,7 @@ if($_SESSION['acctType']=="admin")
 <div id="body">
 <?
 //connect to database
-mysql_connect('localhost', 'brigand2', 'joeBrig');
-mysql_select_db('comtor');
+include("connect.php");
 
 //checks for admin permissions, else use current user id
 if((isset($_GET['id'])) && ($_SESSION['acctType'] == "admin"))
@@ -116,7 +114,7 @@ else {
 	$userID = $_SESSION['userID'];
 }
 
-//query data for current user
+//display current user information
 $userInfo = mysql_query("SELECT * FROM users WHERE userID='$userID'");
 $row = mysql_fetch_array($userInfo);
 ?><div id="reportList"><?
@@ -125,7 +123,7 @@ echo $row['email'] . "<br>";
 echo $row['school'] . "<br><br>";
 ?></div><?
 
-// if there is no report selected...
+// if there is no report selected, show list of user's reports
 if(!isset($_GET['report'])) {
 	?><div id="class">--System Usage--</div><?
 	//display name of report
@@ -152,7 +150,7 @@ if(!isset($_GET['report'])) {
 		?><div id="reportList"><? echo "<a href=\"reports.php?id=$userID&report=$dateTime\"> $displayDateTime </a><br>"; ?></div><?
 	}
 }	
-//display report...
+//if a report is selected, display report
 else
 {
 	$dateTime = $_GET['report'];
@@ -168,15 +166,20 @@ else
 		$report = mysql_query("SELECT * FROM data WHERE userID='$userID' AND reportID='$reportID' AND dateTime='$dateTime' ORDER BY attribute");
 		if (mysql_num_rows($report) > 0) {
 			?><div id="report"><? echo $name . " (" . $description . ")";
-		
+			
+			//checks the index to see whether the attribute is a class, method, or comment
+			//the index is from the property list, examples shown below
 			while($row = mysql_fetch_assoc($report)) {
 				$index = $row['attribute'];
+					//property list index - 011
 					if(strlen($index) == 3) {
 						?><hr><div id="class"><? echo $row['value']; ?></div><?
 					}
+					//property list index - 011.002
 					else if(strlen($index) == 7) {
 						?><div id="method"><? echo $row['value']; ?></div><?
 					}
+					//property list index - 001.002.a 
 					else if(strlen($index) > 7) {
 						?><div id="comment"><? echo $row['value']; ?></div><?
 					}	

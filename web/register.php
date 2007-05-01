@@ -1,7 +1,6 @@
 <?
 if(!isset($_POST['submit'])){	
-	header("Location: http://csjava/~brigand2/");
-	exit;
+	include("redirect.php");
 }
 require_once 'Text/Password.php';
 require_once 'Mail.php';
@@ -12,8 +11,7 @@ $email = $_POST['email'];
 $school = trim($_POST['school']);
 
 //connect to database
-mysql_connect('localhost', 'brigand2', 'joeBrig');
-mysql_select_db('comtor');
+include("connect.php");
   
 //check if email already exists
 $result = mysql_query("SELECT * FROM users WHERE email='$email'");
@@ -29,7 +27,7 @@ $cryptPassword = crypt($tempPassword, 'cm');
 mysql_query("INSERT INTO users(name, email, password, school, acctType, acctStatus) VALUES ('$name', '$email', '$cryptPassword', '$school', 'user', 'enabled')");
 
 $name = stripslashes($name);
-//email temp password to user
+//email temporary password to user
 $headers['From'] = 'CommentMentor@tcnj.edu';
 $headers['To'] = $email;
 $headers['Subject'] = 'Account Validation';

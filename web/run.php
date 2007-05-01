@@ -2,15 +2,14 @@
 session_start();
 //check for session id
 if(!isset($_SESSION['userID'])) {
-	header("Location: http://csjava/~brigand2/");
-	exit;
+	include("redirect.php");
 }
 
 //set id of current user
 $userID = $_SESSION['userID'];
 
 //directory
-$dir = "/home/brigand2/public_html/";
+include("directory.php");
 
 //store IP address of host
 $ip = $_SERVER['REMOTE_ADDR'];

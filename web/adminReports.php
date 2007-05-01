@@ -1,8 +1,8 @@
 <?
 session_start();
+//check for admin permissions
 if(!isset($_SESSION['userID']) || ($_SESSION['acctType'] != "admin")) {
-	header("Location: http://csjava/~brigand2/");
-	exit;
+	include("redirect.php");
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -99,9 +99,10 @@ if($_SESSION['acctType']=="admin")
 <div id="body">
 <div id="class">--System Usage--</div>
 <?
-mysql_connect('localhost', 'brigand2', 'joeBrig');
-mysql_select_db('comtor');
+//connect to database
+include("connect.php");
 
+//display the list of doclets
 $query = mysql_query("SELECT * FROM reports");
 while($row = mysql_fetch_assoc($query))
 {
@@ -110,6 +111,7 @@ while($row = mysql_fetch_assoc($query))
 	
 	echo "<br>" . $name . " - ";
 	
+	//calculate the number of times each doclet was run
 	$query2 = mysql_query("SELECT reportID FROM data WHERE reportID='$id' GROUP BY dateTime, userID");
 	$numRows = mysql_num_rows($query2);
 	echo "selected " . $numRows . " times<br>";

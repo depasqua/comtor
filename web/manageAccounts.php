@@ -1,8 +1,8 @@
 <?
 session_start();
+//check for admin permissions
 if(!isset($_SESSION['userID']) || ($_SESSION['acctType'] != "admin")) {
-	header("Location: http://csjava/~brigand2/");
-	exit;
+	include("redirect.php");
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -99,14 +99,16 @@ if($_SESSION['acctType']=="admin")
 
 <table cellpadding="2">
 <?
-mysql_connect('localhost', 'brigand2', 'joeBrig');
-mysql_select_db('comtor');
+//connect to database
+include("connect.php");
 
+//list accounts that are currently enabled
 $query = mysql_query("SELECT * FROM users WHERE acctStatus='enabled'");
 while($row = mysql_fetch_assoc($query))
 {
 	$userID = $row['userID'];
 		
+	//list of options for user (view, admin, delete, disable)		
 	?><tr><td><? if($row['acctType'] == "admin"){echo "*";} echo $row['name'] . " (" . $row['school'] . ")"; ?></td>
 	<td align="left"><a href="reports.php?id=<? echo $userID; ?>">[view]</a></td>
 	<td align="left"><a href="changeAcctType.php?id=<? echo $userID; ?>">[admin]</a></td>
@@ -120,11 +122,13 @@ while($row = mysql_fetch_assoc($query))
 
 <table cellpadding="2">
 <?
+//list accounts that are currently disabled
 $query = mysql_query("SELECT userID, name, school FROM users WHERE acctStatus='disabled'");
 while($row = mysql_fetch_assoc($query))
 {
 	$userID = $row['userID'];
-		
+	
+	//list of options for user (view, admin, delete, enable)		
 	?><tr><td><? echo $row['name'] . " (" . $row['school'] . ")"; ?></td>
 	<td align="left"><a href="reports.php?id=<? echo $userID; ?>">[view]</a></td>
 	<td align="left"><a href="changeAcctType.php?id=<? echo $userID; ?>">[admin]</a></td>
