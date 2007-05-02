@@ -28,9 +28,8 @@ import java.util.*;
 import java.text.*;
 
 /**
- * The <code>CommentAvgRatio</code> class is a tool to
- * measure the average length of comments for methods
- * in a class.
+ * The <code>CommentAvgRatio</code> class is a tool to measure the
+ * average length of comments for methods in a class.
  *
  * @author Joe Brigandi
  */
@@ -40,26 +39,25 @@ public final class CommentAvgRatio implements ComtorDoclet
   long commentLength=0;
   
   /**
-   * Examine each class and its methods. Calculate the length 
-   * of each method's comments. 
+   * Examine each class and its methods. Calculate the length of each method's comments. 
    *
    * @param rootDoc  the root of the documentation tree
    * @returns Properties list
    */
   public Properties analyze(RootDoc rootDoc)
   {
-    prop.setProperty("title", "Comment Average Ratio");
-    prop.setProperty("description", "Calculate the length of each methods comments in a given class.");
+    prop.setProperty("title", "Comment Average Ratio"); //doclet title
+    prop.setProperty("description", "Calculate the length of each methods comments in a given class."); //doclet description
     DateFormat dateFormat = new SimpleDateFormat("M/d/yy h:mm a");
     java.util.Date date = new java.util.Date();
-    prop.setProperty("date", "" + dateFormat.format(date));
+    prop.setProperty("date", "" + dateFormat.format(date)); //doclet date & time
     
     ClassDoc[] classes = rootDoc.classes();
     
     for(int i=0; i < classes.length; i++)
     {
       String classID = numberFormat(i);
-      prop.setProperty("" + classID, "Class: " + classes[i].name());
+      prop.setProperty("" + classID, "Class: " + classes[i].name()); //store class name
       int total=0;
       
       MethodDoc[] methods = new MethodDoc[0];
@@ -67,29 +65,34 @@ public final class CommentAvgRatio implements ComtorDoclet
       for(int j=0; j < methods.length; j++)
       {
         String methodID = numberFormat(j);
-        Scanner scan = new Scanner(methods[j].getRawCommentText());
-        int count=0;
+        Scanner scan = new Scanner(methods[j].getRawCommentText()); //scanner
+        int count=0; //number of words in the method's documentation
+        
+        //scan through the list of methods, increment count for each word in the comments
         while(scan.hasNext()) 
         { 
           scan.next();
           count++;
         }
-        commentLength = count;
+        commentLength = count; //total length of comments
+        
+        //store length of comments for the method in the property list
         prop.setProperty(classID + "." + methodID, "The length of comments for the method " + methods[j].name() + " is " + commentLength + " words.");
         total+=commentLength;
       }
       
-      String methodLength = numberFormat(methods.length);
-      if(methods.length==0)
-        prop.setProperty(i + "." + methodLength, "There are no methods in the class " + classes[i].name() + ".");
-      else{
-        int average = total/methods.length;
+      String methodLength = numberFormat(methods.length); //format number to 3 digits (see method below)
+      if(methods.length==0) //no methods
+        prop.setProperty(i + "." + methodLength, "There are no methods in the class " + classes[i].name() + "."); //store in property list
+      else{ 
+        int average = total/methods.length; //calculate the average length of comments and store it in the property list
         prop.setProperty(classID + "." + methodLength, "The average length of comments for the class " + classes[i].name() + " is " + average + " words.");
       }
     }
-    return prop;
+    return prop; //return the property list
   }
   
+  //used to convert an integer value to 3 digits (ex. 7 --> 007)
   private String numberFormat(int value)
   {
     String newValue;

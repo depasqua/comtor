@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330 
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: ComtorDriver.java,v 1.10 2007-01-04 13:44:27 depasqua Exp $
+  * $Id: ComtorDriver.java,v 1.11 2007-05-02 22:32:36 brigand2 Exp $
   **************************************************************************/
 package comtor;
 
@@ -28,60 +28,60 @@ import java.util.*;
 import java.io.*;
 
 /**
- * The <code>ComtorDriver</code> class is a tool to
- * run doclets and pass a vector of property lists to
- * the report generator.
+ * The <code>ComtorDriver</code> class is a tool to run doclets
+ * and pass a vector of property lists to the report generator.
  *
  * @author Joe Brigandi
  */
 public class ComtorDriver
 { 
   /**
-   * Accepts a property list from the called doclets
-   * and puts them in a vector.  It then passes the 
-   * vector to the report generator.
+   * Accepts a property list from the called doclets and puts them
+   * in a vector. It then passes the  vector to the report generator.
    *
    * @param rootDoc  the root of the documentation tree
    * @returns boolean value
    */
   public static boolean start(RootDoc rootDoc)
   {
-	  try
-	  {
-          Vector v = new Vector();
-		  Scanner scan = new Scanner(new File("Doclets.txt"));
-		  String docletName;
-		  while(scan.hasNext())
-		  {
-			  docletName = scan.nextLine();
-			  Class c = Class.forName(docletName);
-			  ComtorDoclet cd = (ComtorDoclet) c.newInstance();
-			  Properties list = cd.analyze(rootDoc);
-			  v.addElement(list);
-		  }
-		  
-		  GenerateReport report = new GenerateReport();
-		  report.generateReport(v);
-		  
-		  scan.close();
-	  }
-	  catch(ClassNotFoundException cnfe)
-	  {
-		  System.err.println(cnfe.toString());
-	  }
-	  catch(InstantiationException ie)
-	  {
-		  System.err.println(ie.toString());
-	  }
-	  catch(IllegalAccessException iae)
-	  {
-		  System.err.println(iae.toString());
-	  }
-	  catch(IOException ioe)
-	  {
-          System.err.println(ioe.toString());
+    try
+    {
+      Vector v = new Vector(); // create new vector
+      Scanner scan = new Scanner(new File("Doclets.txt")); //read list of doclets
+      String docletName;
+      while(scan.hasNext())
+      {
+        docletName = scan.nextLine(); //store doclet as docletName
+        Class c = Class.forName(docletName); //create class for doclet
+        ComtorDoclet cd = (ComtorDoclet) c.newInstance(); //create new instance of the class
+        Properties list = cd.analyze(rootDoc); //call the analyze method to run Javadoc
+        v.addElement(list); //add the resulting property list to the vector
       }
-
-	  return true;
+      
+      GenerateReport report = new GenerateReport(); 
+      report.generateReport(v); //pass the vector to the generate report class
+      
+      scan.close();
+    }
+    
+    //exceptions
+    catch(ClassNotFoundException cnfe)
+    {
+      System.err.println(cnfe.toString());
+    }
+    catch(InstantiationException ie)
+    {
+      System.err.println(ie.toString());
+    }
+    catch(IllegalAccessException iae)
+    {
+      System.err.println(iae.toString());
+    }
+    catch(IOException ioe)
+    {
+      System.err.println(ioe.toString());
+    }
+    
+    return true;
   }
 }

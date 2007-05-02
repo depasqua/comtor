@@ -18,7 +18,7 @@
  *  59 Temple Place, Suite 330 
  *  Boston, MA  02111-1307  USA
  *
- * $Id$
+ * $Id:$
  **************************************************************************/
 package comtor.analyzers;
 
@@ -28,5 +28,7 @@ import com.sun.javadoc.*;
 
 public interface ComtorDoclet
 {
-	public Properties analyze(RootDoc root);
+  //the analyze method runs each doclet on the RootDoc
+  //it returns a property list with the results
+  public Properties analyze(RootDoc root);
 }

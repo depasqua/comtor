@@ -28,8 +28,8 @@ import java.util.*;
 import java.text.*;
 
 /**
- * The <code>CheckForTags</code> class is a tool to check
- * for JavaDocs with returns, throw, and param tags.
+ * The <code>CheckForTags</code> class is a tool to check for 
+ * JavaDocs with returns, throw, and param tags.
  *
  * @author Joe Brigandi
  */
@@ -38,69 +38,69 @@ public class CheckForTags implements ComtorDoclet
   Properties prop = new Properties();
   
   /**
-   * Examine each class, obtain each method. Check for
-   * returns tag. Check for throw tag. Check for param tags.
+   * Examine each class, obtain each method. Check for returns tag.
+   * Check for throw tag. Check for param tags.
    *
    * @param rootDoc  the root of the documentation tree
    * @returns Properties list
    */
   public Properties analyze(RootDoc rootDoc)
   {
-    prop.setProperty("title", "Check for Tags");
-    prop.setProperty("description", "Check for proper use of Javadoc comments with return, throw, and param tags.");
+    prop.setProperty("title", "Check for Tags"); //doclet title
+    prop.setProperty("description", "Check for proper use of Javadoc comments with return, throw, and param tags."); //doclet description
     DateFormat dateFormat = new SimpleDateFormat("M/d/yy h:mm a");
     java.util.Date date = new java.util.Date();
-    prop.setProperty("date", "" + dateFormat.format(date));
+    prop.setProperty("date", "" + dateFormat.format(date)); //doclet date & time
     
     ClassDoc[] classes = rootDoc.classes();
     
     for(int i=0; i < classes.length; i++)
     {
       String classID = numberFormat(i);
-      prop.setProperty("" + classID, "Class: " + classes[i].name());
+      prop.setProperty("" + classID, "Class: " + classes[i].name()); //store class name
       MethodDoc[] methods = new MethodDoc[0];
       methods = classes[i].methods();
       
       for(int j=0; j < methods.length; j++)
       {
         String methodID = numberFormat(j);
-        prop.setProperty(classID + "." + methodID, "Method: " + methods[j].name());
+        prop.setProperty(classID + "." + methodID, "Method: " + methods[j].name()); //store method name
         
-/////////////////return tags/////////////////
+        //return tags
         String returnParam = "@return";
-        Tag[] returnTags = methods[j].tags(returnParam);
-        String returntype = methods[j].returnType().typeName();
+        Tag[] returnTags = methods[j].tags(returnParam); //return tag in documentation
+        String returntype = methods[j].returnType().typeName(); //actual return type of method
         
-        if(returntype=="void")
+        if(returntype=="void") //if return type is void
         {
-          if(returnTags.length==0)
+          if(returnTags.length==0) //if no tags are present in the comments
             prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "s declared return type and @return tag. The declared return type is void and there is no @return tag present in the comments.");
-          else
+          else //if at least one tag is present
             prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "s declared return type and @return tag. The declared return type is void but an @return tag is present in the comments. There should be no @return tag since the declared return type is void.");
         }
-        else
+        else //if return type is NOT void
         {
-          if(returnTags.length==1)
+          if(returnTags.length==1) //if exactly one return tag is present in the comments
             prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "s declared return type and @return tag. The declared return type is " + returntype + " and there is an @return tag present in the comments.");
-          else if(returnTags.length==0) 
+          else if(returnTags.length==0) //if no tags are present 
             prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "s declared return type and @return tag. The declared return type is " + returntype + " but there is no @return tag present in the comments.");
-          else if(returnTags.length > 1)
+          else if(returnTags.length > 1) //if more than one tag is present
             prop.setProperty(classID + "." + methodID + ".b", "Analyzed method " + methods[j].name() + "s declared return type and @return tag. The declared return type is " + returntype + " but there is " + returnTags.length + " @return tags present in the comments.  There should only be one @return tag.");
         }
         
-/////////////////param tags/////////////////
+        //param tags
         String param = "@param";
         Parameter[] parameter = new Parameter[0];
-        parameter = methods[j].parameters();
-        Tag[] paramTags = methods[j].tags(param);
+        parameter = methods[j].parameters(); //actual parameters of the method
+        Tag[] paramTags = methods[j].tags(param); //param tags in documentation
         int paramCount=0;
         
-        for(int s=0; s < parameter.length; s++)
+        for(int s=0; s < parameter.length; s++) //go through list of parameters
         { 
           boolean check = false;
           for(int q=0; q < paramTags.length; q++) 
           {
-            if(paramTags[q].text().startsWith(parameter[s].name()))
+            if(paramTags[q].text().startsWith(parameter[s].name())) //if the param tag matches the actual parameter name
               check = true;
             if(check)
             {
@@ -118,12 +118,12 @@ public class CheckForTags implements ComtorDoclet
           }
         }
         
-        for(int s=0; s < paramTags.length; s++)
+        for(int s=0; s < paramTags.length; s++) //go through list of param tags
         {
           boolean check = false;
           for(int q=0; q < parameter.length; q++)
           {
-            if(paramTags[s].text().startsWith(parameter[q].name()))
+            if(paramTags[s].text().startsWith(parameter[q].name())) //if the param tag matches the actual parameter name
               check = true;
           }
           if(!check)
@@ -134,22 +134,22 @@ public class CheckForTags implements ComtorDoclet
           }
         }
         
-/////////////////throws tags/////////////////
+        //throws tags
         String throwParam = "@throws";
-        Tag[] throwsTags = methods[j].tags(throwParam);
-        ClassDoc[] exceptions = methods[j].thrownExceptions();
+        Tag[] throwsTags = methods[j].tags(throwParam); //throw tags in the documentation
+        ClassDoc[] exceptions = methods[j].thrownExceptions(); //actual exceptions for the method
         int throwsCount=0;
         
-        for(int s=0; s < exceptions.length; s++)
+        for(int s=0; s < exceptions.length; s++) //go through list of exceptions
         {
           boolean check = false;
           for(int q=0; q < throwsTags.length; q++)
           {
-            if(throwsTags[q].text().startsWith(exceptions[s].name()))
+            if(throwsTags[q].text().startsWith(exceptions[s].name())) //if the throws tag matches the actual exception in the method
               check = true;
             if(check)
             {
-              String num = numberFormat(throwsCount);
+              String num = numberFormat(throwsCount); //format number to 3 digits
               prop.setProperty(classID + "." + methodID + ".d" + num, "Analyzed method " + methods[j].name() + "s exception " + exceptions[s].name() + ". The exception matches the @throws tag in the comments.");
               throwsCount++;
               break;
@@ -157,23 +157,23 @@ public class CheckForTags implements ComtorDoclet
           }
           if(!check)
           {
-            String num = numberFormat(throwsCount);
+            String num = numberFormat(throwsCount); //format number to 3 digits
             prop.setProperty(classID + "." + methodID + ".d" + num, "Analyzed method " + methods[j].name() + "s exception " + exceptions[s].name() + ". There is no @throws tag present for this exception.");
             throwsCount++;
           }
         }
         
-        for(int s=0; s < throwsTags.length; s++)
+        for(int s=0; s < throwsTags.length; s++) //go through list of throw tags
         {
           boolean check = false;
           for(int q=0; q < exceptions.length; q++)
           {
-            if(throwsTags[s].text().startsWith(exceptions[q].name()))
+            if(throwsTags[s].text().startsWith(exceptions[q].name())) //if the throws tag matches the actual exception in the method
               check = true;
           }
           if(!check)
           {
-            String num = numberFormat(throwsCount);
+            String num = numberFormat(throwsCount); //format number to 3 digits
             prop.setProperty(classID + "." + methodID + ".d" + num, "Analyzed method " + methods[j].name() + "s @throws tag " + throwsTags[s].text() + ". There is no exception in the method for this @throws tag.");
             throwsCount++;
           }
@@ -183,6 +183,7 @@ public class CheckForTags implements ComtorDoclet
     return prop;
   }
   
+  //used to convert an integer value to 3 digits (ex. 7 --> 007)
   private String numberFormat(int value)
   {
     String newValue;

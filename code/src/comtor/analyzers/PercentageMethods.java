@@ -28,20 +28,19 @@ import java.util.*;
 import java.text.*;
 
 /**
- * The <code>PercentageMethods</code> class is a tool to
- * measure a the percentage of methods in a class that are
- * documented with a JavaDoc header.
+ * The <code>PercentageMethods</code> class is a tool to measure a the
+ * percentage of methods in a class that are documented with a JavaDoc header.
  *
- * @author Michael Locasto
+ * @author Joe Brigandi
  */
 public class PercentageMethods implements ComtorDoclet
 {
   Properties prop = new Properties();
   
   /**
-   * Examine each class, obtain each method. See if rawComment text
-   * has a length more than zero. If so, count it in the total frequency
-   * of commented methods for that class. Obtain percentage of commented
+   * Examine each class, obtain each method. See if rawComment text has
+   * a length more than zero. If so, count it in the total frequency of
+   * commented methods for that class. Obtain percentage of commented
    * methods per class.
    *
    * @param rootDoc  the root of the documentation tree
@@ -49,40 +48,42 @@ public class PercentageMethods implements ComtorDoclet
    */
   public Properties analyze(RootDoc rootDoc)
   {
-    prop.setProperty("title", "Percentage Methods");
-    prop.setProperty("description", "Calculate the percentage of commented methods in a given class.");
+    prop.setProperty("title", "Percentage Methods"); //doclet title
+    prop.setProperty("description", "Calculate the percentage of commented methods in a given class."); //doclet description
     DateFormat dateFormat = new SimpleDateFormat("M/d/yy h:mm a");
     java.util.Date date = new java.util.Date();
-    prop.setProperty("date", "" + dateFormat.format(date)); 
+    prop.setProperty("date", "" + dateFormat.format(date));  //doclet date & time
     
-    int methodsCommented = 0;
-    double percentCommented = 0.0;
+    int methodsCommented = 0; //number of methods commented
+    double percentCommented = 0.0; //percent of methods commented
     ClassDoc[] classes = rootDoc.classes();
     MethodDoc[] methods = new MethodDoc[0];
     for(int i=0;i<classes.length;i++)
     {
       String classID = numberFormat(i);
-      prop.setProperty("" + classID, "Class: " + classes[i].name());
+      prop.setProperty("" + classID, "Class: " + classes[i].name()); //store class name in property list
       methods = classes[i].methods();
       for(int j=0;j<methods.length;j++)
       {
-        if(methods[j].getRawCommentText().length() > 0)
+        if(methods[j].getRawCommentText().length() > 0) //if comment is present, increment number of methods commented
           methodsCommented++;
       }
       if(0!=methods.length)
       {
-        percentCommented = (double)((1.0*methodsCommented)/methods.length);
+        percentCommented = (double)((1.0*methodsCommented)/methods.length); //calculat the percent of commented methods
+        //store percentCommented in the property list
         prop.setProperty("" + classID + ".000", Math.round(percentCommented*100) + " percent (" + methodsCommented + "/" + methods.length + ") of class " + classes[i].name() + "s methods are commented.");
       }
-      else
+      else //if no methods
         prop.setProperty("" + classID + ".000", "Class: " + classes[i].name() + "has no JavaDoc\'d methods.");
       
       methodsCommented = 0;
       percentCommented = 0.0;         
     }
-    return prop;
+    return prop; //return the property list
   }
   
+  //used to convert an integer value to 3 digits (ex. 7 --> 007)
   private String numberFormat(int value)
   {
     String newValue;
