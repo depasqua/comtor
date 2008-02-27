@@ -1,6 +1,6 @@
 <?
-session_start();
-session_destroy();
+  session_start();
+  session_destroy();
 
-include("redirect.php");
+  include("redirect.php");
 ?>

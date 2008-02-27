@@ -1,10 +1,10 @@
 #!/bin/sh
 #set -x
 
-PATH='/home/brigand2/public_html'
+PATH='/home/sigwart4/public_html'
 
 #dir of class files for javadoc
-CLASSES='/home/brigand2/code/classes'
+CLASSES='/home/sigwart4/code/classes'
 
 #create temp dir based on tempFileName
 cd $PATH

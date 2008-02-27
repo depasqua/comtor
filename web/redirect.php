@@ -1,4 +1,4 @@
 <?
-header("Location: http://csjava/~brigand2/");
-exit;
+  header("Location: http://csjava/~sigwart4/");
+  exit;
 ?>

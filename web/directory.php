@@ -1,3 +1,3 @@
 <?
-$dir = "/home/brigand2/public_html/";
+  $dir = "/home/sigwart4/public_html/";
 ?>
