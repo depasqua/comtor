@@ -1,12 +1,15 @@
+    </div>
+  </div>
+</div>
 <!-- TemplateEndEditable -->
 
-<br><br>
-<hr noshade="noshade" width="65%"/>
-<font size="2">
-<a href="about.php">About Comment Mentor</a> | &copy; 2006 TCNJ
-</font>
-<br/><br/>
-<a href="http://www.tcnj.edu"><img src="img/tcnj_logo-small.gif" border="0"></a>
-</center>
+<div class='footer'>
+  <a href="about.php">About Comment Mentor</a><br/>
+  Copyright &copy; 2006 TCNJ
+  <div class='tcnj_logo'>
+    <a href="http://www.tcnj.edu"><img src="img/tcnj_logo-small.gif" alt='TCNJ Logo' border="0" /></a>
+  </div>
+</div>
+
 </body>
 </html>

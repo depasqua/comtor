@@ -1,5 +1,5 @@
 <?php
-$adminOnly = true;
+$acctTypes = "admin";
 require_once("loginCheck.php");
 ?>
 <?php
@@ -13,30 +13,27 @@ require_once("loginCheck.php");
 <?php
 }
 ?>
-
 <?php include_once("header.php"); ?>
 
-<div id="body">
-<div id="class">--System Usage--</div>
 <?
 //connect to database
 include("connect.php");
 
-//display the list of doclets
-$query = mysql_query("SELECT * FROM reports");
-while($row = mysql_fetch_assoc($query))
+/* Display use of each doclet */
+if ($doclets = getDoclets())
 {
-	$name = $row['reportName'];
-	$id = $row['reportID'];
-	
-	echo "<br>" . $name . " - ";
-	
-	//calculate the number of times each doclet was run
-	$query2 = mysql_query("SELECT id FROM masterDoclets WHERE docletReportId='$id'");
-	$numRows = mysql_num_rows($query2);
-	echo "selected " . $numRows . " times<br>";
+  echo "<h1>Doclet Usage</h1>\n";
+  foreach ($doclets as $doclet)
+  {
+    // Display name of report
+    echo "<h6>{$doclet['reportName']}:</h6> ";
+
+    // Calculate and display number of times the report was run
+    $numRows = getDocletRuns($doclet['reportID']);
+    echo "selected " . $numRows . " times<br/>\n";
+  }
 }
+
 ?>
-</div>
 
 <?php include_once("footer.php"); ?>

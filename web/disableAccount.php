@@ -1,38 +1,72 @@
 <?php require_once("loginCheck.php"); ?>
 <?php
 
-//check for admin permissions, otherwise use current user id
-if((isset($_GET['id'])) && ($_SESSION['acctType'] == "admin"))
+// Check for admin permissions, otherwise use current user id
+if (isset($_GET['id']))
 {
-  $userID = $_GET['id'];
+  // Use the id if the current user is admin
+  if ($_SESSION['acctType'] == "admin")
+  {
+    $userId = $_GET['id'];
+  }
+  // If current user is not admin, use the id only if it is current user
+  else if ($_SESSION['userID'] == $_GET['id'])
+  {
+    $userId = $_SESSION['userID'];
+  }
+  else
+  {
+    $_SESSION['msg']['error'] = "You do not have permissions to disable another user!";
+    header("Location: index.php");
+    exit;
+  }
 }
-else {
-  $userID = $_SESSION['userID'];
+else
+{
+  if ($_SESSION['acctType'] == "admin")
+  {
+    $_SESSION['msg']['error'] = "No account specified to be disabled!";
+    header("Location: manageAccounts.php");
+    exit;
+  }
+  else
+  {
+    // Redirect
+    $_SESSION['msg']['error'] = "No account specified to be disabled!";
+    require_once("redirect.php");
+  }
 }
 
-//if the user confirmed the disabling of an account
-if($_GET['confirm'] == "yes")
+// Check if rand is set and correct
+if(isset($_GET['rand']) && $_GET['rand'] == md5(session_id()))
 {
-  //connect to database
+  // Connect to database
   include("connect.php");
 
-  //disable the account
-  mysql_query("UPDATE users SET acctStatus='disabled' WHERE userID='$userID'");
-  $message = "The account has been disabled!";
-  if($_SESSION['acctType'] != "admin"){session_destroy();}
+  // Disable the account
+  if (disableUser($userId))
+  {
+    $_SESSION['msg']['success'] = "The account has been disabled!";
+    if($_SESSION['acctType'] != "admin")
+    {
+      session_destroy();
+      session_start();
+    }
+  }
+  else
+  {
+    $_SESSION['msg']['error'] = "There was an error disabling the account.";
+  }
 }
-//if the user hasn't confirmed yet, double check to make sure they want to disable the account
-else {
-  $message = "Are you sure you want to disable the account? <a href=\"disableAccount.php?id=$userID&confirm=yes\">Yes</a> <a href=\"index.php\">No</a>";
+else
+{
+  $_SESSION['msg']['error'] = "Security Error.";
 }
+
+// Redirect
+if ($_SESSION['acctType'] == "admin")
+  header("Location: manageAccounts.php");
+else
+  header("Location: index.php");
+exit();
 ?>
-
-<?php include_once("header.php"); ?>
-
-<table>
- <tr>
-  <td align="center"><? echo $message; ?></td>
- </tr>
-</table>
-
-<?php include_once("footer.php"); ?>

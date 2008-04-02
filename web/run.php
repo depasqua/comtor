@@ -71,14 +71,21 @@ if($message == "")
   // Connect to database
   include("connect.php");
 
-  // Get report types from database
-  $query = "SELECT id FROM masterReports WHERE userID='{$_SESSION['userID']}' GROUP BY dateTime ORDER BY dateTime desc LIMIT 1";
-  $result = mysql_query($query);
-
-  $reportId = "";
-
-  if ($result && $row = mysql_fetch_assoc($result))
-    $reportId = $row['id'];
+  // Get last report from database
+  if (($reportId = lastReport($_SESSION['userID'])) !== false)
+  {
+    // Record this as a course submission if course was set
+    if (isset($_POST['course']) && is_numeric($_POST['course']))
+    {
+      if (recordReportForCourse($reportId, $_POST['course']))
+      {
+      }
+      else
+      {
+        $_SESSION['msg']['error'] = "Error submitting this report for the indicated course.";
+      }
+    }
+  }
 
   // Close database
   mysql_close();

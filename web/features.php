@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <?php include_once("header.php"); ?>
 
 <table width="90%" cellpadding="1" cellspacing="1" border="0">

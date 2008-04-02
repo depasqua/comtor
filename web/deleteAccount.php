@@ -1,38 +1,41 @@
+<?php $acctTypes = "admin"; ?>
 <?php require_once("loginCheck.php"); ?>
 <?php
-//check for admin permissions, otherwise use current user id
-if((isset($_GET['id'])) && ($_SESSION['acctType'] == "admin"))
+// Check for user id
+if (isset($_GET['id']))
 {
-  $userID = $_GET['id'];
+  $userId = $_GET['id'];
 }
-else {
-  $userID = $_SESSION['userID'];
+else
+{
+  $_SESSION['msg']['error'] = "No account specified for deletion!";
+  header("Location: manageAccounts.php");
+  exit;
 }
 
-//if the user confirmed the deleting of an account
-if($_GET['confirm'] == "yes")
+// Check if rand is set and correct
+if(isset($_GET['rand']) && $_GET['rand'] == md5(session_id()))
 {
-  //connect to database
+  // Connect to database
   include("connect.php");
 
-  //delete the account
-  mysql_query("DELETE FROM users WHERE userID='$userID'");
-  mysql_query("DELETE FROM data WHERE userID='$userID'");
-  $message = "The account has been deleted!";
-  if($_SESSION['acctType'] != "admin"){session_destroy();}
+  // Delete the account and check for success
+  if (deleteUser($userId))
+  {
+    // TODO: Delete all related data
+    $_SESSION['msg']['success'] = "The account has been deleted!";
+  }
+  else
+  {
+    $_SESSION['msg']['error'] = "Error deleting the specified account!";
+  }
+
 }
-//if the user hasn't confirmed yet, double check to make sure they want to delete the account
-else {
-  $message = "Are you sure you want to delete the account? <a href=\"deleteAccount.php?id=$userID&confirm=yes\">Yes</a> <a href=\"index.php\">No</a>";
+else
+{
+  $_SESSION['msg']['error'] = "Security Error.";
 }
+
+    header("Location: manageAccounts.php");
+    exit;
 ?>
-
-<?php include_once("header.php"); ?>
-
-<table>
- <tr>
-  <td align="center"><? echo $message; ?></td>
- </tr>
-</table>
-
-<?php include_once("footer.php"); ?>

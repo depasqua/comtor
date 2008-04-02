@@ -1,32 +1,44 @@
+<?php $acctTypes = "admin"; ?>
 <?php require_once("loginCheck.php"); ?>
 <?php
 
-//set user id
-$userID = $_GET['id'];
+// Redirect
+function redirect()
+{
+  if ($_SESSION['acctType'] == "admin")
+    header("Location: manageAccounts.php");
+  else
+    header("Location: index.php");
+  exit();
+}
 
-//if the user confirmed the enabling of an account
-if($_GET['confirm'] == "yes")
+// Set user id
+if (isset($_GET['id']))
+  $userId = $_GET['id'];
+else
+{
+  $_SESSION['msg']['error'] = "No user specified to be enabled.";
+  redirect();
+}
+
+// Check if rand is set and correct
+if(isset($_GET['rand']) && $_GET['rand'] == md5(session_id()))
 {
   //connect to database
   include("connect.php");
 
-  //enable the account
-  mysql_query("UPDATE users SET acctStatus='enabled' WHERE userID='$userID'");
-  $message = "The account has been enabled!";
-  if($_SESSION['acctType'] != "admin"){session_destroy();}
+  // Enable the account
+  if (enableUser($userId))
+  {
+    $_SESSION['msg']['success'] = "The account has been enabled!";
+  }
+  else
+    $_SESSION['msg']['error'] = "There was an error disabling the account.";
 }
-//if the user hasn't confirmed yet, double check to make sure they want to enable the account
-else {
-  $message = "Are you sure you want to enable the account? <a href=\"enableAccount.php?id=$userID&confirm=yes\">Yes</a> <a href=\"index.php\">No</a>";
+else
+{
+  $_SESSION['msg']['error'] = "Security Error.";
 }
+
+redirect();
 ?>
-
-<?php include_once("header.php"); ?>
-
-<table>
- <tr>
-  <td align="center"><? echo $message; ?></td>
- </tr>
-</table>
-
-<?php include_once("footer.php"); ?>

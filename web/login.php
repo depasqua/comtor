@@ -10,36 +10,40 @@ $password = stripslashes($_POST['password']);
 //connect to database
 include("connect.php");
 
-//validate email and password
-$result = mysql_query("SELECT * FROM users WHERE email='$email'");
-if (mysql_num_rows($result) == 0) {
+// Validate email and password
+if (!emailExists($email))
+{
   $message = "Username does not exist!";
 }
-else {
-  $row = mysql_fetch_array($result);
+else
+{
+  $row = getUserInfoByEmail($email);
   $userID = $row['userID'];
   $acctStatus = $row['acctStatus'];
 
   //check for account status
-  if($acctStatus == enabled)
+  if($acctStatus == "enabled")
   {
     //crypt password and check result against user's current password
     $cryptPassword = crypt($password, 'cm');
     if($cryptPassword == $row['password'])
     {
       //if first login, set validated date and time
-      if($row['validatedDT'] == NULL){
-        mysql_query("UPDATE users SET validatedDT=NOW(), lastLogin=NOW() WHERE userID='$userID'");
+      if($row['validatedDT'] == NULL)
+      {
+        setValidationDate($userID);
       }
-      //set last login
-      else{
-        mysql_query("UPDATE users SET lastLogin=NOW() WHERE userID='$userID'");
+      // Set last login
+      else
+      {
+        setLastLoginDate($userID);
       }
 
       session_start();
       //start session and set ID, account type
       $_SESSION['userID'] = $userID;
       $_SESSION['acctType'] = $row['acctType'];
+      $_SESSION['username'] = $row['name'];
       include("redirect.php");
     }
     else{
@@ -54,12 +58,7 @@ else {
 
 <?php include_once("header.php"); ?>
 
-<table>
- <tr>
-  <td align="center">
-   <? echo $message; ?><br><a href="loginForm.php">Back to login</a>.
-  </td>
- </tr>
-</table>
+
+ <? echo $message; ?><br /><a href="loginForm.php">Back to login</a>.
 
 <?php include_once("footer.php"); ?>

@@ -1,12 +1,10 @@
-<?
-session_start();
-//check for admin permissions
-if(!isset($_SESSION['userID']) || ($_SESSION['acctType'] != "admin")) {
-  include("redirect.php");
-}
-
+<?php
+$acctTypes = "admin";
+require_once("loginCheck.php");
+?>
+<?php
 //set user id
-$userID = $_GET['id'];
+$userId = $_GET['id'];
 
 //if the action was confirmed, set account to admin
 if($_GET['confirm'] == "yes")
@@ -15,8 +13,10 @@ if($_GET['confirm'] == "yes")
   include("connect.php");
 
   //set account to admin
-  mysql_query("UPDATE users SET acctType='admin' WHERE userID='$userID'");
-  $message = "The account is an administrator!";
+  if (setUserAcctType($userId, "admin"))
+    $message = "The account is an administrator!";
+  else
+    $message = "Error!";
 }
 //if the action was NOT confirmed, set account to user
 else if($_GET['confirm'] == "no")
@@ -25,12 +25,14 @@ else if($_GET['confirm'] == "no")
   include("connect.php");
 
   //set account to user
-  mysql_query("UPDATE users SET acctType='user' WHERE userID='$userID'");
-  $message = "The account is NOT an administrator!";
+  if (setUserAcctType($userId, "user"))
+    $message = "The account is NOT an administrator!";
+  else
+    $message = "Error!";
 }
 //if no confirmation was selected, prompt user to select yes or no
 else {
-  $message = "Do you want to make this account an administrator? <a href=\"changeAcctType.php?id=$userID&confirm=yes\">Yes</a> <a href=\"changeAcctType.php?id=$userID&confirm=no\">No</a> <a href=\"manageAccounts.php\">Cancel</a>";
+  $message = "Do you want to make this account an administrator? <a href=\"changeAcctType.php?id=$userId&confirm=yes\">Yes</a> <a href=\"changeAcctType.php?id=$userId&confirm=no\">No</a> <a href=\"manageAccounts.php\">Cancel</a>";
 }
 ?>
 
