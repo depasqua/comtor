@@ -41,6 +41,12 @@ cd $PATH/$1/
 /usr/bin/find src -name *.java > source.txt
 /bin/chmod 755 *.txt
 
+#compile and list class files
+#cd src
+#/etc/java/jdk1.6.0/bin/javac *.java
+#/usr/bin/find *.class > classes.txt
+#cd ..
+
 #take the contents of source.txt and store it in MYVAR
 MYVAR=`/bin/cat source.txt`
 
@@ -52,6 +58,5 @@ EOF
 #run javadoc
 /etc/java/jdk1.6.0/bin/javadoc -doclet comtor.ComtorDriver -docletpath $CLASSES $MYVAR
 
-#run ComtorReport.php
-cd $PATH/$1
-/usr/bin/php -f ComtorReport.php
+# Delete the temporary folder
+/bin/rm -r $PATH/$1
