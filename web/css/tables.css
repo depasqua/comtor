@@ -1,0 +1,59 @@
+table.data
+{
+  border: 1px solid #000f40;
+  border-collapse: collapse;
+  text-align: center;
+  table-layout: fixed;
+  width: 100%;
+}
+
+table.data th
+{
+  background-color: #0070c9;
+  border-width: 1px 1px 2px 1px;
+  border-style: solid;
+  border-color: #000f40;
+  padding: 4px 10px;
+  text-align: center;
+}
+
+table.data th.mini, table.data td.mini
+{
+  width: 50px;
+}
+
+table.data th.narrow, table.data td.narrow
+{
+  width: 25%;
+}
+
+table.data th.large, table.data td.large
+{
+  width: 150px;
+}
+
+
+table.data td
+{
+  border: 1px solid #e0e0e0;
+  background-color: #f0f0f0;
+  padding: 10px;
+}
+
+th.left, td.left
+{
+  text-align: left;
+}
+
+th.right, td.right
+{
+  text-align: right;
+}
+
+
+/* Table for Framing Only */
+table.frame
+{
+  border-collapse: collapse;
+  border: 0px;
+}
