@@ -1,8 +1,12 @@
-<?php require_once("loginCheck.php"); ?>
+<?php
+  // Only allow students
+  $acctTypes = "student";
+  require_once("loginCheck.php");
+?>
 <?php
 
 //set id of current user
-$userID = $_SESSION['userID'];
+$userId = $_SESSION['userId'];
 
 //directory
 include("directory.php");
@@ -44,10 +48,10 @@ if($message == "")
   $tempFileName = substr($_FILES['file']['tmp_name'], 5);
 
   //upload the jar file
-  move_uploaded_file($_FILES['file']['tmp_name'], $dir . $fileName);
+  move_uploaded_file($_FILES['file']['tmp_name'], UPLOAD_DIR . $fileName);
 
   //generate list of doclets selected (Doclets.txt)
-  $myFile = $dir . $tempFileName . ".txt";
+  $myFile = UPLOAD_DIR . $tempFileName . ".txt";
   $fh = fopen($myFile, 'a');
 
   if(isset($_POST['doclet'])){
@@ -64,35 +68,54 @@ if($message == "")
   fclose($fh);
 
   //starts a script to run javadoc
-  exec($dir . "scripts/javadoc.sh " . $tempFileName . " " . $fileName . " " . $userID);
-
+  exec($dir . "scripts/javadoc.sh " . $tempFileName . " " . $fileName . " " . $userId, $output);
 
   // Determine time of this report
   // Connect to database
   include("connect.php");
 
   // Get last report from database
-  if (($reportId = lastReport($_SESSION['userID'])) !== false)
+  if (($userEventId = lastReport($_SESSION['userId'])) !== false)
   {
-    // Record this as a course submission if course was set
-    if (isset($_POST['course']) && is_numeric($_POST['course']))
+    $_SESSION['msg']['success'] = "Code submitted sucessfully";
+    // Record this as a course submission if course was set and user is in course
+    if (isset($_POST['courseId']) && is_numeric($_POST['courseId']))
     {
-      if (recordReportForCourse($reportId, $_POST['course']))
+      // Check that user is in the course
+      if (isUserInCourse($_SESSION['userId'], $_POST['courseId']))
       {
+        // recordReportForCourse() checks that the courseId is valid
+        if (recordReportForCourse($userEventId, $_POST['courseId']))
+        {
+        }
+        else
+        {
+          unset($_SESSION['msg']['success']);
+          $_SESSION['msg']['error'] = "Error submitting this report for the indicated course.";
+        }
       }
       else
       {
-        $_SESSION['msg']['error'] = "Error submitting this report for the indicated course.";
+        unset($_SESSION['msg']['success']);
+        $_SESSION['msg']['error'] = "You cannot submit files for a course you are no enrolled in.";
       }
     }
+  }
+  else
+  {
+    $_SESSION['msg']['error'] = "Error analyzing code.";
   }
 
   // Close database
   mysql_close();
 
-  // Redirect to reports page
-  header("Location: reports.php?id={$reportId}");
-  exit;
+  // Redirect to reports page unless last report was not found
+  if ($userEventId !== false)
+    header("Location: reports.php?userEventId={$userEventId}");
+  else
+    header("Location: reports.php");
+
+  exit();
 }
 ?>
 <?php include_once("header.php"); ?>

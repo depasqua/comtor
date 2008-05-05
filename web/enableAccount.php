@@ -13,8 +13,8 @@ function redirect()
 }
 
 // Set user id
-if (isset($_GET['id']))
-  $userId = $_GET['id'];
+if (isset($_GET['userId']))
+  $userId = $_GET['userId'];
 else
 {
   $_SESSION['msg']['error'] = "No user specified to be enabled.";

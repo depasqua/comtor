@@ -7,7 +7,7 @@ $fatal = false;
 include("connect.php");
 
 // Check that course id is valid
-if (!isset($_GET['id']) || !is_numeric($_GET['id']))
+if (!isset($_GET['courseId']) || !is_numeric($_GET['courseId']))
 {
   if (!isset($_SESSION['msg']['error']))
     $_SESSION['msg']['error'] = "";
@@ -17,7 +17,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id']))
 else
 {
   // Check that course id is valid
-  if (!courseExists($_GET['id']))
+  if (!courseExists($_GET['courseId']))
   {
     if (!isset($_SESSION['msg']['error']))
       $_SESSION['msg']['error'] = "";
@@ -29,7 +29,7 @@ else
 if (!$fatal)
 {
   // Check that user is not already enrolled
-  if (isUserInCourse($_SESSION['userID'], $_GET['id']))
+  if (isUserInCourse($_SESSION['userId'], $_GET['courseId']))
   {
     if (!isset($_SESSION['msg']['error']))
       $_SESSION['msg']['error'] = "";
@@ -42,7 +42,7 @@ if (!$fatal)
 if (!$fatal)
 {
   // Create query to insert course
-  if (courseEnroll($_SESSION['userID'], $_GET['id']))
+  if (courseEnroll($_SESSION['userId'], $_GET['courseId']))
   {
     $_SESSION['msg']['success'] = "Successfully enrolled in course.";
   }

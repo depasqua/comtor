@@ -2,17 +2,17 @@
 <?php
 
 // Check for admin permissions, otherwise use current user id
-if (isset($_GET['id']))
+if (isset($_GET['userId']))
 {
   // Use the id if the current user is admin
   if ($_SESSION['acctType'] == "admin")
   {
-    $userId = $_GET['id'];
+    $userId = $_GET['userId'];
   }
   // If current user is not admin, use the id only if it is current user
-  else if ($_SESSION['userID'] == $_GET['id'])
+  else if ($_SESSION['userId'] == $_GET['userId'])
   {
-    $userId = $_SESSION['userID'];
+    $userId = $_SESSION['userId'];
   }
   else
   {

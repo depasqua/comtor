@@ -19,10 +19,10 @@ if (!isset($_GET['rand']) || $_GET['rand'] != md5(session_id()))
 include("connect.php");
 
 // Check course id field for problems
-if (isset($_GET['course']) && is_numeric($_GET['course']))
+if (isset($_GET['courseId']) && is_numeric($_GET['courseId']))
 {
   // Check that the course id is valid
-  if (!courseExists($_GET['course']))
+  if (!courseExists($_GET['courseId']))
   {
     $_SESSION['msg']['error'] = "Invalid course specified.";
     redirect();
@@ -35,7 +35,7 @@ else
 }
 
 // Delete course
-if (deleteCourse($_GET['course']))
+if (deleteCourse($_GET['courseId']))
 {
   $_SESSION['msg']['success'] = "Course successfully deleted.";
 }

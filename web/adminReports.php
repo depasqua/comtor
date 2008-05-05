@@ -26,10 +26,10 @@ if ($doclets = getDoclets())
   foreach ($doclets as $doclet)
   {
     // Display name of report
-    echo "<h6>{$doclet['reportName']}:</h6> ";
+    echo "<h6>{$doclet['docletName']}:</h6> ";
 
     // Calculate and display number of times the report was run
-    $numRows = getDocletRuns($doclet['reportID']);
+    $numRows = getDocletRuns($doclet['docletId']);
     echo "selected " . $numRows . " times<br/>\n";
   }
 }

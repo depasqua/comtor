@@ -24,7 +24,6 @@ return false;
 <?php
 }
 ?>
-
 <?php include_once("header.php"); ?>
 
 <form action="login.php" method="post" name="form">

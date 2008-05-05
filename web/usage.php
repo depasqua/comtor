@@ -16,7 +16,7 @@ if ((isset($_GET['userId'])) && is_numeric($_GET['userId']) && ($_SESSION['acctT
 }
 else
 {
-  $userId = $_SESSION['userID'];
+  $userId = $_SESSION['userId'];
 }
 
 /* Display current user information */
@@ -43,7 +43,7 @@ else
 
 
 /* Display last login, password change, submission, etc. */
-echo "<h1>Account History</h1>\n";
+echo "<h3>Account History</h3>\n";
 
 $dateFormat = "l F j, Y g:i:s A";
 
@@ -68,21 +68,12 @@ $date = date($dateFormat, $date);
 echo "<h6>Last login:</h6>{$date}<br/>";
 
 
-
+require_once("generalFunctions.php");
 
 /* Display use of each doclet */
-if ($doclets = getDoclets())
+if (getUserAcctType($userId) == "student")
 {
-  echo "<h1>Doclet Usage</h1>\n";
-  foreach ($doclets as $doclet)
-  {
-    // Display name of report
-    echo "<h6>{$doclet['reportName']}:</h6> ";
-
-    // Calculate and display number of times the report was run
-    $numRows = getDocletRuns($doclet['reportID'], $userId);
-    echo "selected " . $numRows . " times<br/>\n";
-  }
+  displayDocletUsage($userId);
 }
 
 ?>

@@ -30,7 +30,7 @@ if($secure)
     // Check if id corresponds to a professor
     else
     {
-      if (getUserAcctType($_POST['professor']) == "professor")
+      if (getUserAcctType($_POST['professor']) != "professor")
       {
         if (!isset($_SESSION['msg']['error']))
           $_SESSION['msg']['error'] = "";
@@ -39,7 +39,7 @@ if($secure)
       }
     }
   }
-  $profId = isset($_POST['professor']) ? $_POST['professor'] : $_SESSION['userID'];
+  $profId = isset($_POST['professor']) ? $_POST['professor'] : $_SESSION['userId'];
 
   // Check course id hidden field for problems
   if (isset($_POST['courseId']) && is_numeric($_POST['courseId']))
@@ -54,7 +54,7 @@ if($secure)
 
     // Check if user is a professor and this is his/her course
     $courseInfo = getCourseInfo($_POST['courseId']);
-    if ($courseInfo && $_SESSION['acctType'] != "professor" && $profId != $courseInfo['profId'])
+    if ($courseInfo && $_SESSION['acctType'] == "professor" && $profId != $courseInfo['profId'])
     {
       if (!isset($_SESSION['msg']['error']))
         $_SESSION['msg']['error'] = "";

@@ -19,6 +19,13 @@ function verifyCourseAction(action, section, name, professor, semester)
 ?>
 <?php include_once("header.php"); ?>
 
+<?php
+
+//Define the default and maximum number of courses to be shown
+define("DEFAULT_LIST_TOTAL", 25);
+define("MAX_LIST_TOTAL", 150);
+
+?>
 
 <h1>Courses</h1>
 
@@ -36,8 +43,17 @@ function verifyCourseAction(action, section, name, professor, semester)
   // Connect to database
   include("connect.php");
 
+  // Check if there is a limit set.
+  if (!isset($_GET['lower']) || !is_numeric($_GET['lower']))
+    $_GET['lower'] = 0;
+  if (!isset($_GET['total']) || !is_numeric($_GET['total']))
+    $_GET['total'] = DEFAULT_LIST_TOTAL;
+  // Check that total is less than the maximum valid
+  else if ($_GET['total'] > MAX_LIST_TOTAL)
+    $_GET['total'] = MAX_LIST_TOTAL;
+
   // Get and show all courses
-  $courses = getCourses();
+  $courses = getCourses(false, $_GET['lower'], $_GET['total']);
 
   if ($courses !== false)
   {
@@ -56,7 +72,7 @@ function verifyCourseAction(action, section, name, professor, semester)
         $enrolled = false;
         // Uses $userCourses defined in header.php
         for ($i = 0; $i < count($userCourses) && !$enrolled; $i++)
-          if ($userCourses[$i]['id'] == $course['id'])
+          if ($userCourses[$i]['courseId'] == $course['courseId'])
             $enrolled = true;
       }
 
@@ -71,33 +87,44 @@ function verifyCourseAction(action, section, name, professor, semester)
       echo "  <td>\n";
       if ($_SESSION['acctType'] == "professor" || $_SESSION['acctType'] == "admin")
       {
-        echo "    <a href='courseEditForm.php?course={$course['id']}'><img src='img/icons/edit.gif' alt='Edit Course' /></a>\n";
-        echo "    <a href='reports.php?course={$course['id']}'><img src='img/icons/magnifying_glass.gif' alt='View Reports' /></a>\n";
-        echo "    <a href='disableCourse.php?course={$course['id']}&amp;rand=" . md5(session_id()) . "' onclick='return verifyCourseAction(\"disable\", \"{$course['section']}\", \"{$course['name']}\", \"{$name}\", \"{$course['semester']}\");' ><img src='img/icons/lock.gif' alt='Disable' /></a>\n";
-        echo "    <a href='enableCourse.php?course={$course['id']}&amp;rand=" . md5(session_id()) . "' onclick='return verifyCourseAction(\"enable\", \"{$course['section']}\", \"{$course['name']}\", \"{$name}\", \"{$course['semester']}\");' ><img src='img/icons/unlock.gif' alt='Enable' /></a>\n";
+        echo "    <a href='courseEditForm.php?courseId={$course['courseId']}'><img src='img/icons/edit.gif' alt='Edit Course' /></a>\n";
+        echo "    <a href='courseManage.php?courseId={$course['courseId']}'><img src='img/icons/magnifying_glass.gif' alt='View Course' /></a>\n";
+        echo "    <a href='disableCourse.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "' onclick='return verifyCourseAction(\"disable\", \"{$course['section']}\", \"{$course['name']}\", \"{$name}\", \"{$course['semester']}\");' ><img src='img/icons/lock.gif' alt='Disable' /></a>\n";
+        echo "    <a href='enableCourse.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "' onclick='return verifyCourseAction(\"enable\", \"{$course['section']}\", \"{$course['name']}\", \"{$name}\", \"{$course['semester']}\");' ><img src='img/icons/unlock.gif' alt='Enable' /></a>\n";
       }
 
       if ($_SESSION['acctType'] == "admin")
       {
-        echo "    <a href='courseDelete.php?course={$course['id']}&amp;rand=" . md5(session_id()) . "' onclick='return verifyCourseAction(\"delete\", \"{$course['section']}\", \"{$course['name']}\", \"{$name}\", \"{$course['semester']}\");' ><img src='img/icons/delete.gif' alt='Delete Course' /></a>\n";
+        echo "    <a href='courseDelete.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "' onclick='return verifyCourseAction(\"delete\", \"{$course['section']}\", \"{$course['name']}\", \"{$name}\", \"{$course['semester']}\");' ><img src='img/icons/delete.gif' alt='Delete Course' /></a>\n";
       }
 
       // Show enroll/drop if the user is a student
       if ($_SESSION['acctType'] == "student")
       {
         if ($enrolled)
-          echo "  <a href='courseDrop.php?id={$course['id']}&amp;rand=" . md5(session_id()) . "''>Drop</a>";
+        {
+          echo "  <a href='reports.php?courseId={$course['courseId']}'><img src='img/icons/magnifying_glass.gif' alt='View Course Reports' /></a>\n";
+          echo "  <a href='courseDrop.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "''>Drop</a>";
+        }
         else
-          echo "  <a href='courseEnroll.php?id={$course['id']}&amp;rand=" . md5(session_id()) . "''>Enroll</a>";
+          echo "  <a href='courseEnroll.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "''>Enroll</a>";
       }
 
       echo "</td>\n";
       echo "</tr>\n";
     }
   }
-  mysql_close();
-
 ?>
 </table>
+
+<?php
+
+  // Add links to view other courses if there are any
+  $numCourses = getNumCourses();
+  require_once("generalFunctions.php");
+  listPages($_GET['lower'], $_GET['total'], $numCourses);
+
+  mysql_close();
+?>
 
 <?php include_once("footer.php"); ?>

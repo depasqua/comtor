@@ -41,16 +41,32 @@ if (function_exists("headFunction"))
         ?>
       </div>
       <div class='course_select'>
+      <script type='text/javascript'>
+      <!--
+      function CourseSelected()
+      {
+        var url = "reports.php?courseId=" + document.getElementById('courseId').value;
+        window.location = url;
+      }
+      //-->
+      </script>
         <?php
           require_once("connect.php");
+
           if (isset($_SESSION['username']))
           {
-            if ($userCourses = getCourses($_SESSION['userID']))
+            if ($_SESSION['acctType'] == "admin")
+              $userCourses = getCourses();
+            else if ($_SESSION['acctType'] == "professor")
+              $userCourses = getProfCourses($_SESSION['userId']);
+            else
+              $userCourses = getCourses($_SESSION['userId']);
+            if ($userCourses !== false)
             {
-              echo "<select name='course'>\n";
+              echo "<select id='courseId' name='courseId' onchange='CourseSelected();' >\n";
               echo "<option value=''>Course Select</option>\n";
               foreach ($userCourses as $course)
-                echo "<option value='{$course['id']}'>{$course['semester']}: {$course['section']}</option>\n";
+                echo "<option value='{$course['courseId']}'>{$course['semester']}: {$course['section']}</option>\n";
             }
             echo "</select>\n";
           }
@@ -63,51 +79,135 @@ if (function_exists("headFunction"))
 <!-- Sidebar -->
 <div class='sidebar'>
 
-  <!-- Modules -->
-  <div class='sidelinks'>
-    <div class='mod_top'></div>
-    <div class='side_mid'>
-      <div class='side_mid_content'>
-        <ul>
-          <?
-            // Random string added to important links for security
-            $md5Rand = md5(session_id());
 
-            if(isset($_SESSION['userID']) && ($_SESSION['userID'] != ""))
-            {
-              echo "<li><a href='usage.php'>System Usage</a></li>\n";
-              echo "<li><a href='manageAccounts.php'>Account Management</a></li>\n";
-              echo "<li><a href='changePasswordForm.php'>Change Password</a></li>\n";
-              echo "<li><a href='disableAccount.php?id={$_SESSION['userID']}&amp;rand={$md5Rand}' onclick='return confirm(\"Are you sure you want to disable your account?\");'>Disable Account</a></li>\n";
-              echo "<li><a href='reports.php'>View Report</a></li>\n";
-              echo "<li><a href='courses.php'>Courses</a></li>\n";
-            }
-            else
-            {
-              echo "<li><a href='registerForm.php'>Create An Account</a></li>\n";
-              echo "<li><a href='recoverPasswordForm.php'>Password Recovery</a></li>\n";
-            }
+<?php
 
-            if (isset($_SESSION['acctType']))
-            {
-              if($_SESSION['acctType']=='admin')
-              {
-                echo "<li><a href='adminReports.php'>Admin Reports</a></li>\n";
-              }
+class Link
+{
+  var $href;
+  var $name;
+  var $attrs = array();
 
-              if($_SESSION['acctType']=='professor' || $_SESSION['acctType']=='admin')
-              {
-                echo "<li><a href='courseManage.php'>Course Management</a></li>\n";
-                echo "<li><a href='courseAddForm.php'>Add Course</a></li>\n";
-              }
-            }
-          ?>
+  function Link($name, $href)
+  {
+    $this->name = $name;
+    $this->href = $href;
+  }
 
-        </ul>
-      </div>
-    </div>
-    <div class='side_bottom'></div>
-  </div>
+  function addAttr($attr, $value)
+  {
+    array_push($this->attrs, new Attribute($attr, $value));
+  }
+
+  function toString()
+  {
+    $str = "<a href='{$this->href}'";
+
+    // Output attributes
+    foreach ($this->attrs as $attr)
+      $str.= " " . $attr->toString();
+
+    $str .= ">{$this->name}</a>";
+
+    return $str;
+  }
+}
+
+class Attribute
+{
+  var $attr;
+  var $value;
+
+  function Attribute($attr, $value)
+  {
+    $this->attr = $attr;
+    $this->value = $value;
+  }
+
+  function toString()
+  {
+    return "{$this->attr}='{$this->value}'";
+  }
+}
+
+
+/* Create array of links to go in the Modules Sidebar */
+$moduleLinks = array();
+
+// Random string added to important links for security
+$md5Rand = md5(session_id());
+
+// Create array of links that are to be shown for each account type
+if (isset($_SESSION['acctType']))
+{
+  // Submit files or Welcome message
+  if ($_SESSION['acctType'] == "student")
+    array_push($moduleLinks, new Link("Submit Files", "index.php"));
+  else
+    array_push($moduleLinks, new Link("Welcome", "index.php"));
+
+  // Add links for all account types
+  array_push($moduleLinks, new Link("System Usage", "usage.php"));
+
+  if ($_SESSION['acctType'] == "admin")
+    array_push($moduleLinks, new Link("Admin Reports", "adminReports.php"));
+
+  // Add links for all account types
+  array_push($moduleLinks, new Link("Account Management", "manageAccounts.php"));
+  array_push($moduleLinks, new Link("Change Password", "changePasswordForm.php"));
+
+  // Disable account link
+  $link = new Link("Disable Account", "disableAccount.php?userId={$_SESSION['userId']}&amp;rand={$md5Rand}");
+  $link->addAttr("onclick", "return confirm(\"Are you sure you want to disable your account?\");");
+  array_push($moduleLinks, $link);
+
+  // Determine page for Course Management
+  if ($_SESSION['acctType'] == "student")
+  {
+    array_push($moduleLinks, new Link("Course Management", "courses.php"));
+  }
+  else if($_SESSION['acctType'] == "professor")
+  {
+    array_push($moduleLinks, new Link("Course Management", "courseManage.php"));
+  }
+  else if ($_SESSION['acctType'] == "admin")
+  {
+    array_push($moduleLinks, new Link("Course Management", "courses.php"));
+  }
+
+
+  // Add Course - Professor and Admin
+  if ($_SESSION['acctType'] == "professor" || $_SESSION['acctType'] == "admin")
+  {
+    array_push($moduleLinks, new Link("Add Course", "courseAddForm.php"));
+  }
+
+  // View Reports - All account types
+  array_push($moduleLinks, new Link("View Reports", "reports.php"));
+}
+
+// Show the Modules Sidebar if there are links that go in it
+if (count($moduleLinks) > 0)
+{
+  echo "<!-- Modules -->\n";
+  echo "<div class='sidelinks'>\n";
+  echo "  <div class='mod_top'></div>\n";
+  echo "  <div class='side_mid'>\n";
+  echo "    <div class='side_mid_content'>\n";
+  echo "      <ul>\n";
+
+  // Output links
+  foreach ($moduleLinks as $link)
+    echo "<li>" . $link->toString() . "</li>\n";
+
+  echo "      </ul>\n";
+  echo "    </div>\n";
+  echo "  </div>\n";
+  echo "  <div class='side_bottom'></div>\n";
+  echo "</div>\n";
+}
+
+?>
 
 
   <!-- Comtor Links -->
@@ -116,7 +216,14 @@ if (function_exists("headFunction"))
     <div class='side_mid'>
       <div class='side_mid_content'>
         <ul>
-          <li><a href="index.php">Home</a></li>
+          <?php
+            if (!isset($_SESSION['acctType']))
+            {
+              echo "<li><a href='loginForm.php'>Login</a></li>\n";
+              echo "<li><a href='registerForm.php'>Create An Account</a></li>\n";
+              echo "<li><a href='recoverPasswordForm.php'>Password Recovery</a></li>\n";
+            }
+          ?>
           <li><a href="features.php">Features We Measure</a></li>
           <li><a href="faq.php">FAQ</a></li>
         </ul>

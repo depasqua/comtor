@@ -10,31 +10,35 @@ function lastReport($userId)
   if (!is_numeric($userId))
     return false;
 
-  $query = "SELECT id FROM masterReports WHERE userID={$userId} GROUP BY dateTime ORDER BY dateTime desc LIMIT 1";
+  $query = "SELECT userEventId FROM userEvents WHERE userId={$userId} GROUP BY dateTime ORDER BY dateTime desc LIMIT 1";
   $result = mysql_query($query);
 
-  $reportId = false;
+  $userEventId = false;
 
   if ($result && $row = mysql_fetch_assoc($result))
-    $reportId = (int) $row['id'];
+    $userEventId = (int) $row['userEventId'];
 
-  return $reportId;
+  return $userEventId;
 }
 
 /*******************************************************************************
-* Inserts row into database indicating that the given reportId was submitted for
-* the given courseId.
-* Assumes that the caller has already checked that the reportId and courseId are
-* valid for the current user.
+* Inserts row into database indicating that the given userEventId was submitted
+* for the given courseId.
+* Assumes that the caller has already checked that the userEventId and courseId
+* are valid for the current user.
 * Returns true or false to indicatie if the row was successfully inserted
 *******************************************************************************/
-function recordReportForCourse($reportId, $courseId)
+function recordReportForCourse($userEventId, $courseId)
 {
-  // Check that reportId and courseId are numeric before query
-  if (!is_numeric($reportId) || !is_numeric($courseId))
+  // Check that userEventId and courseId are numeric before query
+  if (!is_numeric($userEventId) || !is_numeric($courseId))
     return false;
 
-  $query = "INSERT INTO reportProperties (reportId, tableName, propertyId) VALUES ({$reportId}, 'courses', {$courseId})";
+  // Check that the given courseId exists
+  if (!courseExists($courseId))
+    return false;
+
+  $query = "INSERT INTO courseEvents (userEventId, courseId) VALUES ({$userEventId}, {$courseId})";
   return mysql_query($query);
 }
 
@@ -106,7 +110,7 @@ function getUserInfoById($userId, $columns = array())
   if (($select = makeColumnStr($columns, "users")) === false)
     return false;
 
-  $query = "SELECT {$select} FROM users WHERE userID={$userId} LIMIT 1";
+  $query = "SELECT {$select} FROM users WHERE userId={$userId} LIMIT 1";
   $result = mysql_query($query);
 
   $user = false;
@@ -127,7 +131,7 @@ function setValidationDate($userId)
   if (!is_numeric($userId))
     return false;
 
-  $query = "UPDATE users SET validatedDT=NOW(), lastLogin=NOW() WHERE userID={$userId}";
+  $query = "UPDATE users SET validatedDT=NOW(), lastLogin=NOW() WHERE userId={$userId}";
   return mysql_query($query);
 }
 
@@ -141,7 +145,7 @@ function setLastLoginDate($userId)
   if (!is_numeric($userId))
     return false;
 
-  $query = "UPDATE users SET lastLogin=NOW() WHERE userID={$userId}";
+  $query = "UPDATE users SET lastLogin=NOW() WHERE userId={$userId}";
   return mysql_query($query);
 }
 
@@ -152,7 +156,7 @@ function setLastLoginDate($userId)
 *******************************************************************************/
 function getDoclets()
 {
-  $query = "SELECT * FROM reports";
+  $query = "SELECT * FROM doclets";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -173,13 +177,13 @@ function getDoclets()
 * Returns false if no properties are found and an array of associative arrays of
 * property info if any properties are found
 *******************************************************************************/
-function getSubReportProperties($subReportId)
+function getSubReportProperties($docletEventId)
 {
-  // Check that subReportId is numeric before query
-  if (!is_numeric($subReportId))
+  // Check that docletEventId is numeric before query
+  if (!is_numeric($docletEventId))
     return false;
 
-  $query = "SELECT * FROM docletReports WHERE reportId={$subReportId} ORDER BY attribute";
+  $query = "SELECT * FROM docletOutputItems WHERE docletEventId={$docletEventId} ORDER BY attribute";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -205,7 +209,7 @@ function courseExists($courseId)
   if (!is_numeric($courseId))
     return false;
 
-  $result = mysql_query("SELECT id FROM courses WHERE id = {$courseId} LIMIT 1");
+  $result = mysql_query("SELECT courseId FROM courses WHERE courseId = {$courseId} LIMIT 1");
 
   // Check that result is a valid mysql resourse
   if (!$result)
@@ -214,6 +218,25 @@ function courseExists($courseId)
   return (mysql_num_rows($result) > 0);
 }
 
+/*******************************************************************************
+* Returns total number of courses
+*******************************************************************************/
+function getNumCourses($where = array())
+{
+  // Check validity of where clause before query
+//  if (!is_numeric($courseId))
+//    return false;
+
+  $query = "SELECT COUNT(*) FROM courses";
+
+  $result = mysql_query($query);
+
+  // Ensure that result is a valid MySQL resourse
+  if (!$result)
+    return false;
+
+  return mysql_result($result, 0);
+}
 
 /*******************************************************************************
 * Gets all course info for the given courseId.  If comment parameter is true,
@@ -228,9 +251,9 @@ function getCourseInfo($courseId, $comment = false)
     return false;
 
   if ($comment)
-    $query = "SELECT * FROM courses WHERE id = {$courseId} LIMIT 1";
+    $query = "SELECT * FROM courses WHERE courseId = {$courseId} LIMIT 1";
   else
-    $query = "SELECT profId, section, name, semester FROM courses WHERE id = {$courseId} LIMIT 1";
+    $query = "SELECT profId, section, name, semester FROM courses WHERE courseId = {$courseId} LIMIT 1";
 
   $result = mysql_query($query);
 
@@ -252,8 +275,7 @@ function getUserNameById($userId)
   if (!is_numeric($userId))
     return false;
 
-  $query = "SELECT name FROM users WHERE userID = {$userId} LIMIT 1";
-  $query = "SELECT * FROM users WHERE email='$email' LIMIT 1";
+  $query = "SELECT name FROM users WHERE userId = {$userId} LIMIT 1";
   $result = mysql_query($query);
 
   $name = false;
@@ -274,7 +296,7 @@ function isUserInCourse($userId, $courseId)
   if (!is_numeric($userId) || !is_numeric($courseId))
     return false;
 
-  $query = "SELECT courseId FROM roster WHERE courseId = {$courseId} AND studentId = {$userId} LIMIT 1";
+  $query = "SELECT courseId FROM enrollments WHERE courseId = {$courseId} AND studentId = {$userId} LIMIT 1";
   $result = mysql_query($query);
 
   // Check that result is a valid mysql resourse
@@ -287,17 +309,21 @@ function isUserInCourse($userId, $courseId)
 /*******************************************************************************
 * Gets a list of all reports for the given userId.  If courseId is sent in as a
 * parameter and is not false, only the reports for that courseId are returned.
+* If userId is not specified, all reports are shown.
 * Returns false if no reports are found. If any are found, returns an array of
-* associative arrays (one for each report) with 'id' and 'dateTime'.  The array
-* is is order of most recent report to older report.
+* associative arrays (one for each report) with 'userId', 'userEventId' and
+* 'dateTime'.
+* The array is in order of most recent report to older report.
 *******************************************************************************/
-function getUserReports($userId, $courseId = false)
+function getUserReports($userId = false, $courseId = false)
 {
   // Check that userId and courseId (if set) are numeric before query
-  if (!is_numeric($userId) || ($courseId !== false && !is_numeric($courseId)))
+  if (($userId !== false && !is_numeric($userId)) || ($courseId !== false && !is_numeric($courseId)))
     return false;
 
-  $query = "SELECT id, dateTime FROM masterReports WHERE userID={$userId} ORDER BY dateTime DESC";
+  $where = ($userId !== false) ? " WHERE userId={$userId}" : "";
+
+  $query = "SELECT userId, userEventId, dateTime FROM userEvents{$where} ORDER BY dateTime DESC";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -311,7 +337,7 @@ function getUserReports($userId, $courseId = false)
   {
     // Check that this is for the specified course (if set).  Uses short circuit
     // evaluation!
-    if ($courseId === false || isReportForCourse($row['id'], $courseId))
+    if ($courseId === false || isReportForCourse($row['userEventId'], $courseId))
       array_push($reports, $row);
   }
 
@@ -321,7 +347,7 @@ function getUserReports($userId, $courseId = false)
 /*******************************************************************************
 * Gets a list of all reports for the given courseId.
 * Returns false if no reports are found. If any are found, returns an array of
-* associative arrays (one for each report) with 'id' and 'dateTime'.  The array
+* associative arrays (one for each report) with 'userEventId' and 'dateTime'.  The array
 * is is order of most recent report to older report.
 *******************************************************************************/
 function getUserReportsByCourse($courseId)
@@ -330,7 +356,7 @@ function getUserReportsByCourse($courseId)
   if (!is_numeric($courseId))
     return false;
 
-  $query = "SELECT reportId FROM reportProperties WHERE tableName = 'courses' AND propertyId = {$courseId}";
+  $query = "SELECT userEventId FROM courseEvents WHERE courseId = {$courseId}";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -341,23 +367,24 @@ function getUserReportsByCourse($courseId)
   $reports = array();
 
   while ($row = mysql_fetch_assoc($result))
-    array_push($reports, $row);
+    if (($userEvent = getReportInfo($row['userEventId'])) !== false)
+      array_push($reports, $userEvent);
 
   return $reports;
 }
 
 
 /*******************************************************************************
-* Check if the given main reportId was submitted for the given courseId
+* Check if the given userEventId was submitted for the given courseId
 * Returns true or false
 *******************************************************************************/
-function isReportForCourse($reportId, $courseId)
+function isReportForCourse($userEventId, $courseId)
 {
-  // Check that reportId and courseId are numeric before query
-  if (!is_numeric($reportId) || !is_numeric($courseId))
+  // Check that userEventId and courseId are numeric before query
+  if (!is_numeric($userEventId) || !is_numeric($courseId))
     return false;
 
-  $query = "SELECT reportId FROM reportProperties WHERE reportId = {$reportId} AND tableName = 'courses' AND propertyId = {$courseId} LIMIT 1";
+  $query = "SELECT userEventId FROM courseEvents WHERE userEventId = {$userEventId} AND courseId = {$courseId} LIMIT 1";
   $result = mysql_query($query);
 
   // Check that result is a valid mysql resourse
@@ -368,16 +395,16 @@ function isReportForCourse($reportId, $courseId)
 }
 
 /*******************************************************************************
-* Check if the given main reportId was submitted by the given userId
+* Check if the given userEventId was submitted by the given userId
 * Returns true or false
 *******************************************************************************/
-function isReportForUser($reportId, $userId)
+function isReportForUser($userEventId, $userId)
 {
-  // Check that reportId and userId are numeric before query
-  if (!is_numeric($reportId) || !is_numeric($userId))
+  // Check that userEventId and userId are numeric before query
+  if (!is_numeric($userEventId) || !is_numeric($userId))
     return false;
 
-  $query = "SELECT id FROM masterReports WHERE id={$reportId} AND userId={$userId} LIMIT 1";
+  $query = "SELECT userEventId FROM userEvents WHERE userEventId={$userEventId} AND userId={$userId} LIMIT 1";
   $result = mysql_query($query);
 
   // Check that result is a valid mysql resourse
@@ -388,17 +415,17 @@ function isReportForUser($reportId, $userId)
 }
 
 /*******************************************************************************
-* Gets an associative array of all information the given reportId.
+* Gets an associative array of all information the given userEventId.
 * Returns false if no files are found. If any are found, returns an array of
 * associative arrays (one for each file).
 *******************************************************************************/
-function getReportInfo($reportId)
+function getReportInfo($userEventId)
 {
-  // Check that reportId is numeric before query
-  if (!is_numeric($reportId))
+  // Check that userEventId is numeric before query
+  if (!is_numeric($userEventId))
     return false;
 
-  $query = "SELECT * FROM masterReports WHERE id={$reportId} LIMIT 1";
+  $query = "SELECT * FROM userEvents WHERE userEventId={$userEventId} LIMIT 1";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -410,17 +437,17 @@ function getReportInfo($reportId)
 }
 
 /*******************************************************************************
-* Gets an array of all file for the given reportId.
+* Gets an array of all file for the given userEventId.
 * Returns false if no files are found. If any are found, returns an array of
 * associative arrays (one for each file).
 *******************************************************************************/
-function getReportFiles($reportId)
+function getReportFiles($userEventId)
 {
-  // Check that reportId is numeric before query
-  if (!is_numeric($reportId))
+  // Check that userEvent is numeric before query
+  if (!is_numeric($userEventId))
     return false;
 
-  $query = "SELECT filename, contents FROM files WHERE reportId={$reportId}";
+  $query = "SELECT filename, contents FROM files WHERE userEventId={$userEventId}";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -437,22 +464,22 @@ function getReportFiles($reportId)
 }
 
 /*******************************************************************************
-* Gets id identifying a given doclets portion of the given reportId
+* Gets docletEventId identifying a given doclets portion of the given userEventId
 * Returns false if no report is found, otherwise the id.
 *******************************************************************************/
-function getSubReportId($docletId, $reportId)
+function getSubReportId($docletId, $userEventId)
 {
-  // Check that docletId and reportId are numeric before query
-  if (!is_numeric($docletId) || !is_numeric($reportId))
+  // Check that docletId and userEventId are numeric before query
+  if (!is_numeric($docletId) || !is_numeric($userEventId))
     return false;
 
-  $query = "SELECT id FROM masterDoclets WHERE masterReportId={$reportId} AND docletReportId={$docletId} LIMIT 1";
+  $query = "SELECT docletEventId FROM docletEvents WHERE userEventId={$userEventId} AND docletId={$docletId} LIMIT 1";
   $result = mysql_query($query);
 
   $id = false;
 
   if ($result && $row = mysql_fetch_assoc($result))
-    $id = (int) $row['id'];
+    $id = (int) $row['docletEventId'];
 
   return $id;
 }
@@ -487,18 +514,19 @@ function getDocletRuns($docletId, $userId = false, $courseId = false)
     {
       // Add to WHERE clause using OR, it will later be removed from the first one
       foreach ($reports as $report)
-        $where .= "OR masterReportId={$report['id']} ";
+        $where .= "OR userEventId={$report['userEventId']} ";
     }
   }
 
   // Find all main reports for a course
   else if ($courseId !== false)
   {
-    $reports = getCourseReports($courseId);
-
-    // Add to WHERE clause using OR, it will later be removed from the first one
-    foreach ($reports as $report)
-      $where .= "OR masterReportId={$report['id']} ";
+    if (($reports = getUserReportsByCourse($courseId)) !== false)
+    {
+      // Add to WHERE clause using OR, it will later be removed from the first one
+      foreach ($reports as $report)
+        $where .= "OR userEventId={$report['userEventId']} ";
+    }
   }
 
   // Fix up the where clause
@@ -508,8 +536,12 @@ function getDocletRuns($docletId, $userId = false, $courseId = false)
     // Remove first OR and add parenthesis
     $where = " AND (" . substr($where, 3) . ")";
   }
+  else if ($userId !== false || $courseId !== false)
+  {
+    return 0;
+  }
 
-  $query = "SELECT COUNT(*) FROM masterDoclets WHERE docletReportId={$docletId}{$where}";
+  $query = "SELECT COUNT(*) FROM docletEvents WHERE docletId={$docletId}{$where}";
   $result = mysql_query($query);
 
   // Check that result is a valid mysql resourse
@@ -529,7 +561,7 @@ function correctPassword($userId, $password)
   if (!is_numeric($userId))
     return false;
 
-  $result = mysql_query("SELECT password FROM users WHERE userID=$userId");
+  $result = mysql_query("SELECT password FROM users WHERE userId=$userId");
 
   // Check that result is a valid mysql resourse
   if (!$result)
@@ -551,7 +583,7 @@ function setPassword($userId, $password)
   if (!is_numeric($userId))
     return false;
 
-  $query = "UPDATE users SET password='{$password}', passwordChangeDT=NOW() WHERE userID={$userId}";
+  $query = "UPDATE users SET password='{$password}', passwordChangeDT=NOW() WHERE userId={$userId}";
   return mysql_query($query);
 }
 
@@ -577,7 +609,7 @@ function disableUser($userId)
   if (!is_numeric($userId))
     return false;
 
-  $query = "UPDATE users SET acctStatus='disabled' WHERE userID={$userId}";
+  $query = "UPDATE users SET acctStatus='disabled' WHERE userId={$userId}";
   return mysql_query($query);
 }
 
@@ -606,12 +638,9 @@ function getColumns($table)
 }
 
 /*******************************************************************************
-* Gets all users and the info provided in the fields parameter.
-* fields is a array of column names in the database that are to be retrieved.
-* enabled can be 'enabled', 'disabled', or 'all'.
-* Returns an array of associative arrays of user info
+* Gets number of users.  enabled can be 'enabled', 'disabled', or 'all'.
 *******************************************************************************/
-function getUsers($fields = array(), $enabled = "all", $acctType = "all")
+function getNumUsers($enabled = "all")
 {
   // Create WHERE clause for enabled
   $where = "";
@@ -619,6 +648,38 @@ function getUsers($fields = array(), $enabled = "all", $acctType = "all")
     $where = " WHERE acctStatus='enabled'";
   else if ($enabled == "disabled")
     $where = " WHERE acctStatus='disabled'";
+
+  $query = "SELECT COUNT(*) FROM users{$where}";
+  $result = mysql_query($query);
+
+  // Check that result is a valid MySQL resource
+  if (!$result)
+    return false;
+
+  return mysql_result($result, 0);
+}
+
+/*******************************************************************************
+* Gets all users and the info provided in the fields parameter.
+* fields is a array of column names in the database that are to be retrieved.
+* lower and total are the limits to be put on the query.
+* enabled can be 'enabled', 'disabled', or 'all'.
+* Returns an array of associative arrays of user info
+*******************************************************************************/
+function getUsers($fields = array(), $enabled = "all", $acctType = "all", $lower = false, $total = false)
+{
+  // Create WHERE clause for enabled
+  $where = "";
+  if ($enabled == "enabled")
+    $where = " WHERE acctStatus='enabled'";
+  else if ($enabled == "disabled")
+    $where = " WHERE acctStatus='disabled'";
+
+  // Create limit string
+  if (is_numeric($lower) && is_numeric($total) && $lower >= 0 && $total > 0)
+    $limit = " LIMIT {$lower}, {$total}";
+  else
+    $limit = "";
 
   if ($acctType != all)
   {
@@ -635,7 +696,7 @@ function getUsers($fields = array(), $enabled = "all", $acctType = "all")
   if (($columns = makeColumnStr($fields, "users")) === false)
     return false;
 
-  $query = "SELECT {$columns} FROM users{$where}";
+  $query = "SELECT {$columns} FROM users{$where} ORDER BY name{$limit}";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -682,10 +743,83 @@ function makeColumnStr($columns, $table)
   return $text;
 }
 
+/*******************************************************************************
+* Deletes the given userEvent(s).  Accepts variable number of parameters or an
+* array.
+* Returns true or false to indicate if the userEvent was successfully deleted
+*******************************************************************************/
+function deleteUserEvent($userEventId)
+{
+  $rtn = true;
+
+  /* Get userEvents */
+  if (is_array($userEventId))
+    $userEvents = $userEventId;
+  else
+    $userEvents = func_get_args();
+
+  // Create WHERE string for these event ids
+  $where = "";
+  foreach ($userEvents as $userEventId)
+  {
+    // Check that userEventId is numeric before query
+    if (!is_numeric($userEventId))
+      $rtn = false;
+    else
+      $where .= " OR userEventId=" . $userEventId;
+  }
+
+  /* Delete all related data */
+  if ($rtn && $where != "")
+  {
+    // Remove initial OR
+    $where = substr($where, 3);
+
+    // Delete from userEvents
+    $query = "DELETE FROM userEvents WHERE".$where;
+    $rtn = (mysql_query($query) && $rtn);
+
+    // Delete from courseEvents
+    $query = "DELETE FROM courseEvents WHERE".$where;
+    $rtn = (mysql_query($query) && $rtn);
+
+    // Delete from assignmentEvents
+    $query = "DELETE FROM assignmentEvents WHERE".$where;
+    $rtn = (mysql_query($query) && $rtn);
+
+    // Delete from files
+    $query = "DELETE FROM files WHERE".$where;
+    $rtn = (mysql_query($query) && $rtn);
+
+    /* Get docletEventIds */
+    $query = "SELECT docletEventId FROM docletEvents WHERE".$where;
+    $result = mysql_query($query);
+    if ($result && mysql_num_rows($result) > 0)
+    {
+      // Create WHERE string for these event ids
+      $docletEventWhere = "";
+      while ($userEvent = mysql_fetch_assoc($result))
+        $docletEventWhere .= " OR docletEventId=" . $userEvent['docletEventId'];
+      // Remove initial OR
+      $docletEventWhere = substr($docletEventWhere, 3);
+
+      // Delete from docletEvents
+      $query = "DELETE FROM docletOutputItems WHERE".$docletEventWhere;
+      $rtn = (mysql_query($query) && $rtn);
+    }
+
+    // Delete from docletEvents
+    $query = "DELETE FROM docletEvents WHERE".$where;
+    $rtn = (mysql_query($query) && $rtn);
+  }
+
+  return $rtn;
+}
 
 /*******************************************************************************
 * Deletes the account for given userId
-* TODO: Delete all other database entries for the user
+* TODO: Delete all other database entries for the courses that are removed for a
+* professor
 * Returns true or false to indicate if the user was successfully deleted
 *******************************************************************************/
 function deleteUser($userId)
@@ -694,8 +828,59 @@ function deleteUser($userId)
   if (!is_numeric($userId))
     return false;
 
-  $query = "DELETE FROM users WHERE userID={$userId} LIMIT 1";
-  return mysql_query($query);
+  $rtn = false;
+  $acctType = "";
+
+  $query = "SELECT acctType FROM users WHERE userId={$userId} LIMIT 1";
+  $result = mysql_query($query);
+  if ($result && mysql_num_rows($result) == 1)
+  {
+    $acctType = mysql_result($result, 0);
+    $rtn = true;
+  }
+
+  /* Delete all related data */
+  if ($rtn)
+  {
+    $query = "DELETE FROM users WHERE userId={$userId} LIMIT 1";
+    $rtn = mysql_query($query);
+
+    // Get userEvents
+    if (($userEvents = getUserReports($userId)) !== false)
+    {
+      $arr = array();
+      foreach ($userEvents as $userEvent)
+        array_push($arr, $userEvent['userEventId']);
+
+      deleteUserEvent($arr);
+    }
+
+    /* Get courses if professor */
+    if ($acctType == "professor")
+    {
+      if (($courses = getProfCourses($userId)) !== false)
+      {
+        // Create array of these course ids
+        $arr = array();
+        foreach ($courses as $course)
+          array_push($arr, $course['courseId']);
+
+        // Delete courses
+        deleteCourse($arr);
+      }
+    }
+    /* Remove from course enrollments if student */
+    else if ($acctType == "student")
+    {
+      // Delete from enrollments
+      $query = "DELETE FROM enrollments WHERE studentId=".$userId;
+      $rtn = (mysql_query($query) && $rtn);
+    }
+
+
+  }
+
+  return $rtn;
 }
 
 /*******************************************************************************
@@ -708,7 +893,7 @@ function enableUser($userId)
   if (!is_numeric($userId))
     return false;
 
-  $query = "UPDATE users SET acctStatus='enabled' WHERE userID={$userId} LIMIT 1";
+  $query = "UPDATE users SET acctStatus='enabled' WHERE userId={$userId} LIMIT 1";
   return mysql_query($query);
 }
 
@@ -727,7 +912,7 @@ function setUserAcctType($userId, $acctType)
   if (!in_array($acctType, $validValues))
     return false;
 
-  $query = "UPDATE users SET acctType = '{$acctType}' WHERE userID={$userId} LIMIT 1";
+  $query = "UPDATE users SET acctType = '{$acctType}' WHERE userId={$userId} LIMIT 1";
   return mysql_query($query);
 }
 
@@ -740,7 +925,7 @@ function getUserAcctType($userId)
   if (!is_numeric($userId))
     return false;
 
-  $query = "SELECT acctType FROM users WHERE userID={$userId} LIMIT 1";
+  $query = "SELECT acctType FROM users WHERE userId={$userId} LIMIT 1";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -776,19 +961,98 @@ function getEnumValues($table, $column)
   return $values;
 }
 
+
 /*******************************************************************************
-* Deletes the given courseId
-* TODO: Delete all other database entries for the course
+* Deletes the given courseId(s) and all related data.  Accepts variable number
+* of parameters or an array.
 * Returns true or false to indicate if the course was successfully deleted
 *******************************************************************************/
 function deleteCourse($courseId)
 {
-  // Check that courseId is numeric before query
-  if (!is_numeric($courseId))
-    return false;
+  $rtn = true;
 
-  $query = "DELETE FROM courses WHERE id={$courseId} LIMIT 1";
-  return mysql_query($query);
+  /* Get courseIds */
+  if (is_array($courseId))
+    $courseIds = $courseId;
+  else
+    $courseIds = func_get_args();
+
+
+  // Create WHERE string for these course ids
+  $where = "";
+  foreach ($courseIds as $courseId)
+  {
+    // Check that courseId is numeric before query
+    if (!is_numeric($courseId))
+      $rtn = false;
+    else
+      $where .= " OR courseId=" . $courseId;
+  }
+
+
+  if ($rtn && $where != "")
+  {
+    // Remove initial OR
+    $where = substr($where, 3);
+
+    $query = "DELETE FROM courses WHERE{$where}";
+    $rtn = (mysql_query($query) && $rtn);
+
+    // Delete related data
+    if ($rtn)
+    {
+      $query = "DELETE FROM enrollments WHERE{$where}";
+      $rtn = (mysql_query($query) && $rtn);
+
+      // Get assignment id's for this course
+      $query = "SELECT assignmentId FROM assignments WHERE{$where}";
+      $result = mysql_query($query);
+      $assignmentWhere = "";
+      if ($result && mysql_num_rows($result) > 0)
+      {
+        // Create WHERE string for these assignment ids
+        $assignmentWhere = "";
+        while ($assignment = mysql_fetch_assoc($result))
+          $assignmentWhere .= " OR assignmentId=" . $assignment['assignmentId'];
+      }
+
+      if ($assignmentWhere != "")
+      {
+        $assignmentWhere = substr($assignmentWhere, 3);
+        $query = "DELETE FROM assignments WHERE{$where}";
+        $rtn = (mysql_query($query) && $rtn);
+      }
+
+      // Get userEvents submitted for this course or its assignments
+      $query = "";
+      if ($assignmentWhere != "")
+        $query = "SELECT userEventId FROM assignmentEvents WHERE{$assignmentWhere} UNION ";
+      $query .= "SELECT userEventId FROM courseEvents WHERE{$where}";
+      $result = mysql_query($query);
+      if ($result && mysql_num_rows($result) > 0)
+      {
+        // Create array of userEvents to be deleted
+        $arr = array();
+        while ($userEvent = mysql_fetch_assoc($result))
+          array_push($arr, $userEvent['userEventId']);
+        // Remove these userEvents
+        deleteUserEvent($arr);
+      }
+
+      // Delete from assignmentEvents
+      if ($assignmentWhere != "")
+      {
+        $query = "DELETE FROM assignmentEvents WHERE{$assignmentWhere}";
+        $rtn = (mysql_query($query) && $rtn);
+      }
+
+      // Delete from courseEvents
+      $query = "DELETE FROM courseEvents WHERE{$where}";
+      $rtn = (mysql_query($query) && $rtn);
+    }
+  }
+
+  return $rtn;
 }
 
 /*******************************************************************************
@@ -802,7 +1066,7 @@ function updateCourseInfo($courseId, $profId, $name, $section, $semester, $comme
   if (!is_numeric($courseId) || !is_numeric($profId))
     return false;
 
-  $query = "UPDATE courses SET profId = $profId, name = '{$name}', section = '{$section}', semester = '{$semester}', comment = '{$comment}' WHERE id = '{$courseId}'";
+  $query = "UPDATE courses SET profId = $profId, name = '{$name}', section = '{$section}', semester = '{$semester}', comment = '{$comment}' WHERE courseId = '{$courseId}'";
   return mysql_query($query);
 }
 
@@ -832,21 +1096,28 @@ function courseEnroll($userId, $courseId)
   if (!is_numeric($userId) || !is_numeric($courseId))
     return false;
 
-  $query = "INSERT INTO roster (courseId, studentId) VALUES ({$courseId}, {$userId})";
+  $query = "INSERT INTO enrollments (courseId, studentId) VALUES ({$courseId}, {$userId})";
   return mysql_query($query);
 }
 
 
 /*******************************************************************************
 * Gets the courses that the given userId is enrolled in if userId is set.
-* Otherwise, it gets all courses.
-* Returns an array of arrays with the arrays having indices 'id', 'profId',
+* Otherwise, it gets all courses.  lower and total are the limits to be put on
+* the query.  The limit is only applied if userId == false
+* Returns an array of arrays with the arrays having indices 'courseId', 'profId',
 * 'section', 'name', 'semester', and 'comment' for each course or false if
 * userId is invalid or no courses are found
 *******************************************************************************/
-function getCourses($userId = false)
+function getCourses($userId = false, $lower = false, $total = false)
 {
   $rtn = array();
+
+  // Create limit string
+  if (is_numeric($lower) && is_numeric($total) && $lower >= 0 && $total > 0)
+    $limit = " LIMIT {$lower}, {$total}";
+  else
+    $limit = "";
 
   // Find courses for the user
   if ($userId !== false)
@@ -854,15 +1125,16 @@ function getCourses($userId = false)
     // Check that userId is numeric before query
     if (!is_numeric($userId))
       return false;
-    $query = "SELECT courseId FROM roster WHERE studentId = {$userId}";
+
+    $query = "SELECT courseId FROM enrollments WHERE studentId = {$userId}";
 
     if (($result = mysql_query($query)) === false)
       return false;
 
-    // Go through each id and get information about the course
+    // Go through each courseId and get information about the course
     while ($course = mysql_fetch_assoc($result))
     {
-      $query = "SELECT id, profId, section, name, semester, comment FROM courses WHERE id = {$course['courseId']} LIMIT 1";
+      $query = "SELECT courseId, profId, section, name, semester, comment FROM courses WHERE courseId = {$course['courseId']} LIMIT 1";
       if ($courseResult = mysql_query($query))
         if ($row = mysql_fetch_assoc($courseResult))
         {
@@ -876,7 +1148,7 @@ function getCourses($userId = false)
   // Get all courses
   else
   {
-    $query = "SELECT * FROM courses";
+    $query = "SELECT * FROM courses ORDER BY section{$limit}";
     if ($courseResult = mysql_query($query))
       while ($row = mysql_fetch_assoc($courseResult))
       {
@@ -890,13 +1162,16 @@ function getCourses($userId = false)
   if (count($rtn) == 0)
     return false;
 
+  // Sort the courses by semester and name
+  uasort($rtn, "sortCourses");
+
   return $rtn;
 }
 
 
 /*******************************************************************************
 * Gets all students in the course.
-* Returns an array of arrays with the arrays having indices 'userID', 'name',
+* Returns an array of arrays with the arrays having indices 'userId', 'name',
 * and 'email' for each student
 *******************************************************************************/
 function getCourseStudents($courseId)
@@ -904,7 +1179,7 @@ function getCourseStudents($courseId)
   $rtn = array();
 
   // Find course ids for the user
-  $query = "SELECT studentId FROM roster WHERE courseId = {$courseId}";
+  $query = "SELECT studentId FROM enrollments WHERE courseId = {$courseId}";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -915,7 +1190,7 @@ function getCourseStudents($courseId)
   // Go through each id and get information about the student
   while ($id = mysql_fetch_assoc($result))
   {
-    $query = "SELECT userID, name, email FROM users WHERE userID = {$id['studentId']} LIMIT 1";
+    $query = "SELECT userId, name, email FROM users WHERE userId = {$id['studentId']} LIMIT 1";
     if ($userResult = mysql_query($query))
       if ($row = mysql_fetch_assoc($userResult))
         array_push($rtn, $row);
@@ -927,15 +1202,15 @@ function getCourseStudents($courseId)
 /*******************************************************************************
 * Gets the courses that the given profId is teaching.  $connected is used to
 * indicate whether there is already a MySQL connection to use.
-* Returns an array of arrays with the arrays having indices 'id', 'section',
+* Returns an array of arrays with the arrays having indices 'courseId', 'section',
 * 'name', 'semester' and 'comment' for each course
 *******************************************************************************/
-function getProfCourses($profId, $connected = false)
+function getProfCourses($profId)
 {
   $rtn = array();
 
   // Find courses for the professor
-  $query = "SELECT id, section, name, semester, comment FROM courses WHERE profId = {$profId} ORDER BY section ASC";
+  $query = "SELECT courseId, section, name, semester, comment FROM courses WHERE profId = {$profId} ORDER BY section ASC";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -951,6 +1226,62 @@ function getProfCourses($profId, $connected = false)
   }
 
   return $rtn;
+}
+
+
+/*******************************************************************************
+* Callback function for sorting course array
+*******************************************************************************/
+function sortCourses($a, $b)
+{
+  $rtn = 0;
+
+  $aSem = splitSemester($a['semester']);
+  $bSem = splitSemester($b['semester']);
+
+  // Compare year
+  if ($aSem['year'] < $bSem['year'])
+    $rtn = -1;
+  else if ($aSem['year'] > $bSem['year'])
+    $rtn = 1;
+
+  // Compare semester if needed
+  else if ($aSem['semester'] < $bSem['semester'])
+    $rtn = -1;
+  else if ($aSem['semester'] > $bSem['semester'])
+    $rtn = 1;
+
+  // Compare course section if needed
+  else
+    $rtn = strcmp($a['section'], $b['section']);
+
+  return $rtn;
+}
+
+/*******************************************************************************
+* Splits the semester into the season as an int (0 = Spring, 1 = Summer, ...)
+* and the year
+*******************************************************************************/
+function splitSemester($semester)
+{
+  $season = -1;
+  $idx = strpos($semester, " ");
+  if ($idx >= 0)
+  {
+    $season = substr($semester, 0, $idx);
+
+    if ($season == "Spring")
+      $season = 0;
+    else if ($season == "Summer")
+      $season = 1;
+    else if ($season == "Fall")
+      $season = 2;
+    else if ($season == "Winter")
+      $season = 3;
+
+    $year = (int) substr($semester, $idx+1);
+  }
+  return array("year"=>$year, "season"=>$season);
 }
 
 ?>

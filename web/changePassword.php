@@ -6,7 +6,7 @@ if(!isset($_POST['submit'])){
 
 //get session id
 // Session already started in loginCheck.php
-$userId = $_SESSION['userID'];
+$userId = $_SESSION['userId'];
 
 //form data
 $oldPassword = stripslashes($_POST['oldPassword']);

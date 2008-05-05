@@ -1,14 +1,21 @@
 <?
 session_start();
 //check for session id
-if(!isset($_SESSION['userID']))
+if(!isset($_SESSION['userId']))
 {
   header("Location: http://csjava.tcnj.edu/~sigwart4/loginForm.php");
   exit;
 }
 ?>
-
 <?php include_once("header.php"); ?>
+
+<?php
+
+// Show submit form for students
+if ($_SESSION['acctType'] == "student")
+{
+
+?>
 
 <form action="run.php" method="post" enctype="multipart/form-data" name="form" onSubmit="return verify()">
 <div class='center'>
@@ -22,17 +29,22 @@ if(!isset($_SESSION['userID']))
     </select>
   </div>
 
-  <div class='gapBelowSmall'>
-    Submit for course:
-    <select name="course">
-      <option value=""></option>
-      <?php
-        $courses = getCourses($_SESSION['userID']);
-        foreach ($courses as $course)
-          echo "<option value='{$course['id']}'>{$course['section']}: {$course['name']}</option>\n";
-      ?>
-    </select>
-  </div>
+  <?php
+    if (($courses = getCourses($_SESSION['userId'])) !== false)
+    {
+      echo "<div class='gapBelowSmall'>\n";
+      echo "  Submit for course:\n";
+      echo "  <select name='courseId'>\n";
+      echo "    <option value=''></option>\n";
+
+      // Output each course
+      foreach ($courses as $course)
+        echo "    <option value='{$course['courseId']}'>{$course['section']}: {$course['name']}</option>\n";
+
+      echo "  </select>\n";
+      echo "</div>\n";
+    }
+  ?>
 
   <table class="frame center">
   <?php
@@ -46,9 +58,9 @@ if(!isset($_SESSION['userID']))
     // Process results
     foreach ($doclets as $doclet)
     {
-      $displayName = $doclet['reportName'];
+      $displayName = $doclet['docletName'];
       $realName = $doclet['javaName'];
-      $description = $doclet['reportDescription'];
+      $description = $doclet['docletDescription'];
 
   ?>
     <tr>
@@ -73,5 +85,16 @@ if(!isset($_SESSION['userID']))
   <input type="Reset" value="Reset"/>
 </div>
 </form>
+
+<?php
+
+}
+// Page for professors and admin
+else
+{
+  echo "<div class='center'>Welcome to COMTOR.  Please use the links to the left to navigate the different pages.</div>\n";
+}
+
+?>
 
 <?php include_once("footer.php"); ?>

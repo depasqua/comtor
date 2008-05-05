@@ -32,7 +32,7 @@ else
     $headers['From'] = 'CommentMentor@tcnj.edu';
     $headers['To'] = $email;
     $headers['Subject'] = 'Account Validation';
-    $body = "Dear $name,\n\nThank you for registering with Comment Mentor.  Your account has been successfully created.  Please use your email address and the following temporary password to login within 30 days.  At that time, you will have the option to change your password.\n\nComment Mentor: http://csjava.tcnj.edu/~sigwart4/\n\nPassword: $tempPassword";
+    $body = "Dear $name,\n\nThank you for registering with Comment Mentor.  Your account has been successfully created.  Please use your email address and the following temporary password to login within 30 days.  At that time, you will have the option to change your password.\n\nComment Mentor: http://tcnj-18-108.tcnj.edu/~sigwart4/\n\nPassword: $tempPassword";
     $params['host'] = 'smtp.tcnj.edu';
     $mail_object =& Mail::factory('smtp', $params);
     $mail_object->send($email, $headers, $body);

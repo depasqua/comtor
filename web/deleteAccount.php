@@ -2,9 +2,9 @@
 <?php require_once("loginCheck.php"); ?>
 <?php
 // Check for user id
-if (isset($_GET['id']))
+if (isset($_GET['userId']))
 {
-  $userId = $_GET['id'];
+  $userId = $_GET['userId'];
 }
 else
 {
@@ -22,7 +22,6 @@ if(isset($_GET['rand']) && $_GET['rand'] == md5(session_id()))
   // Delete the account and check for success
   if (deleteUser($userId))
   {
-    // TODO: Delete all related data
     $_SESSION['msg']['success'] = "The account has been deleted!";
   }
   else

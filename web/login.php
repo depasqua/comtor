@@ -1,11 +1,17 @@
 <?
-if(!isset($_POST['submit'])){
+session_start();
+if(!isset($_POST['submit']) || isset($_SESSION['userId']))
+{
   include("redirect.php");
 }
 
 //form data
 $email = $_POST['email'];
 $password = stripslashes($_POST['password']);
+
+// Add @tcnj.edu if there is no @
+if (strpos($email, "@") === false)
+  $email .= "@tcnj.edu";
 
 //connect to database
 include("connect.php");
@@ -18,7 +24,7 @@ if (!emailExists($email))
 else
 {
   $row = getUserInfoByEmail($email);
-  $userID = $row['userID'];
+  $userId = $row['userId'];
   $acctStatus = $row['acctStatus'];
 
   //check for account status
@@ -31,17 +37,16 @@ else
       //if first login, set validated date and time
       if($row['validatedDT'] == NULL)
       {
-        setValidationDate($userID);
+        setValidationDate($userId);
       }
       // Set last login
       else
       {
-        setLastLoginDate($userID);
+        setLastLoginDate($userId);
       }
 
-      session_start();
-      //start session and set ID, account type
-      $_SESSION['userID'] = $userID;
+      // set Id, account type
+      $_SESSION['userId'] = $userId;
       $_SESSION['acctType'] = $row['acctType'];
       $_SESSION['username'] = $row['name'];
       include("redirect.php");

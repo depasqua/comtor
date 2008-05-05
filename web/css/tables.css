@@ -22,6 +22,11 @@ table.data th.mini, table.data td.mini
   width: 50px;
 }
 
+table.data th.small, table.data td.small
+{
+  width: 75px;
+}
+
 table.data th.narrow, table.data td.narrow
 {
   width: 25%;

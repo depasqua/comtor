@@ -4,7 +4,7 @@ require_once("loginCheck.php");
 ?>
 <?php
 //set user id
-$userId = $_GET['id'];
+$userId = $_GET['userId'];
 
 //if the action was confirmed, set account to admin
 if($_GET['confirm'] == "yes")
@@ -32,7 +32,7 @@ else if($_GET['confirm'] == "no")
 }
 //if no confirmation was selected, prompt user to select yes or no
 else {
-  $message = "Do you want to make this account an administrator? <a href=\"changeAcctType.php?id=$userId&confirm=yes\">Yes</a> <a href=\"changeAcctType.php?id=$userId&confirm=no\">No</a> <a href=\"manageAccounts.php\">Cancel</a>";
+  $message = "Do you want to make this account an administrator? <a href=\"changeAcctType.php?userId=$userId&confirm=yes\">Yes</a> <a href=\"changeAcctType.php?userId=$userId&confirm=no\">No</a> <a href=\"manageAccounts.php\">Cancel</a>";
 }
 ?>
 

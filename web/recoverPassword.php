@@ -35,7 +35,7 @@ else
     $headers['From'] = 'CommentMentor@tcnj.edu';
     $headers['To'] = $email;
     $headers['Subject'] = 'Account Information';
-    $body = "Your Comment Mentor account can be accessed using:\n\nEmail: $email\nPassword: $tempPassword\n\nComment Mentor: http://csjava.tcnj.edu/~sigwart4/";
+    $body = "Your Comment Mentor account can be accessed using:\n\nEmail: $email\nPassword: $tempPassword\n\nComment Mentor: http://tcnj-18-108.tcnj.edu/~sigwart4/";
     $params['host'] = 'smtp.tcnj.edu';
     $mail_object =& Mail::factory('smtp', $params);
     $mail_object->send($email, $headers, $body);

@@ -3,7 +3,7 @@ DEFINE("PERMISSION_ERROR", "You do not have permissions to view this page!");
 
 // Check for session id
 session_start();
-if(!isset($_SESSION['userID']) || !isset($_SESSION['acctType']))
+if(!isset($_SESSION['userId']) || !isset($_SESSION['acctType']))
 {
   $_SESSION['msg']['error'] = PERMISSION_ERROR;
   require_once("redirect.php");

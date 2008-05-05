@@ -42,63 +42,66 @@ require_once("loginCheck.php");
 <h1>Add Course</h1>
 
 <form name='courseForm' method="post" action="courseAdd.php">
-<div>
-  <span class='formLabel'>Course Section:</span>
-  <input type='text' name='section' size='20' maxlength='20'/>
+<div class='center'>
+  <div>
+    <span class='formLabel'>Course Section:</span>
+    <input type='text' name='section' size='20' maxlength='20'/>
+  </div>
 
-  <br />
-
-  <span class='formLabel'>Course Name:</span>
-  <input type='text' name='name' size='50' maxlength='255'/>
-
-  <br />
+  <div>
+    <span class='formLabel'>Course Name:</span>
+    <input type='text' name='name' size='50' maxlength='255'/>
+  </div>
 
   <!-- Course professor -->
   <?php
     include ("connect.php");
     if ($_SESSION['acctType'] == "admin")
     {
+      echo "<div>\n";
       echo "<span class='formLabel'>Professor:</span>\n";
       // Display all professors
-      if (($profs = getUsers(array("userID", "name"), "enabled", "professor")) !== false)
+      if (($profs = getUsers(array("userId", "name"), "enabled", "professor")) !== false)
       {
         echo "<select name='professor'>\n";
 
         // Output each professor
         foreach ($profs as $prof)
-          echo "<option value='{$prof['userID']}'>{$prof['name']}</option>\n";
+          echo "<option value='{$prof['userId']}'>{$prof['name']}</option>\n";
 
         echo "</select>\n";
       }
+      echo "</div>\n";
     }
   ?>
 
-  <!-- Course semester -->
-  <span class='formLabel'>Course Semester:</span>
-  <select name='semester'>
-    <option value='Fall'>Fall</option>
-    <option value='Winter'>Winter</option>
-    <option value='Spring'>Spring</option>
-    <option value='Summer'>Summer</option>
-  </select>
+  <div>
+    <!-- Course semester -->
+    <span class='formLabel'>Course Semester:</span>
+    <select name='semester'>
+      <option value='Fall'>Fall</option>
+      <option value='Winter'>Winter</option>
+      <option value='Spring'>Spring</option>
+      <option value='Summer'>Summer</option>
+    </select>
 
-  <!-- Course year -->
-  <span class='formLabel'>Year:</span>
-  <?php
-    // Display options for year (1 year prior, 3 years later)
-    echo "<select name='year'>\n";
-    $year = (int)(date("Y"));
-    for ($i = -1; $i < 4; $i++)
-    {
-      if ($i == 0)
-        echo "<option selected='selected' value='" . ($year + $i) . "'>" . ($year + $i) . "</option>\n";
-      else
-        echo "<option value='" . ($year + $i) . "'>" . ($year + $i) . "</option>\n";
-    }
-    echo "</select>\n";
-  ?>
+    <!-- Course year -->
+    <span class='formLabel'>Year:</span>
+    <?php
+      // Display options for year (1 year prior, 3 years later)
+      echo "<select name='year'>\n";
+      $year = (int)(date("Y"));
+      for ($i = -1; $i < 4; $i++)
+      {
+        if ($i == 0)
+          echo "<option selected='selected' value='" . ($year + $i) . "'>" . ($year + $i) . "</option>\n";
+        else
+          echo "<option value='" . ($year + $i) . "'>" . ($year + $i) . "</option>\n";
+      }
+      echo "</select>\n";
+    ?>
 
-  <br />
+  </div>
 
   <!-- Course comments -->
   <div class='courseComments' style='width: 250px; margin: 0px auto; text-align: left;'>
