@@ -1,13 +1,17 @@
 #!/bin/sh
 #set -x
 
-PATH='/home/sigwart4/public_html'
+export set CLASSPATH=/usr/local/lib/mysql-connector-java-5.1.5-bin.jar:$CLASSPATH
+
+
+PATH='/home/sigwart4/www'
+UPLOAD_PATH='/home/sigwart4/www/upload'
 
 #dir of class files for javadoc
 CLASSES='/home/sigwart4/code/classes'
 
 #create temp dir based on tempFileName
-cd $PATH
+cd $UPLOAD_PATH
 /bin/mkdir $1
 /bin/chmod 755 $1
 cd $1
@@ -16,8 +20,8 @@ cd $1
 /bin/mkdir src
 /bin/chmod 755 src
 
-#move jar file from home dir to src
-cd $PATH
+#move jar file from upload dir to src
+cd $UPLOAD_PATH
 /bin/mv $2 $1/src
 
 #move text file (list of doclets) to the temp dir and rename it to Doclets.txt
@@ -28,7 +32,7 @@ cd $1
 
 #unjar the jar file in src dir and set the permissions
 cd src
-/etc/java/jdk1.6.0/bin/jar xf $2
+/usr/bin/jar xf $2
 cd ..
 /bin/chmod 755 -R src
 
@@ -37,26 +41,26 @@ cd src
 /bin/mv $2 ../$2
 
 #find the list of java files within the src dir and store the list in source.txt
-cd $PATH/$1/
+cd $UPLOAD_PATH/$1/
 /usr/bin/find src -name *.java > source.txt
 /bin/chmod 755 *.txt
 
 #compile and list class files
 #cd src
-#/etc/java/jdk1.6.0/bin/javac *.java
+#/usr/bin/javac *.java
 #/usr/bin/find *.class > classes.txt
 #cd ..
 
 #take the contents of source.txt and store it in MYVAR
 MYVAR=`/bin/cat source.txt`
 
-#make text file with userID
-/bin/cat >> userID.txt << EOF
+#make text file with userId
+/bin/cat >> userId.txt << EOF
 $3
 EOF
 
 #run javadoc
-/etc/java/jdk1.6.0/bin/javadoc -doclet comtor.ComtorDriver -docletpath $CLASSES $MYVAR
+/usr/bin/javadoc -doclet comtor.ComtorDriver -docletpath $CLASSES $MYVAR
 
 # Delete the temporary folder
-/bin/rm -r $PATH/$1
+/bin/rm -r $UPLOAD_PATH/$1
