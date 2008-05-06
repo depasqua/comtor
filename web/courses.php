@@ -104,10 +104,10 @@ define("MAX_LIST_TOTAL", 150);
         if ($enrolled)
         {
           echo "  <a href='reports.php?courseId={$course['courseId']}'><img src='img/icons/magnifying_glass.gif' alt='View Course Reports' /></a>\n";
-          echo "  <a href='courseDrop.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "''>Drop</a>";
+          echo "  <a href='courseDrop.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "' onclick='return verifyCourseAction(\"drop\", \"{$course['section']}\", \"{$course['name']}\", \"{$name}\", \"{$course['semester']}\");'>Drop</a>";
         }
         else
-          echo "  <a href='courseEnroll.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "''>Enroll</a>";
+          echo "  <a href='courseEnroll.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "'>Enroll</a>";
       }
 
       echo "</td>\n";
