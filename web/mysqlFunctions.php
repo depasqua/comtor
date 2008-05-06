@@ -1088,7 +1088,7 @@ function addNewCourse($profId, $name, $section, $semester, $comment)
 /*******************************************************************************
 * Enrolls the given userId in the given course
 * Assumes that the caller has already checked that the parameters are valid
-* Returns true or false to indicate if the user was successfully inserted
+* Returns true or false to indicate if the user was successfully enrolled
 *******************************************************************************/
 function courseEnroll($userId, $courseId)
 {
@@ -1100,6 +1100,69 @@ function courseEnroll($userId, $courseId)
   return mysql_query($query);
 }
 
+/*******************************************************************************
+* Drops the given userId from the given course.
+* Assumes that the caller has already checked that the parameters are valid.
+* This removes the database entries that record a userEvent for a course or
+* assignment but does not delete the userEvent.
+* Returns true or false to indicate if the course was successfully dropped.
+*******************************************************************************/
+function courseDrop($userId, $courseId)
+{
+  // Check that userId and courseId are numeric before query
+  if (!is_numeric($userId) || !is_numeric($courseId))
+    return false;
+
+  $rtn = true;
+
+  $query = "DELETE FROM enrollments WHERE courseId={$courseId} AND studentId={$userId} LIMIT 1";
+  $rtn = (mysql_query($query) && $rtn);
+
+  // Delete related data
+  if ($rtn)
+  {
+    // Get all userEvents for this course
+    $where = "";
+    if (($userEvents = getUserReports($userId)) !== false)
+      foreach ($userEvents as $userEvent)
+        $where .= " OR userEventId=" . $userEvent['userEventId'];
+
+    /* Delete all related data */
+    if ($where != "")
+    {
+       // Remove initial OR
+      $where = substr($where, 3);
+
+      // Get assignment id's for this course
+      $query = "SELECT assignmentId FROM assignments WHERE courseId={$courseId}";
+      $result = mysql_query($query);
+      $assignmentWhere = "";
+      if ($result && mysql_num_rows($result) > 0)
+      {
+        // Create WHERE string for these assignment ids
+        $assignmentWhere = "";
+        while ($assignment = mysql_fetch_assoc($result))
+          $assignmentWhere .= " OR assignmentId=" . $assignment['assignmentId'];
+      }
+
+      if ($assignmentWhere != "")
+      {
+        // Remove initial OR
+        $assignmentWhere = substr($assignmentWhere, 3);
+
+        // Delete from assignmentEvents
+        $query = "DELETE FROM assignments WHERE{$where} AND ($assignmentWhere)";
+        $rtn = (mysql_query($query) && $rtn);
+      }
+
+      // Delete from courseEvents
+      $query = "DELETE FROM courseEvents WHERE courseId={$courseId} AND ({$where})";
+      $rtn = (mysql_query($query) && $rtn);
+    }
+  }
+
+  return $rtn;
+}
 
 /*******************************************************************************
 * Gets the courses that the given userId is enrolled in if userId is set.
