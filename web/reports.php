@@ -24,6 +24,12 @@ function showFile(id)
     element.style.display = "block";
   }
 }
+
+function verifyUserEventAction(action)
+{
+  return confirm("Are you sure you want to " + action + " this user event.");
+}
+
 //-->
 </script>
 <?php
@@ -434,6 +440,9 @@ function outputUserEventsTable($userEvents, $courseId = false, $showUserName = f
     echo "    <th>Date</th>\n";
     echo "    <th>Day</th>\n";
     echo "    <th>Time</th>\n";
+    // Add delete column for admin
+    if ($_SESSION['acctType'] == "admin")
+      echo "    <th class='mini'>Delete</th>\n";
     echo "  </tr>\n";
 
     // Determine courseId and userId part of URL
@@ -467,6 +476,9 @@ function outputUserEventsTable($userEvents, $courseId = false, $showUserName = f
       echo "  <td>{$date}</td>\n";
       echo "  <td>{$dayOfWeek}</td>\n";
       echo "  <td>{$time}</td>\n";
+      // Add delete column for admin
+      if ($_SESSION['acctType'] == "admin")
+        echo "  <td><a href='userEventDelete.php?userEventId={$userEvent['userEventId']}&amp;rand=" . md5(session_id()) . "' onclick='return verifyUserEventAction(\"delete\");' ><img src='img/icons/delete.gif' alt='Delete Report' /></a></td>\n";
       echo "</tr>\n";
     }
     echo "</table>\n";
