@@ -218,15 +218,32 @@ div.tcnj_logo
 
 
 /* Homepage doclet info */
-#doclet
+div.doclets
+{
+  clear: both;
+}
+
+div.doclet
+{
+  margin: 0px auto;
+  padding-bottom: 5px;
+  text-align: center;
+  width: 80%;
+}
+
+div.doclet input.checkbox
+{
+  float: left;
+}
+
+.doclet_name
 {
   font-weight:bold;
 }
 
-#description
+.doclet_description
 {
   font-style:italic;
-  padding-bottom:5px;
 }
 
 
@@ -336,8 +353,13 @@ h6
 a img
 {
   border: 0px;
+  text-decoration: none;
 }
 
+a.noLine
+{
+  text-decoration: none;
+}
 
 /* Message Boxes */
 div.success
@@ -364,6 +386,11 @@ div.error
   padding: 10px 10px 10px 52px;
   margin-bottom: 25px;
   height: 30px;
+}
+
+.errorText
+{
+  color: #7f0000;
 }
 
 
@@ -395,7 +422,21 @@ div.error
   color: #283e6f;
 }
 
+div.compilationError
+{
+  background-color: #ed9898;
+  border: 1px solid #921010;
+  color: #7f0000;
+  padding: 10px;
+  overflow: auto;
+  width: 100%;
+}
 
+div.compilationError h1
+{
+  color: #7f0000;
+  font-size: 1.5em;
+}
 
 /* Previous and Next Links */
 a.prev, a.next
@@ -421,7 +462,111 @@ span.formLabel
   font-weight: bold;
 }
 
+label.leftFloat
+{
+  display: block;
+  float: left;
+  padding: 2px 5px 2px 0px;
+  text-align: right;
+  width: 175px;
+}
+
+label.leftFloatSmall
+{
+  display: block;
+  float: left;
+  padding: 2px 5px 2px 0px;
+  text-align: right;
+  width: 125px;
+}
+
+br.clearFloat
+{
+  clear: both;
+}
+
 input, select
 {
   margin: 0px 0px 5px 0px;
+}
+
+input.checkbox, input.radio
+{
+  margin-right: 5px;
+}
+
+input.fewChars
+{
+  width: 2em;
+}
+
+/* Note on a form */
+div.note
+{
+  background-color: #ccffff;
+  border: 1px solid #0099cc;
+  float: right;
+  font-size: .75em;
+  font-style: italic;
+  padding: 5px;
+  text-align: left;
+  width: 250px;
+}
+
+/* Full Width Note */
+div.noteFull
+{
+  background-color: #ccffff;
+  border: 1px solid #0099cc;
+  font-size: .75em;
+  font-style: italic;
+  padding: 5px;
+  text-align: left;
+  width: 100%;
+}
+
+div.docletSubsection
+{
+  background-color: #d0d0ff;
+  border: 1px dashed #000f40;
+  margin: 10px;
+  padding: 10px;
+}
+
+div.docletSubsection h6
+{
+  color: #000f40;
+  display: block;
+  font-size: 1em;
+  font-weight: normal;
+  margin: 0px;
+  text-align: left;
+}
+
+div.docletSubsection table
+{
+  border-collapse: collapse;
+  border: 1px solid #000f40;
+  margin: 0px auto;
+}
+
+
+div.docletSubsection table th
+{
+  background-color: #3068b0;
+  border-collapse: collapse;
+  border: 1px solid #000f40;
+  padding: 2px 5px;
+  text-align: center;
+  vertical-align: top;
+}
+
+div.docletSubsection table td
+{
+  background-color: #e0e0ff;
+  border-collapse: collapse;
+  border: 1px solid #000f40;
+  padding: 5px;
+  text-align: center;
+  vertical-align: top;
 }
