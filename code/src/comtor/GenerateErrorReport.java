@@ -18,7 +18,6 @@
   *  59 Temple Place, Suite 330
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: GenerateReport.java,v 1.20 2008-10-20 22:20:24 ssigwart Exp $
   **************************************************************************/
 package comtor;
 
@@ -29,34 +28,28 @@ import java.text.*;
 import java.sql.*;
 
 /**
- * The <code>GenerateReport</code> class is a tool to generate a report
- * from a vector containing property lists.
+ * The <code>GenerateErrorReport</code> class is a tool to insert a
+ * compilation error into the database
  *
  * @author Joe Brigandi
  */
-public class GenerateReport
+public class GenerateErrorReport
 {
-  private String configFile = null;
-
-  /**
-   * Sets the config file to use for database connection
-   *
-   * @param filename Path to database config file
-   */
-  public void setConfigFilename(String filename)
-  {
-    configFile = filename;
-  }
-
   /**
    * Takes a vector full of property lists and generates a report.
    *
-   * @param v is a Vector of property lists
+   * @param args Command line arguments.  args[0] should be the config
+   *             filename.
    */
-  public void generateReport(Vector v)
+  public static void main(String [] args)
   {
     // Load the database properties from properties file
     Properties properties = new Properties();
+
+    // Load config file
+    String configFile = null;
+    if (args.length > 0)
+      configFile = args[0];
     try
     {
       if (configFile == null)
@@ -69,13 +62,36 @@ public class GenerateReport
     }
     catch (IOException e)
     {
-      System.out.println("Error opening config file");
+      System.out.println("Error opening config file.");
     }
     String url = properties.getProperty("databaseUrl");
     String username = properties.getProperty("username");
     String password = properties.getProperty("password");
+    String dir = System.getProperty("user.dir");          // Current working directory
     Connection con = null;
 
+    // Try to open file containing javac output
+    String output = "";
+    try
+    {
+      BufferedReader outputReader = new BufferedReader(new FileReader(dir + "/CompileOut.txt"));
+
+      while (outputReader.ready())
+        output += outputReader.readLine() + '\n';
+
+      // Close file
+      outputReader.close();
+    }
+    catch (FileNotFoundException e)
+    {
+      System.out.println("Error opening compilation output file.");
+      return;
+    }
+    catch (IOException e)
+    {
+      System.out.println("I/O Exception Occured.");
+      return;
+    }
 
     boolean hasDriver = false;
     // Create class for the driver
@@ -102,17 +118,14 @@ public class GenerateReport
       }
     }
 
-
     // Check that a connection was made
     if (con != null)
     {
-      String dir = "";
       long userEventId = -1;
 
       // Store results from the report into the database
       try
       {
-        dir = System.getProperty("user.dir"); // Current working directory
         BufferedReader rd = new BufferedReader(new FileReader(dir + "/userId.txt")); // Read userId.txt to get userId
         String userId = rd.readLine(); // Store userId from text file
         rd.close();
@@ -127,76 +140,22 @@ public class GenerateReport
         // Close the statement
         stmt.close();
 
-        // Prepare statement for getting docletId
-        PreparedStatement docletPrepStmt = con.prepareStatement("SELECT docletId FROM doclets WHERE docletName=? LIMIT 1");
+        // Prepare statement for adding the compilation error to the userEvent
+        PreparedStatement compErrorPrepStmt = con.prepareStatement("INSERT INTO userEventCompilationErrors(userEventId, output) VALUES (?, ?)");
 
-        // Prepare statement for the docletEvents of a userEvent
-        PreparedStatement docletEventPrepStmt = con.prepareStatement("INSERT INTO docletEvents(userEventId, docletId, score) VALUES (?, ?, ?)");
-
-        // Prepare statement for inserting doclet outputs
-        PreparedStatement docletOutputItemsPrepStmt = con.prepareStatement("INSERT INTO docletOutputItems(docletEventId, attribute, value) VALUES (?, ?, ?)");
-
-        // Go through vector to access property lists (one for each doclet)
-        for(int i=0; i < v.size(); i++)
-        {
-          Properties list = new Properties();
-          list = (Properties)v.get(i);
-
-          // Store property list in an array
-          String[] arr = new String[0];
-          arr = list.keySet().toArray(arr);
-          Arrays.sort(arr); //sort array
-
-          // Query database to get the docletId
-          String report = list.getProperty("title");
-          docletPrepStmt.setString(1, report);
-          result = docletPrepStmt.executeQuery();
-          long docletId = 0;
-          if (result.next())
-          {
-            docletId = result.getLong(1);
-          }
-
-          // Get score for the doclet
-          String tmp = list.getProperty("score");
-          float score = Float.parseFloat(tmp);
-
-          // Insert userEventId and docletId into the database
-          docletEventPrepStmt.setLong(1, userEventId);
-          docletEventPrepStmt.setLong(2, docletId);
-          docletEventPrepStmt.setFloat(3, score);
-          docletEventPrepStmt.executeUpdate();
-
-          // Get the autoincremented id for the data just entered
-          result = docletEventPrepStmt.getGeneratedKeys();
-          result.next();
-          long docletEventId = result.getLong(1);
-
-          // Go through array of property list data pairs (length is -2 because we don't need "title" and "score")
-          docletOutputItemsPrepStmt.setLong(1, docletEventId);
-          for(int j=0; j < arr.length-2; j++)
-          {
-            if(arr[j] != null)
-            {
-              // Insert data pair into the database
-              docletOutputItemsPrepStmt.setString(2, arr[j]);
-              docletOutputItemsPrepStmt.setString(3, list.getProperty("" + arr[j]));
-              docletOutputItemsPrepStmt.executeUpdate();
-            }
-          }
-        }
+        // Insert userEventId and docletId into the database
+        compErrorPrepStmt.setLong(1, userEventId);
+        compErrorPrepStmt.setString(2, output);
+        compErrorPrepStmt.executeUpdate();
 
         // Close the prepare statements
-        docletPrepStmt.close();
-        docletEventPrepStmt.close();
-        docletOutputItemsPrepStmt.close();
+        compErrorPrepStmt.close();
       }
       catch (Exception e)
       {
         System.out.println("Exception Occurred");
         System.out.println(e);
       }
-
 
       // Store the java files for the report
       try
