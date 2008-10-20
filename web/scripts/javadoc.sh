@@ -1,18 +1,16 @@
 #!/bin/sh
 #set -x
 
-export set CLASSPATH=/usr/local/lib/mysql-connector-java-5.1.5-bin.jar:$CLASSPATH
+# Script expects to be run from www folder
 
+export set CLASSPATH=.:/usr/local/lib/mysql-connector-java-5.1.6-bin.jar:$CLASSPATH
 
-PATH='/home/sigwart4/www'
-UPLOAD_PATH='/home/sigwart4/www/upload'
-
-#dir of class files for javadoc
-CLASSES='/home/sigwart4/code/classes'
+# Load config info
+. scripts/config.sh
 
 #create temp dir based on tempFileName
 cd $UPLOAD_PATH
-/bin/mkdir $1
+#/bin/mkdir $1
 /bin/chmod 755 $1
 cd $1
 
@@ -21,10 +19,10 @@ cd $1
 /bin/chmod 755 src
 
 #move jar file from upload dir to src
-cd $UPLOAD_PATH
-/bin/mv $2 $1/src
+/bin/mv $2 src
 
 #move text file (list of doclets) to the temp dir and rename it to Doclets.txt
+cd $UPLOAD_PATH
 /bin/mv $1.txt $1
 cd $1
 /bin/cp $1.txt Doclets.txt
@@ -46,10 +44,12 @@ cd $UPLOAD_PATH/$1/
 /bin/chmod 755 *.txt
 
 #compile and list class files
-#cd src
-#/usr/bin/javac *.java
-#/usr/bin/find *.class > classes.txt
-#cd ..
+cd src
+/usr/bin/javac `/usr/bin/find . | /bin/grep .*\.java$` > ../CompileOut.txt 2>&1
+# Get return value of javac
+compiled=$?
+/usr/bin/find . | /bin/grep .*\.class$ > classes.txt
+cd ..
 
 #take the contents of source.txt and store it in MYVAR
 MYVAR=`/bin/cat source.txt`
@@ -59,8 +59,22 @@ MYVAR=`/bin/cat source.txt`
 $3
 EOF
 
-#run javadoc
-/usr/bin/javadoc -doclet comtor.ComtorDriver -docletpath $CLASSES $MYVAR
+# Run javadoc if code compiled
+if [ $compiled = 0 ]; then
+  /usr/bin/javadoc --assignment-id $4 --config-file $JAVA_CONFIG -doclet comtor.ComtorDriver -docletpath $CLASSES $MYVAR > JavadocOut.txt
+  javadocRtn=$?
+else
+  /usr/bin/java -cp $CLASSES:$CLASSPATH comtor.GenerateErrorReport $JAVA_CONFIG
+fi
 
 # Delete the temporary folder
 /bin/rm -r $UPLOAD_PATH/$1
+
+if [ $compiled != 0 ]; then
+exit 1
+fi
+if [ $javadocRtn != 0 ]; then
+exit 2
+fi
+
+exit 0
