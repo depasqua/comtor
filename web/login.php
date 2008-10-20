@@ -5,6 +5,12 @@ if(!isset($_POST['submit']) || isset($_SESSION['userId']))
   include("redirect.php");
 }
 
+require_once("smarty/Smarty.class.php");
+
+$tpl = new Smarty();
+
+require_once("header1.php");
+
 //form data
 $email = $_POST['email'];
 $password = stripslashes($_POST['password']);
@@ -49,6 +55,8 @@ else
       $_SESSION['userId'] = $userId;
       $_SESSION['acctType'] = $row['acctType'];
       $_SESSION['username'] = $row['name'];
+      $_SESSION['school'] = $row['school'];
+      $_SESSION['schoolId'] = $row['schoolId'];
       include("redirect.php");
     }
     else{
@@ -59,11 +67,11 @@ else
     $message = "Username does not exist!";
   }
 }
+
+$tpldata = $message . '<br /><a href="loginForm.php">Back to login</a>.';
+$tpl->assign('tpldata', $tpldata);
+
+// Display template
+$tpl->display("htmlmain.tpl");
+
 ?>
-
-<?php include_once("header.php"); ?>
-
-
- <? echo $message; ?><br /><a href="loginForm.php">Back to login</a>.
-
-<?php include_once("footer.php"); ?>

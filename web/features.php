@@ -1,15 +1,24 @@
-<?php session_start(); ?>
-<?php include_once("header.php"); ?>
+<?php
 
-<table width="90%" cellpadding="1" cellspacing="1" border="0">
-       <tr>
-        <td align="left">
-        <b>Included Feature Tools</b><br/><br/>
+session_start();
 
-        <b>Planned Feature Tools</b><br/><br/>
+require_once("smarty/Smarty.class.php");
 
-        </td>
-       </tr>
-    </table>
+$tpl = new Smarty();
 
-<?php include_once("footer.php"); ?>
+require_once("header1.php");
+
+// Assign breadcrumbs
+$breadcrumbs = array();
+$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Features', 'href' => 'features.php');
+$tpl->assign('breadcrumbs', $breadcrumbs);
+
+// Fetch template
+$tpldata = $tpl->fetch("features.tpl");
+$tpl->assign('tpldata', $tpldata);
+
+// Display template
+$tpl->display("htmlmain.tpl");
+
+?>

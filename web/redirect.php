@@ -1,4 +1,5 @@
 <?
-  header("Location: http://tcnj-18-108.tcnj.edu/~sigwart4/");
+  require_once("config.php");
+  header("Location: http://" . URL_PATH);
   exit;
 ?>

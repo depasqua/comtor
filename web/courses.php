@@ -1,70 +1,57 @@
 <?php
 require_once("loginCheck.php");
-?>
-<?php
-function headFunction()
-{
-?>
-<script type='text/javascript'>
-<!--
-function verifyCourseAction(action, section, name, professor, semester)
-{
-  return confirm("Are you sure you want to " + action + " the following course:\nSection: " + section + "\nName: " + name + "\nProfessor: " + professor + "\nSemester: " + semester);
-}
 
-//-->
-</script>
-<?php
-}
-?>
-<?php include_once("header.php"); ?>
+require_once("smarty/Smarty.class.php");
 
-<?php
+$tpl = new Smarty();
+
+require_once("header1.php");
 
 //Define the default and maximum number of courses to be shown
 define("DEFAULT_LIST_TOTAL", 25);
 define("MAX_LIST_TOTAL", 150);
 
-?>
+// Connect to database
+include("connect.php");
 
-<h1>Courses</h1>
+$tpl->assign('rand', md5(session_id()));
 
-<table class='data'>
-<tr>
-  <th>Professor</th>
-  <th>Course Section</th>
-  <th>Course Name</th>
-  <th>Semester</th>
-  <th class='large'>Comments</th>
-  <th class='large'>Actions</th>
-</tr>
+// Check if there is a limit set.
+if (!isset($_GET['lower']) || !is_numeric($_GET['lower']))
+  $_GET['lower'] = 0;
+if (!isset($_GET['total']) || !is_numeric($_GET['total']))
+  $_GET['total'] = DEFAULT_LIST_TOTAL;
+// Check that total is less than the maximum valid
+else if ($_GET['total'] > MAX_LIST_TOTAL)
+  $_GET['total'] = MAX_LIST_TOTAL;
 
-<?php
-  // Connect to database
-  include("connect.php");
+// Determine course status values to show
+$statusHanding = array(null);
+if ($_SESSION['acctType'] == 'professor' || $_SESSION['acctType'] == 'admin')
+  $statusHanding = array('enabled', 'disabled');
 
-  // Check if there is a limit set.
-  if (!isset($_GET['lower']) || !is_numeric($_GET['lower']))
-    $_GET['lower'] = 0;
-  if (!isset($_GET['total']) || !is_numeric($_GET['total']))
-    $_GET['total'] = DEFAULT_LIST_TOTAL;
-  // Check that total is less than the maximum valid
-  else if ($_GET['total'] > MAX_LIST_TOTAL)
-    $_GET['total'] = MAX_LIST_TOTAL;
-
+foreach ($statusHanding as $status)
+{
+  // Get professor courses
+  if ($_SESSION['acctType'] == 'professor')
+    $courses = getProfCourses($_SESSION['userId'], $status);
   // Get and show all courses
-  $courses = getCourses(false, $_GET['lower'], $_GET['total']);
+  else
+    $courses = getCourses(false, $_GET['lower'], $_GET['total'], $status);
 
   if ($courses !== false)
   {
-    foreach ($courses as $course)
+    foreach ($courses as &$course)
     {
-      echo "<tr>\n";
-
       // Get professors name
-      $name = "User #{$course['profId']}";  // Default name
-      if ($prof = getUserInfoById($course['profId'], array("name")))
-        $name = $prof['name'];
+      if ($_SESSION['acctType'] == 'professor')
+        $course['profName'] = $_SESSION['username'];
+      else
+      {
+        $course['profName'] = "User #{$course['profId']}";  // Default name
+        if ($prof = getUserInfoById($course['profId'], array("name")))
+          $course['profName'] = $prof['name'];
+      }
 
       // Determine if the user is already enrolled in the course
       if ($_SESSION['acctType'] == "student")
@@ -76,55 +63,63 @@ define("MAX_LIST_TOTAL", 150);
             $enrolled = true;
       }
 
-      // Output info
-      echo "  <td>{$name}</td>";
-      echo "  <td>{$course['section']}</td>";
-      echo "  <td>{$course['name']}</td>";
-      echo "  <td>{$course['semester']}</td>";
-      echo "  <td class='large'>" . nl2br($course['comment']) . "</td>";
+      $course['comment'] = nl2br(htmlspecialchars($course['comment']));
 
       // Actions
-      echo "  <td>\n";
+      $actions = array();
       if ($_SESSION['acctType'] == "professor" || $_SESSION['acctType'] == "admin")
       {
-        echo "    <a href='courseEditForm.php?courseId={$course['courseId']}'><img src='img/icons/edit.gif' alt='Edit Course' /></a>\n";
-        echo "    <a href='courseManage.php?courseId={$course['courseId']}'><img src='img/icons/magnifying_glass.gif' alt='View Course' /></a>\n";
-        echo "    <a href='disableCourse.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "' onclick='return verifyCourseAction(\"disable\", \"{$course['section']}\", \"{$course['name']}\", \"{$name}\", \"{$course['semester']}\");' ><img src='img/icons/lock.gif' alt='Disable' /></a>\n";
-        echo "    <a href='enableCourse.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "' onclick='return verifyCourseAction(\"enable\", \"{$course['section']}\", \"{$course['name']}\", \"{$name}\", \"{$course['semester']}\");' ><img src='img/icons/unlock.gif' alt='Enable' /></a>\n";
+        $actions[] = 'edit';
+        $actions[] = 'manage';
+        if ($course['status'] == 'enabled')
+          $actions[] = 'disable';
+        if ($course['status'] == 'disabled')
+          $actions[] = 'enable';
       }
-
       if ($_SESSION['acctType'] == "admin")
-      {
-        echo "    <a href='courseDelete.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "' onclick='return verifyCourseAction(\"delete\", \"{$course['section']}\", \"{$course['name']}\", \"{$name}\", \"{$course['semester']}\");' ><img src='img/icons/delete.gif' alt='Delete Course' /></a>\n";
-      }
+        $actions[] = 'delete';
 
       // Show enroll/drop if the user is a student
       if ($_SESSION['acctType'] == "student")
       {
         if ($enrolled)
         {
-          echo "  <a href='reports.php?courseId={$course['courseId']}'><img src='img/icons/magnifying_glass.gif' alt='View Course Reports' /></a>\n";
-          echo "  <a href='courseDrop.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "' onclick='return verifyCourseAction(\"drop\", \"{$course['section']}\", \"{$course['name']}\", \"{$name}\", \"{$course['semester']}\");'>Drop</a>";
+          $actions[] = 'reports';
+          $actions[] = 'drop';
         }
         else
-          echo "  <a href='courseEnroll.php?courseId={$course['courseId']}&amp;rand=" . md5(session_id()) . "'>Enroll</a>";
+          $actions[] = 'enroll';
       }
 
-      echo "</td>\n";
-      echo "</tr>\n";
+      $course['actions'] = $actions;
+    }
+
+    // Assign courses
+    if ($status == null)
+      $tpl->assign('courses_all', $courses);
+    else
+    {
+      require_once("generalFunctions.php");
+      $numCourses = getNumCourses(array(), $status);
+      $tpl->assign('pages_'.$status, listPages($_GET['lower'], $_GET['total'], $numCourses));
+      $tpl->assign('courses_'.$status, $courses);
     }
   }
+}
+
+mysql_close();
+
+// Assign breadcrumbs
+$breadcrumbs = array();
+$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Courses', 'href' => 'courses.php');
+$tpl->assign('breadcrumbs', $breadcrumbs);
+
+// Fetch template
+$tpldata = $tpl->fetch("course_manage_all.tpl");
+$tpl->assign('tpldata', $tpldata);
+
+// Display template
+$tpl->display("htmlmain.tpl");
+
 ?>
-</table>
-
-<?php
-
-  // Add links to view other courses if there are any
-  $numCourses = getNumCourses();
-  require_once("generalFunctions.php");
-  listPages($_GET['lower'], $_GET['total'], $numCourses);
-
-  mysql_close();
-?>
-
-<?php include_once("footer.php"); ?>

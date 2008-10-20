@@ -43,13 +43,29 @@ function recordReportForCourse($userEventId, $courseId)
 }
 
 /*******************************************************************************
+* Checks if the given userId is in the database
+* Assumes that the caller has already checked that the parameters are valid
+* Returns true or false.
+*******************************************************************************/
+function userIdExists($userId)
+{
+  $result = mysql_query('SELECT userId FROM users_view WHERE userId='.$userId.' LIMIT 1');
+
+  // Check that result is a valid mysql resourse
+  if (!$result)
+    return false;
+
+  return (mysql_num_rows($result) > 0);
+}
+
+/*******************************************************************************
 * Checks if there is already an account for the given e-mail address.
 * Assumes that the caller has already checked that the parameters are valid
 * Returns true or false.
 *******************************************************************************/
 function emailExists($email)
 {
-  $result = mysql_query("SELECT email FROM users WHERE email='$email' LIMIT 1");
+  $result = mysql_query("SELECT email FROM users_view WHERE email='$email' LIMIT 1");
 
   // Check that result is a valid mysql resourse
   if (!$result)
@@ -61,11 +77,70 @@ function emailExists($email)
 /*******************************************************************************
 * Inserts a new user into the database
 * Assumes that the caller has already checked that the parameters are valid
-* Returns true or false to indicate if the user was successfully inserted
+* Returns new user id or false to indicate if the user was successfully inserted
 *******************************************************************************/
-function createNewUser($name, $email, $cryptPassword, $school, $acctType = "student", $enabled = "enabled")
+function createNewUser($name, $email, $cryptPassword, $schoolId, $acctType = "student", $enabled = "enabled")
 {
-  $query = "INSERT INTO users(name, email, password, school, acctType, acctStatus) VALUES ('{$name}', '{$email}', '{$cryptPassword}', '{$school}', '{$acctType}', '{$enabled}')";
+  // Check that school id is valid
+  if (!schoolExists($schoolId))
+    return false;
+
+  $query = "INSERT INTO users(name, email, password, schoolId, acctType, acctStatus) VALUES ('{$name}', '{$email}', '{$cryptPassword}', {$schoolId}, '{$acctType}', '{$enabled}')";
+  $rtn = mysql_query($query);
+
+  // Check for error and get auto_increment value if successful
+  if ($rtn !== false)
+  {
+    $tmp = mysql_insert_id();
+    if ($tmp !== false)
+      $rtn = $tmp;
+  }
+
+  return $rtn;
+}
+
+/*******************************************************************************
+* Updates user info in the database
+* Assumes that the caller has already checked that the parameters are valid.
+* Null parameters indicate that the value is to remain the same.
+* Returns true or false to indicate if the user was successfully updated
+*******************************************************************************/
+function updateUser($userId, $name = null, $email = null, $cryptPassword = null, $schoolId = null, $acctType = null, $enabled = null)
+{
+  // Check that userId is numeric before query
+  if (!is_numeric($userId))
+    return false;
+
+  // Check that school exists
+  if ($schoolId !== null && !schoolExists($schoolId))
+    return false;
+
+  $query = 'UPDATE users SET ';
+
+  // Add columns
+  $cols = array();
+  if ($name !== null)
+    $cols[] = "name='{$name}' ";
+  if ($email !== null)
+    $cols[] = "email='{$email}' ";
+  if ($password !== null)
+    $cols[] = "password='{$cryptPassword}' ";
+  if ($schoolId !== null)
+    $cols[] = "schoolId={$schoolId} ";
+  if ($acctType !== null)
+    $cols[] = "acctType='{$acctType}' ";
+  if ($acctStatus !== null)
+    $cols[] = "acctStatus='{$enabled}' ";
+
+  // Check that at least one column is set
+  if (empty($cols))
+    return false;
+
+  $query .= implode(', ', $cols);
+
+  // Indicate user id
+  $query .= 'WHERE userId='.$userId;
+
   return mysql_query($query);
 }
 
@@ -79,10 +154,10 @@ function createNewUser($name, $email, $cryptPassword, $school, $acctType = "stud
 function getUserInfoByEmail($email, $columns = array())
 {
   // Create column selection text
-  if (($select = makeColumnStr($columns, "users")) === false)
+  if (($select = makeColumnStr($columns, "users_view")) === false)
     return false;
 
-  $query = "SELECT {$select} FROM users WHERE email='{$email}' LIMIT 1";
+  $query = "SELECT {$select} FROM users_view WHERE email='{$email}' LIMIT 1";
   $result = mysql_query($query);
 
   $user = false;
@@ -107,10 +182,10 @@ function getUserInfoById($userId, $columns = array())
     return false;
 
   // Create column selection text
-  if (($select = makeColumnStr($columns, "users")) === false)
+  if (($select = makeColumnStr($columns, "users_view")) === false)
     return false;
 
-  $query = "SELECT {$select} FROM users WHERE userId={$userId} LIMIT 1";
+  $query = "SELECT {$select} FROM users_view WHERE userId={$userId} LIMIT 1";
   $result = mysql_query($query);
 
   $user = false;
@@ -150,12 +225,55 @@ function setLastLoginDate($userId)
 }
 
 /*******************************************************************************
+* Gets a specific doclet and info
+* Returns false if doclet is not found or an associative array of doclet info
+* if doclet is found
+*******************************************************************************/
+function getDoclet($docletId)
+{
+  // Check that docletId is numeric before query
+  if (!is_numeric($docletId))
+    return false;
+
+  $query = "SELECT * FROM doclets WHERE docletId={$docletId}";
+  $result = mysql_query($query);
+
+  // Checks that result is a valid mysql resource and also that there were
+  // doclets found before proceeding.  Uses short-circuit evaluation!
+  if ($result === false || mysql_num_rows($result) == 0)
+    return false;
+
+  return mysql_fetch_assoc($result);
+}
+
+/*******************************************************************************
 * Gets all doclets and their info
+*
+* @param array $params Associative array of parameters
+*
 * Returns false if no doclets are found and an array of associative arrays of
 * doclet info if any doclets are found
 *******************************************************************************/
-function getDoclets()
+function getDoclets($params = array())
 {
+  // Default parameters
+  $getGradeSections = false;
+  $getGradingParams = false;
+
+  // Process parameters
+  foreach ($params as $key=>$value)
+  {
+    switch ($key)
+    {
+      case 'GetGradeSections':
+        $getGradeSections = $value;
+        break;
+      case 'GetGradingParams':
+        $getGradingParams = $value;
+        break;
+    }
+  }
+
   $query = "SELECT * FROM doclets";
   $result = mysql_query($query);
 
@@ -167,7 +285,35 @@ function getDoclets()
   $doclets = array();
 
   while ($row = mysql_fetch_assoc($result))
+  {
+    // Get grade sections
+    if ($getGradeSections)
+    {
+      $gs = array();
+
+      $query = "SELECT * FROM docletGradeSections WHERE docletId=".$row['docletId'];
+      if (($result2 = mysql_query($query)) !== false)
+        while ($row2 = mysql_fetch_assoc($result2))
+          $gs[] = $row2;
+
+      $row['gradeSections'] = $gs;
+    }
+
+    // Get grading parameters
+    if ($getGradingParams)
+    {
+      $gp = array();
+
+      $query = "SELECT * FROM docletGradeParameters WHERE docletId=".$row['docletId'];
+      if (($result2 = mysql_query($query)) !== false)
+        while ($row2 = mysql_fetch_assoc($result2))
+          $gp[] = $row2;
+
+      $row['gradeParams'] = $gp;
+    }
+
     array_push($doclets, $row);
+  }
 
   return $doclets;
 }
@@ -219,15 +365,30 @@ function courseExists($courseId)
 }
 
 /*******************************************************************************
+* Sets the status of the given course
+* Returns true or false to indicate if successful
+*******************************************************************************/
+function setCourseStatus($courseId, $status)
+{
+  // Check that courseId is numeric before query
+  if (!is_numeric($courseId))
+    return false;
+
+  $query = "UPDATE courses SET status='{$status}' WHERE courseId={$courseId}";
+  return mysql_query($query);
+}
+
+/*******************************************************************************
 * Returns total number of courses
 *******************************************************************************/
-function getNumCourses($where = array())
+function getNumCourses($where = array(), $status = null)
 {
-  // Check validity of where clause before query
-//  if (!is_numeric($courseId))
-//    return false;
+  if ($status != null)
+    $where[] = 'status=\'' . $status . '\'';
 
-  $query = "SELECT COUNT(*) FROM courses";
+  $query = 'SELECT COUNT(*) FROM courses';
+  if (count($where) > 0)
+    $query .= ' WHERE ' . implode(' AND ', $where);
 
   $result = mysql_query($query);
 
@@ -275,7 +436,7 @@ function getUserNameById($userId)
   if (!is_numeric($userId))
     return false;
 
-  $query = "SELECT name FROM users WHERE userId = {$userId} LIMIT 1";
+  $query = "SELECT name FROM users_view WHERE userId = {$userId} LIMIT 1";
   $result = mysql_query($query);
 
   $name = false;
@@ -337,7 +498,7 @@ function getUserReports($userId = false, $courseId = false)
   {
     // Check that this is for the specified course (if set).  Uses short circuit
     // evaluation!
-    if ($courseId === false || isReportForCourse($row['userEventId'], $courseId))
+    if ($courseId === false || isReportForCourse($row['userEventId'], $courseId) || isReportForCourseAssignment($row['userEventId'], $courseId))
       array_push($reports, $row);
   }
 
@@ -356,7 +517,9 @@ function getUserReportsByCourse($courseId)
   if (!is_numeric($courseId))
     return false;
 
-  $query = "SELECT userEventId FROM courseEvents WHERE courseId = {$courseId}";
+
+//  $query = "SELECT userEventId FROM courseEvents WHERE courseId = {$courseId}";
+  $query = "SELECT userEventId FROM assignmentEvents WHERE assignmentId IN (SELECT assignmentId FROM assignments WHERE courseId={$courseId})";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -385,6 +548,47 @@ function isReportForCourse($userEventId, $courseId)
     return false;
 
   $query = "SELECT userEventId FROM courseEvents WHERE userEventId = {$userEventId} AND courseId = {$courseId} LIMIT 1";
+  $result = mysql_query($query);
+
+  // Check that result is a valid mysql resourse
+  if (!$result)
+    return false;
+
+  return (mysql_num_rows($result) > 0);
+}
+
+/*******************************************************************************
+* Check if the given userEventId was submitted for the given assignmentId
+* Returns true or false
+*******************************************************************************/
+function isReportForAssignment($userEventId, $assignmentId)
+{
+  // Check that userEventId and assignmentId are numeric before query
+  if (!is_numeric($userEventId) || !is_numeric($assignmentId))
+    return false;
+
+  $query = "SELECT userEventId FROM assignmentEvents WHERE userEventId = {$userEventId} AND assignmentId={$assignmentId} LIMIT 1";
+  $result = mysql_query($query);
+
+  // Check that result is a valid mysql resourse
+  if (!$result)
+    return false;
+
+  return (mysql_num_rows($result) > 0);
+}
+
+/*******************************************************************************
+* Check if the given userEventId was submitted for the given courses's
+* assignments
+* Returns true or false
+*******************************************************************************/
+function isReportForCourseAssignment($userEventId, $courseId)
+{
+  // Check that userEventId and courseId are numeric before query
+  if (!is_numeric($userEventId) || !is_numeric($courseId))
+    return false;
+
+  $query = "SELECT userEventId FROM assignmentEvents WHERE userEventId={$userEventId} AND assignmentId IN (SELECT assignmentId FROM assignments WHERE courseId={$courseId}) LIMIT 1";
   $result = mysql_query($query);
 
   // Check that result is a valid mysql resourse
@@ -425,7 +629,7 @@ function getReportInfo($userEventId)
   if (!is_numeric($userEventId))
     return false;
 
-  $query = "SELECT * FROM userEvents WHERE userEventId={$userEventId} LIMIT 1";
+  $query = "SELECT * FROM userEventsViewWErrors WHERE userEventId={$userEventId} LIMIT 1";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -664,16 +868,18 @@ function getNumUsers($enabled = "all")
 * fields is a array of column names in the database that are to be retrieved.
 * lower and total are the limits to be put on the query.
 * enabled can be 'enabled', 'disabled', or 'all'.
+* $custom_where allows for a custom where clause that will be appended to the
+*   automatic where clause
 * Returns an array of associative arrays of user info
 *******************************************************************************/
-function getUsers($fields = array(), $enabled = "all", $acctType = "all", $lower = false, $total = false)
+function getUsers($fields = array(), $enabled = "all", $acctType = "all", $lower = false, $total = false, $schoolId = null, $custom_where = null)
 {
   // Create WHERE clause for enabled
-  $where = "";
+  $where = array();
   if ($enabled == "enabled")
-    $where = " WHERE acctStatus='enabled'";
+    $where[] = "acctStatus='enabled'";
   else if ($enabled == "disabled")
-    $where = " WHERE acctStatus='disabled'";
+    $where[] = "acctStatus='disabled'";
 
   // Create limit string
   if (is_numeric($lower) && is_numeric($total) && $lower >= 0 && $total > 0)
@@ -686,17 +892,30 @@ function getUsers($fields = array(), $enabled = "all", $acctType = "all", $lower
     // Check that the given acctType is a valid column value
     $validValues = getEnumValues("users", "acctType");
     if (in_array($acctType, $validValues))
-      if ($where == "")
-        $where = " WHERE acctType='{$acctType}'";
-      else
-        $where .= " AND acctType='{$acctType}'";
+      $where[] = "acctType='{$acctType}'";
   }
 
+  if ($schoolId !== null)
+//    $where[] = "UPPER(school)='" . strtoupper($school) . "'";
+    $where[] = 'schoolId =' . $schoolId;
+
+  $where = implode(' AND ', $where);
+
+  // Add custom where
+  if ($custom_where !== null)
+    if ($where != '')
+      $where = "({$where}) AND ({$custom_where})";
+    else
+      $where = $custom_where;
+
+  if ($where != '')
+    $where = ' WHERE ' . $where;
+
   // Create column selection text
-  if (($columns = makeColumnStr($fields, "users")) === false)
+  if (($columns = makeColumnStr($fields, "users_view")) === false)
     return false;
 
-  $query = "SELECT {$columns} FROM users{$where} ORDER BY name{$limit}";
+  $query = "SELECT {$columns} FROM users_view {$where} ORDER BY name{$limit}";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -842,9 +1061,6 @@ function deleteUser($userId)
   /* Delete all related data */
   if ($rtn)
   {
-    $query = "DELETE FROM users WHERE userId={$userId} LIMIT 1";
-    $rtn = mysql_query($query);
-
     // Get userEvents
     if (($userEvents = getUserReports($userId)) !== false)
     {
@@ -877,7 +1093,8 @@ function deleteUser($userId)
       $rtn = (mysql_query($query) && $rtn);
     }
 
-
+    $query = "DELETE FROM users WHERE userId={$userId} LIMIT 1";
+    $rtn = mysql_query($query);
   }
 
   return $rtn;
@@ -937,6 +1154,14 @@ function getUserAcctType($userId)
 }
 
 /*******************************************************************************
+* Return the possible account types
+*******************************************************************************/
+function getUserAcctTypes()
+{
+  return getEnumValues('users', 'acctType');
+}
+
+/*******************************************************************************
 * Returns an array of possible values for the given enum column
 * Assumes that the table name is valid and will not allow SQL injection
 *******************************************************************************/
@@ -947,7 +1172,7 @@ function getEnumValues($table, $column)
   if (!in_array($column, $validColumns))
     return false;
 
-  $query = "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_NAME = '{$table}' AND TABLE_SCHEMA = 'comtor' AND COLUMN_NAME = '{$column}'";
+  $query = "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_NAME = '{$table}' AND TABLE_SCHEMA = '" . MYSQL_DB . "' AND COLUMN_NAME = '{$column}'";
   $result = mysql_query($query);
 
   if (!$result)
@@ -1097,7 +1322,21 @@ function courseEnroll($userId, $courseId)
     return false;
 
   $query = "INSERT INTO enrollments (courseId, studentId) VALUES ({$courseId}, {$userId})";
-  return mysql_query($query);
+  $rtn = mysql_query($query);
+
+  // Add notification
+  if ($rtn)
+  {
+    // Get info needed for email
+    $result = mysql_query('SELECT userName, courseName, courseSection, courseProfId FROM enrollmentsView WHERE studentId='.$userId.' AND courseId='.$courseId);
+    if ($result && $info = mysql_fetch_assoc($result))
+    {
+      $content = $info['userName'] . ' enrolled in the following course: ' . $info['courseSection'] . '<br/>';
+      setupNotify($info['courseProfId'], NOTIFY_ROSTER_CHANGE, $content, $info['courseSection'].' - New Student');
+    }
+  }
+
+  return $rtn;
 }
 
 /*******************************************************************************
@@ -1115,8 +1354,20 @@ function courseDrop($userId, $courseId)
 
   $rtn = true;
 
+  // Get info needed for email
+  $result = mysql_query('SELECT userName, courseName, courseSection, courseProfId FROM enrollmentsView WHERE studentId='.$userId.' AND courseId='.$courseId);
+  if ($result)
+    $info = mysql_fetch_assoc($result);
+
   $query = "DELETE FROM enrollments WHERE courseId={$courseId} AND studentId={$userId} LIMIT 1";
   $rtn = (mysql_query($query) && $rtn);
+
+  // Add notification
+  if ($rtn && $info !== false)
+  {
+    $content = $info['userName'] . ' dropped the following course: ' . $info['courseSection'] . '<br/>';
+    setupNotify($info['courseProfId'], NOTIFY_ROSTER_CHANGE, $content, $info['courseSection'].' - Student Dropped');
+  }
 
   // Delete related data
   if ($rtn)
@@ -1172,7 +1423,7 @@ function courseDrop($userId, $courseId)
 * 'section', 'name', 'semester', and 'comment' for each course or false if
 * userId is invalid or no courses are found
 *******************************************************************************/
-function getCourses($userId = false, $lower = false, $total = false)
+function getCourses($userId = false, $lower = false, $total = false, $status = null)
 {
   $rtn = array();
 
@@ -1189,7 +1440,11 @@ function getCourses($userId = false, $lower = false, $total = false)
     if (!is_numeric($userId))
       return false;
 
-    $query = "SELECT courseId FROM enrollments WHERE studentId = {$userId}";
+    $where = '';
+    if ($status != null)
+      $where = ' AND courseId IN (SELECT courseId FROM courses WHERE status=\'' . $status . '\')';
+
+    $query = "SELECT courseId FROM enrollments WHERE studentId = {$userId} {$where}";
 
     if (($result = mysql_query($query)) === false)
       return false;
@@ -1211,7 +1466,11 @@ function getCourses($userId = false, $lower = false, $total = false)
   // Get all courses
   else
   {
-    $query = "SELECT * FROM courses ORDER BY section{$limit}";
+    $where = '';
+    if ($status != null)
+      $where = 'WHERE status=\'' . $status . '\'';
+
+    $query = "SELECT * FROM courses {$where} ORDER BY section{$limit}";
     if ($courseResult = mysql_query($query))
       while ($row = mysql_fetch_assoc($courseResult))
       {
@@ -1268,12 +1527,16 @@ function getCourseStudents($courseId)
 * Returns an array of arrays with the arrays having indices 'courseId', 'section',
 * 'name', 'semester' and 'comment' for each course
 *******************************************************************************/
-function getProfCourses($profId)
+function getProfCourses($profId, $status = null)
 {
   $rtn = array();
 
+  $where = '';
+  if ($status != null)
+    $where = ' AND status=\'' . $status . '\'';
+
   // Find courses for the professor
-  $query = "SELECT courseId, section, name, semester, comment FROM courses WHERE profId = {$profId} ORDER BY section ASC";
+  $query = "SELECT * FROM courses WHERE profId = {$profId} {$where} ORDER BY section ASC";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -1345,6 +1608,1363 @@ function splitSemester($semester)
     $year = (int) substr($semester, $idx+1);
   }
   return array("year"=>$year, "season"=>$season);
+}
+
+/*******************************************************************************
+* Adds database entry to request an account type change.
+* @param int $userId User id requesting the change
+* @param string $acctType The account type to change the user to.
+*               Valid values are:
+*                 student
+*                 professor
+*                 admin
+* @param string $comment The comment to add to the request
+* @return mixed Returns req_id of data in database on successful insertion and
+*               false otherwise
+*******************************************************************************/
+function requestAcctChange($userId, $acctType, $comment = null)
+{
+  // Check that userId is numeric and exists in database before query
+  if (!is_numeric($userId) || !userIdExists($userId))
+    return false;
+
+  // Check that account type is valid
+  if (
+    $acctType != 'student' &&
+    $acctType != 'professor' &&
+    $acctType != 'admin'
+  )
+    return false;
+
+  // Setup columns and data
+  $cols = array(userId, acct_type);
+  $data = array($userId, '\''.$acctType.'\'');
+  if ($comment != null)
+  {
+    $cols[] = 'comment';
+    $data[] = '\'' . mysql_real_escape_string($comment) . '\'';
+  }
+
+  // Insert record
+  $query = 'INSERT INTO request_acct_change (' . implode(',', $cols) . ') VALUES (' . implode(',', $data) . ')';
+  $rtn = mysql_query($query);
+
+  // Check for error and get auto_increment value if successful
+  if ($rtn !== false)
+  {
+    $tmp = mysql_insert_id();
+    if ($tmp !== false)
+      $rtn = $tmp;
+  }
+
+  return $rtn;
+}
+
+/*******************************************************************************
+* Deletes an account change request.  If $userId is set, then it makes sure the
+* request is for the given user;
+*
+* @param int $req_id Id of request to delete
+* @param int $userId Id of user for whom the request must belong
+*
+* @return int Returns one of the following status codes:
+*               0 - Success
+*               1 - Request id invalid (Ie. Does not exist)
+*               2 - User id does not match
+*               3 - MySQL error
+*******************************************************************************/
+function deleteAcctChangeRequest($req_id, $userId = null)
+{
+  // Check that req_id is numeric
+  if (!is_numeric($req_id))
+    return 1;
+
+  // Get request user
+  $result = mysql_query("SELECT userId FROM request_acct_change WHERE req_id={$req_id}");
+  if (!$result || mysql_num_rows($result) == 0)
+    return 1;
+
+  if ($userId !== null && $userId != mysql_result($result, 0))
+    return 2;
+
+  // Delete rows
+  $sql = 'DELETE FROM request_acct_change WHERE req_id='.$req_id;
+  $result = mysql_query($sql);
+  if ($result === false)
+    return 3;
+
+  return 0;
+}
+
+/*******************************************************************************
+* Accepts an account change request.
+*
+* @param int $req_id Id of request to accept
+*
+* @return int Returns one of the following status codes:
+*               0 - Success
+*               1 - Request id invalid (Ie. Does not exist)
+*               2 - MySQL error
+*               3 - MySQL error when changing status
+*******************************************************************************/
+function acceptAcctChangeRequest($req_id)
+{
+  // Check that req_id is numeric
+  if (!is_numeric($req_id))
+    return 1;
+
+  // Get request user
+  $result = mysql_query("SELECT userId, acct_type FROM request_acct_change WHERE req_id={$req_id}");
+  if (!$result || mysql_num_rows($result) == 0)
+    return 1;
+
+  // Update account type
+  if (!setUserAcctType(mysql_result($result, 0, 0), mysql_result($result, 0, 1)))
+    return 2;
+
+  // Update request status
+  $sql = 'UPDATE request_acct_change SET status="accepted" WHERE req_id='.$req_id;
+  $result = mysql_query($sql);
+  if ($result === false)
+    return 3;
+
+  return 0;
+}
+
+/*******************************************************************************
+* Rejects an account change request.
+*
+* @param int $req_id Id of request to reject
+*
+* @return int Returns one of the following status codes:
+*               0 - Success
+*               1 - Request id invalid (Ie. Does not exist)
+*               2 - MySQL error changing status
+*******************************************************************************/
+function rejectAcctChangeRequest($req_id)
+{
+  // Check that req_id is numeric
+  if (!is_numeric($req_id))
+    return 1;
+
+  // Get request user
+  $result = mysql_query("SELECT userId, acct_type FROM request_acct_change WHERE req_id={$req_id}");
+  if (!$result || mysql_num_rows($result) == 0)
+    return 1;
+
+  // Update request status
+  $sql = 'UPDATE request_acct_change SET status="rejected" WHERE req_id='.$req_id;
+  $result = mysql_query($sql);
+  if ($result === false)
+    return 2;
+
+  return 0;
+}
+
+/*******************************************************************************
+* Gets requests for account type change.
+*
+* @param string $status Finds only requests with this status
+* @param int $userId User id to find requests for
+*
+* @return mixed Returns array of data for requests on success, otherwise false
+*******************************************************************************/
+function getAcctTypeRequests($status, $userId = null)
+{
+  $query = 'SELECT * FROM request_acct_change_view';
+
+  $where = array();
+
+  // Check if status is set
+  if ($status != null)
+    $where[] = 'status="'.$status.'"';
+
+  // Check if user id is set and valid
+  if ($userId != null)
+    if (!is_numeric($userId))
+      return false;
+    else
+      $where[] = 'userId='.$userId;
+
+  // Add WHERE clause
+  if (count($where) > 0)
+    $query .= ' WHERE ' . implode(' AND ', $where);
+
+  // Add order clause
+  $query .= ' ORDER BY req_date DESC';
+
+  // Make query and process results
+  $rtn = mysql_query($query);
+  if ($rtn !== false)
+  {
+    $tmp = array();
+    while ($row = mysql_fetch_array($rtn, MYSQL_ASSOC))
+      $tmp[] = $row;
+    $rtn = $tmp;
+  }
+
+  return $rtn;
+}
+
+/*******************************************************************************
+* Adds database entry to request account removal.
+* @param int $userId User id requesting the removal
+*
+* @return bool Returns true on successful insertion and false otherwise
+*******************************************************************************/
+function requestAcctRemoval($userId)
+{
+  // Check that userId is numeric and exists in database before query
+  if (!is_numeric($userId) || !userIdExists($userId))
+    return false;
+
+  // Insert record
+  $query = 'INSERT INTO request_acct_deletions (userId) VALUES (' . $userId . ') ON DUPLICATE KEY UPDATE status="pending", req_date=NOW()';
+  $rtn = mysql_query($query);
+
+  return $rtn;
+}
+
+/*******************************************************************************
+* Deletes an account removal request.
+*
+* @param int $userId Id of user that the request was for
+*
+* @return int Returns one of the following status codes:
+*               0 - Success
+*               1 - User id invalid (Ie. Not a number)
+*               2 - MySQL error
+*******************************************************************************/
+function deleteAcctRemovalRequest($userId)
+{
+  // Check that user_id is numeric
+  if (!is_numeric($userId))
+    return 1;
+
+  // Delete rows
+  $sql = 'DELETE FROM request_acct_deletions WHERE userId='.$userId;
+  $result = mysql_query($sql);
+  if ($result === false)
+    return 2;
+
+  return 0;
+}
+
+/*******************************************************************************
+* Accepts an account removal request.
+*
+* @param int $userId Id of user to delete
+*
+* @return int Returns one of the following status codes:
+*               0 - Success
+*               1 - Request does not exist
+*               2 - MySQL error
+*******************************************************************************/
+function acceptAcctRemovalRequest($userId)
+{
+  // Check that userId is numeric
+  if (!is_numeric($userId))
+    return 1;
+
+  // Get request user
+  $result = mysql_query("SELECT userId FROM request_acct_deletions WHERE userId={$userId}");
+  if (!$result || mysql_num_rows($result) == 0)
+    return 1;
+
+  // Delete user
+  if (!deleteUser($userId))
+    return 2;
+
+  return 0;
+}
+
+/*******************************************************************************
+* Rejects an account removal request.
+*
+* @param int $userId Id of user to reject request for
+*
+* @return int Returns one of the following status codes:
+*               0 - Success
+*               1 - Request does not exist
+*               2 - MySQL error
+*******************************************************************************/
+function rejectAcctRemovalRequest($userId)
+{
+  // Check that userId is numeric
+  if (!is_numeric($userId))
+    return 1;
+
+  // Get request user
+  $result = mysql_query("SELECT userId FROM request_acct_deletions WHERE userId={$userId}");
+  if (!$result || mysql_num_rows($result) == 0)
+    return 1;
+
+  // Delete request because the user will not be able to see that the request
+  $sql = 'UPDATE request_acct_deletions SET status="rejected" WHERE userId='.$userId;
+  $result = mysql_query($sql);
+  if ($result === false)
+    return 2;
+
+  return 0;
+}
+
+/*******************************************************************************
+* Gets requests for account removal.
+*
+* @param string $status Finds only requests with this status
+* @param int $userId User id to find requests for
+*
+* @return mixed Returns array of data for requests on success, otherwise false
+*******************************************************************************/
+function getAcctRemovalRequests($status, $userId = null)
+{
+  $query = 'SELECT * FROM request_acct_deletions_view';
+
+  $where = array();
+
+  // Check if status is set
+  if ($status != null)
+    $where[] = 'status="'.$status.'"';
+
+  // Check if user id is set and valid
+  if ($userId != null)
+    if (!is_numeric($userId))
+      return false;
+    else
+      $where[] = 'userId='.$userId;
+
+  // Add WHERE clause
+  if (count($where) > 0)
+    $query .= ' WHERE ' . implode(' AND ', $where);
+
+  // Add order clause
+  $query .= ' ORDER BY req_date DESC';
+
+  // Make query and process results
+  $rtn = mysql_query($query);
+  if ($rtn !== false)
+  {
+    $tmp = array();
+    while ($row = mysql_fetch_array($rtn, MYSQL_ASSOC))
+      $tmp[] = $row;
+    $rtn = $tmp;
+  }
+
+  return $rtn;
+}
+
+/*******************************************************************************
+* Adds an assignments for a particular course
+*
+* @param int $courseId Course id to get assignments for.
+* @param int $name Name of assignment
+* @param int $openTime Timestamp for when the assignment opens
+* @param int $closeTime Timestamp for when the assignment closes
+*
+* @return mixed Returns assignmentId for assignment on success and false
+*               otherwise.
+*******************************************************************************/
+function addAssignment($courseId, $name, $openTime, $closeTime)
+{
+  // Check that courseId is numeric and exists in database before query
+  if (!is_numeric($courseId) || !courseExists($courseId))
+    return false;
+
+  // Check that open and close times are timestamps
+  if (!is_int($openTime) || !is_int($closeTime))
+    return false;
+
+  $values = array(
+    $courseId,
+    '\'' . mysql_real_escape_string($name) . '\'',
+    date("'Y-m-d H:i:s'", $openTime),
+    date("'Y-m-d H:i:s'", $closeTime),
+  );
+
+  $query = 'INSERT INTO assignments (courseId, name, openTime, closeTime) VALUES (' . implode(',', $values) . ')';
+  $rtn = mysql_query($query);
+
+  // Get assignment id
+  if ($rtn !== false)
+  {
+    $tmp = mysql_insert_id();
+    if ($tmp !== false)
+    {
+      $rtn = $tmp;
+
+      // Add notification
+      $course = getCourseInfo($courseId);
+      $content = 'The following assignment has been added: ' . $name . '<br/>';
+      if ($students = getCourseStudents($courseId))
+        foreach ($students as $user)
+          setupNotify($user['userId'], NOTIFY_ASSIGNMENT_NEW, $content, $course['section'].' - New Assignment Posted');
+    }
+  }
+
+  return $rtn;
+}
+
+/*******************************************************************************
+* Updates information for an assignments
+*
+* @param int $assignmentId Assignment id to edit
+* @param int $courseId Course id to get assignments for.
+* @param int $name Name of assignment
+* @param int $openTime Timestamp for when the assignment opens
+* @param int $closeTime Timestamp for when the assignment closes
+*
+* @return mixed Returns number of affected rows (Should be 1)
+*******************************************************************************/
+function updateAssignment($assignmentId, $courseId, $name, $openTime, $closeTime)
+{
+  // Check that assignmentId is numeric
+  if (!is_numeric($assignmentId))
+    return false;
+
+  // Check that courseId is numeric and exists in database before query
+  if (!is_numeric($courseId) || !courseExists($courseId))
+    return false;
+
+  // Check that open and close times are timestamps
+  if (!is_int($openTime) || !is_int($closeTime))
+    return false;
+
+  $values = array(
+    'courseId' => $courseId,
+    'name' => '\'' . mysql_real_escape_string($name) . '\'',
+    'openTime' => date("'Y-m-d H:i:s'", $openTime),
+    'closeTime' => date("'Y-m-d H:i:s'", $closeTime),
+  );
+
+  $set = array();
+  foreach ($values as $key=>$value)
+    $set[] = $key . '=' . $value;
+  $set = implode(',', $set);
+
+  $query = 'UPDATE assignments SET '. $set . ' WHERE assignmentId=' . $assignmentId;
+  mysql_query($query);
+
+  return mysql_affected_rows();
+}
+
+/*******************************************************************************
+* Sets mandatory doclet options for an assignment
+*
+* @param int $assignmentId Assignment id to set options for
+* @param array $doclets Array of doclet ids that are to be run for assignment
+*
+* @return int Returns one of the following status codes:
+*               0 - Success
+*               1 - Assignment id invalid (Ie. Does not exist)
+*               2 - At least one doclet id is invalid
+*               3 - MySQL error
+*******************************************************************************/
+function setAssignmentOptions($assignmentId, $doclets)
+{
+  // Check that assignmentId is numeric and exists
+  if (!is_numeric($assignmentId) || getAssignment($assignmentId) === false)
+    return 1;
+
+  // Check that doclet ids exist
+  if (count($doclets) > 0)
+  {
+    $where = array();
+    foreach ($doclets as $doc)
+    {
+      if (is_numeric($doc))
+        $where[] = 'docletId='.$doc;
+      else
+        return 2;
+    }
+    $query = 'SELECT COUNT(*) FROM doclets WHERE ' . implode(' OR ', $where);
+    $result = mysql_query($query);
+    if (mysql_result($result, 0) != count($doclets))
+      return 2;
+  }
+
+  // Delete existing options
+  $sql = 'DELETE FROM userEventsAssignmentOptions WHERE assignmentId='.$assignmentId;
+  $result = mysql_query($sql);
+  if ($result === false)
+    return 3;
+
+  // Add each option
+  if (count($doclets) > 0)
+    foreach ($doclets as $doc)
+    {
+      $query = 'INSERT INTO userEventsAssignmentOptions (assignmentId, docletId) VALUES (' . $assignmentId . ', ' . $doc . ')';
+      if (mysql_query($query) === false)
+        return 3;
+    }
+
+  return 0;
+}
+
+/*******************************************************************************
+* Gets mandatory doclet options for an assignment
+*
+* @param int $assignmentId Assignment id to set options for
+*
+* @return mixed Returns array of doclet ids if any are found.  Otherwise, false
+*******************************************************************************/
+function getAssignmentOptions($assignmentId)
+{
+  // Check that assignmentId is numeric and exists
+  if (!is_numeric($assignmentId) || getAssignment($assignmentId) === false)
+    return false;
+
+  // Delete existing options
+  $sql = 'SELECT docletId FROM userEventsAssignmentOptions WHERE assignmentId='.$assignmentId;
+  $result = mysql_query($sql);
+  if ($result === false)
+    return false;
+
+  // Construct array
+  $rtn = array();
+  $rows = mysql_num_rows($result);
+  for ($i = 0; $i < $rows; $i++)
+    $rtn[] = mysql_result($result, $i);
+
+  return $rtn;
+}
+
+/*******************************************************************************
+* Gets assignments for a particular course and postings if a user id is sent as
+* a parameter.
+*
+* @param int $courseId Course id to get assignments for.
+* @param array params An associative array of parameters with can include any
+*                     combination of the following:
+*                       'cols' - A list of columns to fetch
+*                       'userId' - If set, gets the assignments for the user
+*                       'where' - Additional WHERE clause to add to query
+*                       'order' - ORDER clause to add to query
+*                       'time' - Timestamp - If set, only assignments that can
+*                         be submitted at this time are shown
+* @return mixed Returns array of data for assignments on success and false
+*               otherwise.
+*******************************************************************************/
+function getAssignments($courseId, $params = array())
+{
+  // Check that courseId is numeric and exists in database before query
+  if (!is_numeric($courseId) || !courseExists($courseId))
+    return false;
+
+  // Default parameters
+  $userId = null;
+  $cols = '*';
+  $where = array('courseId='.$courseId);
+  $order = ' ORDER BY openTime ASC, closeTime ASC';
+
+  // Check user supplied parameters.
+  foreach ($params as $key=>$value)
+  {
+    switch ($key)
+    {
+      case 'userId':
+        if (!is_numeric($value) || !userIdExists($value))
+          return false;
+        else
+          $userId = $value;
+        break;
+      case 'cols':
+        if (is_array($value))
+          $cols = implode(',', $value);
+        else if (is_string($value))
+          $cols = $value;
+        break;
+      case 'where':
+        if (is_array($value))
+          $where[] = '('. implode(' AND ', $value).')';
+        else if (is_string($value))
+          $where[] = '('.$value.')';
+        break;
+      case 'where':
+        $order = ' ORDER BY ' . $value;
+        break;
+      case 'time':
+        if (is_int($value))
+        {
+          $time = date("'Y-m-d H:i:s'", $value);
+          $where[] = 'openTime<=' . $time . ' AND closeTime>=' . $time;
+        }
+        else
+          return false;
+        break;
+    }
+  }
+
+  // Construct where clause
+  $where = implode(' AND ', $where);
+  if ($where != '')
+    $where = ' WHERE ' . $where;
+
+  $query = 'SELECT ' . $cols . ' FROM assignments' . $where . $order;
+  $rtn = mysql_query($query);
+
+  if ($rtn !== false)
+  {
+    $tmp = array();
+    while ($row = mysql_fetch_array($rtn, MYSQL_ASSOC))
+    {
+      // Get submissions if userId is set
+      if ($userId !== null)
+      {
+        $row['submissions'] = array();
+        $query = 'SELECT userEventId, dateTime as submission_date, compilationError FROM userEventsViewWErrors WHERE userEventId IN (SELECT userEventId FROM assignmentEvents WHERE assignmentId=' . $row['assignmentId'] . ' AND userId=' . $userId . ') ORDER BY dateTime ASC';
+        $result = mysql_query($query);
+        $version = 1;
+        while ($submission = mysql_fetch_array($result, MYSQL_ASSOC))
+        {
+          $submission['name'] = $row['name'] . ' (Version ' . $version++ . ')';
+          $submission['comment'] = getUserEventComment($submission['userEventId'], true);
+          $row['submissions'][] = $submission;
+        }
+      }
+
+      $tmp[] = $row;
+    }
+    $rtn = $tmp;
+  }
+
+  return $rtn;
+}
+
+/*******************************************************************************
+* Gets a specific assignment
+*
+* @param int $assignmentId Assignment id to fetch
+* @param array params An associative array of parameters with can include any
+*                     combination of the following:
+*                       'cols' - A list of columns to fetch
+*
+* @return mixed Returns associative array of data for assignments on success
+*               and false otherwise.
+*******************************************************************************/
+function getAssignment($assignmentId, $params = array())
+{
+  // Check that assignmentId is numeric
+  if (!is_numeric($assignmentId))
+    return false;
+
+  // Construct WHERE clause
+  $where = ' WHERE assignmentId='.$assignmentId;
+
+  // Default parameters
+  $cols = '*';
+
+  // Check user supplied parameters.
+  foreach ($params as $key=>$value)
+  {
+    switch ($key)
+    {
+      case 'cols':
+        if (is_array($value))
+          $cols = implode(',', $value);
+        else if (is_string($value))
+          $cols = $value;
+        break;
+    }
+  }
+
+  $query = 'SELECT ' . $cols . ' FROM assignments' . $where;
+  $rtn = mysql_query($query);
+
+  if ($rtn !== false)
+    $rtn = mysql_fetch_array($rtn, MYSQL_ASSOC);
+
+  return $rtn;
+}
+
+/*******************************************************************************
+* Deletes a specific assignment
+*
+* @param int $assignmentId Assignment id to fetch
+* @return bool Returns true or false to indicate if the assignment was deleted.
+*******************************************************************************/
+function deleteAssignment($assignmentId)
+{
+  // Check that courseId is numeric and exists in database before query
+  if (!is_numeric($assignmentId))
+    return false;
+
+  // Construct WHERE clause
+  $where = ' WHERE assignmentId='.$assignmentId;
+
+  $query = 'DELETE FROM assignments' . $where;
+  $rtn = mysql_query($query);
+
+  return $rtn;
+}
+
+/*******************************************************************************
+* Inserts row into database indicating that the given userEventId was submitted
+* for the given assignmentId.
+*
+* @param int $userId Id of user.  This is used to check that the user can submit
+*                   for the assignment.
+* @param int $userEventId Id of user event.
+* @param int $assignmentId Id of assignment.
+*
+* @return int Returns one of the following status codes:
+*               0 - Successful
+*               1 - Variable types invalid
+*               2 - Assignment does not exist
+*               3 - User not in course
+*               4 - Database error
+*******************************************************************************/
+function recordReportForAssignment($userId, $userEventId, $assignmentId)
+{
+  // Check that ids are numeric before query
+  if (!is_numeric($userId) || !is_numeric($userEventId) || !is_numeric($assignmentId))
+    return 1;
+
+  // Check that the given assignmentId exists
+  if (($assignment = getAssignment($assignmentId)) === false)
+    return 2;
+
+  // Check that the user is in the course for the assignment
+  if (!isUserInCourse($userId, $assignment['courseId']))
+    return 3;
+
+  $query = 'INSERT INTO assignmentEvents (userEventId, assignmentId) VALUES (' . $userEventId . ', ' . $assignmentId . ')';
+  if (!mysql_query($query))
+    return 4;
+
+  // Add notification
+  $user = getUserInfoById($userId);
+  $course = getCourseInfo($assignment['courseId']);
+  $content = 'A new submission was made by ' . $user['name'] . ' for the following assignment: ' . $assignment['name'] . '<br/>';
+  setupNotify($course['profId'], NOTIFY_STUDENT_SUBMISSION, $content, $course['section'].' - New Student Submission');
+
+  return 0;
+}
+
+/*******************************************************************************
+* Returns the number of reports submitted for the given assignmentId.
+*
+* @param int $assignmentId Id of assignment.
+*
+* @return int Returns the number of reports submitted or -1 on error
+*******************************************************************************/
+function numAssignmentSubmissions($assignmentId)
+{
+  // Check that ids are numeric before query
+  if (!is_numeric($assignmentId))
+    return -1;
+
+  // Check that the given assignmentId exists
+  if (($assignment = getAssignment($assignmentId)) === false)
+    return -1;
+
+  $query = 'SELECT COUNT(*) FROM assignmentEvents WHERE assignmentId=' . $assignmentId;
+  if (($result = mysql_query($query)) === false)
+    return -1;
+
+  $num = mysql_result($result, 0);
+  if ($num === false)
+    return -1;
+
+  return (int)$num;
+}
+
+/*******************************************************************************
+* Sets a comment into database for the given userEventId.  This comment
+* appears on the dropbox page.
+*
+* @param int $userEventId Id of user event.
+* @param string $comment Comment
+*
+* @return int Returns one of the following status codes:
+*               0 - Successful
+*               1 - Variable types invalid
+*               2 - Assignment does not exist
+*               3 - Database error
+*******************************************************************************/
+function setUserEventComment($userEventId, $comment)
+{
+  // Check that id is numeric before query
+  if (!is_numeric($userEventId))
+    return 1;
+
+  // Check that the given userEventId exists
+  if (!userEventExists($userEventId))
+    return 2;
+
+  // Escape comment
+  $comment = mysql_real_escape_string($comment);
+
+  // Insert
+  if (!empty($comment))
+  {
+    $query = 'INSERT INTO userEventComments (userEventId, comment) VALUES (' . $userEventId . ', "' . $comment . '")';
+    $query .= ' ON DUPLICATE KEY UPDATE comment="' . $comment . '"';
+    if (!mysql_query($query))
+      return 3;
+  }
+
+  // Add notification
+  // Get info needed for email
+  $result = mysql_query('SELECT userId, userName, courseName, courseSection, assignmentName FROM userEventsView WHERE userEventId='.$userEventId);
+  if ($result && $info = mysql_fetch_assoc($result))
+  {
+    $content =  'A new comment was made for the following assignment: ' . $info['assignmentName'] . '<br/>';
+    setupNotify($info['userId'], NOTIFY_ASSIGNMENT_COMMENT, $content, $info['courseSection'].' - New Submission Comment');
+  }
+
+  return 0;
+}
+
+/*******************************************************************************
+* Gets comment for the given userEventId.
+*
+* @param int $userEventId Id of user event.
+* @param bool $htmlsafe Should the comment be escaped for HTML and have newlines
+*                       replaced with <br/>.
+*
+* @return mixed Returns comment if found and false otherwise.
+*******************************************************************************/
+function getUserEventComment($userEventId, $htmlsafe = false)
+{
+  // Check that id is numeric before query
+  if (!is_numeric($userEventId))
+    return false;
+
+  // Insert
+  $query = 'SELECT comment FROM userEventComments WHERE userEventId=' . $userEventId;
+  if (($result = mysql_query($query)) === false)
+    return false;
+
+  // Get comment
+  if (($comment = @mysql_result($result, 0)) === false)
+    return false;
+
+  // Escape comment
+  if ($htmlsafe)
+    $comment = nl2br(htmlentities($comment));
+
+  return $comment;
+}
+
+/*******************************************************************************
+* Checks if a userEventId exists
+*
+* @param int $userEventId Id of user event.
+*
+* @return bool Returns true if the course exists.
+*******************************************************************************/
+function userEventExists($userEventId)
+{
+  // Check that id is numeric before query
+  if (!is_numeric($userEventId))
+    return false;
+
+  $result = mysql_query("SELECT userEventId FROM userEvents WHERE userEventId={$userEventId} LIMIT 1");
+
+  // Check that result is a valid mysql resourse
+  if (!$result)
+    return false;
+
+  return (mysql_num_rows($result) > 0);
+}
+
+/* E-mail Notification Options */
+define("NOTIFY_ASSIGNMENT_NEW",           0x00000000001);
+define("NOTIFY_ASSIGNMENT_DEADLINE_NEAR", 0x00000000010);
+define("NOTIFY_ASSIGNMENT_OPEN",          0x00000000100);
+define("NOTIFY_ASSIGNMENT_CLOSE",         0x00000001000);
+define("NOTIFY_ASSIGNMENT_COMMENT",       0x00000010000);
+define("NOTIFY_STUDENT_SUBMISSION",       0x00000100000);
+define("NOTIFY_ROSTER_CHANGE",            0x00001000000);
+
+define("NOTIFY_FREQ_ON_ACTION",           0x00000000001);
+define("NOTIFY_FREQ_ON_HOUR",             0x00000000010);
+define("NOTIFY_FREQ_ON_HALF_HOUR",        0x00000000100);
+define("NOTIFY_FREQ_ON_SIX_HOUR",         0x00000001000);
+define("NOTIFY_FREQ_ON_DAY",              0x00000010000);
+
+/*******************************************************************************
+* Sets user options for E-mail notification.  Assumes that $notification_types
+* and $frequency are valid
+*
+* @param int $userId Id of user
+* @param int $notification_types Bitwise combination of the following:
+*                                 NOTIFY_ASSIGNMENT_NEW
+*                                 NOTIFY_ASSIGNMENT_DEADLINE_NEAR
+*                                 NOTIFY_ASSIGNMENT_OPEN
+*                                 NOTIFY_ASSIGNMENT_CLOSE
+*                                 NOTIFY_ASSIGNMENT_COMMENT
+*                                 NOTIFY_STUDENT_SUBMISSION
+*                                 NOTIFY_ROSTER_CHANGE
+*
+* @param int $frequency One of the following:
+*                                 NOTIFY_FREQ_ON_ACTION
+*                                 NOTIFY_FREQ_ON_HOUR
+*                                 NOTIFY_FREQ_ON_HALF_HOUR
+*                                 NOTIFY_FREQ_ON_SIX_HOUR
+*                                 NOTIFY_FREQ_ON_DAY
+*
+* @return int Returns one of the following status codes:
+*               0 - Success
+*               1 - User id does not exist
+*               2 - MySQL error
+*******************************************************************************/
+function setNotifyOptions($userId, $notification_types, $frequency)
+{
+  // Check that user id exists
+  if (!userIdExists($userId))
+    return 1;
+
+  // Check notification options for user
+  $result = mysql_query("INSERT INTO userNotificationOptions (userId, notifications, frequency) VALUES ({$userId}, {$notification_types}, {$frequency}) ON DUPLICATE KEY UPDATE notifications={$notification_types}, frequency={$frequency}");
+
+  if (!$result)
+    return 2;
+
+  return 0;
+}
+
+/*******************************************************************************
+* Gets user options for E-mail notification.
+*
+* @param int $userId Id of user
+*
+* @return mixed Associative array containing 'notifications' and 'frequency'.
+*               False on error.
+*******************************************************************************/
+function getNotifyOptions($userId)
+{
+  // Check that user id exists
+  if (!userIdExists($userId))
+    return false;
+
+  // Check notification options for user
+  $result = mysql_query("SELECT notifications, frequency FROM userNotificationOptions WHERE userId={$userId} LIMIT 1");
+
+  if (!$result)
+    return false;
+
+  return mysql_fetch_assoc($result);
+}
+
+/*******************************************************************************
+* Sets up an E-mail notification
+*
+* @param int $userId Id of user to send to
+* @param int $notification_type One of the following:
+*                                 NOTIFY_ASSIGNMENT_NEW
+*                                 NOTIFY_ASSIGNMENT_DEADLINE_NEAR
+*                                 NOTIFY_ASSIGNMENT_OPEN
+*                                 NOTIFY_ASSIGNMENT_CLOSE
+*                                 NOTIFY_ASSIGNMENT_COMMENT
+*                                 NOTIFY_STUDENT_SUBMISSION
+*                                 NOTIFY_ROSTER_CHANGE
+*
+* @param string $content Content of E-mail
+* @param string $subject Subject of E-mail
+*******************************************************************************/
+function setupNotify($userId, $notification_type, $content, $subject)
+{
+  // Check that ids are numeric before query
+  if (!is_numeric($userId))
+    return false;
+
+  // Check notification options for user
+  $result = mysql_query("SELECT frequency FROM userNotificationOptions WHERE userId={$userId} AND {$notification_type} & notifications LIMIT 1");
+
+  // No notification required
+  if (!$result || mysql_num_rows($result) == 0)
+    return;
+
+  $time = null;
+
+  switch (mysql_result($result, 0))
+  {
+    case NOTIFY_FREQ_ON_ACTION:
+      // Get user e-mail address
+      $result = mysql_query("SELECT email FROM users WHERE userId={$userId} LIMIT 1");
+      if (!$result || mysql_num_rows($result) == 0)
+        return;  // No notification required
+      $email = mysql_result($result, 0);
+
+      require_once("generalFunctions.php");
+      sendMail($content, $email, null, $subject);
+      break;
+    case NOTIFY_FREQ_ON_HOUR:
+      // Get timestamp
+      list($hour, $month, $day, $year) = explode(' ', date("H n j Y"));
+      $time = mktime(((int)$hour)+1, 0, 0, $month, $day, $year);
+      break;
+    case NOTIFY_FREQ_ON_HALF_HOUR:
+      // Get timestamp
+      list($hour, $min, $month, $day, $year) = explode(' ', date("H i n j Y"));
+      if ((int)$min >= 30)
+      {
+        $hour = ((int)$hour)+1;
+        $min = 0;
+      }
+      else
+        $min = 30;
+      $time = mktime($hour, $min, 0, $month, $day, $year);
+      break;
+    case NOTIFY_FREQ_ON_SIX_HOUR:
+      // Get timestamp
+      list($hour, $month, $day, $year) = explode(' ', date("H n j Y"));
+      $hour = (int)$hour;
+      if ($hour < 6)
+        $hour = 6;
+      else if ($hour < 12)
+        $hour = 12;
+      else if ($hour < 18)
+        $hour = 18;
+      else
+        $hour = 24;
+      $time = mktime($hour, 0, 0, $month, $day, $year);
+      break;
+    case NOTIFY_FREQ_ON_DAY:
+      // Get timestamp
+      list($month, $day, $year) = explode(' ', date("n j Y"));
+      $time = mktime(0, 0, 0, $month, $day+1, $year);
+      break;
+  }
+
+  // Add notification time to database
+  if ($time != null)
+  {
+    $query = 'INSERT INTO userNotifications (userId, time, content, subject) VALUES ('.
+      $userId . ',' .
+      $time . ',' .
+      '"' . $content . '", ' .
+      '"' . $subject . '"' .
+      ')';
+    mysql_query($query);
+  }
+}
+
+/*******************************************************************************
+* Gets E-mail notifications.
+*
+* @return mixed Array containing notifications. False on error.
+*******************************************************************************/
+function getNotifications()
+{
+  $result = mysql_query("SELECT userNotificationId, userId, content, subject FROM userNotifications WHERE time < ".time());
+
+  if (!$result)
+    return false;
+
+  $rtn = array();
+  while ($row = mysql_fetch_assoc($result))
+    $rtn[] = $row;
+
+  return $rtn;
+}
+
+/*******************************************************************************
+* Deletes E-mail notifications.
+*
+* @param array $ids Array of ids to delete
+*******************************************************************************/
+function deleteNotifications($ids)
+{
+  $where = array();
+  foreach ($ids as $id)
+    if (is_numeric($id))
+      $where[] = "userNotificationId={$id}";
+
+  if (!empty($where))
+  {
+    $where = implode(' OR ', $where);
+    mysql_query("DELETE FROM userNotifications WHERE {$where}");
+  }
+}
+
+/*******************************************************************************
+* Gets all schools in the database
+*
+* @return mixed Array of associative arrays containing 'schoolId' and 'school'.
+*               False on error.
+*******************************************************************************/
+function getSchools()
+{
+  // Check notification options for user
+  $result = mysql_query("SELECT schoolId, school FROM schools ORDER BY school ASC");
+
+  if (!$result)
+    return false;
+
+  $schools = array();
+
+  while ($row = mysql_fetch_assoc($result))
+    $schools[] = $row;
+
+  return $schools;
+}
+
+/*******************************************************************************
+* Determines if a school id in the database
+*
+* @param $schoolId Id of school to search for
+*
+* @return bool Bool indicating if school exists
+*******************************************************************************/
+function schoolExists($schoolId)
+{
+  // Check that id is numeric before query
+  if (!is_numeric($schoolId))
+    return false;
+
+  $result = mysql_query("SELECT schoolId FROM schools WHERE schoolId={$schoolId} LIMIT 1");
+
+  // Check that result is a valid mysql resourse
+  if (!$result)
+    return false;
+
+  return (mysql_num_rows($result) > 0);
+}
+
+/*******************************************************************************
+* Gets grading information for a doclet event
+*
+* @param $docletId Id of doclet
+* @param $userEventId Id of user event
+* @param $docletEventId Id of doclet event
+* @param $score Score give for the report
+* @param $max_score Maximum possible score for the report
+*
+* @return bool False on error.
+*******************************************************************************/
+function getGradingInfo($docletId, $userEventId, $docletEventId, &$score, &$max_score)
+{
+  // Check that ids are numeric before query
+  if (!is_numeric($docletId) || !is_numeric($userEventId) || !is_numeric($docletEventId))
+    return false;
+
+  // Get score
+  $query = "SELECT score FROM docletEvents WHERE docletEventId={$docletEventId} LIMIT 1";
+  $result = mysql_query($query);
+  if ($result && $row = mysql_fetch_assoc($result))
+    $score = (float) $row['score'];
+
+  // Get max score
+  $info = getReportInfo($userEventId);
+  $assignmentId = $info['assignmentId'];
+  $query = "SELECT SUM(maxGrade) as maxGrade FROM assignmentGradeBreakdownsView WHERE assignmentId={$assignmentId} AND docletGradeSectionId IN (SELECT docletGradeSectionId FROM docletGradeSections WHERE docletId={$docletId}) LIMIT 1";
+  $result = mysql_query($query);
+  if ($result && $row = mysql_fetch_assoc($result))
+    $max_score = (float) $row['maxGrade'];
+
+  return true;
+}
+
+/*******************************************************************************
+* Gets grading information for an assignment
+*
+* @param $assignmentId Id of assignmet
+* @param $gradeSections Array where resulting grade sections will be stored
+* @param $gradingParams Array where resulting grading parameters will be stored
+*
+* @return bool False on error.
+*******************************************************************************/
+function getAssignmentGradingInfo($assignmentId, &$gradeSections, &$gradingParams)
+{
+  // Check if assignment id is null
+  if ($assignmentId == null)
+  {
+    // Get grade sections
+    $gradeSections = array();
+    $query = "SELECT docletGradeSectionId, maxGrade FROM defaultGradeBreakdowns";
+    $result = mysql_query($query);
+    if ($result)
+      while ($row = mysql_fetch_assoc($result))
+        $gradeSections[($row['docletGradeSectionId'])] = $row['maxGrade'];
+
+    // Get grade parameters
+    $gradingParams = array();
+    $query = "SELECT docletGradeParameterId, param FROM defaultGradeParameters";
+    $result = mysql_query($query);
+    if ($result)
+      while ($row = mysql_fetch_assoc($result))
+        $gradingParams[($row['docletGradeParameterId'])] = $row['param'];
+  }
+  else
+  {
+    // Check that ids are numeric before query
+    if (!is_numeric($assignmentId))
+      return false;
+
+    // Get grade sections
+    $gradeSections = array();
+    $query = "SELECT docletGradeSectionId, maxGrade FROM assignmentGradeBreakdownsView WHERE assignmentId={$assignmentId}";
+    $result = mysql_query($query);
+    if ($result)
+      while ($row = mysql_fetch_assoc($result))
+        $gradeSections[($row['docletGradeSectionId'])] = $row['maxGrade'];
+
+    // Get grade parameters
+    $gradingParams = array();
+    $query = "SELECT docletGradeParameterId, param FROM assignmentGradeParametersView WHERE assignmentId={$assignmentId}";
+    $result = mysql_query($query);
+    if ($result)
+      while ($row = mysql_fetch_assoc($result))
+        $gradingParams[($row['docletGradeParameterId'])] = $row['param'];
+  }
+
+  return true;
+}
+
+/*******************************************************************************
+* Sets doclet section max score for an assignment
+*
+* @param $assignmentId Id of assignmet
+* @param $docletGradeSectionId Id of doclet grade section
+* @param $maxGrade Maximum grade for the section
+*
+* @return bool False on error.
+*******************************************************************************/
+function setAssignmentSectionGrade($assignmentId, $docletGradeSectionId, $maxGrade)
+{
+  // Check that ids are numeric before query
+  if (!is_numeric($assignmentId) || !is_numeric($docletGradeSectionId) || !is_numeric($maxGrade))
+    return false;
+
+  // Check that grade section exists
+  $valid = false;
+  $query = "SELECT COUNT(*) FROM docletGradeSections WHERE docletGradeSectionId={$docletGradeSectionId}";
+  if (($result = mysql_query($query)) !== false)
+    if (mysql_result($result, 0) == 1)
+      $valid = true;
+  if (!$valid)
+    return false;
+
+  $query = "INSERT INTO assignmentGradeBreakdowns (assignmentId, docletGradeSectionId, maxGrade) VALUES ({$assignmentId}, {$docletGradeSectionId}, {$maxGrade}) ON DUPLICATE KEY UPDATE maxGrade={$maxGrade}";
+
+  $result = mysql_query($query);
+  return $result;
+}
+
+/*******************************************************************************
+* Sets doclet section max score for an assignment
+*
+* @param $assignmentId Id of assignmet
+* @param $docletGradeParamId Id of doclet grade section
+* @param $value Value for the parameter
+*
+* @return bool False on error.
+*******************************************************************************/
+function setAssignmentGradeParameters($assignmentId, $docletGradeParamId, $value)
+{
+  // Check that ids are numeric before query
+  if (!is_numeric($assignmentId) || !is_numeric($docletGradeParamId))
+    return false;
+
+  // Check that grading parameter exists
+  $valid = false;
+  $query = "SELECT COUNT(*) FROM docletGradeParameters WHERE docletGradeParameterId={$docletGradeParamId}";
+  if (($result = mysql_query($query)) !== false)
+    if (mysql_result($result, 0) == 1)
+      $valid = true;
+  if (!$valid)
+    return false;
+
+  $query = "INSERT INTO assignmentGradeParameters (assignmentId, docletGradeParameterId, param) VALUES ({$assignmentId}, {$docletGradeParamId}, \"{$value}\") ON DUPLICATE KEY UPDATE param=\"{$value}\"";
+  $result = mysql_query($query);
+  return $result;
+}
+
+/*******************************************************************************
+* Adds a doclet to the database.  Assumes that string parameters were already
+* escaped for MySQL statements.
+*
+* @param string $name Name of the doclet
+* @param string $desc Short description of the doclet
+* @param string $javaName Java class name for the doclet
+* @param int $docletId Variable where the resulting docletId will be stored
+*
+* @return int Returns one of the following status codes:
+*               0 - Success
+*               1 - MySQL error
+*******************************************************************************/
+function addDoclet($name, $desc, $javaName, &$docletId)
+{
+  $docletId = false;
+
+  // INSERT into databse
+  $sql = "INSERT INTO doclets (docletName, docletDescription, javaName) VALUES (\"{$name}\", \"{$desc}\", \"{$javaName}\")";
+  $result = mysql_query($sql);
+  if ($result === false)
+    return 1;
+
+  // Get auto_increment value
+  $docletId = mysql_insert_id();
+  if ($docletId === false)
+    return 1;
+
+  return 0;
+}
+
+/*******************************************************************************
+* Adds doclet section with default max score.  Assumes that string parameters
+* were already escaped for MySQL statements.
+*
+* @param int $docletId Id of doclet to add section to
+* @param string $name Name of the doclet section
+* @param string $desc Short description of the section
+* @param float $maxGrade Maximum grade for the section
+*
+* @return bool False on error.
+*******************************************************************************/
+function addDocletSection($docletId, $name, $desc, $maxGrade)
+{
+  // Check that id and grade is numeric before query
+  if (!is_numeric($docletId) || !is_numeric($maxGrade))
+    return false;
+
+  // Insert section
+  $query = "INSERT INTO docletGradeSections (docletId, sectionName, sectionDesc) VALUES ({$docletId}, \"{$name}\", \"{$desc}\")";
+  if (($result = mysql_query($query)) == false)
+    return false;
+
+  // Get auto_increment value
+  if (($sectionId = mysql_insert_id()) === false)
+    return 1;
+
+  // Set default
+  $query = "INSERT INTO defaultGradeBreakdowns VALUES ({$sectionId}, {$maxGrade})";
+  $result = mysql_query($query);
+  return $result;
+}
+
+/*******************************************************************************
+* Adds doclet parameter with default value.  Assumes that string parameters
+* were already escaped for MySQL statements.
+*
+* @param int $docletId Id of doclet to add parameter for
+* @param string $name Name of the doclet parameter
+* @param string $desc Short description of the parameter
+* @param string $value Maximum grade for the section
+*
+* @return bool False on error.
+*******************************************************************************/
+function addDocletParam($docletId, $name, $desc, $value)
+{
+  // Check that id is numeric before query
+  if (!is_numeric($docletId))
+    return false;
+
+  // Insert parameter
+  $query = "INSERT INTO docletGradeParameters (docletId, parameterName, parameterDesc) VALUES ({$docletId}, \"{$name}\", \"{$desc}\")";
+  if (($result = mysql_query($query)) == false)
+    return false;
+
+  // Get auto_increment value
+  if (($paramId = mysql_insert_id()) === false)
+    return 1;
+
+  // Set default
+  $query = "INSERT INTO defaultGradeParameters VALUES ({$paramId}, \"{$value}\")";
+  $result = mysql_query($query);
+  return $result;
 }
 
 ?>

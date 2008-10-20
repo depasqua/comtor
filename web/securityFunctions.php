@@ -15,8 +15,7 @@
       $_SESSION['security'] = array();
     array_push($_SESSION['security'], $security);
 
-    echo "<input type='hidden' name='securityRand' value='{$random1}'/>\n";
-    echo "<input type='hidden' name='securityPage' value='{$random2}'/>\n";
+    return array('rand' => $random1, 'page_sec' => $random2);
   }
 
   /*****************************************************************************

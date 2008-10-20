@@ -5,50 +5,68 @@
 ?>
 <?php
 
-//set id of current user
+// Connect to database
+require_once("connect.php");
+require_once("mysqlFunctions.php");
+
+// Set id of current user
 $userId = $_SESSION['userId'];
 
-//directory
-include("directory.php");
+// Directory
+require_once("config.php");
 
-//store IP address of host
+// Store IP address of host
 $ip = $_SERVER['REMOTE_ADDR'];
 
-//store information about jar file
+// Store information about jar file
 $fileSize = $_FILES['file']['size'];
 $fileName = str_replace(" ", "", $_FILES['file']['name']);
 
-//message is used to display errors
+// Message is used to display errors
 $message = "";
 
 //check to make sure the file is present
-if(isset($_FILES['file']) == false OR $_FILES['file']['error'] == UPLOAD_ERR_NO_FILE){
+if(isset($_FILES['file']) == false OR $_FILES['file']['error'] == UPLOAD_ERR_NO_FILE)
   $message = "You need to upload a jar file!<br>";
-}
 
-//check file extension
+// Check file extension
 function file_extension($filename)
 {
-    return end(explode(".", $filename));
+  return end(explode(".", $filename));
 }
 $ext = file_extension($fileName);
-if($ext != jar){
-  $message = "You need to upload a jar file!<br>";
+if($ext != jar)
+  $message = "You need to upload a jar file!<br/>";
+
+// Check that there is an assignment set
+if (!isset($_POST['assignmentId']) || ($assignment = getAssignment($_POST['assignmentId'])) === false)
+  $message = $message . "You must select an assignment!<br/>";
+
+// Check for assignment options
+if (isset($_POST['assignmentId']) && $options = getAssignmentOptions($_POST['assignmentId']))
+{
+  $_POST['doclet'] = array();
+  foreach ($options as $opt)
+    if ($doc = getDoclet($opt))
+      $_POST['doclet'][] = $doc['javaName'];
 }
 
-//check to make sure at least one doclet was selected
-if(isset($_POST['doclet']) == false){
-  $message = $message . "You need to select at least one analyzer!";
+// Check to make sure at least one doclet was selected
+if(isset($_POST['doclet']) == false)
+{
+  $message = $message . "You need to select at least one analyzer!<br/>";
 }
 
-//if no errors
-if($message == "")
+// If no errors
+if ($message == "")
 {
   //the tmp_name begins with '/tmp/' so only grab the remaining substring
   $tempFileName = substr($_FILES['file']['tmp_name'], 5);
 
+  mkdir(UPLOAD_DIR . $tempFileName);
+
   //upload the jar file
-  move_uploaded_file($_FILES['file']['tmp_name'], UPLOAD_DIR . $fileName);
+  move_uploaded_file($_FILES['file']['tmp_name'], UPLOAD_DIR . $tempFileName . '/' . $fileName);
 
   //generate list of doclets selected (Doclets.txt)
   $myFile = UPLOAD_DIR . $tempFileName . ".txt";
@@ -68,11 +86,26 @@ if($message == "")
   fclose($fh);
 
   //starts a script to run javadoc
-  exec($dir . "scripts/javadoc.sh " . $tempFileName . " " . $fileName . " " . $userId, $output);
+  $command = $dir . "scripts/javadoc.sh " . $tempFileName . " " . $fileName . " " . $userId . " ". $_POST['assignmentId'];
+  exec($command, $output, $return);
+
+  if ($return != 0)
+  {
+    switch($return)
+    {
+    case 1:
+      $_SESSION['msg']['error'] = "Your source code did not compile.  Please resubmit once the code compiles. This may be due to missing packages.  Please make sure that all nonstandard packages are in the jar file.";
+      break;
+    case 2:
+    default:
+      $_SESSION['msg']['error'] = "There was an error analyzing your code.";
+      header("Location: submit.php");
+      exit;
+      break;
+    }
+  }
 
   // Determine time of this report
-  // Connect to database
-  include("connect.php");
 
   // Get last report from database
   if (($userEventId = lastReport($_SESSION['userId'])) !== false)
@@ -100,14 +133,42 @@ if($message == "")
         $_SESSION['msg']['error'] = "You cannot submit files for a course you are no enrolled in.";
       }
     }
+
+    // Record this as an assignment submission if set and user is in course
+    {
+      $status = recordReportForAssignment($userId, $userEventId, $_POST['assignmentId']);
+      switch($status)
+      {
+        // Success
+        case 0:
+          break;
+        // Invalid variable types
+        case 1:
+          break;
+        // Assignment does not exist
+        case 2:
+          $_SESSION['msg']['error'] = 'Error submitting this report for the indicated assignment.  Assignment does not exist.';
+          break;
+        // User not in course
+        case 3:
+          $_SESSION['msg']['error'] = 'Error submitting this report for the indicated assignment.  Assignment is not for your course.';
+          break;
+        // Database error
+        case 4:
+          $_SESSION['msg']['error'] = 'Error submitting this report for the indicated assignment.  Database error.';
+          break;
+      }
+    }
   }
   else
-  {
     $_SESSION['msg']['error'] = "Error analyzing code.";
-  }
 
   // Close database
   mysql_close();
+
+  // Don't allow both success and error message to be displayed
+  if (isset($_SESSION['msg']['success']) && isset($_SESSION['msg']['error']))
+    unset($_SESSION['msg']['success']);
 
   // Redirect to reports page unless last report was not found
   if ($userEventId !== false)
@@ -117,15 +178,10 @@ if($message == "")
 
   exit();
 }
+else
+{
+  $_SESSION['msg']['error'] = $message;
+  header("Location: index.php");
+  exit;
+}
 ?>
-<?php include_once("header.php"); ?>
-
-<table>
- <tr>
-  <td align="center">
-  <? echo $message; ?><br><a href="index.php">Go back</a>.
-  </td>
- </tr>
-</table>
-
-<?php include_once("footer.php"); ?>

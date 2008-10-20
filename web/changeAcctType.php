@@ -1,8 +1,13 @@
 <?php
 $acctTypes = "admin";
 require_once("loginCheck.php");
-?>
-<?php
+
+require_once("smarty/Smarty.class.php");
+
+$tpl = new Smarty();
+
+require_once("header1.php");
+
 //set user id
 $userId = $_GET['userId'];
 
@@ -34,14 +39,10 @@ else if($_GET['confirm'] == "no")
 else {
   $message = "Do you want to make this account an administrator? <a href=\"changeAcctType.php?userId=$userId&confirm=yes\">Yes</a> <a href=\"changeAcctType.php?userId=$userId&confirm=no\">No</a> <a href=\"manageAccounts.php\">Cancel</a>";
 }
+
+$tpl->assign('tpldata', $message);
+
+// Display template
+$tpl->display("htmlmain.tpl");
+
 ?>
-
-<?php include_once("header.php"); ?>
-
-<table>
- <tr>
-  <td align="center"><? echo $message; ?></td>
- </tr>
-</table>
-
-<?php include_once("footer.php"); ?>

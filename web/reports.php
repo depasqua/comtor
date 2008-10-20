@@ -1,44 +1,20 @@
-<?php require_once("loginCheck.php"); ?>
 <?php
-  // Block output in case we need to redirect
-  ob_start();
-?>
-<?php require_once("generalFunctions.php"); ?>
-<?php
-function headFunction()
-{
-?>
-<script type='text/javascript'>
-<!--
-function showFile(id)
-{
-  var element = document.getElementById(id);
-  if (element.style.visibility == "visible")
-  {
-    element.style.visibility = "hidden";
-    element.style.display = "none";
-  }
-  else
-  {
-    element.style.visibility = "visible";
-    element.style.display = "block";
-  }
-}
 
-function verifyUserEventAction(action)
-{
-  return confirm("Are you sure you want to " + action + " this user event.");
-}
+require_once("loginCheck.php");
 
-//-->
-</script>
-<?php
-}
-?>
-<?php include_once("header.php"); ?>
-<?
+require_once("smarty/Smarty.class.php");
+
+$tpl = new Smarty();
+
+require_once("header1.php");
+require_once("generalFunctions.php");
+
 //connect to database
 include("connect.php");
+
+// Assign breadcrumbs
+$breadcrumbs = array();
+$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
 
 // Checks for profId parameter
 if ($_SESSION['acctType'] == "admin" && isset($_GET['profId']))
@@ -56,12 +32,13 @@ if (isset($_GET['courseId']) && is_numeric($_GET['courseId']))
   {
     // Determine professor name
     if (($courseInfo = getCourseInfo($_GET['courseId'])) !== false)
+    {
       $courseInfo['profName'] = getUserNameById($courseInfo['profId']);
+      $breadcrumbs[] = array('text' => $courseInfo['section'].': '.$courseInfo['name'], 'href' => 'courses.php?courseId='.$_GET['courseId']);
+    }
   }
   else
   {
-    // Clear output buffer, indicate error and redirect
-    ob_end_clean();
     $_SESSION['msg']['error'] = "Course does not exist.";
     header ("Location: index.php");
     exit;
@@ -80,8 +57,6 @@ if (isset($_GET['courseId']) && is_numeric($_GET['courseId']))
     // Indicate error and redirect
     else
     {
-      // Clear output buffer
-      ob_end_clean();
       $_SESSION['msg']['error'] = "You are not professor for this course.";
       header ("Location: courseManage.php");
       exit;
@@ -96,8 +71,6 @@ if (isset($_GET['courseId']) && is_numeric($_GET['courseId']))
     // Indicate error and redirect
     else
     {
-      // Clear output buffer
-      ob_end_clean();
       $_SESSION['msg']['error'] = "You are not enrolled in this course.";
       header ("Location: courses.php");
       exit;
@@ -106,7 +79,7 @@ if (isset($_GET['courseId']) && is_numeric($_GET['courseId']))
 }
 
 // Checks for user parameter
-$userId = -1;
+$userId = false;
 if((isset($_GET['userId'])) && is_numeric($_GET['userId']))
 {
   // Set the userId if user is admin or professor of the course the student is in
@@ -122,107 +95,107 @@ if((isset($_GET['userId'])) && is_numeric($_GET['userId']))
     // Indicate error and redirect
     else
     {
-      // Clear output buffer
-      ob_end_clean();
       $_SESSION['msg']['error'] = "Student not enrolled in this course.";
       header ("Location: courseManage.php");
       exit;
     }
   }
 }
-if ($userId == -1)
+if ($userId == false)
   $userId = $_SESSION['userId'];
-
-// Stop buffering output
-ob_end_flush();
 
 /* Display current user information */
 if (($userInfo = getUserInfoById($userId)) !== false)
-  displayUserInfo($userInfo);
-
+  $tpl->assign($userInfo);
 
 /* Display course info if any */
 if (isset($courseInfo))
-  displayCourseInfo($courseInfo);
-
+  $tpl->assign('course', $courseInfo);
 
 /* If a report is selected, display report */
 if(isset($_GET['userEventId']))
 {
+  $template = "report.tpl";
+
   $userEventId = $_GET['userEventId'];
 
   // Check that userEventId corresponds to this users report
-  if (isReportForUser($_GET['userEventId'], $userId) && ($reportInfo = getReportInfo($userEventId)) !== false)
+  if (($reportInfo = getReportInfo($userEventId)) !== false)
   {
-    // Print the date to this report
-    $reportDate = $reportInfo['dateTime'];
-    $displayDateTime = formatDateTime($reportDate);
-    echo "<h3>{$displayDateTime}</h3>\n";
-
-
-    /* List Files */
-    echo "<div id='submittedFiles'>\n";
-    echo "<h3>Submitted Files</h3>\n";
-    echo "Click a filename to view:<br/>\n";
-
-    if ($files = getReportFiles($userEventId))
+    // Check that current user can view the report
+    if ($reportInfo['userId'] == $userId || $reportInfo['profId'] == $userId || $_SESSION['acctType'] == admin)
     {
-      $i = 0;
-      foreach($files as $file)
+      $compileError = $reportInfo['compilationError'];
+      unset($reportInfo['compilationError']);
+      $tpl->assign($reportInfo);
+
+      if ($files = getReportFiles($userEventId))
       {
-        echo "<a href='javascript:showFile(\"fileContents{$i}\");'>{$file['filename']}</a><br/>\n";
-
-        // Make the file contents into html encoding
-        $file['contents'] = htmlspecialchars($file['contents']);
-        $file['contents'] = str_replace(" ", "&nbsp;", $file['contents']);
-        $file['contents'] = nl2br($file['contents']);
-        echo "<code class='javacode' id='fileContents{$i}' style='visibility: hidden; display: none;'>{$file['contents']}</code>\n";
-        $i++;
-      }
-    }
-    echo "</div>\n";
-
-    if (($doclets = getDoclets()) !== false)
-    {
-      foreach ($doclets as $doclet)
-      {
-        $docletId = $doclet['docletId'];
-        $name = $doclet['docletName'];
-        $description = $doclet['docletDescription'];
-
-        // Find the id that links the userEventId and docletId
-        if (($linkId = getSubReportId($docletId, $userEventId)) !== false)
+        foreach($files as &$file)
         {
-          // Get the properties for this doclet
-          if (($props = getSubReportProperties($linkId)) !== false)
-          {
-            echo "<div class='report'>\n";
-            echo "<div class='docletDesc'>{$name} ({$description})</div>\n";
+          // Make the file contents into html encoding
+          $file['contents'] = htmlspecialchars($file['contents']);
+          $file['contents'] = str_replace(" ", "&nbsp;", $file['contents']);
+          $file['contents'] = nl2br($file['contents']);
+          $file['contents'] = colorize($file['contents']);
+        }
+        unset($file);
 
-            // Checks the index to see whether the attribute is a class, method,
-            // or comment. Index is from the property list, examples shown below
-            foreach($props as $prop)
+        $tpl->assign('files', $files);
+      }
+
+      if ($compileError)
+      {
+        $output = nl2br(htmlspecialchars($reportInfo['compilationOutput']));
+        $tpl->assign("compilationError", $output);
+      }
+      else if (($doclets = getDoclets()) !== false)
+      {
+        $score = 0.0;
+        $max_score = 0.0;
+        foreach ($doclets as &$doclet)
+        {
+          $docletId = $doclet['docletId'];
+
+          // Find the id that links the userEventId and docletId
+          if (($linkId = getSubReportId($docletId, $userEventId)) !== false)
+          {
+            // Get grading information for this doclet
+            getGradingInfo($docletId, $userEventId, $linkId, $doclet['score'], $doclet['max_score']);
+            $score += $doclet['score'];
+            $max_score += $doclet['max_score'];
+
+            // Get the properties for this doclet
+            if (($props = getSubReportProperties($linkId)) !== false)
             {
-              $index = $prop['attribute'];
-              // property list index - 011
-              if(strlen($index) == 3)
+              $props2 = array();
+
+              // Checks the index to see whether the attribute is a class, method,
+              // or comment. Index is from the property list, examples shown below
+              foreach($props as $prop)
               {
-                echo "<hr /><div class='class'>{$prop['value']}</div>\n";
+                $index = $prop['attribute'];
+                // property list index - 011
+                if(strlen($index) == 3)
+                  $props2[] = array('class'=>'class', 'value'=>$prop['value']);
+                //property list index - 011.002
+                else if(strlen($index) == 7)
+                  $props2[] = array('class'=>'method', 'value'=>$prop['value']);
+                //property list index - 001.002.a
+                else if(strlen($index) > 7)
+                  $props2[] = array('class'=>'comment', 'value'=>$prop['value']);
               }
-              //property list index - 011.002
-              else if(strlen($index) == 7)
-              {
-                echo "<div class='method'>{$prop['value']}</div>\n";
-              }
-              //property list index - 001.002.a
-              else if(strlen($index) > 7)
-              {
-                echo "<div class='comment'>{$prop['value']}</div>\n";
-              }
+
+              $doclet['props'] = $props2;
             }
-            echo "</div>\n";
           }
         }
+        unset($doclet);
+        $tpl->assign('doclets', $doclets);
+
+        // Assign scores
+        $tpl->assign("score", $score);
+        $tpl->assign("max_score", $max_score);
       }
     }
   }
@@ -231,36 +204,54 @@ if(isset($_GET['userEventId']))
 /* If there is no report selected, show list of user's userEvents */
 else
 {
+  $template = "reports.tpl";
+
+  if ($_SESSION['acctType'] == "admin")
+    $tpl->assign('deletable', true);
+
   /* Display use of each doclet */
   // Professor - Specific Course
   if ($_SESSION['acctType'] == "professor" && $userId == $_SESSION['userId'] && isset($courseId))
-    displayDocletUsage(false, $courseId);
+    $tpl->assign('doclets', getDocletUsage(false, $courseId));
 
   // Professor - Specific Course and student
   else if ($_SESSION['acctType'] == "professor" && isset($courseId))
-    displayDocletUsage($userId, $courseId);
+    $tpl->assign('doclets', getDocletUsage($userId, $courseId));
 
   // Admin
   else if ($_SESSION['acctType'] == "admin" && $userId == $_SESSION['userId'])
-    displayDocletUsage(false, isset($courseId) ? $courseId : false);
+    $tpl->assign('doclets', getDocletUsage(false, isset($courseId) ? $courseId : false));
 
   else if ($_SESSION['acctType'] == "student")
-    displayDocletUsage($userId, isset($courseId) ? $courseId : false);
+    $tpl->assign('doclets', getDocletUsage($userId, isset($courseId) ? $courseId : false));
 
 
   /* Display list of userEvents if any */
   if (isset($courseId))
   {
+    $showUser = false;
     if (($_SESSION['acctType'] == "professor" || $_SESSION['acctType'] == "admin") && $userId == $_SESSION['userId'])
     {
       $userEvents = getUserReportsByCourse($courseId);
-      outputUserEventsTable($userEvents, $courseId, true);
+      $showUser = true;
     }
     else
-    {
       $userEvents = getUserReports($userId, $courseId);
-      outputUserEventsTable($userEvents, $courseId);
+
+    if ($userEvents)
+    {
+      if($showUser)
+      {
+        foreach ($userEvents as &$ev)
+          $ev['user']['name'] = getUserNameById($ev['userId']);
+        unset($ev);
+      }
     }
+    else
+      $userEvents = array();
+
+    $tpl->assign('showuser', $showUser);
+    $tpl->assign('userEvents', $userEvents);
   }
   else
   {
@@ -273,135 +264,127 @@ else
 
       if (($courses = getProfCourses($profId)) !== false)
       {
+        $groups = array();
+
         foreach ($courses as $course)
         {
+          $grp = array();
+          $grp['name'] = true;
+          $grp['course'] = $course;
+
           $userEvents = getUserReportsByCourse($course['courseId']);
 
           if ($userEvents !== false)
           {
-            echo "<h3>{$course['section']}: {$course['name']}</h3>\n";
-
             // Show doclet usage for course
-            displayDocletUsage(false, $course['courseId']);
+            $grp['doclets'] = getDocletUsage(false, $course['courseId']);
 
-            outputUserEventsTable($userEvents, $course['courseId'], true);
+            foreach ($userEvents as &$ev)
+              $ev['user']['name'] = getUserNameById($ev['userId']);
+            unset($ev);
+
+            $grp['userEvents'] = $userEvents;
           }
+          else
+            $grp['userEvents'] = array();
+
+          $groups[] = $grp;
+
+          $tpl->assign('showuser', true);
+          $tpl->assign('eventGroups', $groups);
         }
       }
-      else
-        echo "<div class='center' style='padding: 20px;'><span style='font-weight: bold;'>No courses to display.</span></div>\n";
     }
-    // If admin with no course or other user specified, show all reports
-    else if ($_SESSION['acctType'] == "admin" && $userId == $_SESSION['userId'])
+    // If admin or student with no course or other user specified, show all reports (for student if student)
+    else
     {
+      $showUser = false;
+      if ($_SESSION['acctType'] == "admin" && $userId == $_SESSION['userId'])
+      {
+        $userId = false;
+        $showUser = true;
+      }
+      $tpl->assign('showuser', $showUser);
+
       // Grouped by course
       if (isset($_GET['grp']) && $_GET['grp'] == "course")
       {
-        // Create link for showing all with no grouping
-        echo "<div class='center gapBelowSmall'><a href='reports.php'>Show without Groups</a></div>\n";
-
         // Get a list of all user events so that we can show General Category
-        $generalEvents = getUserReports();
-
-        $courses = getCourses();
-        if ($courses)
+        if (($generalEvents = getUserReports($userId)) !== false)
         {
-          // Make links at the top that go to each course
-          foreach ($courses as $course)
-            echo "<a href='#course{$course['courseId']}'>{$course['section']}: {$course['name']}</a><br/>\n";
-
-          foreach ($courses as $course)
+          $groups = array();
+          $courses = getCourses($userId);
+          if ($courses)
           {
-            echo "<h3 id='course{$course['courseId']}'>{$course['section']}: {$course['name']}</h3>\n";
-
-            // Get userEvents and display
-            if (($userEvents = getUserReportsByCourse($course['courseId'])) !== false && count($userEvents) != 0)
+            foreach ($courses as $course)
             {
+              $grp = array();
+              $grp['name'] = true;
+              $grp['course'] = $course;
+
               // Show doclet usage for course
-              displayDocletUsage($userId, $course['courseId']);
+              $grp['doclets'] = getDocletUsage($userId, $course['courseId']);
 
-              // Remove these events from the General Category
-              foreach ($userEvents as $event)
-                if (($key = array_search($event, $generalEvents)) !== false)
-                  unset($generalEvents[$key]);
+              // Get userEvents and display
+              if (($userEvents = getUserReports($userId, $course['courseId'])) !== false && count($userEvents) != 0)
+              {
+                // Remove these events from the General Category
+                foreach ($userEvents as $event)
+                  if (($key = array_search($event, $generalEvents)) !== false)
+                    unset($generalEvents[$key]);
 
-              outputUserEventsTable($userEvents, false, true);
-             }
-             else
-               outputNoReports();
+                // Get user names
+                if ($showUser)
+                {
+                  foreach ($userEvents as &$ev)
+                    $ev['user']['name'] = getUserNameById($ev['userId']);
+                  unset($ev);
+                }
+
+                $grp['userEvents'] = $userEvents;
+              }
+              else
+                $grp['userEvents'] = array();
+
+              $groups[] = $grp;
+            }
+            unset($course);
           }
-        }
 
-        // Show the General Category
-        if (count($generalEvents) > 0)
-        {
-          echo "<h3>Other</h3>\n";
-          outputUserEventsTable($generalEvents, false, true);
+          // Show the General Category
+          if (count($generalEvents) > 0)
+          {
+            // Get user names
+            if ($showUser)
+            {
+              foreach ($generalEvents as &$ev)
+                $ev['user']['name'] = getUserNameById($ev['userId']);
+              unset($ev);
+            }
+
+            $grp = array();
+            $grp['name'] = 'Other';
+            $grp['userEvents'] = $generalEvents;
+            $groups[] = $grp;
+          }
+          $tpl->assign('eventGroups', $groups);
         }
       }
       else
       {
-        // Create link for grouping by course
-        echo "<div class='center gapBelowSmall'><a href='reports.php?grp=course'>Group by Course</a></div>\n";
-
-        $userEvents = getUserReports();
-        outputUserEventsTable($userEvents, false, true);
-      }
-    }
-
-    // Student - Grouped by course
-    else if (isset($_GET['grp']) && $_GET['grp'] == "course")
-    {
-      // Create link for showing all with no grouping
-      echo "<div class='center gapBelowSmall'><a href='reports.php?userId={$userId}'>Show without Groups</a></div>\n";
-
-      // Get a list of all user events so that we can show General Category
-      $generalEvents = getUserReports($userId);
-
-      $courses = getCourses($userId);
-      if ($courses)
-      {
-        // Make links at the top that go to each course
-        foreach ($courses as $course)
-          echo "<a href='#course{$course['courseId']}'>{$course['section']}: {$course['name']}</a><br/>\n";
-
-        foreach ($courses as $course)
+        if (($userEvents = getUserReports($userId)) !== false)
         {
-          echo "<h3 id='course{$course['courseId']}'>{$course['section']}: {$course['name']}</h3>\n";
-
-          // Get userEvents and display
-          if (($userEvents = getUserReports($userId, $course['courseId'])) !== false && count($userEvents) != 0)
+          // Get user names
+          if ($showUser)
           {
-            // Show doclet usage for course
-            displayDocletUsage($userId, $course['courseId']);
+            foreach ($userEvents as &$ev)
+              $ev['user']['name'] = getUserNameById($ev['userId']);
+            unset($ev);
+          }
 
-            // Remove these events from the General Category
-            foreach ($userEvents as $event)
-              if (($key = array_search($event, $generalEvents)) !== false)
-                unset($generalEvents[$key]);
-
-            outputUserEventsTable($userEvents);
-           }
-           else
-             outputNoReports();
+          $tpl->assign('userEvents', $userEvents);
         }
       }
-
-      // Show the General Category
-      if (count($generalEvents) > 0)
-      {
-        echo "<h3>Other</h3>\n";
-        outputUserEventsTable($generalEvents);
-      }
-    }
-    // Student
-    else
-    {
-      // Create link for grouping by course
-      echo "<div class='center gapBelowSmall'><a href='reports.php?userId={$userId}&amp;grp=course'>Group by Course</a></div>\n";
-
-      $userEvents = getUserReports($userId);
-      outputUserEventsTable($userEvents);
     }
   }
 }
@@ -422,80 +405,35 @@ function formatDateTime($timestamp)
   return $date;
 }
 
-/*******************************************************************************
-* Outputs a table of the userEvents.  If courseId is set, this is added to the
-* URL parameters of links.  If showUserName is true this adds a column in the
-* table to indicate the user who initiated the event
-*******************************************************************************/
-function outputUserEventsTable($userEvents, $courseId = false, $showUserName = false)
+// Finish Breadcrumbs
+$breadcrumbs[] = array('text' => 'View Reports', 'href' => 'reports.php');
+$tpl->assign('breadcrumbs', $breadcrumbs);
+
+// Fetch template
+$tpldata = $tpl->fetch($template);
+$tpl->assign('tpldata', $tpldata);
+
+// Display template
+$tpl->display("htmlmain.tpl");
+
+
+/******************************************************************************
+* Adds colors to java code
+* @param string $str String of java program
+******************************************************************************/
+function colorize($str)
 {
-  // Check that userEvents is and array
-  if ($userEvents !== false && is_array($userEvents))
-  {
-    echo "<table class='data'>\n";
-    echo "  <tr>\n";
-    echo "    <th class='mini'>View</th>\n";
-    if ($showUserName)
-      echo "    <th>User</th>\n";
-    echo "    <th>Date</th>\n";
-    echo "    <th>Day</th>\n";
-    echo "    <th>Time</th>\n";
-    // Add delete column for admin
-    if ($_SESSION['acctType'] == "admin")
-      echo "    <th class='mini'>Delete</th>\n";
-    echo "  </tr>\n";
+  // Make comments green
+  $pattern = '/(\/\*.*\*\/)/msU';
+  $replacement = '<span style="color: #008000;">$1</span>';
+  $str = preg_replace($pattern, $replacement, $str);
 
-    // Determine courseId and userId part of URL
-    $courseURL = $courseId !== false ? "&amp;courseId={$courseId}" : "";
+  // Make comments green
+  $pattern = '/(\/\/.*<br ?\/?>)/i';
+  $replacement = '<span style="color: #008000;">$1</span>';
+  $str = preg_replace($pattern, $replacement, $str);
 
-    foreach($userEvents as $userEvent)
-    {
-      // Format the date and time
-      $timestamp = strtotime($userEvent['dateTime']);
-      $dayOfWeek = date("l", $timestamp);
-      $date = date("F j, Y", $timestamp);
-      $time = date("g:i:s A", $timestamp);
-
-      echo "<tr>\n";
-
-      $userURL = "";
-      if (isset($userEvent['userId']))
-        $userURL = "&amp;userId={$userEvent['userId']}";
-
-      echo "  <td class='mini'><a href=\"reports.php?userEventId={$userEvent['userEventId']}{$courseURL}{$userURL}\"><img src='img/icons/magnifying_glass.gif' alt='View Report' /></a></td>";
-
-      // Show user who initiated the event if needed
-      if ($showUserName)
-      {
-        if (isset($userEvent['userId']) && ($name = getUserNameById($userEvent['userId'])) !== false)
-          echo "    <td>{$name}</td>\n";
-        else
-          echo "    <td>N/A</td>\n";
-      }
-
-      echo "  <td>{$date}</td>\n";
-      echo "  <td>{$dayOfWeek}</td>\n";
-      echo "  <td>{$time}</td>\n";
-      // Add delete column for admin
-      if ($_SESSION['acctType'] == "admin")
-        echo "  <td><a href='userEventDelete.php?userEventId={$userEvent['userEventId']}&amp;rand=" . md5(session_id()) . "' onclick='return verifyUserEventAction(\"delete\");' ><img src='img/icons/delete.gif' alt='Delete Report' /></a></td>\n";
-      echo "</tr>\n";
-    }
-    echo "</table>\n";
-  }
-  // Print that there are no reports
-  else
-    outputNoReports();
-}
-
-/*******************************************************************************
-* Outputs message if no reports are found
-*******************************************************************************/
-function outputNoReports()
-{
-  echo "<div class='center' style='padding: 20px;'><span style='font-weight: bold;'>No user reports found.</span></div>\n";
+  return $str;
 }
 
 ?>
-
-<?php include_once("footer.php"); ?>

@@ -1,56 +1,22 @@
 <?php
 
 /*******************************************************************************
-* Outputs user info as provided by userInfo.  Expects userInfo to be an
-* associative array with keys 'name', 'email', and 'school'
-*******************************************************************************/
-function displayUserInfo($userInfo)
-{
-  echo "<h3>{$userInfo['name']}</h3>";
-  echo "<h6>E-Mail Address:</h6>{$userInfo['email']}<br/>";
-  echo "<h6>School:</h6>{$userInfo['school']}<br/>";
-}
-
-/*******************************************************************************
-* Outputs course info as provided by courseInfo.  Expects courseInfo to be an
-* associative array with keys 'section', 'name', 'profName' (If
-* $_SESSION['acctType'] != 'professor'), and 'semester'
-*******************************************************************************/
-function displayCourseInfo($courseInfo)
-{
-  echo "<h3>{$courseInfo['section']}: {$courseInfo['name']}</h3>";
-  if ($_SESSION['acctType'] != "professor")
-    echo "<h6>Professor:</h6>{$courseInfo['profName']}<br/>";
-  echo "<h6>Semester:</h6>{$courseInfo['semester']}<br/>";
-}
-
-/*******************************************************************************
 * Outputs usage of each doclet.  If userId is set, it only counts usage for
 * the given user.  If courseId is set, it only counts usage for the given
 * course.  If neither are set, it counts all doclet usages.
 *******************************************************************************/
-function displayDocletUsage($userId = false, $courseId = false)
+function getDocletUsage($userId = false, $courseId = false)
 {
   /* Display use of each doclet */
   if ($doclets = getDoclets())
   {
-    echo "<h3>Doclet Usage</h3>\n";
-    foreach ($doclets as $doclet)
+    foreach ($doclets as &$doclet)
     {
-      // Display name of report
-      echo "<h6>{$doclet['docletName']}:</h6> ";
-
       // Calculate and display number of times the report was run
-      /*
-      if (($_SESSION['acctType'] == "professor" || $_SESSION['acctType'] == "admin") && ($userId == $_SESSION['userId'] || userId === false))
-        $numRows = getDocletRuns($doclet['docletId'], false, ($courseId !== false) ? $courseId : false);
-      else
-        $numRows = getDocletRuns($doclet['docletId'], $userId, ($courseId !== false) ? $courseId : false);
-      */
-      $numRows = getDocletRuns($doclet['docletId'], $userId, $courseId);
-      echo "selected " . $numRows . " times<br/>\n";
+      $doclet['numRows'] = getDocletRuns($doclet['docletId'], $userId, $courseId);
     }
   }
+  return $doclets;
 }
 
 /*******************************************************************************
@@ -64,13 +30,15 @@ function displayDocletUsage($userId = false, $courseId = false)
 *******************************************************************************/
 function listPages($limitLower, $limitTotal, $total, $lowerURL = "lower", $totalURL = "total", $extraURLParams = "")
 {
+  $rtn = '';
+
   if ($extraURLParams != "")
     $extraURLParams = "&amp;".$extraURLParams;
 
   // Are there others
   if (($limitLower != 0) || ($limitLower + $limitTotal < $total))
   {
-    echo "<div class='center'>\n";
+    $rtn .= "<div class='center'>\n";
 
     $before = false;  // Flag to indicate if there are any before
 
@@ -81,7 +49,7 @@ function listPages($limitLower, $limitTotal, $total, $lowerURL = "lower", $total
       $newLower = $limitLower - $limitTotal;
       if ($newLower < 0)
         $newLower = 0;
-      echo "<a class='prev' href='?{$lowerURL}={$newLower}&amp;{$totalURL}={$limitTotal}{$extraURLParams}'>Previous</a>\n";
+      $rtn .= "<a class='prev' href='?{$lowerURL}={$newLower}&amp;{$totalURL}={$limitTotal}{$extraURLParams}'>Previous</a>\n";
     }
 
     // Determine number of pages that can be displayed before
@@ -99,11 +67,11 @@ function listPages($limitLower, $limitTotal, $total, $lowerURL = "lower", $total
       if ($newLower < 0)
         $newLower = 0;
       $pageNum = $pagesBefore + 1 + $i;
-      echo "<a class='pageNum' href='?{$lowerURL}={$newLower}&amp;{$totalURL}={$limitTotal}{$extraURLParams}'>{$pageNum}</a>\n";
+      $rtn .= "<a class='pageNum' href='?{$lowerURL}={$newLower}&amp;{$totalURL}={$limitTotal}{$extraURLParams}'>{$pageNum}</a>\n";
     }
 
     $curPageNum = $pagesBefore + 1;
-    echo "<span class='currentPage'>{$curPageNum}</span>\n";
+    $rtn .= "<span class='currentPage'>{$curPageNum}</span>\n";
 
     // Show 10 or less of next pages
     for ($i = 0; $i < (($pagesAfter < 10) ? $pagesAfter : 10); $i++)
@@ -112,7 +80,7 @@ function listPages($limitLower, $limitTotal, $total, $lowerURL = "lower", $total
       if ($newLower < 0)
         $newLower = 0;
       $pageNum = $pagesBefore + 2 + $i;
-      echo "<a class='pageNum' href='?{$lowerURL}={$newLower}&amp;{$totalURL}={$limitTotal}{$extraURLParams}'>{$pageNum}</a>\n";
+      $rtn .= "<a class='pageNum' href='?{$lowerURL}={$newLower}&amp;{$totalURL}={$limitTotal}{$extraURLParams}'>{$pageNum}</a>\n";
     }
 
 
@@ -121,18 +89,53 @@ function listPages($limitLower, $limitTotal, $total, $lowerURL = "lower", $total
     {
       // If both Previous and Next are output, leave space between them
       if ($before)
-        echo "<span style='margin-left: 10px;'>\n";
+        $rtn .= "<span style='margin-left: 10px;'>\n";
 
       $newLower = $limitLower + $limitTotal;
-      echo "<a class='next' href='?{$lowerURL}={$newLower}&amp;{$totalURL}={$limitTotal}{$extraURLParams}'>Next</a>\n";
+      $rtn .= "<a class='next' href='?{$lowerURL}={$newLower}&amp;{$totalURL}={$limitTotal}{$extraURLParams}'>Next</a>\n";
 
       // If both Previous and Next are output, close <span>
       if ($before)
-        echo "</span>\n";
+        $rtn .= "</span>\n";
     }
 
-    echo "</div>\n";
+    $rtn .= "</div>\n";
   }
+
+  return $rtn;
+}
+
+/*******************************************************************************
+* Sends E-mail to the recipients.
+*******************************************************************************/
+function sendMail($content, $recipients, $from = null, $subject = null, $bcc = false)
+{
+  require_once 'Mail.php';
+
+  // Setup E-mail headers
+  $headers['From'] = !empty($from) ? $from : EMAIL_FROM;
+  if (is_string($recipients))
+    $headers[$bcc ? 'Bcc' : 'To'] = $recipients;
+  else
+    $headers[$bcc ? 'Bcc' : 'To'] = implode(',', $recipients);
+  $headers['Subject'] = !empty($subject) ? $subject : '(No Subject)';
+
+  // Add disclaimer if sent from default E-mail address
+  if ($headers['From'] == EMAIL_FROM)
+    $content .= "<br/><br/><div style=\"text-align: center;\">This is an automated E-mail.  Please do not reply.  If you have any questions, please contact Dr. Depasquale.</div>";
+
+  // Set content type
+  $headers['Content-Type'] = 'text/html';
+
+  // Setup mailer object
+  $params['host'] = EMAIL_SMTP_HOST;
+  $mailer = &Mail::factory('smtp', $params);
+
+  // Send the E-mail
+  if (EMAIL_SEND)
+    return $mailer->send($headers[$bcc ? 'Bcc' : 'To'], $headers, $content);
+  else
+    return true;
 }
 
 ?>

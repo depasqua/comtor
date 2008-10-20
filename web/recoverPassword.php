@@ -4,6 +4,13 @@ if(!isset($_POST['submit']))
   include("redirect.php");
 }
 
+require_once("smarty/Smarty.class.php");
+
+$tpl = new Smarty();
+
+require_once("header1.php");
+require_once("config.php");
+
 require_once 'Text/Password.php';
 require_once 'Mail.php';
 
@@ -31,26 +38,21 @@ else
   }
   else
   {
+    require_once('generalFunctions.php');
+
     // E-mail new password to user
-    $headers['From'] = 'CommentMentor@tcnj.edu';
-    $headers['To'] = $email;
-    $headers['Subject'] = 'Account Information';
-    $body = "Your Comment Mentor account can be accessed using:\n\nEmail: $email\nPassword: $tempPassword\n\nComment Mentor: http://tcnj-18-108.tcnj.edu/~sigwart4/";
-    $params['host'] = 'smtp.tcnj.edu';
-    $mail_object =& Mail::factory('smtp', $params);
-    $mail_object->send($email, $headers, $body);
+    $subject = 'Account Information';
+    $body = "Your Comment Mentor account can be accessed using:\n\nEmail: $email\nPassword: $tempPassword\n\nComment Mentor: http://" . URL_PATH;
+    $body = nl2br($body);
+    $result = sendMail($body, $email, null, $subject);
 
     $message = "Your password has been mailed to you! <a href=\"loginForm.php\">Login here</a>.";
   }
 }
+
+$tpl->assign('tpldata', $message);
+
+// Display template
+$tpl->display("htmlmain.tpl");
+
 ?>
-
-<?php include_once("header.php"); ?>
-
-<table>
- <tr>
-  <td align="center"><? echo $message; ?></td>
- </tr>
-</table>
-
-<?php include_once("footer.php"); ?>

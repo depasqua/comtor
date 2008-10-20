@@ -1,81 +1,52 @@
-<?php require_once("loginCheck.php"); ?>
 <?php
-  // Buffer output until later so we can redirect if needed
-  ob_start();
-?>
-<?php include_once("header.php"); ?>
+require_once("loginCheck.php");
 
-<?php
-//connect to database
-require("connect.php");
+require_once("smarty/Smarty.class.php");
+
+$tpl = new Smarty();
+
+require_once("header1.php");
+
+// Connect to database
+require_once("connect.php");
 
 // Check for admin permissions, else use current user id
 if ((isset($_GET['userId'])) && is_numeric($_GET['userId']) && ($_SESSION['acctType'] == "admin"))
-{
   $userId = $_GET['userId'];
-}
 else
-{
   $userId = $_SESSION['userId'];
-}
 
 /* Display current user information */
 if (($userInfo = getUserInfoById($userId)) !== false)
-{
-  // Stop buffering output
-  ob_end_flush();
-
-  // Print info
-  echo "<h1>System Usage</h1>\n";
-  echo "<h6>Name:</h6>{$userInfo['name']}<br/>";
-  echo "<h6>E-Mail Address:</h6>{$userInfo['email']}<br/>";
-  echo "<h6>School:</h6>{$userInfo['school']}<br/>";
-}
+  $tpl->assign($userInfo);
 else
 {
-  // Clear buffered output
-  ob_end_clean();
-
   // Redirect with error message
   $_SESSION['msg']['error'] = "Specified user does not exist!";
   require_once("redirect.php");
 }
 
-
-/* Display last login, password change, submission, etc. */
-echo "<h3>Account History</h3>\n";
-
+// Assign date format to template
 $dateFormat = "l F j, Y g:i:s A";
-
-// Get account creation date
-$date = strtotime($userInfo['dateTime']);
-$date = date($dateFormat, $date);
-echo "<h6>Account created:</h6>{$date}<br/>";
-
-// Get account validation date
-$date = strtotime($userInfo['validatedDT']);
-$date = date($dateFormat, $date);
-echo "<h6>Account Validated:</h6>{$date}<br/>";
-
-// Get account last password change date
-$date = strtotime($userInfo['passwordChangeDT']);
-$date = date($dateFormat, $date);
-echo "<h6>Password last changed:</h6>{$date}<br/>";
-
-// Get account last login date
-$date = strtotime($userInfo['lastLogin']);
-$date = date($dateFormat, $date);
-echo "<h6>Last login:</h6>{$date}<br/>";
-
+$tpl->assign('dateFormat', $dateFormat);
 
 require_once("generalFunctions.php");
 
-/* Display use of each doclet */
+// Display use of each doclet
 if (getUserAcctType($userId) == "student")
-{
-  displayDocletUsage($userId);
-}
+  $tpl->assign('doclets', getDocletUsage($userId));
 
+// Assign breadcrumbs
+$breadcrumbs = array();
+$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'System Usage', 'href' => 'usage.php');
+$tpl->assign('breadcrumbs', $breadcrumbs);
+
+
+// Fetch template
+$tpldata = $tpl->fetch("usage.tpl");
+$tpl->assign('tpldata', $tpldata);
+
+// Display template
+$tpl->display("htmlmain.tpl");
 ?>
-
-<?php include_once("footer.php"); ?>

@@ -1,42 +1,12 @@
 <?php
 $acctTypes = array("professor", "admin");
 require_once("loginCheck.php");
-?>
-<?php
-  function headFunction()
-  {
-?>
-  <script type='text/javascript'>
-  function verify()
-  {
-    var message = "";
-    // Determine if course section is set
-    if (document.courseForm.section.value == "")
-    {
-      message += " - Course section\n";
-    }
-    // Determine if course name is set
-    if (document.courseForm.name.value == "")
-    {
-      message += " - Course name\n";
-    }
 
-    // Alert if fields are empty and cancel form submit
-    if(message != "")
-    {
-      message = "You are required to complete the following fields:\n" + message;
-      alert(message);
-      return false;
-    }
+require_once("smarty/Smarty.class.php");
 
-    // Return true if there were no problems
-    return true;
-  }
-  </script>
-<?php
-}
-?>
-<?php
+$tpl = new Smarty();
+
+require_once("header1.php");
 
 include("connect.php");
 
@@ -55,7 +25,7 @@ if (isset($_GET['courseId']))
   // Check that this is this professors course if user is professor
   if ($_SESSION['acctType'] == "professor" && $_SESSION['userId'] != $courseInfo['profId'])
   {
-    $_SESSION['msg']['error'] = "You cannot edit any course other than you own.";
+    $_SESSION['msg']['error'] = "You cannot disable any course other than your own.";
     header("Location: courses.php");
     exit;
   }
@@ -68,102 +38,49 @@ else
   exit;
 }
 
+if ($_SESSION['acctType'] == "admin")
+{
+  // Get all professors
+  if (($profs = getUsers(array("userId", "name"), "enabled", "professor")) !== false)
+    $tpl->assign('profs', $profs);
+}
+
 // Split semester of course into season and year
 $arr = explode(" ", $courseInfo['semester']);
 $courseInfo['season'] = $arr[0];
 $courseInfo['year'] = $arr[1];
 
+// Display options for year (1 year prior, 3 years later)
+$year = (int)(date("Y"));
+if ($courseInfo['year'] >= $year)
+  $tpl->assign('start_year', $year-1);
+else
+  $tpl->assign('start_year', $courseInfo['year']-1);
+if ($courseInfo['year'] < $year+3)
+  $tpl->assign('end_year', $year+3);
+else
+  $tpl->assign('end_year', $courseInfo['year']+3);
+
+$tpl->assign($courseInfo);
+
+// Get security fields
+require_once("securityFunctions.php");
+$tpl->assign(securityFormInputs());
+
+// Tell template that we are editing a course
+$tpl->assign('edit', true);
+
+// Assign breadcrumbs
+$breadcrumbs = array();
+$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Edit Course', 'href' => 'courseEditForm.php');
+$tpl->assign('breadcrumbs', $breadcrumbs);
+
+// Fetch template
+$tpldata = $tpl->fetch("course_add.tpl");
+$tpl->assign('tpldata', $tpldata);
+
+// Display template
+$tpl->display("htmlmain.tpl");
+
 ?>
-<?php include_once("header.php"); ?>
-
-<h1>Edit Course</h1>
-
-<form name='courseForm' method="post" action="courseEdit.php">
-<div class='center'>
-  <div>
-    <span class='formLabel'>Course Section:</span>
-    <input type='text' name='section' value='<?php echo $courseInfo['section']; ?>' size='20' maxlength='20'/>
-  </div>
-
-  <div>
-    <span class='formLabel'>Course Name:</span>
-    <input type='text' name='name' value='<?php echo $courseInfo['name']; ?>' size='50' maxlength='255'/>
-  </div>
-
-  <!-- Course professor -->
-  <?php
-    include ("connect.php");
-    if ($_SESSION['acctType'] == "admin")
-    {
-      echo "<div>\n";
-      echo "<span class='formLabel'>Professor:</span>\n";
-      // Display all professors
-      if (($profs = getUsers(array("userId", "name"), "enabled", "professor")) !== false)
-      {
-        echo "<select name='professor'>\n";
-
-        // Output each professor
-        foreach ($profs as $prof)
-        {
-          echo "<option value='{$prof['userId']}'";
-          // Add selected to the current professor
-          if ($prof['userId'] == $courseInfo['profId'])
-            echo " selected='selected'";
-          echo ">{$prof['name']}</option>\n";
-        }
-
-        echo "</select>\n";
-      }
-      echo "</div>\n";
-    }
-  ?>
-
-  <div>
-    <!-- Course semester -->
-    <span class='formLabel'>Course Semester:</span>
-    <select name='semester'>
-      <option <?php if ($courseInfo['season'] == "Fall") echo "selected='selected'"; ?> value='Fall'>Fall</option>
-      <option <?php if ($courseInfo['season'] == "Winter") echo "selected='selected'"; ?> value='Winter'>Winter</option>
-      <option <?php if ($courseInfo['season'] == "Spring") echo "selected='selected'"; ?> value='Spring'>Spring</option>
-      <option <?php if ($courseInfo['season'] == "Summer") echo "selected='selected'"; ?> value='Summer'>Summer</option>
-    </select>
-
-    <!-- Course year -->
-    <span class='formLabel'>Year:</span>
-    <?php
-      // Display options for year (1 year prior, 3 years later)
-      echo "<select name='year'>\n";
-      $year = (int)(date("Y"));
-      for ($i = -1; $i < 4; $i++)
-      {
-        if ($year + $i == $courseInfo['year'])
-          echo "<option selected='selected' value='" . ($year + $i) . "'>" . ($year + $i) . "</option>\n";
-        else
-          echo "<option value='" . ($year + $i) . "'>" . ($year + $i) . "</option>\n";
-      }
-      echo "</select>\n";
-    ?>
-  </div>
-  <br />
-
-  <!-- Course comments -->
-  <div class='courseComments' style='width: 250px; margin: 0px auto; text-align: left;'>
-    <span class='formLabel'>Comments:</span>
-    <br />
-    <textarea name='comment' style='width: 100%; height: 75px;'><?php echo $courseInfo['comment']; ?></textarea>
-  </div>
-
-  <?php
-
-    // Output hidden field of course id
-    echo "<input type='hidden' name='courseId' value='{$_GET['courseId']}'/>\n";
-
-    // Output security fields
-    require_once("securityFunctions.php");
-    securityFormInputs();
-  ?>
-  <input type='submit' class='submit' onClick='return verify();' value='Submit'/>
-</div>
-</form>
-
-<?php include_once("footer.php"); ?>

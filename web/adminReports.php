@@ -1,39 +1,32 @@
 <?php
 $acctTypes = "admin";
 require_once("loginCheck.php");
-?>
-<?php
-  function headFunction()
-  {
-?>
-<style type=text/css>
-#body{width:65%;}
-#class{font-size: 18px; font-weight: bold}
-</style>
-<?php
-}
-?>
-<?php include_once("header.php"); ?>
 
-<?
+require_once("smarty/Smarty.class.php");
+
+$tpl = new Smarty();
+
+require_once("header1.php");
+
 //connect to database
 include("connect.php");
 
-/* Display use of each doclet */
-if ($doclets = getDoclets())
-{
-  echo "<h1>Doclet Usage</h1>\n";
-  foreach ($doclets as $doclet)
-  {
-    // Display name of report
-    echo "<h6>{$doclet['docletName']}:</h6> ";
+require_once("generalFunctions.php");
 
-    // Calculate and display number of times the report was run
-    $numRows = getDocletRuns($doclet['docletId']);
-    echo "selected " . $numRows . " times<br/>\n";
-  }
-}
+// Get use of each doclet
+$tpl->assign('doclets', getDocletUsage());
+
+// Assign breadcrumbs
+$breadcrumbs = array();
+$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Admin Reports', 'href' => 'adminReports.php');
+$tpl->assign('breadcrumbs', $breadcrumbs);
+
+// Fetch template
+$tpldata = $tpl->fetch("admin_reports.tpl");
+$tpl->assign('tpldata', $tpldata);
+
+// Display template
+$tpl->display("htmlmain.tpl");
 
 ?>
-
-<?php include_once("footer.php"); ?>
