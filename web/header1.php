@@ -1,5 +1,14 @@
 <?php
 
+// Check that user did not switch from development server to production or visa versa
+if (isset($_SESSION['userId']) && isset($_SESSION['dev_server']) && $_SESSION['dev_server'] != DEVELOPMENT)
+{
+  session_destroy();
+  session_start();
+//  $_SESSION['msg']['error'] = "You have switched from the " . (DEVELOPMENT ? "Development" : "Production") . " site to the " . (DEVELOPMENT ? "Production" : "Development") . " site.  Please logout and log back in to the appropriate server.";
+  require_once("redirect.php");
+}
+
 require_once("connect.php");
 
 // Checks for a course parameter

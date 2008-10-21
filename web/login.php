@@ -57,6 +57,10 @@ else
       $_SESSION['username'] = $row['name'];
       $_SESSION['school'] = $row['school'];
       $_SESSION['schoolId'] = $row['schoolId'];
+
+      // Set the system that the user logged into
+      $_SESSION['dev_server'] = DEVELOPMENT;
+
       include("redirect.php");
     }
     else{
