@@ -3,10 +3,10 @@
 
 # Script expects to be run from www folder
 
-export set CLASSPATH=.:/usr/local/lib/mysql-connector-java-5.1.6-bin.jar:$CLASSPATH
-
 # Load config info
 . scripts/config.sh
+
+export set CLASSPATH=.:/usr/local/lib/mysql-connector-java-5.1.6-bin.jar:$CLASSPATH:$ANTLR_CLASSPATH
 
 #create temp dir based on tempFileName
 cd $UPLOAD_PATH
@@ -67,14 +67,14 @@ else
   /usr/bin/java -cp $CLASSES:$CLASSPATH comtor.GenerateErrorReport $JAVA_CONFIG
 fi
 
-# Delete the temporary folder
-/bin/rm -r $UPLOAD_PATH/$1
-
 if [ $compiled != 0 ]; then
 exit 1
 fi
 if [ $javadocRtn != 0 ]; then
 exit 2
 fi
+
+# Delete the temporary folder
+/bin/rm -r $UPLOAD_PATH/$1
 
 exit 0
