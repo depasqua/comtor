@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: ComtorDriver.java,v 1.12 2008-10-20 22:20:24 ssigwart Exp $
+  * $Id: ComtorDriver.java,v 1.13 2008-10-22 20:11:56 ssigwart Exp $
   **************************************************************************/
 package comtor;
 
@@ -119,17 +119,34 @@ public class ComtorDriver
       while(scan.hasNext())
       {
         docletName = scan.nextLine(); //store doclet as docletName
-        Class c = Class.forName(docletName); //create class for doclet
-        ComtorDoclet cd = (ComtorDoclet) c.newInstance(); //create new instance of the class
+        System.out.println("Attempting to get class: " + docletName);
+        try
+        {
+          Class c = Class.forName(docletName); //create class for doclet
+          System.out.println("Attempting to get instance of class: " + docletName);
+          ComtorDoclet cd = (ComtorDoclet) c.newInstance(); //create new instance of the class
 
-        // Start thread
-        System.out.println("Starting " + docletName);
-        DocletThread docThrd = new DocletThread();
-        docThrd.setRootDoc(rootDoc);
-        docThrd.setDocletSectionsPrepStatements(docletSectionsPrepStmt, docletParametersPrepStmt);
-        docThrd.setAnalyzer(cd);
-        docThrd.start();
-        threads.add(docThrd);
+          // Start thread
+          System.out.println("Starting " + docletName);
+          DocletThread docThrd = new DocletThread();
+          docThrd.setRootDoc(rootDoc);
+          docThrd.setDocletSectionsPrepStatements(docletSectionsPrepStmt, docletParametersPrepStmt);
+          docThrd.setAnalyzer(cd);
+          docThrd.start();
+          threads.add(docThrd);
+	}
+	catch (ClassNotFoundException e)
+	{
+	  System.out.println("Class not found.");
+	}
+        catch (ExceptionInInitializerError e)   
+	{
+	  System.out.println(e);
+	}
+        catch (LinkageError e)   
+	{
+	  System.out.println(e);
+	}
       }
 
       // Wait for all threads
@@ -154,27 +171,33 @@ public class ComtorDriver
     //exceptions
     catch(InterruptedException e)
     {
+      System.out.println("InterruptedException");
       System.err.println(e.toString());
-    }
-    catch(ClassNotFoundException cnfe)
-    {
-      System.err.println(cnfe.toString());
     }
     catch(InstantiationException ie)
     {
+      System.out.println("InstantiationException");
       System.err.println(ie.toString());
     }
     catch(IllegalAccessException iae)
     {
+      System.out.println("IllegalAccessException");
       System.err.println(iae.toString());
     }
     catch(IOException ioe)
     {
+      System.out.println("IOException");
       System.err.println(ioe.toString());
     }
     catch(SQLException sqle)
     {
+      System.out.println("SQLException");
       System.err.println(sqle.toString());
+    }
+    catch (Exception e)
+    {
+      System.out.println("Other Exception");
+      System.out.println(e.toString());
     }
 
     return true;

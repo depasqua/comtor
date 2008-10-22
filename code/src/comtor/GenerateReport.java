@@ -18,7 +18,7 @@
   *  59 Temple Place, Suite 330
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: GenerateReport.java,v 1.20 2008-10-20 22:20:24 ssigwart Exp $
+  * $Id: GenerateReport.java,v 1.22 2008-11-05 22:08:16 ssigwart Exp $
   **************************************************************************/
 package comtor;
 
@@ -159,13 +159,16 @@ public class GenerateReport
 
           // Get score for the doclet
           String tmp = list.getProperty("score");
-          float score = Float.parseFloat(tmp);
+          float score = (float)0.0;
+          if (tmp != null)
+            score = Float.parseFloat(tmp);
 
           // Insert userEventId and docletId into the database
           docletEventPrepStmt.setLong(1, userEventId);
           docletEventPrepStmt.setLong(2, docletId);
           docletEventPrepStmt.setFloat(3, score);
-          docletEventPrepStmt.executeUpdate();
+          System.out.println("Adding doclet event.");
+          System.out.println(docletEventPrepStmt.executeUpdate());
 
           // Get the autoincremented id for the data just entered
           result = docletEventPrepStmt.getGeneratedKeys();
