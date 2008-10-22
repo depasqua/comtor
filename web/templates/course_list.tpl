@@ -44,7 +44,7 @@
       <a href="courseDrop.php?courseId={$c.courseId}&amp;rand={$rand}" onclick="return verifyCourseAction('drop', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" >Drop</a> |
     {/if}
     {if in_array('enroll', $c.actions)}
-      <a href="courseEnroll.php?courseId={$c.courseId}&amp;rand={$rand}" onclick="return verifyCourseAction('drop', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" >Enroll</a> |
+      <a href="courseEnroll.php?courseId={$c.courseId}&amp;rand={$rand}" onclick="return verifyCourseAction('enroll in', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" >Enroll</a> |
     {/if}
     <a href="course_email.php?courseId={$c.courseId}">E-Mail</a>
   </td>
