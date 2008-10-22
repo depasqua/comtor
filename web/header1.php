@@ -1,5 +1,7 @@
 <?php
 
+require_once("config.php");
+
 // Check that user did not switch from development server to production or visa versa
 if (isset($_SESSION['userId']) && isset($_SESSION['dev_server']) && $_SESSION['dev_server'] != DEVELOPMENT)
 {
