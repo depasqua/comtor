@@ -1,3 +1,0 @@
-Check For Tags	comtor.analyzers.CheckForTags	Check for the proper use of returns, throw, and param tags.
-Comment Average Ratio	comtor.analyzers.CommentAvgRatio	Calculate the length for each method's comments in a class.
-Percentage Methods	comtor.analyzers.PercentageMethods	Calculate the percentage of commented methods per class.
