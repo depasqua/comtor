@@ -18,27 +18,33 @@
   *  59 Temple Place, Suite 330
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: SpellCheck.java,v 1.1 2008-10-29 23:25:25 ssigwart Exp $
+  * $Id: SpellCheck.java,v 1.2 2008-11-05 22:16:52 ssigwart Exp $
   **************************************************************************/
 package comtor.analyzers;
 
 import comtor.*;
+import comtor.analyzers.SpellCheckResources.*;
 import com.sun.javadoc.*;
 import java.util.*;
 import java.util.regex.*;
 import java.text.*;
 import java.io.*;
+import org.antlr.runtime.*;
 
 /**
  * The <code>SpellCheck</code> class is a tool to check spelling in comments.
- * It is capable of determining is a word is mispelled or a java class name.
+ * It is capable of determining is a word is misspelled or a java class name.
  * Incorrect spellings for the same word are only counted once.
  *
  * @author Stephen Sigwart
  */
 public final class SpellCheck implements ComtorDoclet
 {
-  private final String dict_file = "/home/comtor/words";
+  private String dict_file = "/home/comtor/words";
+  private String mispellingsFilename = "/home/comtor/mispellings";
+
+  // Output stream for mispelled words
+  private PrintStream mispellingsFile = null;
 
   private Properties prop = new Properties();
   private float maxScore = 5;
@@ -66,17 +72,9 @@ public final class SpellCheck implements ComtorDoclet
    */
   public SpellCheck()
   {
-    // Open dictionary
-    try
-    {
-      dict = new RandomAccessFile(dict_file, "r");
-      validWords.add("java");
-    }
-    catch(Exception e)
-    {
-      System.out.println("Failed to load dictionary.");
-      dict = null;
-    }
+    // Add some acceptable words
+    validWords.add("java");
+    validWords.add("int");
   }
 
   /**
@@ -89,6 +87,38 @@ public final class SpellCheck implements ComtorDoclet
   {
     prop.setProperty("title", "Spell Checker"); //doclet title
 
+    // Parse input files to get variable and class names
+    try
+    {
+      // Current working directory
+      String dir = System.getProperty("user.dir");
+      System.out.println("User directory: " + dir);
+      BufferedReader fileNames =  new BufferedReader(new FileReader(dir+"/source.txt"));
+      String line;
+      while((line = fileNames.readLine()) != null)
+      {
+        CharStream input = new ANTLRFileStream(line);
+        spellCheckGrammarLexer lex = new spellCheckGrammarLexer(input);
+        TokenStream tokens = new CommonTokenStream(lex);
+        spellCheckGrammarParser parser = new spellCheckGrammarParser(tokens);
+        parser.compilationUnit();
+
+        for (int i = 0; i < lex.varNames.size(); i++)
+          javaWords.add((String)lex.varNames.get(i));
+
+        // Parse all comments
+        for (int i = 0; i < lex.comments.size(); i++)
+          parseComment((String)lex.comments.get(i));
+
+        //System.out.println(lex.packages);
+      }
+    }
+    catch (Exception e)
+    {
+      System.out.println(e);
+    }
+
+/* No longer needed since all comments are fetched by ANTLR
     // Get comments for root document
     parseComment(rootDoc.commentText());
 
@@ -96,6 +126,7 @@ public final class SpellCheck implements ComtorDoclet
     ClassDoc[] classes = rootDoc.classes();
     for(int i = 0; i < classes.length; i++)
       processClass(classes[i]);
+*/
 
     // Print misspelled words
     Iterator<String> it = potentialWords.iterator();
@@ -111,10 +142,21 @@ public final class SpellCheck implements ComtorDoclet
         it.remove();
         words.add(word);
       }
+      // Check that word is not class/methods/parameter/etc name with 's' added
+      // to end
+      else if (word.charAt(word.length()-1) == 's' && javaWords.contains(word.substring(0, word.length()-1)))
+      {
+        it.remove();
+        words.add(word);
+      }
       else
       {
         prop.setProperty("000.000."+num, "The following word was misspelled: " + word);
         num++;
+
+        // Add the word to the mispellings file
+        if (mispellingsFile != null)
+          mispellingsFile.println(word);
       }
     }
     if (num == 0)
@@ -196,7 +238,7 @@ public final class SpellCheck implements ComtorDoclet
   private void parseComment(String comment)
   {
     // Replace parenthesis, brackets, dashes, and periods with spaces
-    comment = comment.replaceAll("[()<>-]|\\.|\\+"," ");
+    comment = comment.replaceAll("[()<>-]|\\+"," ");
 
     // Create Scanner
     Scanner scan = new Scanner(comment);
@@ -228,13 +270,22 @@ public final class SpellCheck implements ComtorDoclet
               // Valid if a number
               try
               {
-                Integer.parseInt(tmp2);
-                words.add(tmp2);
+                Integer.parseInt(tmp3);
+                words.add(tmp3);
               }
               catch (NumberFormatException e)
               {
-                tmp = tmp.replaceAll("[\\p{Punct}&&[^_]]","");
-                potentialWords.add(tmp);
+                // Ignore words that contain @ symbol.  This will prevent
+                // javadoc tags and E-mail addresses from being considered
+                // incorrectly spelled.
+                // Ignore words that contain a dot '.' in the middle as they
+                // could be filename.
+                int idx = tmp.lastIndexOf('.');
+                if (!tmp.contains("@") && (idx == -1 || idx == tmp.length()))
+                {
+                  tmp = tmp.replaceAll("[\\p{Punct}&&[^_]]","");
+                  potentialWords.add(tmp);
+                }
               }
             }
           }
@@ -253,7 +304,7 @@ public final class SpellCheck implements ComtorDoclet
     word = word.toLowerCase();
 
     // Check against user defined words
-    if (validWords.contains(word))
+    if (validWords.contains(word) || word.length() == 0)
       return true;
 
     // Check against UNIX dictionary file
@@ -284,6 +335,7 @@ public final class SpellCheck implements ComtorDoclet
             if (filePos < start)
               break;
 
+            // Load the word
             String tmp = dict.readLine().toLowerCase();
 
             if (tmp.equals(word))
@@ -329,10 +381,10 @@ public final class SpellCheck implements ComtorDoclet
   *************************************************************************/
   public float getGrade()
   {
-    if (words.size() == 0)
+    if (words.size() + potentialWords.size() == 0)
       return (float)0.0;
 
-    float ratio = 1 - (float)potentialWords.size()/words.size();
+    float ratio = (float)words.size()/(words.size() + potentialWords.size());
 
     return ratio * maxScore;
   }
@@ -353,16 +405,37 @@ public final class SpellCheck implements ComtorDoclet
     }
   }
 
-  /**
-   * The <code>Word</code> class stores the original word, the word with
-   * punctuation stripped, and the formatted string for the word location
-   *
-   * @author Stephen Sigwart
-   */
-  private class Word
+  /*************************************************************************
+  * Sets the configuration properties loaded from the config file
+  *
+  * @param props Properties list
+  *************************************************************************/
+  public void setConfigProperties(Properties props)
   {
-    public String word;
-    public String stripped_word;
-    public String position;
+    // Get dictionary file and misspellings file
+    dict_file = props.getProperty("dictionary");
+    mispellingsFilename = props.getProperty("mispellings");
+
+    // Open dictionary file
+    try
+    {
+      dict = new RandomAccessFile(dict_file, "r");
+    }
+    catch(Exception e)
+    {
+      System.out.println("Failed to load dictionary.");
+      dict = null;
+    }
+
+    // Open mispelled words file
+    try
+    {
+      mispellingsFile = new PrintStream(new FileOutputStream(mispellingsFilename, true));
+    }
+    catch(Exception e)
+    {
+      System.out.println("Failed to open mispellings file.");
+      mispellingsFile = null;
+    }
   }
 }
