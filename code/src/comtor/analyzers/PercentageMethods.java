@@ -165,4 +165,14 @@ public class PercentageMethods implements ComtorDoclet
   {
     // No customizable parameters
   }
+
+  /*************************************************************************
+  * Sets the configuration properties loaded from the config file
+  *
+  * @param props Properties list
+  *************************************************************************/
+  public void setConfigProperties(Properties props)
+  {
+    // Don't need them
+  }
 }

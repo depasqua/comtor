@@ -52,4 +52,11 @@ public interface ComtorDoclet
   * @param value Value of the parameter
   *************************************************************************/
   public void setGradingParameter(String param, String value);
+
+  /*************************************************************************
+  * Sets the configuration properties loaded from the config file
+  *
+  * @param props Properties list
+  *************************************************************************/
+  public void setConfigProperties(Properties props);
 }
