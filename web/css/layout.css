@@ -570,3 +570,18 @@ div.docletSubsection table td
   text-align: center;
   vertical-align: top;
 }
+
+span.tag
+{
+  font-style: italic;
+}
+
+.underline
+{
+  text-decoration: underline;
+}
+
+p.indentAll
+{
+  margin: 5px 0px 5px 20px;
+}
