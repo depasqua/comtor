@@ -35,10 +35,31 @@ import java.text.*;
  */
 public class CheckForTags implements ComtorDoclet
 {
-  Properties prop = new Properties();
-  HashMap<String, Float> gradeBreakdown = new HashMap<String, Float>();
-  HashMap<String, Integer> possibleScore = new HashMap<String, Integer>();
-  HashMap<String, Integer> points = new HashMap<String, Integer>();
+  // Possible places to check for option tags
+  private final int OVERVIEW = 0x0001;
+// Package specific information is not supported yet
+//  private final int PACKAGE = 0x0002;
+  private final int CLASS = 0x0004;
+  private final int FIELD = 0x0008;
+  private final int METHOD = 0x0010;
+
+  // Variables indicating optional tag requirements
+  private int requireAuthor = 0;
+  private int requireVersion = 0;
+  private int requireSee = 0;
+  private int requireSince = 0;
+  
+  // Possible values for each optional tag
+  private final int maskAuthor = OVERVIEW | CLASS;
+  private final int maskVersion = OVERVIEW | CLASS;
+  private final int maskSee = OVERVIEW | CLASS | FIELD | METHOD;
+  private final int maskSince = OVERVIEW | CLASS | FIELD | METHOD;
+
+  private Properties prop = new Properties();
+  private HashMap<String, Float> gradeBreakdown = new HashMap<String, Float>();
+  private HashMap<String, Integer> possibleScore = new HashMap<String, Integer>();
+  private HashMap<String, Integer> points = new HashMap<String, Integer>();
+
 
   /**
    * Constructor
@@ -49,6 +70,10 @@ public class CheckForTags implements ComtorDoclet
     gradeBreakdown.put("Return", new Float(4.0));
     gradeBreakdown.put("Param", new Float(5.0));
     gradeBreakdown.put("Throws", new Float(1.0));
+    gradeBreakdown.put("Author", new Float(0.0));
+    gradeBreakdown.put("Version", new Float(0.0));
+    gradeBreakdown.put("See", new Float(0.0));
+    gradeBreakdown.put("Since", new Float(0.0));
 
     // Set default values for scores
     possibleScore.put("Return", new Integer(0));
@@ -57,6 +82,14 @@ public class CheckForTags implements ComtorDoclet
     points.put("Param", new Integer(0));
     possibleScore.put("Throws", new Integer(0));
     points.put("Throws", new Integer(0));
+    possibleScore.put("Author", new Integer(0));
+    points.put("Author", new Integer(0));
+    possibleScore.put("Version", new Integer(0));
+    points.put("Version", new Integer(0));
+    possibleScore.put("See", new Integer(0));
+    points.put("See", new Integer(0));
+    possibleScore.put("Since", new Integer(0));
+    points.put("Since", new Integer(0));
   }
 
   /**
@@ -68,28 +101,230 @@ public class CheckForTags implements ComtorDoclet
    */
   public Properties analyze(RootDoc rootDoc)
   {
-    prop.setProperty("title", "Check for Tags"); //doclet title
-//    prop.setProperty("description", "Check for proper use of Javadoc comments with return, throw, and param tags."); //doclet description
-//    DateFormat dateFormat = new SimpleDateFormat("M/d/yy h:mm a");
-//    java.util.Date date = new java.util.Date();
-//    prop.setProperty("date", "" + dateFormat.format(date)); //doclet date & time
+    // Set doclet title
+    prop.setProperty("title", "Check for Tags");
 
-    ClassDoc[] classes = rootDoc.classes();
+    // Check for author tag if required
+    if ((requireAuthor & OVERVIEW) == OVERVIEW)
+    {
+      // Add to possible points
+      possibleScore.put("Author", new Integer(1));
+
+      // Check if the tag exists and contains text
+      if (checkForTag(rootDoc, "@author"))
+      {
+        points.put("Author", new Integer(1));
+        prop.setProperty("000", "Found author tag.");
+      }
+      else
+        prop.setProperty("000", "Author tag required, but not found.");
+    }
+
+    // Check for version tag if required
+    if ((requireVersion & OVERVIEW) == OVERVIEW)
+    {
+      // Add to possible points
+      possibleScore.put("Version", new Integer(1));
+
+      // Check if the tag exists and contains text
+      if (checkForTag(rootDoc, "@version"))
+      {
+        points.put("Version", new Integer(1));
+        prop.setProperty("001", "Found version tag.");
+      }
+      else
+        prop.setProperty("001", "Version tag required, but not found.");
+    }
+
+    // Check for see tag if required
+    if ((requireSee & OVERVIEW) == OVERVIEW)
+    {
+      // Add to possible points
+      possibleScore.put("See", new Integer(1));
+
+      // Check if the tag exists and contains text
+      if (checkForTag(rootDoc, "@see"))
+      {
+        points.put("See", new Integer(1));
+        prop.setProperty("002", "Found see tag.");
+      }
+      else
+        prop.setProperty("002", "See tag required, but not found.");
+    }
+
+    // Check for since tag if required
+    if ((requireSince & OVERVIEW) == OVERVIEW)
+    {
+      // Add to possible points
+      possibleScore.put("Since", new Integer(1));
+
+      // Check if the tag exists and contains text
+      if (checkForTag(rootDoc, "@since"))
+      {
+        points.put("Since", new Integer(1));
+        prop.setProperty("003", "Found since tag.");
+      }
+      else
+        prop.setProperty("003", "Since tag required, but not found.");
+    }
 
     // Count variables for score
     int return_max = 0, return_points = 0, param_max = 0, param_points = 0, throws_max = 0, throws_points = 0;
 
+    // Process each class
+    ClassDoc[] classes = rootDoc.classes();
     for(int i=0; i < classes.length; i++)
     {
-      String classID = numberFormat(i);
+      String classID = numberFormat(i + 25);  // Leave numbers 0 - 24 open for general class properties
       prop.setProperty("" + classID, "Class: " + classes[i].name()); //store class name
+
+      // Check for author tag if required
+      if ((requireAuthor & CLASS) == CLASS)
+      {
+        // Add to possible points
+        possibleScore.put("Author", new Integer(possibleScore.get("Author") + 1));
+
+        // Check if the tag exists and contains text
+        if (checkForTag(classes[i], "@author"))
+        {
+          points.put("Author", new Integer(points.get("Author") + 1));
+          prop.setProperty(classID + ".000", "Found author tag.");
+        }
+        else
+          prop.setProperty(classID + ".000", "Author tag required, but not found.");
+      }
+
+      // Check for version tag if required
+      if ((requireVersion & CLASS) == CLASS)
+      {
+        // Add to possible points
+        possibleScore.put("Version", new Integer(possibleScore.get("Version") + 1));
+
+        // Check if the tag exists and contains text
+        if (checkForTag(classes[i], "@version"))
+        {
+          points.put("Version", new Integer(points.get("Version") + 1));
+          prop.setProperty(classID + ".001", "Found version tag.");
+        }
+        else
+          prop.setProperty(classID + ".001", "Version tag required, but not found.");
+      }
+
+      // Check for see tag if required
+      if ((requireSee & CLASS) == CLASS)
+      {
+        // Add to possible points
+        possibleScore.put("See", new Integer(possibleScore.get("See") + 1));
+
+        // Check if the tag exists and contains text
+        if (checkForTag(classes[i], "@see"))
+        {
+          points.put("See", new Integer(points.get("See") + 1));
+          prop.setProperty(classID + ".002", "Found see tag.");
+        }
+        else
+          prop.setProperty(classID + ".002", "See tag required, but not found.");
+      }
+
+      // Check for since tag if required
+      if ((requireSince & CLASS) == CLASS)
+      {
+        // Add to possible points
+        possibleScore.put("Since", new Integer(possibleScore.get("Since") + 1));
+
+        // Check if the tag exists and contains text
+        if (checkForTag(classes[i], "@since"))
+        {
+          points.put("Since", new Integer(points.get("Since") + 1));
+          prop.setProperty(classID + ".003", "Found since tag.");
+        }
+        else
+          prop.setProperty(classID + ".003", "Since tag required, but not found.");
+      }
+
+      // Id to use in field or method portion of number format
+      // Leave numbers 0 - 24 open for general class properties;
+      int id2 = 25;
+
+      // Get fields
+      FieldDoc[] fields = classes[i].fields();
+      for(int j = 0; j < fields.length; j++)
+      {
+        String fieldId = numberFormat(id2++);
+        prop.setProperty(classID + "." + fieldId, "Field: " + fields[j].name()); //store field name
+
+        // Check for see tag if required
+        if ((requireSee & FIELD) == FIELD)
+        {
+          // Add to possible points
+          possibleScore.put("See", new Integer(possibleScore.get("See") + 1));
+
+          // Check if the tag exists and contains text
+          if (checkForTag(fields[j], "@see"))
+          {
+            points.put("See", new Integer(points.get("See") + 1));
+            prop.setProperty(classID + "." + fieldId + ".002", "Found see tag.");
+          }
+          else
+            prop.setProperty(classID + "." + fieldId + ".002", "See tag required, but not found.");
+        }
+
+        // Check for since tag if required
+        if ((requireSince & FIELD) == FIELD)
+        {
+          // Add to possible points
+          possibleScore.put("Since", new Integer(possibleScore.get("Since") + 1));
+
+          // Check if the tag exists and contains text
+          if (checkForTag(fields[j], "@since"))
+          {
+            points.put("Since", new Integer(points.get("Since") + 1));
+            prop.setProperty(classID + "." + fieldId + ".003", "Found since tag.");
+          }
+          else
+            prop.setProperty(classID + "." + fieldId + ".003", "Since tag required, but not found.");
+        }
+      }
+
+      // Get methods
       MethodDoc[] methods = new MethodDoc[0];
       methods = classes[i].methods();
-
       for(int j=0; j < methods.length; j++)
       {
-        String methodID = numberFormat(j);
+        String methodID = numberFormat(id2++);
         prop.setProperty(classID + "." + methodID, "Method: " + methods[j].name()); //store method name
+
+        // Check for see tag if required
+        if ((requireSee & METHOD) == METHOD)
+        {
+          // Add to possible points
+          possibleScore.put("See", new Integer(possibleScore.get("See") + 1));
+
+          // Check if the tag exists and contains text
+          if (checkForTag(methods[j], "@see"))
+          {
+            points.put("See", new Integer(points.get("See") + 1));
+            prop.setProperty(classID + "." + methodID + ".002", "Found see tag.");
+          }
+          else
+            prop.setProperty(classID + "." + methodID + ".002", "See tag required, but not found.");
+        }
+
+        // Check for since tag if required
+        if ((requireSince & METHOD) == METHOD)
+        {
+          // Add to possible points
+          possibleScore.put("Since", new Integer(possibleScore.get("Since") + 1));
+
+          // Check if the tag exists and contains text
+          if (checkForTag(methods[j], "@since"))
+          {
+            points.put("Since", new Integer(points.get("Since") + 1));
+            prop.setProperty(classID + "." + methodID + ".003", "Found since tag.");
+          }
+          else
+            prop.setProperty(classID + "." + methodID + ".003", "Since tag required, but not found.");
+        }
 
         //return tags
         String returnParam = "@return";
@@ -295,15 +530,32 @@ public class CheckForTags implements ComtorDoclet
 
   /*************************************************************************
   * Returns the grade for the doclet.
+  *
+  * @return The grade for the doclet
   *************************************************************************/
   public float getGrade()
   {
     int score, possible;
     float max, total = (float)0.0, percent;
 
-    String sections[] = {"Return", "Param", "Throws"};
+    // Define sections
+    String sections[] = new String[7];
+    int idx = 0;
+    sections[idx++] = "Return";
+    sections[idx++] = "Param";
+    sections[idx++] = "Throws";
 
-    for (int i = 0; i < sections.length; i++)
+    // Add in the option sections
+    if (requireAuthor != 0)
+      sections[idx++] = "Author";
+    if (requireVersion != 0)
+      sections[idx++] = "Version";
+    if (requireSee != 0)
+      sections[idx++] = "See";
+    if (requireSince != 0)
+      sections[idx++] = "Since";
+    // Get grade for each section
+    for (int i = 0; i < idx; i++)
     {
       possible = possibleScore.get(sections[i]);
       score = points.get(sections[i]);
@@ -324,7 +576,49 @@ public class CheckForTags implements ComtorDoclet
   *************************************************************************/
   public void setGradingParameter(String param, String value)
   {
-    // No customizable parameters
+    // Parse options from value
+    try
+    { 
+      int combination = 0;
+      Scanner scan = new Scanner(value);
+      while (scan.hasNext())
+      {
+        // Determine the option
+        String option = scan.next();
+        if (option.equalsIgnoreCase("OVERVIEW"))
+          combination |= OVERVIEW;
+        if (option.equalsIgnoreCase("CLASS"))
+          combination |= CLASS;
+        if (option.equalsIgnoreCase("FIELD"))
+          combination |= FIELD;
+        if (option.equalsIgnoreCase("METHOD"))
+          combination |= METHOD;
+      }
+       
+      // Optional tags
+      if (param.equals("Author"))
+      {
+        // Mask value with possible values
+        requireAuthor = combination & maskAuthor;
+      }    
+      else if (param.equals("Version"))
+      {
+        // Mask value with possible values
+        requireVersion = combination & maskVersion;
+      }
+      else if (param.equals("See"))
+      {
+        // Mask value with possible values
+        requireSee = combination & maskSee;
+      }
+      else if (param.equals("Since"))
+      {
+        // Mask value with possible values
+        requireSince = combination & maskSince;
+      }
+    }
+    catch (Exception e)
+    {}
   }
 
   /*************************************************************************
@@ -335,5 +629,30 @@ public class CheckForTags implements ComtorDoclet
   public void setConfigProperties(Properties props)
   {
     // Don't need them
+  }
+
+  /*************************************************************************
+  * Checks if the given doc has at least on instance of the tag.  The tag
+  * must also contain some text
+  *
+  * @param doc The doc to check for the tag in
+  * @param tag The name of the tag to look for, including the @ sign
+  *
+  * @return Boolean indicating if the tag was found.
+  *************************************************************************/
+  private boolean checkForTag(Doc doc, String tag)
+  {
+    // Check if the tag exists and contains text
+    Tag [] tags = doc.tags(tag);
+    boolean rtn = false;
+    if (tags.length > 0)
+    {
+      // Search for at least one with text
+      for (int i = 0; !rtn && i < tags.length; i++)
+        if (!tags[i].text().equals(""))
+          rtn = true;
+    }
+
+    return rtn;
   }
 }
