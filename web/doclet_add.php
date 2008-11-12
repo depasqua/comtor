@@ -114,7 +114,7 @@ if (!empty($_POST))
               $valid = true;
               if ($idx != count($_POST['sectionName']))
               {
-                if (empty($name) || empty($_POST['sectionDesc'][$idx]) || empty($_POST['sectionDefault'][$idx]))
+                if (empty($name) || empty($_POST['sectionDesc'][$idx]) || $_POST['sectionDefault'][$idx] === null)
                 {
                   // Ignore completely blank rows
                   if (!empty($name) || !empty($_POST['sectionDesc'][$idx]) || !empty($_POST['sectionDefault'][$idx]))
@@ -146,7 +146,7 @@ if (!empty($_POST))
               $valid = true;
               if ($idx != count($_POST['paramName']))
               {
-                if (empty($name) || empty($_POST['paramDesc'][$idx]) || empty($_POST['paramValue'][$idx]))
+                if (empty($name) || empty($_POST['paramDesc'][$idx]) || $_POST['paramValue'][$idx] === null)
                 {
                   // Ignore completely blank rows
                   if (!empty($name) || !empty($_POST['paramDesc'][$idx]) || !empty($_POST['paramValue'][$idx]))

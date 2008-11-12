@@ -72,7 +72,7 @@ if (!empty($_POST))
       else if ($_POST['Open_Meridian'] == 'pm' && $hour != 12)
         $hour += 12;
 
-      $openTime = mktime($hour, $_POST['Open_Minutes'], 0, $_POST['Open_Month'], $_POST['Open_Day'], $_POST['Open_Year']);
+      $openTime = mktime($hour, $_POST['Open_Minute'], 0, $_POST['Open_Month'], $_POST['Open_Day'], $_POST['Open_Year']);
     }
 
     // Validate and contruct close date
@@ -97,7 +97,7 @@ if (!empty($_POST))
       else if ($_POST['Close_Meridian'] == 'pm' && $hour != 12)
         $hour += 12;
 
-      $closeTime = mktime($hour, $_POST['Close_Minutes'], 0, $_POST['Close_Month'], $_POST['Close_Day'], $_POST['Close_Year']);
+      $closeTime = mktime($hour, $_POST['Close_Minute'], 0, $_POST['Close_Month'], $_POST['Close_Day'], $_POST['Close_Year']);
     }
 
     // Remove any html codes from posts
