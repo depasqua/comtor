@@ -86,6 +86,10 @@ if (!empty($_POST))
       $email = trim($_POST['email']);
       if (empty($email))
         $error[] = 'E-mail address is required.';
+
+      // Check that address is unique
+      if (emailExists($email, $userId))
+        $error[] = 'E-mail address already used.';
     }
 
     // Check account types
