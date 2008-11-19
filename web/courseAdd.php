@@ -116,7 +116,7 @@ if($secure)
   {
     // Insert course into database
     $profId = isset($_POST['professor']) ? $_POST['professor'] : $_SESSION['userId'];
-    if (addNewCourse($profId, $_POST['name'], $_POST['section'], $semester, $_POST['comment']))
+    if (addNewCourse($profId, $_POST['name'], $_POST['section'], $semester, $_POST['comment'], $_SESSION['schoolId']))
     {
       $_SESSION['msg']['success'] = "Course successfully added.";
     }

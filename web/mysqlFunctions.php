@@ -60,12 +60,17 @@ function userIdExists($userId)
 
 /*******************************************************************************
 * Checks if there is already an account for the given e-mail address.
-* Assumes that the caller has already checked that the parameters are valid
+* Assumes that the caller has already checked that the parameters are valid.
+* If $userId is numeric, ignores the address if the address is for the user id
 * Returns true or false.
 *******************************************************************************/
-function emailExists($email)
+function emailExists($email, $userId = null)
 {
-  $result = mysql_query("SELECT email FROM users_view WHERE email='$email' LIMIT 1");
+  $where = "";
+  if (is_numeric($userId))
+    $where = " AND NOT userId=".$userId;
+
+  $result = mysql_query("SELECT email FROM users_view WHERE email='$email'{$where} LIMIT 1");
 
   // Check that result is a valid mysql resourse
   if (!$result)
@@ -1285,13 +1290,13 @@ function deleteCourse($courseId)
 * Assumes that the caller has already checked that the parameters are valid
 * Returns true or false to indicate if the user was successfully inserted
 *******************************************************************************/
-function updateCourseInfo($courseId, $profId, $name, $section, $semester, $comment)
+function updateCourseInfo($courseId, $profId, $name, $section, $semester, $comment, $schoolId)
 {
   // Check that courseId and profId are numeric before query
-  if (!is_numeric($courseId) || !is_numeric($profId))
+  if (!is_numeric($courseId) || !is_numeric($profId) || !is_numeric($schoolId))
     return false;
 
-  $query = "UPDATE courses SET profId = $profId, name = '{$name}', section = '{$section}', semester = '{$semester}', comment = '{$comment}' WHERE courseId = '{$courseId}'";
+  $query = "UPDATE courses SET profId = $profId, name = '{$name}', section = '{$section}', semester = '{$semester}', comment = '{$comment}', schoolId={$schoolId} WHERE courseId = '{$courseId}'";
   return mysql_query($query);
 }
 
@@ -1300,13 +1305,13 @@ function updateCourseInfo($courseId, $profId, $name, $section, $semester, $comme
 * Assumes that the caller has already checked that the parameters are valid
 * Returns true or false to indicate if the user was successfully inserted
 *******************************************************************************/
-function addNewCourse($profId, $name, $section, $semester, $comment)
+function addNewCourse($profId, $name, $section, $semester, $comment, $schoolId)
 {
   // Check that profId is numeric before query
-  if (!is_numeric($profId))
+  if (!is_numeric($profId) || !is_numeric($schoolId))
     return false;
 
-  $query = "INSERT INTO courses (profId, name, section, semester, comment) VALUES ({$profId}, '{$name}', '{$section}', '{$semester}', '{$comment}')";
+  $query = "INSERT INTO courses (profId, name, section, semester, comment, schoolId) VALUES ({$profId}, '{$name}', '{$section}', '{$semester}', '{$comment}', {$schoolId})";
   return mysql_query($query);
 }
 
@@ -1466,9 +1471,20 @@ function getCourses($userId = false, $lower = false, $total = false, $status = n
   // Get all courses
   else
   {
-    $where = '';
+    $where = array();
+
+    // Set school id
+    global $_SESSION;
+    if (isset($_SESSION['schoolId']))
+      $where[] = "schoolId={$_SESSION['schoolId']}";
+
     if ($status != null)
-      $where = 'WHERE status=\'' . $status . '\'';
+      $where[] = 'status=\'' . $status . '\'';
+
+    if (empty($where))
+      $where = "";
+    else
+      $where = "WHERE " . implode(" AND ", $where);
 
     $query = "SELECT * FROM courses {$where} ORDER BY section{$limit}";
     if ($courseResult = mysql_query($query))
