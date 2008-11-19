@@ -43,6 +43,13 @@ cd $UPLOAD_PATH/$1/
 /usr/bin/find src -name *.java > source.txt
 /bin/chmod 755 *.txt
 
+# Check that there is source code
+if [ ! -s "./source.txt" ]; then
+  # Delete the temporary folder
+  /bin/rm -r $UPLOAD_PATH/$1
+  exit 3
+fi
+
 #compile and list class files
 cd src
 /usr/bin/javac `/usr/bin/find . | /bin/grep .*\.java$` > ../CompileOut.txt 2>&1

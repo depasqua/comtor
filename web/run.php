@@ -96,6 +96,11 @@ if ($message == "")
     case 1:
       $_SESSION['msg']['error'] = "Your source code did not compile.  Please resubmit once the code compiles. This may be due to missing packages.  Please make sure that all nonstandard packages are in the jar file.";
       break;
+    case 3:
+      $_SESSION['msg']['error'] = "Your jar file did not contain any .java source code file.";
+      header("Location: submit.php");
+      exit;
+      break;
     case 2:
     default:
       $_SESSION['msg']['error'] = "There was an error analyzing your code.";
