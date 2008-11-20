@@ -3,6 +3,8 @@ DEFINE("PERMISSION_ERROR", "You do not have permissions to view this page!");
 
 // Check for session id
 session_start();
+
+// Check that userId and acctType are set
 if(!isset($_SESSION['userId']) || !isset($_SESSION['acctType']))
 {
   $_SESSION['msg']['error'] = PERMISSION_ERROR;

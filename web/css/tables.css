@@ -4,6 +4,7 @@ table.data
   border-collapse: collapse;
   text-align: center;
   table-layout: fixed;
+  margin-top: 5px;
   width: 100%;
 }
 
@@ -43,6 +44,14 @@ table.data td
   border: 1px solid #e0e0e0;
   background-color: #f0f0f0;
   padding: 10px;
+}
+
+table.data td.subheading
+{
+  border: 1px solid #e0e0e0;
+  background-color: #d8f0F0;
+  padding: 10px;
+  text-align: left;
 }
 
 th.left, td.left
