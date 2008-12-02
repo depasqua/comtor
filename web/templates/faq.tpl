@@ -1,159 +1,43 @@
-{*
-<table width="90%" cellpadding="1" cellspacing="1" border="0">
-  <tr>
-    <td align="left">
-      <b>Installation Questions</b><br/>
-      <ol>
-        <li>Where can I get Comment Mentor?
-          <br/><br/>
-          <i>You can download the <a href="comtor.tar.gz">latest version</a>.
-          Sorry, we don't have public CVS access yet.</i>
-          <br/>
-        </li>
-        <li>What are the installation requirements?
-    <br/><br/>
-    <i>You need to download and install the <a href="http://ant.apache.org/">Ant build tool</a> from the Apache Software Foundation. You will need a recent <a href="http://java.sun.com/">Java Development Kit</a> (CoMtor is developed with the JDK 5.x -- it should work).</i>
-    <br/>
-  </li>
-        <li>How do I install Comment Mentor locally?
-    <br/><br/>
-    <i>
-      <ol>
-  <li> Download the tar.gz file </li>
-  <li> <code>tar -zxf comtor.tar.gz</code> </li>
-  <li> <code>cd comtor/code</code> </li>
-  <li> <code>ant</code> </li>
-</ol>
-    </i>
-    <br/>
-  </li>
-        <li>How do I use the web interface/service?
-    <br/><br/>
-    <i>We are still working on it. Check back, and use the command line version in the meanwhile.</i>
-    <br/>
-  </li>
-        <li>Can I run the web service locally?
-    <br/><br/>
-    <i>Sure -- once we write the code for it, we will package it
-       with the rest of the comtor download. You will probably
- need to get familiar with downloading and installing a
- servlet container such as Apache's
- <a href="http://tomcat.apache.org/">Tomcat</a>.
-    </i>
-    <br/>
-  </li>
-      </ol>
-      <b>General Questions</b><br/>
-      <ol>
-        <li>I don't like Java. What other languages are you going to support?</li>
-        <li>I like Java -- what other languages are you planning to support?</li>
-        <li>Are you guys inventing a comment language here?</li>
-        <li>How is this different than source code annotation?</li>
-        <li>How can I help?</li>
-        <li>Is Comment Mentor FOSS (Free/Open Source Software)?
-    <br/><br/>
-      <i>Yes. Comment Mentor's code is licensed under the terms
-   of the <a href="http://www.gnu.org/licenses/gpl.txt">GNU GPL, version 2</a>.
-   The source code is distributed as the software download
-   itself, and you are free to make changes to the software,
-   as long as your changes are distributed under the GPL.
-</i>
-    <br/>
-  </li>
-      </ol>
-      <b>Technical Questions</b>
-      <ol>
-        <li>What features are you measuring?
-         <br/><br/>
-         <i>We've got your <a href="features.html">list of features right here</a>.</i><br/>
-        </li>
-      </ol>
-    </td>
-   </tr>
-</table>
-*}
+<h2>General</h2>
+
+<a href="#gen.comtor">What does COMTOR stand for?</a><br/>
+<a href="#gen.vpn">Can I access the system from home?</a><br/>
+<a href="#gen.features">What features does COMTOR measure?</a><br/>
+<a href="#gen.created">Who created COMTOR anyway?</a><br/>
+<a href="#gen.whoUse">Why should I use this system?</a><br/>
+<a href="#gen.whoBenefit">Who will benefit most from this system?</a><br/>
+<a href="#gen.bugs">I've noticed some bugs when using this system.</a><br/>
+<a href="#gen.lang">What types of source code can I submit to COMTOR?</a><br/>
+<a href="#gen.javadoc">What is a javadoc comment?</a><br/>
+<a href="#gen.jar">What is a jar file?</a><br/>
+<a href="#gen.openSource">Is COMTOR an open source project?</a><br/>
+<a href="#gen.icons">Icon Glossary</a><br/>
+
+<h3>Account Management</h3>
+<a href="#gen.acct.create">How do I create an account?</a><br/>
+<a href="#gen.acct.email">Do I have to enter my college email address?</a><br/>
+
+<h3>Troubleshooting</h3>
+<a href="#gen.trouble.login1">I can't log in. COMTOR keeps telling me my username does not exist.</a><br/>
+<a href="#gen.trouble.pswd">I forgot my password. Now what do I do?</a><br/>
+<a href="#gen.trouble.login2">I created an account and entered my email and my email password. Why can't I login?</a><br/>
+<a href="#gen.trouble.temppswd">I created an account but no temporary password was sent to my email.</a><br/>
+<a href="#gen.trouble.compile">COMTOR says my code does not compile. But I know it does.</a><br/>
+<a href="#gen.trouble.dropbox">I can't find my professor's dropbox.</a><br/>
+<a href="#gen.trouble.main">Why do I always get points deducted for not commenting main?</a><br/>
 
 
-{*
-<table width="90%" cellpadding="1" cellspacing="1" border="0">
-  <tr>
-    <td align="left">
-      <b>Installation Questions</b><br/>
-      <ol>
-        <li>Where can I get Comment Mentor?
-          <br/><br/>
-          <i>You can download the <a href="comtor.tar.gz">latest version</a>.
-          Sorry, we don't have public CVS access yet.</i>
-          <br/>
-        </li>
-        <li>What are the installation requirements?
-    <br/><br/>
-    <i>You need to download and install the <a href="http://ant.apache.org/">Ant build tool</a> from the Apache Software Foundation. You will need a recent <a href="http://java.sun.com/">Java Development Kit</a> (CoMtor is developed with the JDK 5.x -- it should work).</i>
-    <br/>
-  </li>
-        <li>How do I install Comment Mentor locally?
-    <br/><br/>
-    <i>
-      <ol>
-  <li> Download the tar.gz file </li>
-  <li> <code>tar -zxf comtor.tar.gz</code> </li>
-  <li> <code>cd comtor/code</code> </li>
-  <li> <code>ant</code> </li>
-</ol>
-    </i>
-    <br/>
-  </li>
-        <li>How do I use the web interface/service?
-    <br/><br/>
-    <i>We are still working on it. Check back, and use the command line version in the meanwhile.</i>
-    <br/>
-  </li>
-        <li>Can I run the web service locally?
-    <br/><br/>
-    <i>Sure -- once we write the code for it, we will package it
-       with the rest of the comtor download. You will probably
- need to get familiar with downloading and installing a
- servlet container such as Apache's
- <a href="http://tomcat.apache.org/">Tomcat</a>.
-    </i>
-    <br/>
-  </li>
-      </ol>
-      <b>General Questions</b><br/>
-      <ol>
-        <li>I don't like Java. What other languages are you going to support?</li>
-        <li>I like Java -- what other languages are you planning to support?</li>
-        <li>Are you guys inventing a comment language here?</li>
-        <li>How is this different than source code annotation?</li>
-        <li>How can I help?</li>
-        <li>Is Comment Mentor FOSS (Free/Open Source Software)?
-    <br/><br/>
-      <i>Yes. Comment Mentor's code is licensed under the terms
-   of the <a href="http://www.gnu.org/licenses/gpl.txt">GNU GPL, version 2</a>.
-   The source code is distributed as the software download
-   itself, and you are free to make changes to the software,
-   as long as your changes are distributed under the GPL.
-</i>
-    <br/>
-  </li>
-      </ol>
-      <b>Technical Questions</b>
-      <ol>
-        <li>What features are you measuring?
-         <br/><br/>
-         <i>We've got your <a href="features.html">list of features right here</a>.</i><br/>
-        </li>
-      </ol>
-    </td>
-   </tr>
-</table>
-*}
+<h2>Students</h2>
+
+<a href="#student.enroll">Joining a Class</a><br/>
+<a href="#student.submit">Source Code for analysis to a Professor's Dropbox</a><br/>
 
 
 <h2>Instructors</h2>
 
 <h3>Account Management</h3>
 <a href="#inst.acctMng.instStatus">Obtaining Instructor Status</a><br/>
+<a href="#inst.acctMng.link">What type of link should I provide for professor status verification?</a><br/>
 <a href="#inst.acctMng.notify">Configure Your E-mail Notification Policy</a><br/>
 
 <h3>Course Management</h3>
@@ -170,6 +54,138 @@
 <a href="#inst.assignMng.delete">Delete an Assignment</a><br/>
 
 <hr/>
+
+
+<h2>General</h2>
+
+<h4 id="gen.comtor">What does COMTOR stand for?</h4>
+COMTOR is short for COmment MenTOR.
+
+<h4 id="gen.vpn">Can I access the system from home?</h4>
+Currently COMTOR can only be accessed by on-campus computers. If you are living on-campus you should be able to access COMTOR. Otherwise consider using SSL VPN access from home.
+
+<h4 id="gen.features">What features does COMTOR measure?</h4>
+<a href="features">Click here</a> to check out what features we measure.
+
+<h4 id="gen.created">Who created COMTOR anyway?</h4>
+COMTOR was developed by computer science students at The College of New Jersey working under the direction of Dr. DePasquale. Check out the <a href="about.php">About page</a> for the complete history of COMTOR.
+
+<h4 id="gen.whoUse">Why should I use this system?</h4>
+The detailed use of documentation is a significantly underestimated way of improving software quality. COMTOR attempts to assist students in learning how to create quality documentation for their source code, by evaluating submitted source code against an overall standard.
+
+<h4 id="gen.whoBenefit">Who will benefit most from this system?</h4>
+We believe that computer science majors at any level can benefit from using this system.
+
+<h4 id="gen.bugs">I've noticed some bugs when using this system.</h4>
+COMTOR is still in the process of being developed. If you notice some bugs or other problems we would like to know. Write us a quick E-mail describing the bug.
+
+<h4 id="gen.lang">What types of source code can I submit to COMTOR?</h4>
+Currently COMTOR only evaluates javadoc comments in java source code.
+
+<h4 id="gen.javadoc">What is a javadoc comment?</h4>
+{*Check out the <a href="javadoc.php">javadoc pages</a>.*}
+A page devoted to javadoc will be completed soon.
+
+<h4 id="gen.jar">What is a jar file?</h4>
+{*<a href="jar.php">Click here</a> for more about jar files.*}
+A page devoted to jar files will be completed soon.
+
+<h4 id="gen.openSource">Is COMTOR an open source project?</h4>
+Yes. Comment Mentor's code is licensed under the terms of the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU GPL, version 2</a>. The source code is distributed as the software download itself, and you are free to make changes to the software, as long as your changes are distributed under the GPL.
+You can also find COMTOR on <a href="http://sourceforge.net/projects/comtor/">SourceForge.net</a>.
+
+<h4 id="gen.icons">Icon Glossary</h4>
+<img src="img/icons/edit.gif" /> Edit<br/>
+<img src="img/icons/magnifying_glass.gif" /> View<br/>
+<img src="img/icons/lock.gif" /> Disable or Lock<br/>
+<img src="img/icons/unlock.gif" /> Enable or Unlock<br/>
+<img src="img/icons/delete.gif" /> Delete<br/>
+
+<h3>Account Management</h3>
+<h4 id="gen.acct.create">How do I create an account?</h4>
+Click "create an account" on the left navigation bar and fill in the fields.
+
+<h4 id="gen.acct.email">Do I have to enter my college email address?</h4>
+No. You can enter any valid email address.
+
+<h3>Troubleshooting</h3>
+<h4 id="gen.trouble.login1">I can't log in. COMTOR keeps telling me my username does not exist.</h4>
+Make sure you are typing the email you signed up with correctly. If you have not signed up you will need to create an account before you login.
+
+<h4 id="gen.trouble.pswd">I forgot my password. Now what do I do?</h4>
+Don't panic, we've got you covered. Click on "Password Recovery" on the left navigation bar and enter your email.
+
+<h4 id="gen.trouble.login2">I created an account and entered my email and my email password. Why can't I login?</h4>
+Please check your email for a temporary password once you create your account. You can then use your email address for the username and enter the provided temporary password in the password field.
+
+<h4 id="gen.trouble.temppswd">I created an account but no temporary password was sent to my email.</h4>
+You may have mistyped your email address. (A common mistake is accidently entering .com instead of .edu or vice versa). Please try creating an account again.
+
+<h4 id="gen.trouble.compile">COMTOR says my code does not compile. But I know it does.</h4>
+Make sure once more that the code you are trying to upload does compile. You may be accidently uploading an old version of your code.  Also make sure that you have included all nonstandard packages in the jar file.
+
+<h4 id="gen.trouble.dropbox">I can't find my professor's dropbox.</h4>
+Check out the <a href="tutorials.php">video tutorials</a> including how to submit an assignment to a dropbox.
+
+<h4 id="gen.trouble.main">Why do I always get points deducted for not commenting main?</h4>
+<code>public static void main (String [] args)</code> actually is a function and thus should be commented using the appropriate javadoc tags.
+
+
+<h2 id="student">Students</h2>
+
+Login (If you have not created an account please create one).
+Click on "Course Management" in the left hand navigation bar.
+Find the course you desire and click enroll.
+The system will then prompt you with a message box asking if you want to enroll.
+Click ok.  Congratulations you have successfully enrolled in a course!!!
+
+
+<h4 id="student.enroll">Joining a Class</h4>
+<ol>
+  <li>
+    Login (If you have not created an account please create one).
+  </li>
+  <li>
+    Click the <span class="underline">Course Management</span> link in the left hand navigation bar.
+  </li>
+  <li>
+    Find the course you desire and click enroll.
+  </li>
+  <li>
+    The system will then prompt you with a message box asking if you want to enroll.
+  </li>
+  <li>
+    Click ok.  Congratulations you have successfully enrolled in a course!!!
+  </li>
+</ol>
+
+<h4 id="student.submit">Source Code for analysis to a Professor's Dropbox</h4>
+<ol>
+  <li>
+    Login (If you have not created an account please create one).
+  </li>
+  <li>
+    Click on the desired course in the listing displayed on the welcome screen.
+  </li>
+  <li>
+    Click on add new assignment.
+  </li>
+  <li>
+    Select your jar file.
+  </li>
+  <li>
+    Select the appropriate assignment dropbox.
+  </li>
+  <li>
+    Click the checkboxes to include modules.
+  </li>
+  <li>
+    Click the analyze comments button.
+  </li>
+  <li>
+    View your report and submitted source code.
+  </li>
+</ol>
 
 <h2 id="inst">Instructors</h2>
 <h3 id="inst.acctMng">Account Management</h3>
@@ -201,6 +217,9 @@ If you do not have an account,
     Please wait until an administrator can process your request.
   </li>
 </ol>
+
+<h4 id="inst.acctMng.link">What type of link should I provide for professor status verification?</h4>
+Please provide a link to a website that shows you are professor at a given institution. This website also needs to have your email listed, which should match the email you provided for your username.
 
 <h4 id="inst.acctMng.notify">Configure Your E-mail Notification Policy</h4>
 <ol>

@@ -93,6 +93,7 @@
           {/foreach}
           <li><a href="features.php">Features We Measure</a></li>
           <li><a href="faq.php">FAQ</a></li>
+          <li><a href="tutorials.php">Video Tutorials</a></li>
         </ul>
       </div>
     </div>
