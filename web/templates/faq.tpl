@@ -9,6 +9,7 @@
 <a href="#gen.bugs">I've noticed some bugs when using this system.</a><br/>
 <a href="#gen.lang">What types of source code can I submit to COMTOR?</a><br/>
 <a href="#gen.javadoc">What is a javadoc comment?</a><br/>
+<a href="#gen.compile">How do I compile and run a Java program?</a><br/>
 <a href="#gen.jar">What is a jar file?</a><br/>
 <a href="#gen.openSource">Is COMTOR an open source project?</a><br/>
 <a href="#gen.icons">Icon Glossary</a><br/>
@@ -83,12 +84,13 @@ COMTOR is still in the process of being developed. If you notice some bugs or ot
 Currently COMTOR only evaluates javadoc comments in java source code.
 
 <h4 id="gen.javadoc">What is a javadoc comment?</h4>
-{*Check out the <a href="javadoc.php">javadoc pages</a>.*}
-A page devoted to javadoc will be completed soon.
+Check out the <a href="faq_jdoc.php">javadoc pages</a>.
+
+<h4 id="gen.compile">How do I compile and run a Java program?</h4>
+<a href="faq_compile.php">Click here</a> for more about compiling and running Java programs.
 
 <h4 id="gen.jar">What is a jar file?</h4>
-{*<a href="jar.php">Click here</a> for more about jar files.*}
-A page devoted to jar files will be completed soon.
+<a href="faq_jar.php">Click here</a> for more about jar files.
 
 <h4 id="gen.openSource">Is COMTOR an open source project?</h4>
 Yes. Comment Mentor's code is licensed under the terms of the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU GPL, version 2</a>. The source code is distributed as the software download itself, and you are free to make changes to the software, as long as your changes are distributed under the GPL.
