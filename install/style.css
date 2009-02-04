@@ -1,0 +1,177 @@
+body
+{
+  margin: 0px;
+  padding: 0px;
+}
+
+body, table
+{
+  font-size: 1em;
+  font-family: verdana, arial, helvetica, sans-serif;
+}
+
+#steps
+{
+  background-color: #d0d0d0;
+  float: left;
+  font-size: .8em;
+  margin: 0px;
+  padding: 0px;
+  width: 175px;
+}
+
+#steps ul
+{
+  list-style: none;
+  margin: 0px 3px 2px 0px;
+  padding: 0px;
+}
+
+#steps h3
+{
+  color: inherit;
+  font-size: 1em;
+  font-weight: bold;
+  text-align: center;
+}
+
+#steps ul li
+{
+  background-color: #8a8b8f;
+  padding: 5px 10px;
+  margin: 0px 0px 1px 0px;
+}
+
+#steps ul li.finished
+{
+  color: #a00000;
+  font-weight: bold;
+}
+
+#steps ul li.current
+{
+  font-weight: bold;
+}
+
+#contentContainer
+{
+  margin-left: 175px;
+  padding: 0px 5px;
+}
+
+h1
+{
+  color: #092449;
+  font-size: 1.25em;
+}
+
+h2
+{
+  color: #092449;
+  font-size: 1.2em;
+}
+
+h3
+{
+  color: #092449;
+  font-size: 1.15em;
+}
+
+h4
+{
+  color: #092449;
+  font-size: 1.1em;
+}
+
+h5
+{
+  color: #0075d0;
+  font-size: 1em;
+  margin: 0px;
+  padding: 0px;
+}
+
+h6
+{
+  color: #092449;
+  font-size: 1em;
+  margin: 0px;
+  padding: 0px;
+}
+
+table.full
+{
+  width: 100%;
+}
+
+table.full td
+{
+  border-bottom: 1px solid #d0d0d0;
+  padding: 5px 0px;
+  text-align: left;
+}
+
+table.full td.status
+{
+  text-align: right;
+}
+
+.succeed
+{
+  color: #0cc000;
+  font-weight: bold;
+}
+
+.fail
+{
+  color: #c00000;
+  font-weight: bold;
+}
+
+div.error
+{
+  background-color: #ff9090;
+  border: 1px solid #c00000;
+  color: #c00000;
+  font-weight: bold;
+  padding: 5px 10px;
+}
+
+div.floatContainer
+{
+  border-bottom: 1px solid #d0d0d0;
+  margin: 0px 0px 5px 0px;
+  padding: 0px 0px 5px 0px;
+  overflow: auto;
+}
+
+label
+{
+  display: block;
+  float: left;
+  padding: 0px 5px 0px 0px;
+  text-align: right;
+  width: 125px;
+}
+
+input
+{
+  margin: 0px 0px 2px 0px;
+}
+
+.center
+{
+  text-align: center;
+}
+
+a:link, a:active, a:visited, span.link
+{
+  color: #092449;
+  font-weight: bold;
+}
+
+a:hover, span.link:hover
+{
+  color: #c00000;
+  cursor: pointer;
+}

@@ -67,6 +67,7 @@ public class ComtorDatabase
     catch (Exception e)
     {
       System.out.println("Failed to load MySQL JDBC driver class.");
+      System.out.println(e);
     }
 
     // Create connection to database if the driver was found
@@ -78,7 +79,11 @@ public class ComtorDatabase
       }
       catch(SQLException e)
       {
-        System.out.println( "Couldn't get connection!" );
+        System.out.println("Couldn't get connection!");
+        System.out.println("URL: \"" + url+"\"");
+        System.out.println("Username: \"" + username+"\"");
+//        System.out.println(e);
+        e.printStackTrace();
       }
     }
 

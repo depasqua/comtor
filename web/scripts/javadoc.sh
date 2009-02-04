@@ -6,7 +6,7 @@
 # Load config info
 . scripts/config.sh
 
-export set CLASSPATH=.:/usr/local/lib/mysql-connector-java-5.1.6-bin.jar:$CLASSPATH:$ANTLR_CLASSPATH
+export set CLASSPATH=$CLASSPATH
 
 #create temp dir based on tempFileName
 cd $UPLOAD_PATH
@@ -68,7 +68,7 @@ EOF
 
 # Run javadoc if code compiled
 if [ $compiled = 0 ]; then
-  /usr/bin/javadoc -private --assignment-id $4 --config-file $JAVA_CONFIG -doclet comtor.ComtorDriver -docletpath $CLASSES $MYVAR > JavadocOut.txt
+  /usr/bin/javadoc -private --assignment-id $4 --config-file $JAVA_CONFIG -doclet comtor.ComtorDriver -docletpath $CLASSES $MYVAR > JavadocOut.txt 2>&1
   javadocRtn=$?
 else
   /usr/bin/java -cp $CLASSES:$CLASSPATH comtor.GenerateErrorReport $JAVA_CONFIG
