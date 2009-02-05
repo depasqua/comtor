@@ -14,4 +14,6 @@
   define("URL_PATH", "<?php echo $_SESSION["url"] ?>");
   define("UPLOAD_DIR", "<?php echo $_SESSION["paths"]["uploads"].DIRECTORY_SEPARATOR ?>");
 
+  define("DEVELOPMENT", false);
+
 <?php echo "?>"; ?>
