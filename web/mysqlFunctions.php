@@ -2718,6 +2718,87 @@ function getSchools()
 }
 
 /*******************************************************************************
+* Gets a school
+*
+* @param $schoolId Id of school to search for
+*
+* @return mixed School name if it exists, otherwise false
+*******************************************************************************/
+function getSchool($schoolId)
+{
+  // Check that id is numeric before query
+  if (!is_numeric($schoolId))
+    return false;
+
+  $result = mysql_query("SELECT school FROM schools WHERE schoolId={$schoolId} LIMIT 1");
+
+  // Check that result is a valid mysql resourse
+  if (!$result)
+    return false;
+
+  $res = mysql_fetch_assoc($result);
+  return $res['school'];
+}
+
+/*******************************************************************************
+* Adds a school
+*
+* @param $school Name of school
+*
+* @return int Status code:
+*              0 - Success
+*              1 - School name already exists
+*              2 - Database error
+*******************************************************************************/
+function addSchool($school)
+{
+  // Check that the school name is unique
+  if (schoolNameExists($school))
+    return 1;
+    
+  // Add to the database
+  $result = mysql_query("INSERT INTO schools (school) VALUES (\"". mysql_real_escape_string($school) . "\")");
+
+  // Check that result is a valid mysql resourse
+  if (!$result)
+    return 2;
+  
+  return 0;
+}
+
+/*******************************************************************************
+* Edits a school
+*
+* @param $schoolId Id of school
+* @param $school Name of school
+*
+* @return int Status code:
+*              0 - Success
+*              1 - School id invalid
+*              2 - School name already exists
+*              3 - Database error
+*******************************************************************************/
+function editSchool($schoolId, $school)
+{
+  // Check that school id is valid
+  if (!schoolExists($schoolId))
+    return 1;
+    
+  // Check that the school name is unique
+  if (schoolNameExists($school, $schoolId))
+    return 2;
+    
+  // Update the database
+  $result = mysql_query("UPDATE schools SET school=\"". mysql_real_escape_string($school) . "\" WHERE schoolId=".$schoolId);
+
+  // Check that result is a valid mysql resourse
+  if (!$result)
+    return 3;
+  
+  return 0;
+}
+
+/*******************************************************************************
 * Determines if a school id in the database
 *
 * @param $schoolId Id of school to search for
@@ -2731,6 +2812,25 @@ function schoolExists($schoolId)
     return false;
 
   $result = mysql_query("SELECT schoolId FROM schools WHERE schoolId={$schoolId} LIMIT 1");
+
+  // Check that result is a valid mysql resourse
+  if (!$result)
+    return false;
+
+  return (mysql_num_rows($result) > 0);
+}
+
+/*******************************************************************************
+* Determines if the school name is in the database
+*
+* @param $school Name of school to search for
+* @param $schoolId Id of school to allow
+*
+* @return bool Bool indicating if school exists
+*******************************************************************************/
+function schoolNameExists($school, $schoolId = 0)
+{
+  $result = mysql_query("SELECT schoolId FROM schools WHERE school=\"". mysql_real_escape_string($school) . "\" AND schoolId != {$schoolId} LIMIT 1");
 
   // Check that result is a valid mysql resourse
   if (!$result)

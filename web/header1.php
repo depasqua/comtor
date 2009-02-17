@@ -192,6 +192,10 @@ else
   {
     array_push($comtorLinks, new Link("Add Course", "courseAddForm.php"));
   }
+  
+  // Add School - Admin
+  if ($_SESSION['acctType'] == "admin")
+    array_push($comtorLinks, new Link("Manage Schools", "schools.php"));
 
   // Add Doclet - Admin
   if ($_SESSION['acctType'] == "admin")
