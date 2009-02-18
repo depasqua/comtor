@@ -77,6 +77,10 @@ else
 {
   $tpl->assign('submittable', false);
   $tpl->assign('editable', true);
+  
+  // Get each student in the course
+  if (($students = getCourseStudents($courseId)) !== false)
+    $tpl->assign('students', $students);
 }
 
 // Assign rand for security

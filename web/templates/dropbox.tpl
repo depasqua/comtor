@@ -9,6 +9,16 @@
 {if $editable|default:false}
   <a href="assignment_add.php">Add New Assignment</a><br/>
 
+  {if count($students) > 0}
+  <h3>Students</h3>
+  <select onchange="window.location = '?courseId={$smarty.get.courseId}&amp;userId='+this.value">
+    <option value="">No Student</option>
+    {foreach from=$students item="stud"}
+      <option value="{$stud.userId}" {if $smarty.get.userId == $stud.userId}selected="selected"{/if}>{$stud.name}</option>
+    {/foreach}
+  </select>
+  {/if}
+
   <div class="noteFull">
     Please note that students may only submit files for assignments.  If you wish to allow them to submit test files that are not associated with a specific assignment, you may create a general assignment into which students may submit.
   </div>
