@@ -55,7 +55,10 @@
             <a href="assignment_comment.php?userEventId={$s.userEventId}&amp;loc={$loc}">{if empty($s.comment)}Add{else}Edit{/if} Comment</a>
           {/if}
         </td>
-        <td><a href="reports.php?userEventId={$s.userEventId}">View</a></td>
+        <td>
+          <a href="reports.php?userEventId={$s.userEventId}">View</a> |
+          <a href="reports.php?userEventId={$s.userEventId}&amp;dl=T">Download</a> 
+        </td>
       </tr>
     {/foreach}
   {/foreach}

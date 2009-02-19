@@ -111,6 +111,9 @@ if (($userInfo = getUserInfoById($userId)) !== false)
 /* Display course info if any */
 if (isset($courseInfo))
   $tpl->assign('course', $courseInfo);
+  
+// Determine if the user wants to download the files
+$download = isset($_GET['dl']) && $_GET['dl'] = "T";
 
 /* If a report is selected, display report */
 if(isset($_GET['userEventId']))
@@ -128,20 +131,54 @@ if(isset($_GET['userEventId']))
       $compileError = $reportInfo['compilationError'];
       unset($reportInfo['compilationError']);
       $tpl->assign($reportInfo);
+      
+      // Create temporary folder to write the files
+      $tmpDir = false;
+      if ($download && $tmpDir = tempnam(UPLOAD_DIR, "DL"))
+      {
+        // tempnam might create a file with the name, so remove it before tring to make the directory
+        if (is_file($tmpDir))
+          unlink($tmpDir);
+        mkdir($tmpDir);
+        $codeDir = $tmpDir . DIRECTORY_SEPARATOR . "code";
+        mkdir($codeDir);
+      }
 
       if ($files = getReportFiles($userEventId))
       {
         foreach($files as &$file)
         {
+          // Write the file to the temp directory if downloading
+          if ($download && $tmpDir)
+          {
+            // Create needed directories
+            $path = $codeDir;
+            $dirs = explode(DIRECTORY_SEPARATOR, $file['filename']);
+            for ($i = 0; $i < count($dirs)-1; $i++)
+            {
+              $path .= DIRECTORY_SEPARATOR . $dirs[$i];
+              if (!is_dir($path))
+                mkdir($path);
+            }
+            
+            if (!file_put_contents($codeDir . DIRECTORY_SEPARATOR . $file['filename'], $file['contents']))
+            {
+            // TODO: Report error
+            }            
+          }
           // Make the file contents into html encoding
-          $file['contents'] = htmlspecialchars($file['contents']);
-          $file['contents'] = str_replace(" ", "&nbsp;", $file['contents']);
-          $file['contents'] = nl2br($file['contents']);
-          $file['contents'] = colorize($file['contents']);
+          else
+          {
+            $file['contents'] = htmlspecialchars($file['contents']);
+            $file['contents'] = str_replace(" ", "&nbsp;", $file['contents']);
+            $file['contents'] = nl2br($file['contents']);
+            $file['contents'] = colorize($file['contents']);
+          }
         }
         unset($file);
 
-        $tpl->assign('files', $files);
+        if (!$download)
+          $tpl->assign('files', $files);
       }
 
       if ($compileError)
@@ -412,6 +449,46 @@ $tpl->assign('breadcrumbs', $breadcrumbs);
 // Fetch template
 $tpldata = $tpl->fetch($template);
 $tpl->assign('tpldata', $tpldata);
+
+// Create jar file and return to user
+if ($download && $tmpDir)
+{
+  // Modify $tpldata
+  $tpldata = "<html>
+    <head>
+      <title>".@$userInfo['name']." Report</title>
+      <link rel=\"stylesheet\" type=\"text/css\" href=\"layout.css\" />
+    </head>
+    <body>{$tpldata}</body>
+  </html>";
+
+  $htmlDir = $tmpDir . DIRECTORY_SEPARATOR . "html";  
+  if (!mkdir($htmlDir) || !file_put_contents($htmlDir . DIRECTORY_SEPARATOR . "report.html", $tpldata))
+  {
+    // TODO: Report error
+  }
+  copy("css/layout.css", $htmlDir . DIRECTORY_SEPARATOR . "layout.css");
+
+  if ($jarName = tempnam($tmpDir, "JAR"))
+  {
+    // tempnam might create a file with the name, so remove it before tring to make the directory
+    if (is_file($jarName))
+      unlink($jarName);
+    
+    // Create jar file
+    chdir ($tmpDir);
+    exec ("jar -cvf " . $jarName . " *");
+      
+    // Output jar file
+    header('Content-Disposition: attachment; filename="report.jar"');
+    echo file_get_contents($jarName);
+      
+    // Remove the temporary directory
+    exec ("rm -rf " . $tmpDir);
+  }
+  
+  exit;
+}
 
 // Display template
 $tpl->display("htmlmain.tpl");
