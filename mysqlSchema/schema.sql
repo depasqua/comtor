@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: comtor_dev
 -- ------------------------------------------------------
--- Server version	5.0.51a-3ubuntu5.1
+-- Server version	5.0.51a-3ubuntu5.4
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -29,9 +29,9 @@ CREATE TABLE `assignmentEvents` (
   PRIMARY KEY  (`assignmentEventId`),
   KEY `userEventId` (`userEventId`),
   KEY `assignmentId` (`assignmentId`),
-  CONSTRAINT `assignmentEvents_ibfk_2` FOREIGN KEY (`userEventId`) REFERENCES `userEvents` (`userEventId`) ON DELETE CASCADE,
-  CONSTRAINT `assignmentEvents_ibfk_1` FOREIGN KEY (`assignmentId`) REFERENCES `assignments` (`assignmentId`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=278 DEFAULT CHARSET=latin1;
+  CONSTRAINT `assignmentEvents_ibfk_1` FOREIGN KEY (`assignmentId`) REFERENCES `assignments` (`assignmentId`) ON DELETE CASCADE,
+  CONSTRAINT `assignmentEvents_ibfk_2` FOREIGN KEY (`userEventId`) REFERENCES `userEvents` (`userEventId`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=306 DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -77,8 +77,8 @@ CREATE TABLE `assignmentGradeParameters` (
   `param` varchar(1024) NOT NULL,
   PRIMARY KEY  (`assignmentId`,`docletGradeParameterId`),
   KEY `docletGradeParameterId` (`docletGradeParameterId`),
-  CONSTRAINT `assignmentGradeParameters_ibfk_2` FOREIGN KEY (`docletGradeParameterId`) REFERENCES `docletGradeParameters` (`docletGradeParameterId`) ON DELETE CASCADE,
-  CONSTRAINT `assignmentGradeParameters_ibfk_1` FOREIGN KEY (`assignmentId`) REFERENCES `assignments` (`assignmentId`) ON DELETE CASCADE
+  CONSTRAINT `assignmentGradeParameters_ibfk_1` FOREIGN KEY (`assignmentId`) REFERENCES `assignments` (`assignmentId`) ON DELETE CASCADE,
+  CONSTRAINT `assignmentGradeParameters_ibfk_2` FOREIGN KEY (`docletGradeParameterId`) REFERENCES `docletGradeParameters` (`docletGradeParameterId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
@@ -110,7 +110,7 @@ CREATE TABLE `assignments` (
   PRIMARY KEY  (`assignmentId`),
   KEY `courseId` (`courseId`),
   CONSTRAINT `assignments_ibfk_1` FOREIGN KEY (`courseId`) REFERENCES `courses` (`courseId`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -127,7 +127,7 @@ CREATE TABLE `courseEvents` (
   PRIMARY KEY  (`courseEventId`),
   KEY `courseId` (`courseId`),
   KEY `userEventId` (`userEventId`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -139,14 +139,17 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `courses` (
   `courseId` int(11) NOT NULL auto_increment COMMENT 'Unique id for the course',
+  `schoolId` int(11) NOT NULL,
   `profId` int(11) NOT NULL COMMENT 'Id of the professor (from users table)',
   `section` varchar(20) NOT NULL COMMENT 'Section of course in format CSC 380-01 or similar',
   `name` varchar(255) NOT NULL COMMENT 'Name of the course',
   `semester` varchar(255) NOT NULL COMMENT 'Semester that the course is held',
   `comment` text COMMENT 'Additional comments that a professor might have for the course',
   `status` enum('enabled','disabled') NOT NULL default 'enabled',
-  PRIMARY KEY  (`courseId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2422 DEFAULT CHARSET=latin1;
+  PRIMARY KEY  (`courseId`),
+  KEY `schoolId` (`schoolId`),
+  CONSTRAINT `courses_ibfk_1` FOREIGN KEY (`schoolId`) REFERENCES `schools` (`schoolId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2423 DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -205,7 +208,7 @@ CREATE TABLE `docletEvents` (
   `docletId` int(11) NOT NULL COMMENT 'Id of the doclet used in this event (from doclets table)',
   `score` float NOT NULL,
   PRIMARY KEY  (`docletEventId`)
-) ENGINE=InnoDB AUTO_INCREMENT=504 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=525 DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -223,7 +226,7 @@ CREATE TABLE `docletGradeParameters` (
   PRIMARY KEY  (`docletGradeParameterId`),
   KEY `docletId` (`docletId`),
   CONSTRAINT `docletGradeParameters_ibfk_1` FOREIGN KEY (`docletId`) REFERENCES `doclets` (`docletId`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -241,7 +244,7 @@ CREATE TABLE `docletGradeSections` (
   PRIMARY KEY  (`docletGradeSectionId`),
   KEY `docletId` (`docletId`),
   CONSTRAINT `docletGradeSections_ibfk_1` FOREIGN KEY (`docletId`) REFERENCES `doclets` (`docletId`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -258,7 +261,7 @@ CREATE TABLE `docletOutputItems` (
   `value` longtext NOT NULL COMMENT 'Value of the attribute being stored',
   PRIMARY KEY  (`docletOutputItemId`),
   KEY `docletEventId` (`docletEventId`)
-) ENGINE=InnoDB AUTO_INCREMENT=21045 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=23025 DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -401,7 +404,7 @@ CREATE TABLE `schools` (
   `schoolId` int(11) NOT NULL auto_increment,
   `school` varchar(256) NOT NULL,
   PRIMARY KEY  (`schoolId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -448,7 +451,7 @@ CREATE TABLE `userEvents` (
   PRIMARY KEY  (`userEventId`),
   KEY `userId` (`userId`),
   CONSTRAINT `userEvents_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=369 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=397 DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -541,7 +544,7 @@ CREATE TABLE `userNotifications` (
   PRIMARY KEY  (`userNotificationId`),
   KEY `userNotifications_ibfk_1` (`userId`),
   CONSTRAINT `userNotifications_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -591,13 +594,19 @@ DROP TABLE IF EXISTS `users_view`;
 ) */;
 
 --
+-- Dumping routines for database 'comtor_dev'
+--
+DELIMITER ;;
+DELIMITER ;
+
+--
 -- Final view structure for view `assignmentGradeBreakdownsView`
 --
 
 /*!50001 DROP TABLE `assignmentGradeBreakdownsView`*/;
 /*!50001 DROP VIEW IF EXISTS `assignmentGradeBreakdownsView`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`comtor`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`sigwart4`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `assignmentGradeBreakdownsView` AS select `dGB`.`docletGradeSectionId` AS `docletGradeSectionId`,`a`.`assignmentId` AS `assignmentId`,if(isnull(`aGB`.`maxGrade`),`dGB`.`maxGrade`,`aGB`.`maxGrade`) AS `maxGrade` from ((`assignments` `a` join `defaultGradeBreakdowns` `dGB`) left join `assignmentGradeBreakdowns` `aGB` on(((`dGB`.`docletGradeSectionId` = `aGB`.`docletGradeSectionId`) and (`a`.`assignmentId` = `aGB`.`assignmentId`)))) */;
 
 --
@@ -607,7 +616,7 @@ DROP TABLE IF EXISTS `users_view`;
 /*!50001 DROP TABLE `assignmentGradeParametersView`*/;
 /*!50001 DROP VIEW IF EXISTS `assignmentGradeParametersView`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`comtor`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`sigwart4`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `assignmentGradeParametersView` AS select `dGP`.`docletGradeParameterId` AS `docletGradeParameterId`,`a`.`assignmentId` AS `assignmentId`,if(isnull(`aGP`.`param`),`dGP`.`param`,`aGP`.`param`) AS `param` from ((`assignments` `a` join `defaultGradeParameters` `dGP`) left join `assignmentGradeParameters` `aGP` on(((`dGP`.`docletGradeParameterId` = `aGP`.`docletGradeParameterId`) and (`a`.`assignmentId` = `aGP`.`assignmentId`)))) */;
 
 --
@@ -617,7 +626,7 @@ DROP TABLE IF EXISTS `users_view`;
 /*!50001 DROP TABLE `enrollmentsView`*/;
 /*!50001 DROP VIEW IF EXISTS `enrollmentsView`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`comtor`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`sigwart4`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `enrollmentsView` AS select `e`.`courseId` AS `courseId`,`e`.`studentId` AS `studentId`,`users`.`name` AS `userName`,`c`.`name` AS `courseName`,`c`.`section` AS `courseSection`,`c`.`profId` AS `courseProfId` from ((`enrollments` `e` join `users` on((`e`.`studentId` = `users`.`userId`))) join `courses` `c` on((`c`.`courseId` = `e`.`courseId`))) */;
 
 --
@@ -627,7 +636,7 @@ DROP TABLE IF EXISTS `users_view`;
 /*!50001 DROP TABLE `request_acct_change_view`*/;
 /*!50001 DROP VIEW IF EXISTS `request_acct_change_view`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`comtor`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`sigwart4`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `request_acct_change_view` AS select `req`.`req_id` AS `req_id`,`req`.`userId` AS `userId`,`req`.`acct_type` AS `acct_type`,`req`.`req_date` AS `req_date`,`req`.`status` AS `status`,`req`.`comment` AS `comment`,`users`.`name` AS `name` from (`request_acct_change` `req` left join `users` on((`req`.`userId` = `users`.`userId`))) */;
 
 --
@@ -637,7 +646,7 @@ DROP TABLE IF EXISTS `users_view`;
 /*!50001 DROP TABLE `request_acct_deletions_view`*/;
 /*!50001 DROP VIEW IF EXISTS `request_acct_deletions_view`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`comtor`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`sigwart4`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `request_acct_deletions_view` AS select `req`.`userId` AS `userId`,`req`.`req_date` AS `req_date`,`req`.`status` AS `status`,`users`.`name` AS `name` from (`request_acct_deletions` `req` left join `users` on((`req`.`userId` = `users`.`userId`))) */;
 
 --
@@ -647,7 +656,7 @@ DROP TABLE IF EXISTS `users_view`;
 /*!50001 DROP TABLE `userEventsView`*/;
 /*!50001 DROP VIEW IF EXISTS `userEventsView`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`comtor`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`sigwart4`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `userEventsView` AS select `uE`.`userEventId` AS `userEventId`,`uE`.`userId` AS `userId`,`uE`.`dateTime` AS `dateTime`,`users`.`name` AS `userName`,`c`.`name` AS `courseName`,`c`.`section` AS `courseSection`,`c`.`profId` AS `profId`,`c`.`courseId` AS `courseId`,`a`.`assignmentId` AS `assignmentId`,`a`.`name` AS `assignmentName` from (((`userEvents` `uE` join `users` on((`uE`.`userId` = `users`.`userId`))) left join `assignments` `a` on(`a`.`assignmentId` in (select `assignmentEvents`.`assignmentId` AS `assignmentId` from `assignmentEvents` where (`assignmentEvents`.`userEventId` = `uE`.`userEventId`)))) left join `courses` `c` on((`c`.`courseId` in (select `courseEvents`.`courseId` AS `courseId` from `courseEvents` where (`courseEvents`.`userEventId` = `uE`.`userEventId`)) or (`c`.`courseId` = `a`.`courseId`)))) */;
 
 --
@@ -657,7 +666,7 @@ DROP TABLE IF EXISTS `users_view`;
 /*!50001 DROP TABLE `userEventsViewWErrors`*/;
 /*!50001 DROP VIEW IF EXISTS `userEventsViewWErrors`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`comtor`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`sigwart4`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `userEventsViewWErrors` AS select `uEV`.`userEventId` AS `userEventId`,`uEV`.`userId` AS `userId`,`uEV`.`dateTime` AS `dateTime`,`uEV`.`userName` AS `userName`,`uEV`.`courseName` AS `courseName`,`uEV`.`courseSection` AS `courseSection`,`uEV`.`profId` AS `profId`,`uEV`.`courseId` AS `courseId`,`uEV`.`assignmentId` AS `assignmentId`,`uEV`.`assignmentName` AS `assignmentName`,`cE`.`output` AS `compilationOutput`,(`cE`.`output` is not null) AS `compilationError` from (`userEventsView` `uEV` left join `userEventCompilationErrors` `cE` on((`uEV`.`userEventId` = `cE`.`userEventId`))) */;
 
 --
@@ -667,7 +676,7 @@ DROP TABLE IF EXISTS `users_view`;
 /*!50001 DROP TABLE `users_view`*/;
 /*!50001 DROP VIEW IF EXISTS `users_view`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`comtor`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`sigwart4`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `users_view` AS select `u`.`userId` AS `userId`,`u`.`name` AS `name`,`u`.`email` AS `email`,`u`.`password` AS `password`,`u`.`dateTime` AS `dateTime`,`u`.`validatedDT` AS `validatedDT`,`u`.`lastLogin` AS `lastLogin`,`u`.`passwordChangeDT` AS `passwordChangeDT`,`u`.`acctType` AS `acctType`,`u`.`acctStatus` AS `acctStatus`,`u`.`schoolId` AS `schoolId`,`s`.`school` AS `school` from (`users` `u` join `schools` `s` on((`u`.`schoolId` = `s`.`schoolId`))) */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -679,4 +688,4 @@ DROP TABLE IF EXISTS `users_view`;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2008-11-05 22:31:47
+-- Dump completed on 2009-01-22 23:24:33
