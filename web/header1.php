@@ -87,12 +87,14 @@ class Link
 {
   var $href;
   var $name;
+  var $heading;
   var $attrs = array();
 
-  function Link($name, $href)
+  function Link($name, $href, $heading = false)
   {
     $this->name = $name;
     $this->href = $href;
+    $this->heading = $heading;
   }
 
   function addAttr($attr, $value)
@@ -138,71 +140,85 @@ $tpl->assign('modules', $moduleLinks);
 $comtorLinks = array();
 if (!isset($_SESSION['acctType']))
 {
-  array_push($comtorLinks, new Link("Login", "loginForm.php"));
-  array_push($comtorLinks, new Link("Create An Account", "registerForm.php"));
-  array_push($comtorLinks, new Link("Password Recovery", "recoverPasswordForm.php"));
+  // Login and account information
+  $comtorLinks[] = new Link("COMTOR Account", null, true);  
+  $comtorLinks[] = new Link("Login", "loginForm.php");
+  $comtorLinks[] = new Link("Create An Account", "registerForm.php");
+  $comtorLinks[] = new Link("Password Recovery", "recoverPasswordForm.php");
 }
 else
 {
   // Add links for all account types
-  array_push($comtorLinks, new Link("Welcome", "index.php"));
-  array_push($comtorLinks, new Link("System Usage", "usage.php"));
+  $comtorLinks[] = new Link("Welcome", "index.php");
 
-  if ($_SESSION['acctType'] == "admin")
-    array_push($comtorLinks, new Link("Admin Reports", "adminReports.php"));
-
-  // Account Management for Admin
-  if ($_SESSION['acctType'] == "admin")
-    array_push($comtorLinks, new Link("Account Management", "manageAccounts.php"));
-  else
-    array_push($comtorLinks, new Link("Account Management", "editAccount.php"));
-
-  // E-mail Notification Options - Professor and Student
-  if ($_SESSION['acctType'] == "professor" || $_SESSION['acctType'] == "student")
-    array_push($comtorLinks, new Link("E-mail Notifications", "email_notify_edit.php"));
-
-  array_push($comtorLinks, new Link("Requests", "requests.php"));
-
-  /*
-  // Add links for all account types
-  array_push($comtorLinks, new Link("Change Password", "changePasswordForm.php"));
-
-  // Disable account link
-  $link = new Link("Disable Account", "disableAccount.php?userId={$_SESSION['userId']}&amp;rand={$md5Rand}");
-  $link->addAttr("onclick", "return confirm(\"Are you sure you want to disable your account?\");");
-  array_push($comtorLinks, $link);
-  */
-
+  $comtorLinks[] = new Link("Course Management", null, true);
   // Determine page for Course Management
   if ($_SESSION['acctType'] == "student")
   {
-    array_push($comtorLinks, new Link("Course Management", "courses.php"));
+    $comtorLinks[] = new Link("Courses", "courses.php");
   }
   else if($_SESSION['acctType'] == "professor")
   {
-    array_push($comtorLinks, new Link("Course Management", "courses.php"));
+    $comtorLinks[] = new Link("Courses", "courses.php");
   }
   else if ($_SESSION['acctType'] == "admin")
   {
-    array_push($comtorLinks, new Link("Course Management", "courses.php"));
+    $comtorLinks[] = new Link("Courses", "courses.php");
   }
 
   // Add Course - Professor and Admin
   if ($_SESSION['acctType'] == "professor" || $_SESSION['acctType'] == "admin")
   {
-    array_push($comtorLinks, new Link("Add Course", "courseAddForm.php"));
+    $comtorLinks[] = new Link("Add Course", "courseAddForm.php");
   }
-  
-  // Add School - Admin
-  if ($_SESSION['acctType'] == "admin")
-    array_push($comtorLinks, new Link("Manage Schools", "schools.php"));
-
-  // Add Doclet - Admin
-  if ($_SESSION['acctType'] == "admin")
-    array_push($comtorLinks, new Link("Add Doclet", "doclet_add.php"));
-
   // View Reports - All account types
-  array_push($comtorLinks, new Link("View All Reports", "reports.php"));
+  $comtorLinks[] = new Link("View All Reports", "reports.php");    
+  
+
+  // Heading
+  $comtorLinks[] = new Link("Account Setup", null, true);
+  
+  // Account Management for Admin
+  if ($_SESSION['acctType'] == "admin")
+    $comtorLinks[] = new Link("Account Management", "manageAccounts.php");
+  else
+    $comtorLinks[] = new Link("Account Management", "editAccount.php");
+
+  // E-mail Notification Options - Professor and Student
+  if ($_SESSION['acctType'] == "professor" || $_SESSION['acctType'] == "student")
+    $comtorLinks[] = new Link("E-mail Notifications", "email_notify_edit.php");
+
+  // Requests
+  $comtorLinks[] = new Link("Requests", "requests.php");
+  
+  // System Usage
+  $comtorLinks[] = new Link("System Usage", "usage.php");  
+
+  /*
+  // Add links for all account types
+  $comtorLinks[] = new Link("Change Password", "changePasswordForm.php");
+
+  // Disable account link
+  $link = new Link("Disable Account", "disableAccount.php?userId={$_SESSION['userId']}&amp;rand={$md5Rand}");
+  $link->addAttr("onclick", "return confirm(\"Are you sure you want to disable your account?\");");
+  $comtorLinks[] = $link;
+  */
+  
+  // Admin links
+  if ($_SESSION['acctType'] == "admin")
+  {
+    // Heading
+    $comtorLinks[] = new Link("System", null, true);
+
+    // Admin reports
+    $comtorLinks[] = new Link("Admin Reports", "adminReports.php");
+  
+    // Add School
+    $comtorLinks[] = new Link("Manage Schools", "schools.php");
+
+    // Add Doclet
+    $comtorLinks[] = new Link("Add Doclet", "doclet_add.php");
+  }
 }
 
 $tpl->assign('comtorLinks', $comtorLinks);

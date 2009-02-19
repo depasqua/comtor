@@ -65,15 +65,23 @@
 <!-- Sidebar -->
 <div class="sidebar">
 
+<div class="sidelinks" style="text-align: center;">
+  <a href="javascript:void(0);" id="contrast_link" onclick="changeContrast(this);">High Contrast</a>
+</div>
+
 <!-- Modules -->
 {if is_array($modules) && count($modules) > 0 }
 <div class="sidelinks">
   <div class="mod_top"></div>
   <div class="side_mid">
     <div class="side_mid_content">
-      <ul>
+      <ul id="sidebar_1">
       {foreach from=$modules item="m"}
-        <li><a href="{$m->href}" {foreach from=$m->attrs item="a"}{$a->attr}="{$a->value}"{/foreach}>{$m->name}</a></li>
+        {if $m->heading|default:false}
+          <li class="heading" {foreach from=$m->attrs item="a"}{$a->attr}="{$a->value}"{/foreach}>{$m->name}</li>
+        {else}
+          <li><a href="{$m->href}" {foreach from=$m->attrs item="a"}{$a->attr}="{$a->value}"{/foreach}>{$m->name}</a></li>
+        {/if}
       {/foreach}
       </ul>
     </div>
@@ -87,10 +95,15 @@
     <div class="comtor_top"></div>
     <div class="side_mid">
       <div class="side_mid_content">
-        <ul>
+        <ul id="sidebar_2">
            {foreach from=$comtorLinks item="c"}
-            <li><a href="{$c->href}" {foreach from=$m->attrs item="a"}{$a->attr}="{$a->value}"{/foreach}>{$c->name}</a></li>
+             {if $c->heading|default:false}
+              <li class="heading" {foreach from=$c->attrs item="a"}{$a->attr}="{$a->value}"{/foreach}>{$c->name}</li>
+            {else}  
+              <li><a href="{$c->href}" {foreach from=$m->attrs item="a"}{$a->attr}="{$a->value}"{/foreach}>{$c->name}</a></li>
+            {/if}
           {/foreach}
+          <li class="heading">General</li>
           <li><a href="features.php">Features We Measure</a></li>
           <li><a href="faq.php">FAQ</a></li>
           <li><a href="tutorials.php">Video Tutorials</a></li>
@@ -99,6 +112,75 @@
     </div>
     <div class="side_bottom"></div>
   </div>
+
+
+{literal}
+<script type="text/javascript">
+<!--
+
+function setCookie(name, value, validDays)
+{
+  var expire_date = new Date();
+  expire_date.setDate(expire_date.getDate() + validDays);
+  document.cookie = name + "=" + escape(value) + ((validDays == null) ? "" : "; expires="+expire_date.toGMTString());
+}
+
+function getCookie(name)
+{
+  if (document.cookie.length > 0)
+  {
+    var cookies = document.cookie.split(';');
+    for (i = 0; i < cookies.length; i++)
+    {
+      var idx = cookies[i].indexOf(name+"="); 
+      if (idx == 0)
+        return cookies[i].substring(name.length+1);
+    } 
+  }
+  return "";
+}
+
+var link = document.getElementById("contrast_link");
+if (link != null)
+{
+  var contrast = getCookie("contrast");
+  if (contrast == "high")
+    changeContrast(link);
+}
+
+function changeContrast(elem)
+{
+  var s1 = document.getElementById("sidebar_1");
+  var s2 = document.getElementById("sidebar_2");
+    
+  if (elem.innerHTML == "High Contrast")
+  {
+    if (s1 != null)
+      s1.className = "contrast";
+    
+    if (s2 != null)
+      s2.className = "contrast";
+    
+    elem.innerHTML = "Normal Contrast";    
+    setCookie("contrast", "high", 1);
+  }
+  else
+  {
+    if (s1 != null)
+      s1.className = "";
+    
+    if (s2 != null)
+      s2.className = "";
+      
+    elem.innerHTML = "High Contrast";
+    setCookie("contrast", "normal", 1);
+  }
+}
+
+//-->
+</script>
+{/literal}
+
 
 <!-- End Sidebar -->
 </div>
