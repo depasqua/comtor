@@ -1,5 +1,6 @@
 #!/bin/bash
 # Important Notes:
+#   - Be sure to put this in an empty directory before running!
 #   - To get a specific tagged version, add the version name as the first parameter
 #   - Make sure to update both the schema.sql and data.sql files in comtor/mysqlSchema 
 #   - The created installer.tar.gz needs to be manually added to CVS
