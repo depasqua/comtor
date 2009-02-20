@@ -1,4 +1,4 @@
-<?
+<?php
 require_once("loginCheck.php");
 
 // Ensure that the security random number is correct

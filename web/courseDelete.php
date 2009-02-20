@@ -1,4 +1,4 @@
-<?
+<?php
 $acctTypes = "admin";
 require_once("loginCheck.php");
 

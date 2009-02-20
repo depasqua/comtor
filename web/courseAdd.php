@@ -1,4 +1,4 @@
-<?
+<?php
 $acctTypes = array("professor", "admin");
 require_once("loginCheck.php");
 

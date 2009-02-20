@@ -1,4 +1,4 @@
-<?
+<?php
 
 header('Content-Type: text/xml');
 header("Cache-Control: no-cache, must-revalidate");

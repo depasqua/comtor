@@ -1,4 +1,4 @@
-<?
+<?php
 require_once("loginCheck.php");
 
 $fatal = false;

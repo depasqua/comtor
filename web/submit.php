@@ -1,4 +1,4 @@
-<?
+<?php
 
 $acctTypes = "student";
 require_once("loginCheck.php");
