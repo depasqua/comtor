@@ -71,7 +71,7 @@ if [ $compiled = 0 ]; then
   /usr/bin/javadoc -private --assignment-id $4 --config-file $JAVA_CONFIG -doclet comtor.ComtorDriver -docletpath $CLASSES $MYVAR > JavadocOut.txt 2>&1
   javadocRtn=$?
 else
-  /usr/bin/java -cp $CLASSES:$CLASSPATH comtor.GenerateErrorReport $JAVA_CONFIG
+  JAVA_PATH -cp $CLASSES:$CLASSPATH comtor.GenerateErrorReport $JAVA_CONFIG
 fi
 
 if [ $javadocRtn != 0 ]; then
