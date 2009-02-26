@@ -2,6 +2,8 @@
 
 require_once("config.php");
 
+$tpl->plugins_dir[] = 'plugins';
+
 // Check that user did not switch from development server to production or visa versa
 if (isset($_SESSION['userId']) && isset($_SESSION['dev_server']) && $_SESSION['dev_server'] != DEVELOPMENT)
 {
