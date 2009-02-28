@@ -79,7 +79,7 @@ Good luck, and we hope you enjoy using the tool. We are happy to
 receive any feedback you may have at:
 <br/>
 <div class="center">
-<code>depasqua [at] tcnj &lt;.&gt; edu</code>
+<code>{mailto address="comtor@tcnj.edu" encode='javascript' subject='COMTOR'}.</code>
 </div>
 
 You can also visit the

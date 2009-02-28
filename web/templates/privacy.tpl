@@ -16,7 +16,7 @@ Standards and conventions for the definition of quality source code documentatio
 <h3>Privacy Overview</h3>
 <p>
 By accessing COMTOR, you agree to the terms of this privacy policy. If you have questions or concerns about this policy, you can contact Dr. Peter DePasquale at 
-{mailto address="depasqua@tcnj.edu" encode='javascript' subject='COMTOR Privacy Policy'}.
+{mailto address="comtor@tcnj.edu" encode='javascript' subject='COMTOR Privacy Policy'}.
 </p>
 
 <h3>Information Handling</h3>
