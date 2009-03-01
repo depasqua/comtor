@@ -204,7 +204,7 @@ function changeContrast(elem)
 
 <div class="footer">
   <a href="about.php">About Comment Mentor</a><br/>
-  Copyright &copy; 2006 TCNJ
+  Copyright &copy; 2009 TCNJ
   <div class="tcnj_logo">
     <a href="http://www.tcnj.edu"><img src="img/tcnj_logo-small.gif" alt="TCNJ Logo" border="0" /></a>
   </div>
