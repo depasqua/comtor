@@ -221,6 +221,11 @@ else
     // Add Doclet
     $comtorLinks[] = new Link("Add Doclet", "doclet_add.php");
   }
+
+  // Beta Test Headings
+  $comtorLinks[] = new Link("Beta Test", null, true);
+  $comtorLinks[] = new Link("Report Bugs", "reportBugs.php");
+  $comtorLinks[] = new Link("Request Features", "requestFeatures.php");
 }
 
 $tpl->assign('comtorLinks', $comtorLinks);
