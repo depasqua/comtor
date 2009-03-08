@@ -35,7 +35,7 @@ if (!userIdExists($userId))
 if (empty($error))
 {
   if (requestAcctChange($userId, $acctType, $comment))
-    $_SESSION['content']['success'] = "Your requested has been entered into the database.  Please have patients while an administrator processes your request.";
+    $_SESSION['content']['success'] = "Your requested has been entered into the database.  Please have patience while an administrator processes your request.";
   else
     $error[] = 'There was an error requesting to change your account type.<br/>'.mysql_error();
 }
