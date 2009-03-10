@@ -23,22 +23,22 @@
   {* Actions *}
   <td>
     {if in_array('edit', $c.actions)}
-      <a href="courseEditForm.php?courseId={$c.courseId}"><img alt="Edit Course" src="img/icons/edit.gif"/></a>
+      <a href="courseEditForm.php?courseId={$c.courseId}"><img alt="Edit Course" src="img/icons/edit.png"/></a>
     {/if}
     {if in_array('manage', $c.actions)}
-      <a href="courseManage.php?courseId={$c.courseId}"><img alt="View Course" src="img/icons/magnifying_glass.gif"/></a>
+      <a href="courseManage.php?courseId={$c.courseId}"><img alt="View Course" src="img/icons/magnifying_glass.png"/></a>
     {/if}
     {if in_array('disable', $c.actions)}
-      <a onclick="return verifyCourseAction('disable', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" href="disableCourse.php?courseId={$c.courseId}&amp;rand={$rand}"><img alt="Disable" src="img/icons/lock.gif"/></a>
+      <a onclick="return verifyCourseAction('disable', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" href="disableCourse.php?courseId={$c.courseId}&amp;rand={$rand}"><img alt="Disable" src="img/icons/lock.png"/></a>
     {/if}
     {if in_array('enable', $c.actions)}
-      <a onclick="return verifyCourseAction('enable', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" href="enableCourse.php?courseId={$c.courseId}&amp;rand={$rand}"><img alt="Enable" src="img/icons/unlock.gif"/></a>
+      <a onclick="return verifyCourseAction('enable', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" href="enableCourse.php?courseId={$c.courseId}&amp;rand={$rand}"><img alt="Enable" src="img/icons/unlock.png"/></a>
     {/if}
     {if in_array('delete', $c.actions)}
-      <a onclick="return verifyCourseAction('delete', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" href="courseDelete.php?courseId={$c.courseId}&amp;rand={$rand}"><img alt="Delete Course" src="img/icons/delete.gif"/></a>
+      <a onclick="return verifyCourseAction('delete', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" href="courseDelete.php?courseId={$c.courseId}&amp;rand={$rand}"><img alt="Delete Course" src="img/icons/delete.png"/></a>
     {/if}
     {if in_array('reports', $c.actions)}
-      <a href="reports.php?courseId={$course.courseId}"><img src="img/icons/magnifying_glass.gif" alt="View Course Reports" /></a>
+      <a href="reports.php?courseId={$course.courseId}"><img src="img/icons/magnifying_glass.png" alt="View Course Reports" /></a>
     {/if}
     {if in_array('drop', $c.actions)}
       <a href="courseDrop.php?courseId={$c.courseId}&amp;rand={$rand}" onclick="return verifyCourseAction('drop', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" >Drop</a> |
