@@ -97,11 +97,11 @@ Yes. Comment Mentor's code is licensed under the terms of the <a href="http://ww
 You can also find COMTOR on <a href="http://sourceforge.net/projects/comtor/">SourceForge.net</a>.
 
 <h4 id="gen.icons">Icon Glossary</h4>
-<img src="img/icons/edit.gif" /> Edit<br/>
-<img src="img/icons/magnifying_glass.gif" /> View<br/>
-<img src="img/icons/lock.gif" /> Disable or Lock<br/>
-<img src="img/icons/unlock.gif" /> Enable or Unlock<br/>
-<img src="img/icons/delete.gif" /> Delete<br/>
+<img src="img/icons/edit.png" /> Edit<br/>
+<img src="img/icons/magnifying_glass.png" /> View<br/>
+<img src="img/icons/lock.png" /> Disable or Lock<br/>
+<img src="img/icons/unlock.png" /> Enable or Unlock<br/>
+<img src="img/icons/delete.png" /> Delete<br/>
 
 <h3>Account Management</h3>
 <h4 id="gen.acct.create">How do I create an account?</h4>
