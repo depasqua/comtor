@@ -26,13 +26,13 @@ function verifyAction(action, name)
 <tr>
   <td class="left">{$u.name}<br/>({$u.school})  </td>
   <td class="mini">{$u.acctType}</td>
-  <td class="mini center"><a href="dropbox.php?{if $u.acctType == 'professor'}profId{else}userId{/if}={$u.userId}"><img src="img/icons/magnifying_glass.gif" alt="View Dropbox" /></a></td>
-  <td class="mini center"><a href="reports.php?{if $u.acctType == 'professor'}profId{else}userId{/if}={$u.userId}"><img src="img/icons/magnifying_glass.gif" alt="View Reports" /></a></td>
-  <td class="mini center"><a href="usage.php?userId={$u.userId}"><img src="img/icons/magnifying_glass.gif" alt="View Usage" /></a></td>
+  <td class="mini center"><a href="dropbox.php?{if $u.acctType == 'professor'}profId{else}userId{/if}={$u.userId}"><img src="img/icons/magnifying_glass.png" alt="View Dropbox" /></a></td>
+  <td class="mini center"><a href="reports.php?{if $u.acctType == 'professor'}profId{else}userId{/if}={$u.userId}"><img src="img/icons/magnifying_glass.png" alt="View Reports" /></a></td>
+  <td class="mini center"><a href="usage.php?userId={$u.userId}"><img src="img/icons/magnifying_glass.png" alt="View Usage" /></a></td>
   <td>
-    <a href="editAccount.php?userId={$u.userId}"><img src="img/icons/edit.gif" alt="Edit" /></a>
-    <a href="disableAccount.php?userId={$u.userId}&amp;rand={$rand}" onclick="return verifyAction('disable', '{$u.name}');"><img src="img/icons/lock.gif" alt="Disable" /></a>
-    <a href="deleteAccount.php?userId={$u.userId}&amp;rand={$rand}" onclick="return verifyAction('delete', '{$u.name}');"><img src="img/icons/delete.gif" alt="Delete" /></a>
+    <a href="editAccount.php?userId={$u.userId}"><img src="img/icons/edit.png" alt="Edit" /></a>
+    <a href="disableAccount.php?userId={$u.userId}&amp;rand={$rand}" onclick="return verifyAction('disable', '{$u.name}');"><img src="img/icons/lock.png" alt="Disable" /></a>
+    <a href="deleteAccount.php?userId={$u.userId}&amp;rand={$rand}" onclick="return verifyAction('delete', '{$u.name}');"><img src="img/icons/delete.png" alt="Delete" /></a>
   </td>
 </tr>
 {/foreach}
@@ -62,12 +62,12 @@ function verifyAction(action, name)
 <tr>
   <td class="left">{$u.name}<br/>({$u.school})  </td>
   <td class="mini">{$u.acctType}</td>
-  <td class="mini center"><a href="reports.php?profId={$u.userId}"><img src="img/icons/magnifying_glass.gif" alt="View Reports" /></a></td>
-  <td class="mini center"><a href="usage.php?userId={$u.userId}"><img src="img/icons/magnifying_glass.gif" alt="View Usage" /></a></td>
+  <td class="mini center"><a href="reports.php?profId={$u.userId}"><img src="img/icons/magnifying_glass.png" alt="View Reports" /></a></td>
+  <td class="mini center"><a href="usage.php?userId={$u.userId}"><img src="img/icons/magnifying_glass.png" alt="View Usage" /></a></td>
   <td>
-    <a href="editAccount.php?userId={$u.userId}"><img src="img/icons/edit.gif" alt="Edit" /></a>
-    <a href="enableAccount.php?userId={$u.userId}&amp;rand={$rand}" onclick="return verifyAction('enable', '{$u.name}');"><img src="img/icons/unlock.gif" alt="Enable" /></a>
-    <a href="deleteAccount.php?userId={$u.userId}&amp;rand={$rand}" onclick="return verifyAction('delete', '{$u.name}');"><img src="img/icons/delete.gif" alt="Delete" /></a>
+    <a href="editAccount.php?userId={$u.userId}"><img src="img/icons/edit.png" alt="Edit" /></a>
+    <a href="enableAccount.php?userId={$u.userId}&amp;rand={$rand}" onclick="return verifyAction('enable', '{$u.name}');"><img src="img/icons/unlock.png" alt="Enable" /></a>
+    <a href="deleteAccount.php?userId={$u.userId}&amp;rand={$rand}" onclick="return verifyAction('delete', '{$u.name}');"><img src="img/icons/delete.png" alt="Delete" /></a>
   </td>
 </tr>
 {/foreach}

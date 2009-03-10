@@ -390,7 +390,7 @@ a.noLine
 div.success
 {
   background-color: #b0ed98;
-  background-image: url("../img/icons/success.gif");
+  background-image: url("../img/icons/success.png");
   background-position: 10px 10px;
   background-repeat: no-repeat;
   color: #247f00;
@@ -403,7 +403,7 @@ div.success
 div.error
 {
   background-color: #ed9898;
-  background-image: url("../img/icons/error.gif");
+  background-image: url("../img/icons/error.png");
   background-position: 10px 10px;
   background-repeat: no-repeat;
   color: #7f0000;

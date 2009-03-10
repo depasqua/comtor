@@ -7,7 +7,7 @@
   <h6>Semester:</h6>{$course.semester}<br/>
 
   <div class="center gapBelowSmall">
-    <a href="reports.php?courseId={$courseId}"><img src="img/icons/magnifying_glass.gif" alt="View All Reports" /></a> View All Course Reports
+    <a href="reports.php?courseId={$courseId}"><img src="img/icons/magnifying_glass.png" alt="View All Reports" /></a> View All Course Reports
   </div>
 
   {if is_array($students) && count($students) > 0 }
@@ -30,8 +30,8 @@
         <td class="right small">{$s.submissions}</td>
         <td class="right small">N/A</td>
         <td>
-          <a href="dropbox.php?userId={$s.userId}&amp;courseId={$courseId}" class="noLine"><img src="img/icons/magnifying_glass.gif" alt="View Dropbox" /> View Dropbox</a><br/>
-          <a href="reports.php?userId={$s.userId}&amp;courseId={$courseId}" class="noLine"><img src="img/icons/magnifying_glass.gif" alt="View Reports" /> View All Reports</a><br/>
+          <a href="dropbox.php?userId={$s.userId}&amp;courseId={$courseId}" class="noLine"><img src="img/icons/magnifying_glass.png" alt="View Dropbox" /> View Dropbox</a><br/>
+          <a href="reports.php?userId={$s.userId}&amp;courseId={$courseId}" class="noLine"><img src="img/icons/magnifying_glass.png" alt="View Reports" /> View All Reports</a><br/>
           <a href="courseDrop.php?userId={$s.userId}&amp;courseId={$courseId}&amp;rand={$rand}&amp;loc={$loc}" class="noLine">Drop Student</a>
         </td>
       </tr>

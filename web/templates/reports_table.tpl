@@ -12,13 +12,13 @@
   </tr>
   {foreach from=$userEvents item="e"}
   <tr>
-    <td class="mini"><a href="reports.php?userEventId={$e.userEventId}&amp;userId={$e.userId}"><img src="img/icons/magnifying_glass.gif" alt="View Report"></a></td>
+    <td class="mini"><a href="reports.php?userEventId={$e.userEventId}&amp;userId={$e.userId}"><img src="img/icons/magnifying_glass.png" alt="View Report"></a></td>
     {if $showuser|default:false}<td>{$e.user.name}</td>{/if}
     <td>{strtodate format="F j, Y" date=$e.dateTime}</td>
     <td>{strtodate format="l" date=$e.dateTime}</td>
     <td>{strtodate format="g:i:s A" date=$e.dateTime}</td>
     {if $deletable|default:false}
-      <td><a href="userEventDelete.php?userEventId={$e.userEventId}&amp;rand={$rand}" onclick="return verifyUserEventAction('delete');"><img src="img/icons/delete.gif" alt="Delete Report"></a></td>
+      <td><a href="userEventDelete.php?userEventId={$e.userEventId}&amp;rand={$rand}" onclick="return verifyUserEventAction('delete');"><img src="img/icons/delete.png" alt="Delete Report"></a></td>
     {/if}
   </tr>
   {/foreach}

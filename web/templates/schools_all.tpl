@@ -26,7 +26,7 @@ function verifyAction(action, name)
 <tr>
   <td class="left">{$sch.school}</td>
   <td>
-    <a href="?schId={$sch.schoolId}&amp;state=edit"><img src="img/icons/edit.gif" alt="Edit" /></a>
+    <a href="?schId={$sch.schoolId}&amp;state=edit"><img src="img/icons/edit.png" alt="Edit" /></a>
   </td>
 </tr>
 {/foreach}
