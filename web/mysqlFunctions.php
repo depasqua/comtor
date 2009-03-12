@@ -3110,4 +3110,35 @@ function addDocletParam($docletId, $name, $desc, $value)
   return $result;
 }
 
+/*******************************************************************************
+* Gets statistics on the database
+*
+* @return mixed Associative array of row counts on success and false otherwise
+*******************************************************************************/
+function getDbStats()
+{
+  // Construct query
+  $sql = 'SELECT'.
+    '(SELECT COUNT(*) FROM users) AS users,'.
+    '(SELECT COUNT(*) FROM users WHERE acctType = "professor") AS profs,'.
+    '(SELECT COUNT(*) FROM users WHERE acctType = "admin") AS admin,'.
+    '(SELECT COUNT(*) FROM schools) AS schools,'.
+    '(SELECT COUNT(*) FROM courses) AS courses,'.
+    '(SELECT COUNT(*) FROM courses WHERE status="enabled") AS enabledCourses,'.
+    '(SELECT COUNT(*) FROM courses WHERE status="disabled") AS disabledCourses,'.
+    '(SELECT COUNT(*) FROM assignments) AS assignments,'.
+    '(SELECT COUNT(*) FROM doclets) AS doclets,'.
+    '(SELECT COUNT(*) FROM enrollments) AS enrollments,'.
+    '(SELECT COUNT(*) FROM userEvents) AS reports,'.
+    '(SELECT COUNT(*) FROM files) AS files'.
+    ' LIMIT 1';
+
+  $result = mysql_query($sql);
+  if ($result === false)
+    return false;
+
+  // Return associative array
+  return mysql_fetch_assoc($result);
+}
+
 ?>

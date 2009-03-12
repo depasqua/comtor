@@ -13,6 +13,9 @@ include("connect.php");
 
 require_once("generalFunctions.php");
 
+// Get database stats
+$tpl->assign('stats', getDbStats());
+
 // Get use of each doclet
 $tpl->assign('doclets', getDocletUsage());
 
