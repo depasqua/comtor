@@ -18,6 +18,15 @@ require_once("header1.php");
 
 if ($_SESSION['acctType'] == "student")
   $tpl->assign("url", "dropbox.php");
+  
+// Get number of requests
+if ($_SESSION['acctType'] == "admin")
+{ 
+  // Get account type change requests
+  $requests = getNumPendingRequests();
+  if ($requests !== false)
+    $tpl->assign('requests', $requests);
+}
 
 // Fetch template
 $tpldata = $tpl->fetch("welcome.tpl");

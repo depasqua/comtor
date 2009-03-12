@@ -610,3 +610,13 @@ p.indentAll
 {
   margin: 5px 0px 5px 20px;
 }
+
+.bold
+{
+  font-weight: bold;
+}
+
+.requestsPending
+{
+  font-weight: bold;
+}

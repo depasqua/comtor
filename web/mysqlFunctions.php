@@ -1778,6 +1778,33 @@ function rejectAcctChangeRequest($req_id)
 }
 
 /*******************************************************************************
+* Gets number of pending requests
+*
+* @return mixed Returns array on success, otherwise false.  The array elements 
+*               are associative arrays with the "name" of the request and the 
+*               number of pending requests.
+*******************************************************************************/
+function getNumPendingRequests()
+{
+  // Return array
+  $rtn = array();
+
+  // Make query and process results
+  $query = 'SELECT COUNT(*) FROM request_acct_change WHERE status=\'pending\'';
+  if (($result = mysql_query($query)) === false)
+    return false;
+  $rtn[] = array("name"=>"Account type change", "num"=>mysql_result($result, 0, 0));
+  
+  // Make query and process results
+  $query = 'SELECT COUNT(*) FROM request_acct_deletions WHERE status=\'pending\'';
+  if (($result = mysql_query($query)) === false)
+    return false;
+  $rtn[] = array("name"=>"Account deletion", "num"=>mysql_result($result, 0, 0));
+
+  return $rtn;
+}
+
+/*******************************************************************************
 * Gets requests for account type change.
 *
 * @param string $status Finds only requests with this status
