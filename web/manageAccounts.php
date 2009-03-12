@@ -38,7 +38,7 @@ else if ($_GET['totalDis'] > MAX_LIST_TOTAL)
   $_GET['totalDis'] = MAX_LIST_TOTAL;
 
 // List accounts that are currently enabled
-if ($users = getUsers(array("userId", "name", "school", "acctType"), "enabled", "all", $_GET['lowerEn'], $_GET['totalEn']))
+if ($users = getUsers(array("userId", "email", "name", "school", "acctType"), "enabled", "all", $_GET['lowerEn'], $_GET['totalEn']))
   $tpl->assign('usersE', $users);
 
 require_once("generalFunctions.php");
@@ -48,7 +48,7 @@ $numUsers = getNumUsers("enabled");
 $tpl->assign('usersELinks', listPages($_GET['lowerEn'], $_GET['totalEn'], $numUsers, "lowerEn", "totalEn", "lowerDis={$_GET['lowerDis']}&amp;totalDis={$_GET['totalDis']}"));
 
 // List accounts that are currently disabled
-if ($users = getUsers(array("userId", "name", "school", "acctType"), "disabled", "all", $_GET['lowerDis'], $_GET['totalDis']))
+if ($users = getUsers(array("userId", "email", "name", "school", "acctType"), "disabled", "all", $_GET['lowerDis'], $_GET['totalDis']))
   $tpl->assign('usersD', $users);
 
 // Add links to view other courses if there are any

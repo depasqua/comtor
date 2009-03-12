@@ -14,7 +14,7 @@ function verifyAction(action, name)
 {if is_array($usersE) && count($usersE) > 0 }
 <table class="data">
 <tr>
-  <th>Name (School)</th>
+  <th>Name<br/>E-mail<br/>School</th>
   <th class="mini">Account Type</th>
   <th class="mini">Dropbox</th>
   <th class="mini">Reports</th>
@@ -24,7 +24,7 @@ function verifyAction(action, name)
 
 {foreach from=$usersE item="u"}
 <tr>
-  <td class="left">{$u.name}<br/>({$u.school})  </td>
+  <td class="left">{$u.name}<br/>{$u.email}<br/>{$u.school}</td>
   <td class="mini">{$u.acctType}</td>
   <td class="mini center"><a href="dropbox.php?{if $u.acctType == 'professor'}profId{else}userId{/if}={$u.userId}"><img src="img/icons/magnifying_glass.png" alt="View Dropbox" /></a></td>
   <td class="mini center"><a href="reports.php?{if $u.acctType == 'professor'}profId{else}userId{/if}={$u.userId}"><img src="img/icons/magnifying_glass.png" alt="View Reports" /></a></td>
