@@ -17,6 +17,25 @@ $tpl = new Smarty();
 
 require_once("header1.php");
 
+// If professor, get stats on each course
+if ($_SESSION['acctType'] == "professor" && isset($userCourses))
+{
+  foreach ($userCourses as &$course)
+  {
+    // Get course statistics
+    $arr = getCourseStats($course['courseId']);
+    if ($arr != false)
+      $course = array_merge($course, $arr);
+      
+    // Get most active students
+    $course['mostActiveStudents'] = getCourseMostActiveUsers($course['courseId']);
+  }
+  unset ($course);
+  
+  // Reassign courses to template
+  $tpl->assign('courses', $userCourses);
+}
+
 if ($_SESSION['acctType'] == "student")
   $tpl->assign("url", "dropbox.php");
   

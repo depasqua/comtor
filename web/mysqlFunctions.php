@@ -3174,4 +3174,80 @@ function getDbStats()
   return mysql_fetch_assoc($result);
 }
 
+/*******************************************************************************
+* Gets number of students enrolled in the course and the number of reports
+* submitted for the course.
+*
+* @param int $courseId Id of course  
+* 
+* @return mixed Returns associative array on success, otherwise false.  The 
+*               array contains:
+*                 numStudent - Number of students
+*                 numReports - Number of reports 
+*******************************************************************************/
+function getCourseStats($courseId)
+{
+  // Check that the given courseId exists
+  if (!courseExists($courseId))
+    return false;
+    
+  // Construct query
+  $sql ='SELECT 
+  (SELECT COUNT(*) 
+   FROM enrollments 
+   WHERE courseId='.$courseId.') AS numStudents,
+  (SELECT COUNT(*) 
+   FROM assignmentEvents
+   WHERE assignmentEventId IN (SELECT assignmentEventId 
+                               FROM assignments
+                               WHERE courseId = '.$courseId.')) AS numReports';
+  
+  // Make query                             
+  $result = mysql_query($sql);
+
+  // Get row    
+  if (!$result || ($row = mysql_fetch_assoc($result)) === false)
+    return false;
+  
+  return $row;                               
+}
+
+/*******************************************************************************
+* Gets the five most active users for the course.
+*
+* @param int $courseId Id of course
+* 
+* @return mixed Returns array on success, otherwise false.  The array contains
+*                 associative arrays with:
+*                   userId - User id
+*                   name - User name
+*                   numReports - Number of reports by the user 
+*******************************************************************************/
+function getCourseMostActiveUsers($courseId)
+{
+  // Check that the given courseId exists
+  if (!courseExists($courseId))
+    return false;
+    
+  // Construct query
+  $sql ='SELECT u.userId, u.name, 
+         COUNT(ue.userEventId) AS numReports 
+         FROM users u JOIN userEvents ue ON u.userId = ue.userId AND userEventId IN (SELECT userEventId FROM assignmentEvents WHERE assignmentId IN (SELECT assignmentId FROM assignments WHERE courseId = '.$courseId.')) 
+         WHERE u.userId IN (SELECT studentId FROM enrollments WHERE courseId='.$courseId.')
+         GROUP BY userId, name
+         ORDER BY numReports, ue.dateTime
+         LIMIT 5';
+  
+  // Make query                             
+  if (($result = mysql_query($sql)) === false)
+    return false;
+
+  // Get rows
+  $rtn  = array();    
+  while ($row = mysql_fetch_assoc($result))
+    $rtn[] = $row;
+
+  return $rtn;
+}
+
 ?>

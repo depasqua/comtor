@@ -14,7 +14,27 @@
 <h3>Courses</h3>
 {if is_array($courses) && count($courses) > 0 }
   {foreach from=$courses item="c"}
-    <h4><a href="{$url|default:'courses.php'}?courseId={$c.courseId}">{$c.section}: {$c.name} ({$c.semester})</a></h4>
+    <h4>
+      <a href="{$url|default:'courses.php'}?courseId={$c.courseId}">{$c.section}: {$c.name} ({$c.semester})</a>
+      {if isset($c.numStudents) && isset($c.numReports)}
+        ({$c.numStudents} students, {$c.numReports} reports)
+      {/if}
+    </h4>
+    {* Most Active Students *}
+    {if isset($c.mostActiveStudents) && is_array($c.mostActiveStudents)}
+      <table class="data">
+        <tr>
+          <th>Student</th>
+          <th>Number of Submissions</th>
+        </tr>
+        {foreach from=$c.mostActiveStudents item="s"}
+        <tr>
+          <td><a href="dropbox.php?userId={$s.userId}&amp;courseId={$c.courseId}">{$s.name}</a></td>
+          <td>{$s.numReports}</td>
+        </tr>
+        {/foreach}
+      </table>
+    {/if}
   {/foreach}
 {elseif $resultMsg|default:true}
   <h5 class="center">No Results Found</h5>
