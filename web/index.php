@@ -26,18 +26,6 @@ if ($_SESSION['acctType'] == "admin")
   $requests = getNumPendingRequests();
   if ($requests !== false)
     $tpl->assign('requests', $requests);
-    /*
-  // Get RSS feeds from sourceforge
-  $url = "http://sourceforge.net/export/rss2_keepsake.php?group_id=215309";
-  $rss = &new XML_RSS($url);
-  $rss->parse();
-  $tpl->assign("sourceforgeActivityRss", $rss->getItems());
-  
-  $url = "http://sourceforge.net/export/rss2_projsummary.php?group_id=215309";
-  $rss = &new XML_RSS($url);
-  $rss->parse();
-  $tpl->assign("sourceforgeSummaryRss", $rss->getItems());
-  */
 }
 
 // Fetch template

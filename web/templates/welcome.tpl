@@ -69,7 +69,3 @@ window.onload = function()
 <div id="rss2"><img src="img/loading.gif"/></div>
 
 {/if}
-
-{include file="template_rssItems.tpl" rss=$sourceforgeActivityRss rssTitle="Sourceforge Activity RSS Feed"}
-
-{include file="template_rssItems.tpl" rss=$sourceforgeSummaryRss rssTitle="Sourceforge Summary RSS Feed"}
