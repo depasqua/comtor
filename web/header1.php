@@ -186,9 +186,8 @@ else
   else
     $comtorLinks[] = new Link("Account Management", "editAccount.php");
 
-  // E-mail Notification Options - Professor and Student
-  if ($_SESSION['acctType'] == "professor" || $_SESSION['acctType'] == "student")
-    $comtorLinks[] = new Link("E-mail Notifications", "email_notify_edit.php");
+  // E-mail Notification Options
+  $comtorLinks[] = new Link("E-mail Notifications", "email_notify_edit.php");
 
   // Requests
   $comtorLinks[] = new Link("Requests", "requests.php");

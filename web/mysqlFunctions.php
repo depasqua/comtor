@@ -1671,6 +1671,19 @@ function requestAcctChange($userId, $acctType, $comment = null)
     $tmp = mysql_insert_id();
     if ($tmp !== false)
       $rtn = $tmp;
+
+    /* Add notification */
+    $content = "A user requested an account type change to {$acctType}.<br/>"; // Default message
+    
+    // Get user information
+    $result = mysql_query('SELECT name, acctType FROM users WHERE userId='.$userId);
+    if ($result && $info = mysql_fetch_assoc($result))
+      $content = $info['name'] . " requested an account type change from {$info['acctType']} to {$acctType}.<br/>";
+    
+    // Get admins and set up notification
+    if (($result = mysql_query('SELECT userId FROM users WHERE acctType="admin"')) !== false)
+      while ($info = mysql_fetch_assoc($result))
+        setupNotify($info['userId'], NOTIFY_REQUEST, $content, 'New Request');
   }
 
   return $rtn;
@@ -1864,6 +1877,22 @@ function requestAcctRemoval($userId)
   // Insert record
   $query = 'INSERT INTO request_acct_deletions (userId) VALUES (' . $userId . ') ON DUPLICATE KEY UPDATE status="pending", req_date=NOW()';
   $rtn = mysql_query($query);
+  
+  if ($rtn)
+  {
+    /* Add notification */
+    $content = "A user requested to have their account removed.<br/>"; // Default message
+    
+    // Get user information
+    $result = mysql_query('SELECT name, acctType FROM users WHERE userId='.$userId);
+    if ($result && $info = mysql_fetch_assoc($result))
+      $content = $info['name'] . " requested to have their account removed.<br/>";
+    
+    // Get admins and set up notification
+    if (($result = mysql_query('SELECT userId FROM users WHERE acctType="admin"')) !== false)
+      while ($info = mysql_fetch_assoc($result))
+        setupNotify($info['userId'], NOTIFY_REQUEST, $content, 'New Request');
+  }
 
   return $rtn;
 }
@@ -2512,19 +2541,21 @@ function userEventExists($userEventId)
 }
 
 /* E-mail Notification Options */
-define("NOTIFY_ASSIGNMENT_NEW",           0x00000000001);
-define("NOTIFY_ASSIGNMENT_DEADLINE_NEAR", 0x00000000010);
-define("NOTIFY_ASSIGNMENT_OPEN",          0x00000000100);
-define("NOTIFY_ASSIGNMENT_CLOSE",         0x00000001000);
-define("NOTIFY_ASSIGNMENT_COMMENT",       0x00000010000);
-define("NOTIFY_STUDENT_SUBMISSION",       0x00000100000);
-define("NOTIFY_ROSTER_CHANGE",            0x00001000000);
+define("NOTIFY_ASSIGNMENT_NEW",           0x00000001);
+define("NOTIFY_ASSIGNMENT_DEADLINE_NEAR", 0x00000010);
+define("NOTIFY_ASSIGNMENT_OPEN",          0x00000100);
+define("NOTIFY_ASSIGNMENT_CLOSE",         0x00001000);
+define("NOTIFY_ASSIGNMENT_COMMENT",       0x00010000);
+define("NOTIFY_STUDENT_SUBMISSION",       0x00100000);
+define("NOTIFY_ROSTER_CHANGE",            0x01000000);
+define("NOTIFY_REQUEST",                  0x10000000);
+// Use 0x00000002 next
 
-define("NOTIFY_FREQ_ON_ACTION",           0x00000000001);
-define("NOTIFY_FREQ_ON_HOUR",             0x00000000010);
-define("NOTIFY_FREQ_ON_HALF_HOUR",        0x00000000100);
-define("NOTIFY_FREQ_ON_SIX_HOUR",         0x00000001000);
-define("NOTIFY_FREQ_ON_DAY",              0x00000010000);
+define("NOTIFY_FREQ_ON_ACTION",           0x00000001);
+define("NOTIFY_FREQ_ON_HOUR",             0x00000010);
+define("NOTIFY_FREQ_ON_HALF_HOUR",        0x00000100);
+define("NOTIFY_FREQ_ON_SIX_HOUR",         0x00001000);
+define("NOTIFY_FREQ_ON_DAY",              0x00010000);
 
 /*******************************************************************************
 * Sets user options for E-mail notification.  Assumes that $notification_types
@@ -2539,6 +2570,7 @@ define("NOTIFY_FREQ_ON_DAY",              0x00000010000);
 *                                 NOTIFY_ASSIGNMENT_COMMENT
 *                                 NOTIFY_STUDENT_SUBMISSION
 *                                 NOTIFY_ROSTER_CHANGE
+*                                 NOTIFY_REQUEST
 *
 * @param int $frequency One of the following:
 *                                 NOTIFY_FREQ_ON_ACTION
@@ -2602,6 +2634,7 @@ function getNotifyOptions($userId)
 *                                 NOTIFY_ASSIGNMENT_COMMENT
 *                                 NOTIFY_STUDENT_SUBMISSION
 *                                 NOTIFY_ROSTER_CHANGE
+*                                 NOTIFY_REQUEST
 *
 * @param string $content Content of E-mail
 * @param string $subject Subject of E-mail

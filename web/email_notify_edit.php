@@ -1,6 +1,6 @@
 <?php
 
-$acctTypes = array("student", "professor");
+$acctTypes = array("student", "professor", "admin");
 require_once("loginCheck.php");
 
 require_once("smarty/Smarty.class.php");
@@ -41,6 +41,10 @@ else if ($_SESSION['acctType'] == 'professor')
 {
   $notify_types[NOTIFY_STUDENT_SUBMISSION] = 'New Student Submission';
   $notify_types[NOTIFY_ROSTER_CHANGE] = 'Student Enrolled/Dropped Course';
+}
+else if ($_SESSION['acctType'] == 'admin')
+{
+  $notify_types[NOTIFY_REQUEST] = 'New Request';
 }
 $tpl->assign('notify_types', $notify_types);
 
