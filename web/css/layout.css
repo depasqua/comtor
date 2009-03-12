@@ -620,3 +620,17 @@ p.indentAll
 {
   font-weight: bold;
 }
+
+div.rssItem
+{
+  background-color: #e0dfe3;
+  margin: 0px;
+  padding: 5px 10px;
+}
+
+div.rssItem.odd
+{
+  background-color: #d0cfd3;
+  margin: 0px;
+  padding: 5px 10px;
+}
