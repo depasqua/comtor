@@ -4,38 +4,70 @@ New features are constantly being added so check back frequently for information
 </p>
 
 <p>
-COMTOR generates a report based on a user's submitted source code. Currently there are four modules, check for tags, comment average ratio, percentage methods, and method interactions.
+COMTOR generates a report based on a user's submitted source code. Currently there are five modules, listed below, along with a short descrip
+tion of their purpose.
 </p>
 
 <ul>
   <li>
-    Check for Tags
+    Check for Tags (requires the presence of Javadoc tags)
     <p class="indentAll">
-       Searches submitted source code to evaluate whether all methods are appropriately commented. An appropriately commented method should have all of the necessary javadoc tags used correctly.<br/>
-       Checks that the <span class="tag">@return</span>, <span class="tag">@param</span>, and <span class="tag">@throws</span> tags are used appropriately.  All methods that return a non-void value must have an <span class="tag">@return</span> tag.  The <span class="tag">@return</span> tag should not be present in methods with a return type of void.  All method parameters should have an <span class="tag">@param</span> tag with an appropriate comment.  There should not be any <span class="tag">@param</span> tags for non-existant parameters.  Each exceptions that a method throws should have an <span class="tag">@throws</span> tag.  There should not be any <span class="tag">@throws</span> tags present in methods that do not throw exceptions.
-    </p>
-  </li>
+       Searches submitted source code to evaluate whether all user-defined methods contain the correct use of three core Javadoc tags.</p>
 
-  <li>
-    Percentage Methods
     <p class="indentAll">
-       Calculates the average length of words in comments immediately preceding methods.
-    </p>
-  </li>
+        This module verifys that the <span class="tag">@return</span>, <span class="tag">@param</span>, and <span class="tag">@throws</span> 
+tags are used appropriately. All methods that return a non-void value must have a valid <span class="tag">@return</span> tag in the comment b
+lock above the method's header line.  The <span class="tag">@return</span> tag should not be present for methods with a return type of void. 
+All method parameters should have an <span class="tag">@param</span> tag with an comment indicating the purpose of the parameter. There shoul
+d not be any <span class="tag">@param</span> tags for non-existent parameters. Each exception that a method throws should have an <span class
+="tag">@throws</span> tag. There should not be any <span class="tag">@throws</span> tags present in methods that do not throw exceptions.</p>
 
-  <li>
-    Comment Average Ratio
     <p class="indentAll">
-       Determines the length (in words) of each method's comments and the average length of method comments for each class.
+Example:
+</p>
+<pre>
+<p class="example">/**
+ * Attempts to recursively traverse the maze. Inserts special characters
+ * indicating locations that have been tried and that eventually become part
+ * of the solution.
+ *
+ * @param row provides the row index at which the traversal starts
+ * @param column provides the column index at which the traversal starts
+ * @return true if the maze is solved, false otherwise
+ * @throws NullPointerException if the parameters reference an invalid maze cell
+ */
+ public boolean traverse (int row, int column) throws NullPointerException</pre>
     </p>
-  </li>
+ </li>
 
-  <li>
-    Method Interactions
-    <p class="indentAll">
-       Outputs which user-defined methods are called from other user-defined methods.
-    </p>
-  </li>
+ <li>
+  Percentage Methods
+  <p class="indentAll">
+    Calculates the average length of words in comments immediately preceding methods.
+  </p>
+ </li>
+
+ <li>
+  Comment Average Ratio
+  <p class="indentAll">
+    Determines the length (in words) of each method's comments and the average length of method comments for each class.
+  </p>
+ </li>
+
+ <li>
+  Method Interactions
+  <p class="indentAll">
+    Outputs which user-defined methods are called from other user-defined methods.
+  </p>
+ </li>
+
+ <li>
+ Spell Check
+ <p class="indentAll">
+    Checks the spelling of all words present in all comments within the source code file(s). This module attempts to recognize user-defined v
+ariable, method, and class names as valid words in an effort to reduce the number of false-positives.
+ </p>
+ </li>
 </ul>
 
 <h2>Additional Features Provided</h2>

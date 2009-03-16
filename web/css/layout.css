@@ -611,6 +611,15 @@ p.indentAll
   margin: 5px 0px 5px 20px;
 }
 
+p.example {
+   border: 1px solid #5581C0;
+   font: 1em 'Courier New', Courier, Fixed, monospace;
+   margin: 5px 10px 5px 20px;
+   background: #eee;
+   overflow: auto;
+   text-align: left;
+}
+
 .bold
 {
   font-weight: bold;
