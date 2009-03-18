@@ -611,13 +611,24 @@ p.indentAll
   margin: 5px 0px 5px 20px;
 }
 
-p.example {
+p.codeExample
+{
    border: 1px solid #5581C0;
    font: 1em 'Courier New', Courier, Fixed, monospace;
-   margin: 5px 10px 5px 20px;
+   margin: -15px 10px 5px 20px;
    background: #eee;
    overflow: auto;
    text-align: left;
+}
+
+.reportExample
+{
+  border: 4px double #5581C0;
+  background: #eee;
+  padding: 5px;
+  font-size:.9em;
+  text-align: left;
+  margin: -5px 10px 10px 20px;
 }
 
 .bold
