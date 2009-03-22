@@ -211,7 +211,7 @@ else
     $comtorLinks[] = new Link("Admin Reports", "adminReports.php");
   
     // Add School
-    $comtorLinks[] = new Link("Manage Schools", "schools.php");
+    $comtorLinks[] = new Link("School Management", "schools.php");
 
     // Add Doclet
     $comtorLinks[] = new Link("Add Doclet", "doclet_add.php");
