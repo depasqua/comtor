@@ -134,10 +134,9 @@ function getReportingOptions(assignmentId)
 
   <div class="doclets">
     {foreach from=$doclets item="d"}
-      <div class="doclet">
+      <div class="doclet {cycle values="odd,even"}">
         <input type="checkbox" class="checkbox" id="doclet_{$d.docletId}" name="doclet[]" value="{$d.javaName}"/>
-        <span class="doclet_name">{$d.docletName}</span>
-        <br/>
+        <span class="doclet_name">{$d.docletName}</span>: 
         <span class="doclet_description">{$d.docletDescription}</span>
       </div>
     {/foreach}

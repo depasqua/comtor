@@ -245,30 +245,36 @@ div.tcnj_logo
 /* Homepage doclet info */
 div.doclets
 {
+  border: 1px solid #000000;
   clear: both;
+  margin-bottom: 5px;
 }
 
 div.doclet
 {
-  margin: 0px auto;
-  padding-bottom: 5px;
-  text-align: center;
-  width: 80%;
+  padding: 15px 5px;
+  text-align: left;
+}
+
+div.doclet.odd
+{
+  background-color: #e8e8ff;
 }
 
 div.doclet input.checkbox
 {
   float: left;
+  margin: 5px;
 }
 
 .doclet_name
 {
-  font-weight:bold;
+  font-weight: bold;
 }
 
 .doclet_description
 {
-  font-style:italic;
+  font-style: italic;
 }
 
 
@@ -533,6 +539,7 @@ div.note
   float: right;
   font-size: .75em;
   font-style: italic;
+  margin: 5px;
   padding: 5px;
   text-align: left;
   width: 250px;
