@@ -45,7 +45,7 @@ function showFile(id)
   {if !empty($d.props) }
     <div class='report'>
       <div class='docletDesc'>{$d.docletName} ({$d.docletDescription})</div>
-      <div class='docletScore'>{$d.score|string_format:"%.2f"} out of {$d.max_score|string_format:"%.2f"}</div>
+      <div class='docletScore'>Score: {$d.score|string_format:"%.2f"} out of {$d.max_score|string_format:"%.2f"}</div>
       {foreach from=$d.props item="prop"}
         {if $prop.class == 'class'}<hr />{/if}
         <div class='{$prop.class}'>{$prop.value}</div>
