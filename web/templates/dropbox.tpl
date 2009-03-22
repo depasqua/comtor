@@ -1,12 +1,15 @@
+<h1>Course Dropbox</h1>
+
 {* Determine redirect location *}
 {assign var='loc' value='dropbox.php?'}
 {assign var='loc' value=$loc|cat:'userId='|cat:$smarty.get.userId|cat:'&courseId='|cat:$smarty.get.courseId}
 {assign var='loc' value=$loc|urlencode}
 
 {if $submittable|default:false}
-  <a href="submit.php">Add New Dropbox Item</a><br/>
+  <a href="submit.php">Submit Code for an Assignment</a><br/>
 {/if}
 {if $editable|default:false}
+
   <a href="assignment_add.php">Add New Assignment</a><br/>
 
   {if count($students) > 0}

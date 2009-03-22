@@ -128,12 +128,8 @@ $md5Rand = md5(session_id());
 // Create array of links that are to be shown for each account type
 if (isset($_SESSION['acctType']) && isset($_SESSION['courseId']))
 {
-  array_push($moduleLinks, new Link('Dropbox', 'dropbox.php?courseId='.$_SESSION['courseId']));
+  array_push($moduleLinks, new Link('View Course Dropbox', 'dropbox.php?courseId='.$_SESSION['courseId']));
   array_push($moduleLinks, new Link('E-mail', 'course_email.php?courseId='.$_SESSION['courseId']));
-
-  // Submit files or Welcome message
-  if ($_SESSION['acctType'] == 'student')
-    array_push($moduleLinks, new Link('Submit Files', 'submit.php?courseId='.$_SESSION['courseId']));
 }
 
 // Show the Modules Sidebar if there are links that go in it
