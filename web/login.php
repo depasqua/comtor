@@ -22,8 +22,13 @@ if (strpos($email, "@") === false)
 //connect to database
 include("connect.php");
 
+// Check if logins have been disabled
+if (isset($disableLogins) && $disableLogins)
+{
+  $message = "Logins have been temporarily disabled for system maintenance.";
+}
 // Validate email and password
-if (!emailExists($email))
+else if (!emailExists($email))
 {
   $message = "Username does not exist!";
 }

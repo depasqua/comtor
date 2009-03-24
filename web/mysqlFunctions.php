@@ -3250,4 +3250,145 @@ function getCourseMostActiveUsers($courseId)
   return $rtn;
 }
 
+/*******************************************************************************
+* Adds the user to the current users table. 
+*
+* @param int $userId Id of user
+* @param int $expires Timestamp when the session expires.  If less than current
+*                     timestamp, the row is removed from the database 
+* 
+* @return int Returns one of the following status codes:
+*             0 - Success
+*             1 - User does not exist
+*             2 - Invalid value for $expires             
+*             3 - Database error 
+*******************************************************************************/
+function updateCurrentUser($userId, $expires)
+{
+  // Check that the given userId exists
+  if (!userIdExists($userId))
+    return 1;
+  
+  // Check that expiration time is an integer
+  if (!is_int($expires))
+    return 2;
+  
+  // If expiration date has passed, delete user from table
+  if ($expires < time())
+  {
+    $sql = "DELETE
+            FROM current_users
+            WHERE userId = {$userId}";                           
+    if (($result = mysql_query($sql)) === false)
+      return 3;
+  }
+  else
+  {
+    // Check if the userId is in the table
+    $sql = "SELECT
+            COUNT(*)
+            FROM current_users
+            WHERE userId = {$userId}";                             
+    if (($result = mysql_query($sql)) === false)
+      return 3;
+      
+    // Determine if this is an update or insert
+    if (intval(mysql_result($result, 0, 0)) === 1)
+    {
+      // Construct query
+      $sql = 'UPDATE
+              current_users
+              SET expires = '.$expires.
+              ' WHERE userId = '.$userId;
+    }
+    else
+    {
+      // Construct query
+      $sql = 'INSERT
+              INTO current_users
+              (userId, expires)
+              VALUES ('.$userId.','.$expires.')';
+    }
+    
+    // Execute query
+    if (($result = mysql_query($sql)) === false)
+      return 3;
+  }
+
+  return 0;
+}
+
+/*******************************************************************************
+* Removes users from the current users table 
+*
+* @param int $userId Id of user
+* 
+* @return int Returns one of the following status codes:
+*             0 - Success
+*             1 - User does not exist
+*             2 - Invalid value for $expires             
+*             3 - Database error 
+*******************************************************************************/
+function removeCurrentUser($userId)
+{
+  return updateCurrentUser($userId, 0); 
+}
+
+/*******************************************************************************
+* Removes users for current users table whose session expired 
+*******************************************************************************/
+function cleanCurrentUsers()
+{
+  // Construct query
+  $sql = 'DELETE FROM current_users WHERE expires < '.time();
+  
+  // Execute query
+  mysql_query($sql);
+}
+
+/*******************************************************************************
+* Gets number of users currently logged in 
+* 
+* @return int Number of users or -1 on error  
+*******************************************************************************/
+function numCurrentUsers()
+{
+  // Remove old sessions
+  cleanCurrentUsers();
+
+  // Construct query
+  $sql = 'SELECT COUNT(*) FROM current_users';  
+  
+  // Execute query
+  if (($result = mysql_query($sql)) !== false && ($num = mysql_result($result, 0, 0)) !== false)
+    return $num;  
+  
+  return -1;
+}
+
+/*******************************************************************************
+* Gets users currently logged in 
+* 
+* @return mixed Array of users with "name" and "email" or false  
+*******************************************************************************/
+function getCurrentUsers()
+{
+  // Remove old sessions
+  cleanCurrentUsers();
+
+  // Construct query
+  $sql = 'SELECT name, email FROM current_users NATURAL JOIN users';  
+  
+  // Execute query
+  if (($result = mysql_query($sql)) === false)
+    return false;  
+  
+  // Get rows
+  $rtn  = array();    
+  while ($row = mysql_fetch_assoc($result))
+    $rtn[] = $row;
+
+  return $rtn;
+}
+
 ?>

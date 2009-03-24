@@ -16,6 +16,9 @@ require_once("generalFunctions.php");
 // Get database stats
 $tpl->assign('stats', getDbStats());
 
+// Get number of current users
+$tpl->assign('currentUsers', numCurrentUsers());
+
 // Get use of each doclet
 $tpl->assign('doclets', getDocletUsage());
 

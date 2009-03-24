@@ -15,6 +15,16 @@ if (isset($_SESSION['userId']) && isset($_SESSION['dev_server']) && $_SESSION['d
 
 require_once("connect.php");
 
+// Update the user in the current users table
+if (isset($_SESSION['userId']))
+{
+  // Get the amount of time until the session expires
+  $expires = time() + ini_get("session.gc_maxlifetime");
+  
+  // Update current users table
+  updateCurrentUser($_SESSION['userId'], $expires);
+} 
+
 // Checks for a course parameter
 if (!isset($courseId))
   $courseId = null;

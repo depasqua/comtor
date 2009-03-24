@@ -4,6 +4,7 @@
 <h3>Statistics</h3>
 
 <h4>Users</h4>
+Number of users currently logged in: {$currentUsers} <a href="onlineUsers.php"><img alt="View Users" title="View users currently logged in." src="img/icons/magnifying_glass.png"/></a><br/>
 Number of users: {$stats.users}<br/>
 Number of professors: {$stats.profs}<br/>
 Number of administrators: {$stats.admin}<br/>
