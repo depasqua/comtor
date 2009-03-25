@@ -18,7 +18,7 @@ $tpl = new Smarty();
 require_once("header1.php");
 
 // If professor, get stats on each course
-if ($_SESSION['acctType'] == "professor" && isset($userCourses))
+if ($_SESSION['acctType'] == "professor" && isset($userCourses) && is_array($userCourses))
 {
   foreach ($userCourses as &$course)
   {
