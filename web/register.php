@@ -71,7 +71,7 @@ else
     $body = nl2br($body);
     $result = sendMail($body, $email, null, $subject);
 
-    $message = "Congratulations $name!  Your account has been successfully created.<br/>Please check your email for a temporary password to be used at your first login.<br/>Please click <a href=\"index.php\">here</a> to login.";
+    $message = "Congratulations $name!  Your account has been successfully created.<br/><span class=\"italic\">Please check your email for a temporary password to be used at your first login.</span><br/>Please click <a href=\"index.php\">here</a> to login.";
   }
   else
   {

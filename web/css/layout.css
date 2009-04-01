@@ -613,6 +613,11 @@ span.tag
   text-decoration: underline;
 }
 
+.italic
+{
+  font-style: italic;
+}
+
 p.indentAll
 {
   margin: 5px 0px 5px 20px;
