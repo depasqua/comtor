@@ -70,7 +70,7 @@ function emailExists($email, $userId = null)
   if (is_numeric($userId))
     $where = " AND NOT userId=".$userId;
 
-  $result = mysql_query("SELECT email FROM users_view WHERE email='$email'{$where} LIMIT 1");
+  $result = mysql_query("SELECT email FROM users_view WHERE UPPER(email)='".strtoupper($email)."'{$where} LIMIT 1");
 
   // Check that result is a valid mysql resourse
   if (!$result)
