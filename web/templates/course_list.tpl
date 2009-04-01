@@ -38,7 +38,7 @@
       <a onclick="return verifyCourseAction('delete', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" href="courseDelete.php?courseId={$c.courseId}&amp;rand={$rand}"><img title="Delete Course" alt="Delete Course" src="img/icons/delete.png"/></a>
     {/if}
     {if in_array('reports', $c.actions)}
-      <a href="reports.php?courseId={$course.courseId}"><img src="img/icons/magnifying_glass.png" title="View Course Reports" alt="View Course Reports" /></a>
+      <a href="reports.php?courseId={$c.courseId}"><img src="img/icons/magnifying_glass.png" title="View Course Reports" alt="View Course Reports" /></a>
     {/if}
     {if in_array('drop', $c.actions)}
       <a href="courseDrop.php?courseId={$c.courseId}&amp;rand={$rand}" onclick="return verifyCourseAction('drop', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" >Drop</a>
