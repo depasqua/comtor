@@ -71,6 +71,7 @@ foreach ($statusHanding as $status)
       {
         $actions[] = 'edit';
         $actions[] = 'manage';
+        $actions[] = 'email';
         if ($course['status'] == 'enabled')
           $actions[] = 'disable';
         if ($course['status'] == 'disabled')
@@ -86,6 +87,7 @@ foreach ($statusHanding as $status)
         {
           $actions[] = 'reports';
           $actions[] = 'drop';
+          $actions[] = 'email';
         }
         else
           $actions[] = 'enroll';
