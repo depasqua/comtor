@@ -17,7 +17,7 @@ if (!isset($_GET['courseId']) || !is_numeric($_GET['courseId']))
 else
 {
   // Check that course id is valid
-  if (!courseExists($_GET['courseId']))
+  if (!courseExists($_GET['courseId'], true))
   {
     if (!isset($_SESSION['msg']['error']))
       $_SESSION['msg']['error'] = "";

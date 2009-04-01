@@ -26,11 +26,11 @@ else if ($_GET['total'] > MAX_LIST_TOTAL)
   $_GET['total'] = MAX_LIST_TOTAL;
 
 // Determine course status values to show
-$statusHanding = array(null);
+$statusHandling = array('enabled');
 if ($_SESSION['acctType'] == 'professor' || $_SESSION['acctType'] == 'admin')
-  $statusHanding = array('enabled', 'disabled');
+  $statusHandling = array('enabled', 'disabled');
 
-foreach ($statusHanding as $status)
+foreach ($statusHandling as $status)
 {
   // Get professor courses
   if ($_SESSION['acctType'] == 'professor')
@@ -97,7 +97,7 @@ foreach ($statusHanding as $status)
     }
 
     // Assign courses
-    if ($status == null)
+    if ($status == null || count($statusHandling) == 1)
       $tpl->assign('courses_all', $courses);
     else
     {

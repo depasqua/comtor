@@ -354,13 +354,16 @@ function getSubReportProperties($docletEventId)
 * Checks if a courseId exists
 * Returns true or false.
 *******************************************************************************/
-function courseExists($courseId)
+function courseExists($courseId, $mustBeEnabled = true)
 {
   // Check that courseId is numeric before query
   if (!is_numeric($courseId))
     return false;
+    
+  // Check if the course need to be enabled
+  $where = $mustBeEnabled ? " AND status='enabled' " : ""; 
 
-  $result = mysql_query("SELECT courseId FROM courses WHERE courseId = {$courseId} LIMIT 1");
+  $result = mysql_query("SELECT courseId FROM courses WHERE courseId = {$courseId} {$where} LIMIT 1");
 
   // Check that result is a valid mysql resourse
   if (!$result)
