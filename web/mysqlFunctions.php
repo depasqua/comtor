@@ -1478,7 +1478,7 @@ function getCourses($userId = false, $lower = false, $total = false, $status = n
 
     // Set school id
     global $_SESSION;
-    if (isset($_SESSION['schoolId']))
+    if (isset($_SESSION['schoolId']) && isset($_SESSION['acctType']) && $_SESSION['acctType'] != "admin")
       $where[] = "schoolId={$_SESSION['schoolId']}";
 
     if ($status != null)
