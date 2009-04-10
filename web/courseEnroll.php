@@ -94,6 +94,21 @@ if (!$fatal)
   }
 }
 
+if (!$fatal)
+{
+  // Check that enrollment token is correct
+  if ($userId == $_SESSION['userId'])
+    if ($course = getCourseInfo($_GET['courseId']))
+      if (!isset($_GET["token"]) || $_GET["token"] != $course["enrollToken"])
+      {
+        if (!isset($_SESSION['msg']['error']))
+          $_SESSION['msg']['error'] = "";
+  
+        $_SESSION['msg']['error'] .= "Enrollment token invalid.<br/>";
+        $fatal = true;
+      }
+}
+
 // Proceed with course registration if no fatal errors
 if (!$fatal)
 {

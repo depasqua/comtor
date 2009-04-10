@@ -422,7 +422,7 @@ function getCourseInfo($courseId, $comment = false)
   if ($comment)
     $query = "SELECT * FROM courses WHERE courseId = {$courseId} LIMIT 1";
   else
-    $query = "SELECT profId, section, name, semester FROM courses WHERE courseId = {$courseId} LIMIT 1";
+    $query = "SELECT profId, section, name, semester, enrollToken FROM courses WHERE courseId = {$courseId} LIMIT 1";
 
   $result = mysql_query($query);
 
@@ -1313,8 +1313,24 @@ function addNewCourse($profId, $name, $section, $semester, $comment, $schoolId)
   // Check that profId is numeric before query
   if (!is_numeric($profId) || !is_numeric($schoolId))
     return false;
+    
+  // Generate random enrollment token
+  $token = "";
+  for ($i = 0; $i < 6; $i++)
+    switch (mt_rand(0, 2))
+    {
+      case 0:
+        $token .= chr(mt_rand(48, 57));
+        break;
+      case 1:
+        $token .= chr(mt_rand(65, 90));
+        break;
+      case 2:
+        $token .= chr(mt_rand(97, 122));
+        break;  
+    } 
 
-  $query = "INSERT INTO courses (profId, name, section, semester, comment, schoolId) VALUES ({$profId}, '{$name}', '{$section}', '{$semester}', '{$comment}', {$schoolId})";
+  $query = "INSERT INTO courses (profId, name, section, semester, comment, schoolId, enrollToken) VALUES ({$profId}, '{$name}', '{$section}', '{$semester}', '{$comment}', {$schoolId}, '{$token}')";
   return mysql_query($query);
 }
 

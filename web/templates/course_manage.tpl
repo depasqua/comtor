@@ -5,6 +5,7 @@
   <h4>{$course.section}: {$course.name}</h4>
   <h6>Professor:</h6>{$course.profName}<br/>
   <h6>Semester:</h6>{$course.semester}<br/>
+  <h6>Enrollment Token:</h6>{$course.enrollToken}<br/>
 
   <div class="center gapBelowSmall">
     <a href="reports.php?courseId={$courseId}"><img src="img/icons/magnifying_glass.png" alt="View All Reports" /></a> View All Course Reports

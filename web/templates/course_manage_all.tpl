@@ -5,6 +5,12 @@ function verifyCourseAction(action, section, name, professor, semester)
 {
   return confirm("Are you sure you want to " + action + " the following course:\nSection: " + section + "\nName: " + name + "\nProfessor: " + professor + "\nSemester: " + semester);
 }
+
+function getEnrollToken(elem)
+{
+  elem.href += "&token=" + prompt("Please enter the enrollment token.  If you do not have one, please ask your professor.");
+}
+
 //-->
 </script>
 {/literal}
