@@ -6,6 +6,9 @@ require_once("smarty/Smarty.class.php");
 
 $tpl = new Smarty();
 
+// Assign security rand
+$tpl->assign("rand", md5(session_id()));
+
 require_once("header1.php");
 require_once("generalFunctions.php");
 
