@@ -1,4 +1,63 @@
-<form action="" method="post" name="form">
+{literal}
+<script type="text/javascript">
+<!--
+
+function validateAssignment(form)
+{
+  // Check that assignment name is not null
+  if (form.name == null || form.name.value == "")
+  {
+    alert("Assignment name is requiured.");
+    return false;
+  }
+  // Check that start date is before end date
+  else
+  {
+    // Check that all fields exist first
+    if (form.Open_Month == null || form.Open_Day == null || form.Open_Year == null ||
+        form.Open_Hour == null || form.Open_Minute == null || form.Open_Meridian == null ||
+        form.Close_Month == null || form.Close_Day == null || form.Close_Year == null ||
+        form.Close_Hour == null || form.Close_Minute == null || form.Close_Meridian == null)
+    {
+      alert("Open and close times are required.");
+      return false;
+    }
+    else
+    {
+      // Convert 12-hour to 24-hour
+      var startHour = parseInt(form.Open_Hour.value, 10);
+      if (form.Open_Meridian.value == "am")
+        startHour = 0;
+      else if (form.Open_Meridian.value == "pm" && startHour < 12)
+        startHour += 12;
+      var endHour = parseInt(form.Close_Hour.value, 10);
+      if (form.Close_Meridian.value == "am")
+        endHour = 0;
+      else if (form.Close_Meridian.value == "pm" && endHour < 12)
+        endHour += 12;
+      
+      // Construct dates
+      var startDt = Date.UTC(parseInt(form.Open_Year.value, 10), parseInt(form.Open_Month.value, 10)-1, parseInt(form.Open_Day.value, 10), startHour, parseInt(form.Open_Minute.value, 10))
+      var endDt = Date.UTC(parseInt(form.Close_Year.value, 10), parseInt(form.Close_Month.value, 10)-1, parseInt(form.Close_Day.value, 10), endHour, parseInt(form.Close_Minute.value, 10))  
+      
+      // Compare dates
+      if (endDt <= startDt)
+      {
+        alert("Open time must be before close time.");
+        return false;
+      }
+      
+    }
+        
+  }
+  return true;
+}
+
+//-->
+</script>
+{/literal}
+
+<form action="" method="post" name="form" onsubmit="return validateAssignment(this);">
 <div>
 
 <label for="name">Assignment Name: <input id="name" name="name" value="{$name}" /></label>
