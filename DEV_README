@@ -3,7 +3,7 @@ Comment Mentor Developer README File
 
 [Summary]
 
- This document describes the coding guidelines for developing comtor's
+ This document describes the coding guidelines for developing COMTOR's
  core and its tools, outlines the overall architecture, and lists some
  of the infrastructure available in the codebase so you can avoid
  re-inventing the wheel. Hints on where to start reading the code are
@@ -25,7 +25,7 @@ Comment Mentor Developer README File
 
    Major Objects and Interfaces
 
-[Tools/Support/Infrastucture Available]
+[Tools/Support/Infrastructure Available]
 
 [Coding Guidelines]
 
@@ -37,9 +37,9 @@ Comment Mentor Developer README File
  no tabs -- three spaces for new code scope indentation
  no whitespace at end of line
  make code compact (no extraneous empty lines)
- declare variables at beginnging of scope
- use default constructor, set properties, then intiialize() or execute()
- provide sensible default non-implemented behavioir for different cases 
+ declare variables at beginning of scope
+ use default constructor, set properties, then initialize() or execute()
+ provide sensible default non-implemented behavior for different cases
   and else{}'s...not silent failure
  prefer return values to Exceptions
 

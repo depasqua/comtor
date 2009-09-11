@@ -63,7 +63,7 @@ SET character_set_client = @saved_cs_client;
 --
 
 /*!40000 ALTER TABLE `docletGradeSections` DISABLE KEYS */;
-INSERT INTO `docletGradeSections` VALUES (1,1,'Return','Checks that return tags are present and used properly.'),(2,1,'Param','Checks that param tags are present and used properly.'),(3,1,'Throws','Checks that throws tags are present and used properly.'),(4,2,'Average','Averages the length of comments preceding methods. If comments are not of sufficient length full credit will not be awarde.'),(5,3,'Percent','Percent of methods that contain comments.'),(18,17,'Spelling','Checks spelling.'),(21,1,'Author','Checks that author tags are used properly.'),(22,1,'Version','Checks that version tags are used properly.'),(23,1,'See','Checks that see tags are used properly.'),(24,1,'Since','Checks that since tags are used properly.');
+INSERT INTO `docletGradeSections` VALUES (1,1,'Return','Checks that return tags are present and used properly.'),(2,1,'Param','Checks that param tags are present and used properly.'),(3,1,'Throws','Checks that throws tags are present and used properly.'),(4,2,'Average','Averages the length of comments preceding methods. If comments are not of sufficient length full credit will not be awarded.'),(5,3,'Percent','Percent of methods that contain comments.'),(18,17,'Spelling','Checks spelling.'),(21,1,'Author','Checks that author tags are used properly.'),(22,1,'Version','Checks that version tags are used properly.'),(23,1,'See','Checks that see tags are used properly.'),(24,1,'Since','Checks that since tags are used properly.');
 /*!40000 ALTER TABLE `docletGradeSections` ENABLE KEYS */;
 
 --
