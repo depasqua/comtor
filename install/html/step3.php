@@ -3,7 +3,7 @@
 <?php require_once("error_box.php"); ?>
 
 <p>
-Please enter information for the administrator.  The e-mail address will appear on the website as a contact.  The default password is "comtor".  You may change the password when you log in.
+Please enter information for the administrator.  The e-mail address will appear on the website as a contact.  <span style="font-weight: bold;">The default password is "comtor".</span>  You may change the password when you log in.
 </p>
 
 <form name="form" method="post" action="">

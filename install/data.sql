@@ -36,11 +36,9 @@ SET character_set_client = @saved_cs_client;
 -- Dumping data for table `doclets`
 --
 
-LOCK TABLES `doclets` WRITE;
 /*!40000 ALTER TABLE `doclets` DISABLE KEYS */;
-INSERT INTO `doclets` VALUES (1,'Check for Tags','Check for the proper use of returns, throw, and param tags.','comtor.analyzers.CheckForTags'),(2,'Comment Average Ratio','Calculate the length of each method\'s comments in a class.','comtor.analyzers.CommentAvgRatio'),(3,'Percentage Methods','Calculate the percentage of commented methods per class.','comtor.analyzers.PercentageMethods'),(16,'Method Interactions','Creates a method call graph for each user defined method. ','comtor.analyzers.Interactions'),(17,'Spell Checker','Checks the spelling in comments.','comtor.analyzers.SpellCheck');
+INSERT INTO `doclets` VALUES (1,'Check for Tags','Check for the proper use of returns, throw, and param tags.','comtor.analyzers.CheckForTags'),(2,'Comment Average Ratio','Calculate the length of each method\'s comments in a class. If you are not getting full credit, try increasing the length of your comments.','comtor.analyzers.CommentAvgRatio'),(3,'Percentage Methods','Calculate the percentage of commented methods per class.','comtor.analyzers.PercentageMethods'),(16,'Method Interactions','Creates a method call graph for each user defined method. This does not count towards the overall grade.','comtor.analyzers.Interactions'),(17,'Spell Checker','Checks the spelling in comments. (Note:  There may be some words that are spelled correctly, marked incorrect because they are not present in the dictionary.)','comtor.analyzers.SpellCheck');
 /*!40000 ALTER TABLE `doclets` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `docletGradeSections`
@@ -64,11 +62,9 @@ SET character_set_client = @saved_cs_client;
 -- Dumping data for table `docletGradeSections`
 --
 
-LOCK TABLES `docletGradeSections` WRITE;
 /*!40000 ALTER TABLE `docletGradeSections` DISABLE KEYS */;
-INSERT INTO `docletGradeSections` VALUES (1,1,'Return','Checks that return tags are used properly.'),(2,1,'Param','Checks that param tags are used properly.'),(3,1,'Throws','Checks that throws tags are used properly.'),(4,2,'Average','Average length of comments.'),(5,3,'Percent','Percent of methods that contain comments.'),(18,17,'Spelling','Checks spelling.'),(21,1,'Author','Checks that author tags are used properly.'),(22,1,'Version','Checks that version tags are used properly.'),(23,1,'See','Checks that see tags are used properly.'),(24,1,'Since','Checks that since tags are used properly.');
+INSERT INTO `docletGradeSections` VALUES (1,1,'Return','Checks that return tags are present and used properly.'),(2,1,'Param','Checks that param tags are present and used properly.'),(3,1,'Throws','Checks that throws tags are present and used properly.'),(4,2,'Average','Averages the length of comments preceding methods. If comments are not of sufficient length full credit will not be awarde.'),(5,3,'Percent','Percent of methods that contain comments.'),(18,17,'Spelling','Checks spelling.'),(21,1,'Author','Checks that author tags are used properly.'),(22,1,'Version','Checks that version tags are used properly.'),(23,1,'See','Checks that see tags are used properly.'),(24,1,'Since','Checks that since tags are used properly.');
 /*!40000 ALTER TABLE `docletGradeSections` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `docletGradeParameters`
@@ -92,11 +88,9 @@ SET character_set_client = @saved_cs_client;
 -- Dumping data for table `docletGradeParameters`
 --
 
-LOCK TABLES `docletGradeParameters` WRITE;
 /*!40000 ALTER TABLE `docletGradeParameters` DISABLE KEYS */;
 INSERT INTO `docletGradeParameters` VALUES (1,2,'min_ratio','Minimum average number of words per comment in order to get full credit.'),(5,17,'Valid Words','A space separated list of words that are to be considered correctly spelled.'),(6,1,'Author','Space separated list of OVERVIEW and CLASS indicating were to require this tag. (Leave Blank if not required)'),(7,1,'Version','Space separated list of OVERVIEW and CLASS indicating were to require this tag. (Leave Blank if not required)'),(8,1,'See','Space separated list of OVERVIEW, CLASS, FIELD, and METHOD indicating were to require this tag. (Leave Blank if not required)'),(9,1,'Since','Space separated list of OVERVIEW, CLASS, FIELD, and METHOD indicating were to require this tag. (Leave Blank if not required)');
 /*!40000 ALTER TABLE `docletGradeParameters` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `defaultGradeBreakdowns`
@@ -117,11 +111,9 @@ SET character_set_client = @saved_cs_client;
 -- Dumping data for table `defaultGradeBreakdowns`
 --
 
-LOCK TABLES `defaultGradeBreakdowns` WRITE;
 /*!40000 ALTER TABLE `defaultGradeBreakdowns` DISABLE KEYS */;
 INSERT INTO `defaultGradeBreakdowns` VALUES (1,3),(2,6),(3,1),(4,5),(5,5),(18,5),(21,0),(22,0),(23,0),(24,0);
 /*!40000 ALTER TABLE `defaultGradeBreakdowns` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `defaultGradeParameters`
@@ -142,11 +134,9 @@ SET character_set_client = @saved_cs_client;
 -- Dumping data for table `defaultGradeParameters`
 --
 
-LOCK TABLES `defaultGradeParameters` WRITE;
 /*!40000 ALTER TABLE `defaultGradeParameters` DISABLE KEYS */;
 INSERT INTO `defaultGradeParameters` VALUES (1,'10'),(5,''),(6,''),(7,''),(8,''),(9,'');
 /*!40000 ALTER TABLE `defaultGradeParameters` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -157,4 +147,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-01-23  0:29:24
+-- Dump completed on 2009-03-06 17:38:09

@@ -11,6 +11,20 @@ if (empty($_POST) && isset($_GET['reset']))
 if (!isset($_SESSION['step']))
   $_SESSION['step'] = 1;
 
+// Store directory information in session
+if (!isset($_SESSION["paths"]))
+{
+  chdir("..");
+  $_SESSION["paths"] = array(
+    "www" => getcwd() . DIRECTORY_SEPARATOR . "www",
+    "private" => getcwd() . DIRECTORY_SEPARATOR . "comtor_data" . DIRECTORY_SEPARATOR . "config",
+    "code" => getcwd() . DIRECTORY_SEPARATOR . "comtor_data" . DIRECTORY_SEPARATOR . "code",
+    "uploads" => getcwd() . DIRECTORY_SEPARATOR . "comtor_data" . DIRECTORY_SEPARATOR . "uploads",
+    "resources" => getcwd() . DIRECTORY_SEPARATOR . "comtor_data" . DIRECTORY_SEPARATOR . "resources"
+  );   
+  chdir("install");
+}
+
 // Current install step
 $step = $_SESSION['step'];
 
@@ -19,7 +33,7 @@ $steps = array(
   "Software Check",
   "Database Setup",
   "Administrator Setup",
-  "Directory Setup",
+//  "Directory Setup",
   "Configuring",
   "Cron Job Setup"
 );
@@ -65,33 +79,35 @@ if (!empty($_POST))
               $_SESSION['dbempty'] = true;
               
               // Create new schema with view definers changed
+              $host = ($_POST['server'] == "localhost") ? "localhost" : escapeshellarg($_POST['server']);
               $tmpFilename = tempnam(sys_get_temp_dir(), "SQL");
               if (($fh_in = @fopen(SCHEMA_PATH, "r")) && ($fh_out = @fopen($tmpFilename, "w")))
               {                 
                 while ($line = fgets($fh_in))
                 {
-                  $line = str_replace("`sigwart4`@`localhost`", "`{$_POST['username']}`@`{$_POST['server']}`", $line);
+                  $serverName = ($_POST['server'] == "localhost") ? "localhost" : $_SERVER['SERVER_NAME'];
+                  $line = str_replace("`comtor`@`localhost`", "`{$_POST['username']}`@`{$serverName}`", $line);
                   fwrite($fh_out, $line);
                 }                   
                 fclose($fh_in);
                 fclose($fh_out);
               
                 // Import the database schema
-                //$cmd = sprintf("mysql -u %s -p%s %s < %s", escapeshellarg($_POST['username']), escapeshellarg($_POST['password']), escapeshellarg($_POST['dbname']), SCHEMA_PATH);
-                $cmd = sprintf("mysql -u %s -p%s %s < %s", escapeshellarg($_POST['username']), escapeshellarg($_POST['password']), escapeshellarg($_POST['dbname']), escapeshellarg($tmpFilename));
+                $hostOpt = ($host == "localhost") ? "" : "-h " . $host;  
+                $cmd = sprintf("mysql %s -u %s -p%s %s < %s 2>&1", $hostOpt, escapeshellarg($_POST['username']), escapeshellarg($_POST['password']), escapeshellarg($_POST['dbname']), escapeshellarg($tmpFilename));
                 exec($cmd, $output, $rtn);
                 unlink($tmpFilename);
                 if ($rtn != 0)
-                  $error = "Error importing schema."; 
+                  $error = "Error importing schema. MySQL Output:<br/>" . nl2br(implode("<br/>", $output)); 
                 else if (!empty($output))
-                  $error = "Error importing schema. MySQL Output:<br/>" . implode("<br/>", $output);
+                  $error = "Error importing schema. MySQL Output:<br/>" . nl2br(implode("<br/>", $output));
                 else
                 {
                   // Import the database data
-                  $cmd = sprintf("mysql -u %s -p%s %s < %s", escapeshellarg($_POST['username']), escapeshellarg($_POST['password']), escapeshellarg($_POST['dbname']), MYSQL_DATA_PATH);
+                  $cmd = sprintf("mysql %s -u %s -p%s %s < %s 2>&1", $hostOpt, escapeshellarg($_POST['username']), escapeshellarg($_POST['password']), escapeshellarg($_POST['dbname']), MYSQL_DATA_PATH);
                   exec($cmd, $output);
                   if (!empty($output))
-                    $error = "Error importing schema. MySQL Output:<br/>" . implode("<br/>", $output);
+                    $error = "Error importing required data. MySQL Output:<br/>" . nl2br(implode("<br/>", $output));
     
                   // Store information in session
                   $_SESSION["mysql"] = array(
@@ -166,6 +182,7 @@ if (!empty($_POST))
 
       break;
     // Directory locations
+    /*
     case 4:
       // Convert to real paths
       if (!empty($_POST['www']) && !empty($_POST['private']) && !empty($_POST['code']) && !empty($_POST['uploads']) && !empty($_POST['resources']))
@@ -313,14 +330,17 @@ if (!empty($_POST))
         $error = "Please fill in all fields.";
         
       break;
+    */
     // Configuring
-    case 5:
+    case 4:
       // Check fields
       if (!empty($_POST['smtp']) && !empty($_POST['url']))
       {
         // Store information in session
         $_SESSION["smtp"] = $_POST['smtp'];
         $_SESSION["url"] = $_POST['url'];
+        
+        clearstatcache();
         
         // Create config file
         ob_start();
@@ -330,7 +350,7 @@ if (!empty($_POST))
         // Open config file
         $error = "";
         $filename = $_SESSION["paths"]["private"].DIRECTORY_SEPARATOR."config.php";
-        if ($fh = fopen($filename, "w"))
+        if ((is_writable($filename) || @touch ($filename)) && $fh = fopen($filename, "w"))
         {
           // Write to file and close
           if (!fwrite($fh, $configData))
@@ -346,9 +366,8 @@ if (!empty($_POST))
         $configData = ob_get_clean();
         
         // Open www folder config file
-        $error = "";
         $filename = $_SESSION["paths"]["www"].DIRECTORY_SEPARATOR."config.php";
-        if ($fh = fopen($filename, "w"))
+        if ((is_writable($filename) || @touch ($filename)) && $fh = fopen($filename, "w"))
         {
           // Write to file and close
           if (!fwrite($fh, $configData))
@@ -365,7 +384,7 @@ if (!empty($_POST))
 
         // Open java config file
         $filename = $_SESSION["paths"]["private"].DIRECTORY_SEPARATOR."java.properties";
-        if ($fh = fopen($filename, "w"))
+        if ((is_writable($filename) || @touch ($filename)) && $fh = fopen($filename, "w"))
         {
           // Write to file and close
           if (!fwrite($fh, $configData))
@@ -382,7 +401,7 @@ if (!empty($_POST))
 
         // Open bash script config file
         $filename = $_SESSION["paths"]["www"].DIRECTORY_SEPARATOR."scripts".DIRECTORY_SEPARATOR."config.sh";
-        if ($fh = fopen($filename, "w"))
+        if ((is_writable($filename) || @touch ($filename)) && $fh = fopen($filename, "w"))
         {
           // Write to file and close
           if (!fwrite($fh, $configData))
@@ -393,8 +412,27 @@ if (!empty($_POST))
           $error .= "Failed to write to \"".$filename."\"<br/>";
 
         // Chmod scripts
-        chmod($_SESSION["paths"]["www"].DIRECTORY_SEPARATOR."scripts".DIRECTORY_SEPARATOR."javadoc.sh", 0755);
-        chmod($_SESSION["paths"]["www"].DIRECTORY_SEPARATOR."scripts".DIRECTORY_SEPARATOR."config.sh", 0755);
+        $filename = $_SESSION["paths"]["www"].DIRECTORY_SEPARATOR."scripts".DIRECTORY_SEPARATOR."javadoc.sh";
+        if (!is_executable($filename) && (!is_writable($filename) || !chmod($filename, 0755)))
+          $error .= "Failed to chmod 755 \"".$filename."\"<br/>";
+        // Chmod scripts          
+        $filename = $_SESSION["paths"]["www"].DIRECTORY_SEPARATOR."scripts".DIRECTORY_SEPARATOR."config.sh";
+        if (!is_executable($filename) && (!is_writable($filename) || !chmod($filename, 0755)))
+          $error .= "Failed to chmod 755 \"".$filename."\"<br/>";
+        
+        // Check permissions on template_c
+        $filename = $_SESSION["paths"]["www"].DIRECTORY_SEPARATOR."templates_c";
+        if (!is_writable($filename))
+          $error .= "Change the permissions on \"".$filename."\" to allow the apache user to write to the directory.<br/>";
+        // Check permissions on uploads
+        $filename = $_SESSION["paths"]["uploads"];
+        if (!is_writable($filename))
+          $error .= "Change the permissions on \"".$filename."\" to allow the apache user to write to the directory.<br/>";
+          
+        // Check permissions on mispellings file
+        $filename = $_SESSION["paths"]["resources"].DIRECTORY_SEPARATOR."mispellings";
+        if (!is_writable($filename))
+          $error .= "Change the permissions on \"".$filename."\" to allow the apache user to write to the file.<br/>";
           
         // Check for error
         if (empty($error))
@@ -408,7 +446,7 @@ if (!empty($_POST))
         
       break;
     // Crontab
-    case 6:
+    case 5:
       $step++;
       break;  
   }
@@ -440,6 +478,19 @@ function parentDir($path)
     return DIRECTORY_SEPARATOR;
   unset($dirs[count($dirs)-1]);
   return implode(DIRECTORY_SEPARATOR, $dirs);
+}
+
+function fileInIncludePath($file)
+{
+  $paths = explode(PATH_SEPARATOR, get_include_path());
+  $found = false;
+  for ($i = 0; !$found && $i < count($paths); $i++)
+  {
+    if (file_exists($paths[$i] . DIRECTORY_SEPARATOR . $file))
+      $found = true;
+  }
+      
+  return $found;
 }
 
 ?>
