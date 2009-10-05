@@ -9,9 +9,9 @@ $php = (strlen($str > 0) && $str[0] == '5');
 $pass = $pass && $php;
 
 // Check for pear extensions
-$pear_pswd = fileInIncludePath("Text/Password.php");
-$pear_mail = fileInIncludePath("Mail.php");
-$pass = $pass && $pear_pswd && $pear_mail;
+//$pear_pswd = fileInIncludePath("Text/Password.php");
+//$pear_mail = fileInIncludePath("Mail.php");
+//$pass = $pass && $pear_pswd && $pear_mail;
 
 function checkForProgram($program)
 {
@@ -238,20 +238,6 @@ You can find the software in the following locations:
   <tr>
     <td>PHP 5</td>
     <td class="status"><?php echo $php ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
-  </tr>
-  
-  <tr>
-    <td>PEAR Mail <?php if (!$pear_mail) { ?><div class="fail_details">Please install the PEAR libraries, and install the Mail module.  Try: 
-        <pre>$ sudo pear install Mail</pre>
-        or consult the documentation for your particular distribution.</div><?php } ?></td>
-    <td class="status"><?php echo $pear_mail ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
-  </tr>
-  
-  <tr>
-    <td>PEAR Text/Password  <?php if (!$pear_pswd) { ?> <div class="fail_details">Please install the PEAR libraries, and install the Text/Password module.  Try: 
-          <pre>$ sudo pear install Text_Password</pre>
-          or consult the documentation for your particular distribution.</div><?php } ?></td>
-    <td class="status"><?php echo $pear_pswd ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
 
   <tr>
