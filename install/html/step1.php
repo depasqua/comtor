@@ -241,22 +241,26 @@ You can find the software in the following locations:
   </tr>
   
   <tr>
-    <td>PEAR Mail</td>
+    <td>PEAR Mail <?php if (!$pear_mail) { ?><div class="fail_details">Please install the PEAR libraries, and install the Mail module.  Try: 
+        <pre>$ sudo pear install Mail</pre>
+        or consult the documentation for your particular distribution.</div><?php } ?></td>
     <td class="status"><?php echo $pear_mail ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
   
   <tr>
-    <td>PEAR Text/Password</td>
+    <td>PEAR Text/Password  <?php if (!$pear_pswd) { ?> <div class="fail_details">Please install the PEAR libraries, and install the Text/Password module.  Try: 
+          <pre>$ sudo pear install Text_Password</pre>
+          or consult the documentation for your particular distribution.</div><?php } ?></td>
     <td class="status"><?php echo $pear_pswd ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
 
   <tr>
-    <td>Java Version 1.5+</td>
+    <td>Java (Version 1.5+)</td>
     <td class="status"><?php echo $java ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
   
   <tr>
-    <td>Javac Version 1.5+</td>
+    <td>Javac (Version 1.5+)</td>
     <td class="status"><?php echo $javac ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
   
@@ -271,12 +275,14 @@ You can find the software in the following locations:
   </tr>
   
   <tr>
-    <td>MySQL Connector/J</td>
+    <td>MySQL Connector/J  <?php if (!$conJ && (!$java || !$javac)) { ?> <div class="fail_details">Check for MySQL Connector/J failed because the check for Java or Javac failed above.
+        Please correct Java/Javac first.</div><?php } ?></td>
     <td class="status"><?php echo $conJ ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
   
   <tr>
-    <td>Antlr</td>
+    <td>Antlr    <?php if (!$antlr && (!$java || !$javac)) { ?> <div class="fail_details">Check for Antlr failed because the check for Java or Javac failed above.
+          Please correct Java/Javac first.</div><?php } ?></td>
     <td class="status"><?php echo $antlr ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
 

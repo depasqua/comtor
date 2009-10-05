@@ -175,3 +175,10 @@ a:hover, span.link:hover
   color: #c00000;
   cursor: pointer;
 }
+
+.fail_details {
+    border:1px solid #ff0000;
+    background-color:#ffaaaa;
+    margin:.3em;
+    padding:.3em;
+}
