@@ -36,19 +36,22 @@ SRC='*'
 NAME='comtor'
 NAME+=$REL
 
-CMD1='sudo tar '
+CMD1='tar '
 
 #######################################################################
 #                                                                     #
 #Listed below are the directories to exclude from release.            #
 #To add more, follow this format:                                     #
 #                                                                     #
-#CMD+="--exclude='./relative_directory_to_exclude' "                  #
+#CMD1+="--exclude='./relative_directory_to_exclude' "                  #
 #                                                                     #
 #######################################################################
 
 CMD1+="--exclude='./designdocs' "
 CMD1+="--exclude='./www/tutorials' "
+#The two below are removed due to permissions
+CMD1+="--exclude='./buildInstall.sh' "
+CMD1+="--exclude='./distro.sh' "
 
 CMD1+="-czf "
 
@@ -57,10 +60,11 @@ CMD1+="$DEST"/"$NAME"'.tar.gz '"$SRC"
 echo "Now packaging..."
 $CMD1
 
-CMD2='sudo chmod g=rw '
+#chmod to change group permissions
+CMD2='chmod g=rw '
 CMD2+="$DEST"/"$NAME"'.tar.gz'
 
 $CMD2
 
-echo "Packaged successfully."
+echo "Script done."
 exit $?
