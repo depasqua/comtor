@@ -56,7 +56,7 @@ if (!empty($_POST))
     // MySQL setup
     case 2:
       // Constants
-      define("SCHEMA_PATH", escapeshellarg("../migrations/1.0/db/schema.sql"));
+      define("SCHEMA_PATH", "../migrations/1.0/db/schema.sql");
       define("MYSQL_DATA_PATH", escapeshellarg("../migrations/1.0/db/data.sql"));
 
       // Check fields
