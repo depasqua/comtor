@@ -148,3 +148,9 @@ INSERT INTO `defaultGradeParameters` VALUES (1,'10'),(5,''),(6,''),(7,''),(8,'')
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2009-03-06 17:38:09
+
+/*Added for default NULL value, given to initial admin, who should be school-less*/
+/*However, because schoolId is NOT NULL, we need to give the admin a dummy value*/
+/*Since this is the first record in this table, it should always be id 4*/
+INSERT INTO `schools`(`school`) VALUES ('No School');
+

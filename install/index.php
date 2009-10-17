@@ -139,24 +139,24 @@ if (!empty($_POST))
     // Admin user setup
     case 3:
       // Check fields
-      if (!empty($_POST['name']) && !empty($_POST['school']) && !empty($_POST['email']))
+      if (!empty($_POST['name']) /*&& !empty($_POST['school'])*/ && !empty($_POST['email']))
       {
         // TODO: Check $_SESSION vars
         $con = @mysql_connect($_SESSION["mysql"]['server'], $_SESSION["mysql"]['username'], $_SESSION["mysql"]['password']);
         if ($con && mysql_select_db($_SESSION["mysql"]['dbname']))
         {
           // Insert school name and get auto_increment
-          $sql = sprintf("INSERT INTO schools(school) VALUES (\"%s\")", mysql_real_escape_string($_POST["school"]));
-          if (mysql_query($sql) && ($schoolId = mysql_insert_id()))
-          {
+          //$sql = sprintf("INSERT INTO schools(school) VALUES (\"%s\")", mysql_real_escape_string($_POST["school"]));
+          //if (mysql_query($sql) && ($schoolId = mysql_insert_id()))
+          //{
             // Insert admin user
-            $sql = sprintf("INSERT INTO users (name, email, password, validatedDT, passwordChangeDT, acctType, acctStatus, schoolId) VALUES (\"%s\", \"%s\", \"%s\", NOW(), NOW(), \"admin\", \"enabled\", %d)", mysql_real_escape_string($_POST["name"]), mysql_real_escape_string($_POST["email"]), mysql_real_escape_string(ADMIN_PASSWORD), $schoolId);
+            $sql = sprintf("INSERT INTO users (name, email, password, validatedDT, passwordChangeDT, acctType, acctStatus, schoolId) VALUES (\"%s\", \"%s\", \"%s\", NOW(), NOW(), \"admin\", \"enabled\", %d)", mysql_real_escape_string($_POST["name"]), mysql_real_escape_string($_POST["email"]), mysql_real_escape_string(ADMIN_PASSWORD), 4);
             if (mysql_query($sql))
             {
               // Store information in session
               $_SESSION["admin"] = array(
                 "email"=>$_POST['email'],
-                "school"=>$_POST['school'],
+                //"school"=>$_POST['school'],
                 "name"=>$_POST['name']
               );
 
@@ -167,9 +167,9 @@ if (!empty($_POST))
             {
               $error = "Failed to create administrator account.";
             }
-          }
-          else
-            $error = "Failed to create administrator account.";
+          //}
+          //else
+            //$error = "Failed to create administrator account.";
 
           // Close database
           mysql_close($con);

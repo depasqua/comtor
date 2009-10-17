@@ -21,12 +21,7 @@ Please enter information for the administrator.  The e-mail address will appear 
     <div class="floatContainer">
       <label for="email">E-mail Address: </label>
       <input type="text" id="email" name="email" value="<?php echo !empty($_POST['email']) ? $_POST['email'] : ""; ?>" />
-    </div>
-
-    <div class="floatContainer">
-      <label for="school">School Name: </label>
-      <input type="text" id="school" name="school" value="<?php echo !empty($_POST['school']) ? $_POST['school'] : ""; ?>" />
-    </div>
+    </div>
   </fieldset>
 
   <span class="link" onclick="document.form.submit();">Next</span>
