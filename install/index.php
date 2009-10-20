@@ -145,10 +145,6 @@ if (!empty($_POST))
         $con = @mysql_connect($_SESSION["mysql"]['server'], $_SESSION["mysql"]['username'], $_SESSION["mysql"]['password']);
         if ($con && mysql_select_db($_SESSION["mysql"]['dbname']))
         {
-          // Insert school name and get auto_increment
-          //$sql = sprintf("INSERT INTO schools(school) VALUES (\"%s\")", mysql_real_escape_string($_POST["school"]));
-          //if (mysql_query($sql) && ($schoolId = mysql_insert_id()))
-          //{
             // Insert admin user
             $sql = sprintf("INSERT INTO users (name, email, password, validatedDT, passwordChangeDT, acctType, acctStatus, schoolId) VALUES (\"%s\", \"%s\", \"%s\", NOW(), NOW(), \"admin\", \"enabled\", %d)", mysql_real_escape_string($_POST["name"]), mysql_real_escape_string($_POST["email"]), mysql_real_escape_string(ADMIN_PASSWORD), 4);
             if (mysql_query($sql))
@@ -167,9 +163,6 @@ if (!empty($_POST))
             {
               $error = "Failed to create administrator account.";
             }
-          //}
-          //else
-            //$error = "Failed to create administrator account.";
 
           // Close database
           mysql_close($con);
@@ -181,156 +174,7 @@ if (!empty($_POST))
         $error = "Please fill in all fields.";
 
       break;
-    // Directory locations
-    /*
-    case 4:
-      // Convert to real paths
-      if (!empty($_POST['www']) && !empty($_POST['private']) && !empty($_POST['code']) && !empty($_POST['uploads']) && !empty($_POST['resources']))
-      {
-        // Convert to real paths
-        $wwwPath = realpath($_POST['www']);
-        $wwwParent = parentDir($wwwPath);
-        $privatePath = realpath($_POST['private']);
-        $privateParent = parentDir($privatePath);
-        $codePath = realpath($_POST['code']);
-        $codeParent = parentDir($codePath);
-        $uploadsPath = realpath($_POST['uploads']);
-        $uploadsParent = parentDir($uploadsPath);
-        $resourcesPath = realpath($_POST['resources']);
-        $resourcesParent = parentDir($resourcesPath);
-        
-        // Check that the paths if these directories are empty, can be created, and if we can write to these paths
-        $error = "";
-        if (file_exists($wwwPath))
-        {
-          if (is_dir($wwwPath))
-          {
-            // Check if it is an empty directory
-            if (count(scandir($wwwPath)) > 2)
-              $error .= "Web directory \"{$wwwPath}\" must be empty.<br/>";
-            else if (!is_writable($wwwPath)) 
-              $error .= "Web directory \"{$wwwPath}\" is not writable.  Please change the owner to the apache user.<br/>";
-          }
-          else
-            $error .= "Web directory name already exists as a file.<br/>";
-        }
-        else if (!is_writable($wwwParent))
-          $error .= "Cannot create web directory. Please chmod 777 \"".$wwwParent."\" to allow it to be writable.<br/>";
-          
-        if (file_exists($privatePath))
-        {
-          if (is_dir($privatePath))
-          {
-            // Check if it is an empty directory
-            if (count(scandir($privatePath)) > 2)
-              $error .= "Config file directory \"{$privatePath}\" must be empty.<br/>";
-            else if (!is_writable($privatePath)) 
-              $error .= "Config file directory \"{$privatePath}\" is not writable.  Please change the owner to the apache user.<br/>";
-          }
-          else
-            $error .= "Config file directory name already exists as a file.<br/>";
-        }
-        else if (!is_writable($privateParent))
-          $error .= "Cannot create config file directory. Please chmod 777 \"".$privateParent."\" to allow it to be writable.<br/>";
-        
-        if (file_exists($codePath))
-        {
-          if (is_dir($codePath))
-          {
-            // Check if it is an empty directory
-            if (count(scandir($codePath)) > 2)
-              $error .= "Java code directory \"{$codePath}\" must be empty.<br/>";
-            else if (!is_writable($codePath)) 
-              $error .= "Java code directory \"{$codePath}\" is not writable.  Please change the owner to the apache user.<br/>";
-          }
-          else
-            $error .= "Java code directory name already exists as a file.<br/>";
-        }
-        else if (!is_writable($codeParent))
-          $error .= "Cannot create Java code file directory. Please chmod 777 \"".$codeParent."\" to allow it to be writable.<br/>";
-
-        if (file_exists($uploadsPath))
-        {
-          if (is_dir($uploadsPath))
-          {
-            // Check if it is an empty directory
-            if (count(scandir($uploadsPath)) > 2)
-              $error .= "Uploads directory \"{$uploadsPath}\" must be empty.<br/>";
-            else if (!is_writable($uploadsPath)) 
-              $error .= "Uploads directory \"{$uploadsPath}\" is not writable.  Please change the owner to the apache user.<br/>";
-          }
-          else
-            $error .= "Uploads directory name already exists as a file.<br/>";
-        }
-        else if (!is_writable($uploadsParent))
-          $error .= "Cannot create uploads directory. Please chmod 777 \"".$uploadsParent."\" to allow it to be writable.<br/>";
-          
-        if (file_exists($resourcesPath))
-        {
-          if (is_dir($resourcesPath))
-          {
-            // Check if it is an empty directory
-            if (count(scandir($resourcesPath)) > 2)
-              $error .= "Resources directory \"{$resourcesPath}\" must be empty.<br/>";
-            else if (!is_writable($resourcesPath)) 
-              $error .= "Resources directory \"{$resourcesPath}\" is not writable.  Please change the owner to the apache user.<br/>";
-          }
-          else
-            $error .= "Resources directory name already exists as a file.<br/>";
-        }
-        else if (!is_writable($resourcesParent))
-          $error .= "Cannot create resources directory. Please chmod 777 \"".$resourcesParent."\" to allow it to be writable.<br/>";
-          
-        // Check for error
-        if (empty($error))
-        {
-          // Copy the folders
-          $cmd = realpath(".")."/copyDirs.sh ".$wwwPath." ".$privatePath." ".$codePath." ".$uploadsPath." ".$resourcesPath;
-          exec($cmd, $output, $rtn);
-          switch ($rtn)
-          {
-            case 0:
-              // Copy code jar
-              if (copy("comtor.jar", $codePath.DIRECTORY_SEPARATOR."comtor.jar") && mkdir($wwwPath.DIRECTORY_SEPARATOR."templates_c"))
-              {            
-                // Store information in session
-                $_SESSION["paths"] = array(
-                  "www"=>$wwwPath,
-                  "private"=>$privatePath,
-                  "code"=>$codePath,
-                  "uploads"=>$uploadsPath,
-                  "resources"=>$resourcesPath
-                );                             
-
-                // Increment step
-                $step++;
-              }
-              else
-                $error .= "Failed to create copy java code.<br/>";
-              break;
-            case 1:
-              $error .= "Failed to create web directory.<br/>";
-              break;
-            case 2:
-              $error .= "Failed to create config file directory.<br/>";
-              break;
-            case 3:
-              $error .= "Failed to create Java code directory.<br/>";
-              break;
-            case 4:
-              $error .= "Failed to create uploads directory.<br/>";
-              break;
-            case 5:
-              $error .= "Failed to create resources directory.<br/>";
-              break;
-          }
-        }
-      }
-      else
-        $error = "Please fill in all fields.";
-        
-      break;
-    */
+    
     // Configuring
     case 4:
       // Check fields
