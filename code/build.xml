@@ -26,15 +26,8 @@
     <pathelement path="${java.home}/jre/lib/tools.jar"/>
   </path>
 
-
-  <!-- the special init target makes sure our environment is ok -->
-  <target name="init">
-    <mkdir dir="${classes}"/>
-  </target>
-
-
   <!-- Compile the source files -->
-  <target name="compile" depends="init" description="Compile the source">
+  <target name="compile" description="Compile the source">
    <javac srcdir="${src}" destdir="${classes}" debug="on" excludes="comtor/incomplete/** comtor/examples/**">
       <classpath refid="comtor.class.path"/> 
    </javac>
