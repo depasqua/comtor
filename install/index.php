@@ -35,7 +35,9 @@ $steps = array(
   "Administrator Setup",
 //  "Directory Setup",
   "Configuring",
-  "Cron Job Setup"
+  "Cron Job Setup",
+  "Source Code Compilation",
+  "Finish"
 );
 
 // Process form data
@@ -293,6 +295,10 @@ if (!empty($_POST))
     case 5:
       $step++;
       break;  
+    //Compile source code
+    case 6:
+      $step++;
+      break;
   }
 }
 
