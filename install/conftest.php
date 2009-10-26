@@ -41,6 +41,10 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                 echo 'value="'.$default.'" ';
             echo '/>';
         }
+        if ($required)
+        {
+            echo '<span style="color:red">*</span>';
+        }
         
         echo "<br />";
     }
