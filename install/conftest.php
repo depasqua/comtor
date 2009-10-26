@@ -1,5 +1,7 @@
 <?php
+include("../comtor_data/config/config.php");
 $handle = fopen("../migrations/1.2/config/configspec.txt", "r");
+
 while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
     $num = count($data);
     if (substr($data[0], 0, 1) == "[") // if the line starts with "[", then it's a new section
@@ -33,7 +35,9 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
         {
             echo '<input type="text" ';
             echo 'name="'.$name.'" ';
-            if ($default)
+            if (defined($name))
+                echo 'value="'.constant($name).'" ';
+            elseif ($default)
                 echo 'value="'.$default.'" ';
             echo '/>';
         }
