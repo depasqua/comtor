@@ -9,13 +9,13 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
     }
     elseif ($titlenext)
     {
-        echo "<h1>".$data[0]."</h1>";
+        echo "<h1>".$data[0]."</h1>\n";
         $titlenext = false;
         $descnext = true;
     }
     elseif ($descnext)
     {
-        echo "Description: ".$data[0];
+        echo "Description: ".$data[0]."\n";
         $descnext = false;
     }
     else
@@ -27,10 +27,16 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
         $prompt = $data[3];
         $required = ($data[4] == 'r')? true : false;
         
-        echo $prompt;
+        echo "\n".$prompt;
         
         if ($datatype == "string" || $datatype == "email" || $datatype == "host")
-            echo '<input type="text" />';
+        {
+            echo '<input type="text" ';
+            echo 'name="'.$name.'" ';
+            if ($default)
+                echo 'value="'.$default.'" ';
+            echo '/>';
+        }
         
         echo "<br />";
     }
