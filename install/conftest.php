@@ -1,7 +1,18 @@
 <?php
+
+
+session_start();
+if (!isset($_SESSION['currentstep']))
+    $_SESSION['currentstep'] = 0;
+
+if ($_GET['reset'] == "1")
+{
+    session_destroy();
+    session_start();
+}
+
 include("../comtor_data/config/config.php");
 $handle = fopen("../migrations/1.2/config/configspec.txt", "r");
-
 
 while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
     $num = count($data);
@@ -62,15 +73,52 @@ $sections[] = $this_section; // add the last section to the array
 
 fclose($handle);
 
-$currentstep = $_GET['step'];
-
 // actual validation and running of the pscripts needs to happen here before moving onto the next step
+$errors = false;
+
+if (sizeof($_POST))
+{
+include("pscripts/".$sections[$_SESSION['currentstep']][0].".php"); // run the pscript for this section
+echo "Running pscripts/".$sections[$_SESSION['currentstep']][0].".php";
+}
+
+if (!$errors)
+    foreach ($_POST as $key => $value)
+    {
+        // add each post element to the accumulating array of variables to write to config
+        $_SESSION['toconfig'][$key] = $value;
+        $committedvalues = true;
+    }
+    
+if (!$errors && ($committedvalues || $_GET['submit']))
+{
+    // if there are no validation errors, then proceed to the next step
+    $passtonextstep = true;
+}
+
+print_r($_SESSION['toconfig']);
+if ($passtonextstep)
+    $_SESSION['currentstep']++;
+$currentstep = $_SESSION['currentstep'];
 $nextstep = $currentstep + 1;
 $sectiontodisplay = ($currentstep)? $currentstep : 0;
+
+
+?><br />
+<a href="?reset=1">[reset]</a><?php
+
+?><div style="color:red; font-weight:bold;"><?php
+echo $errortext;
+?></div><?php
+
+?><form name="form" action="?submit=1" method="post"><?php
 echo $sections[$sectiontodisplay][2];
+?></form>
+<?php
 
-echo '<a href="?step='.$nextstep.'">Next</a>';
+if ($nextstep < sizeof($sections))
+    echo '<br /><span class="link" onclick="document.form.submit();">Next</span>';
 
-//print_r($sections);
+
 
 ?>
