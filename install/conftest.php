@@ -76,10 +76,10 @@ fclose($handle);
 // actual validation and running of the pscripts needs to happen here before moving onto the next step
 $errors = false;
 
-if (sizeof($_POST))
+if (sizeof($_POST) || $_GET['submit'])
 {
 include("pscripts/".$sections[$_SESSION['currentstep']][0].".php"); // run the pscript for this section
-echo "Running pscripts/".$sections[$_SESSION['currentstep']][0].".php";
+echo "Running pscripts/".$sections[$_SESSION['currentstep']][0].".php<br />";
 }
 
 if (!$errors)
