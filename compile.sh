@@ -18,19 +18,24 @@ read PAUSE
 
 RDIR=`pwd`
 
-DIR=':'
-DIR+=$RDIR+'comtor_data/code/stringtemplate-3.2.jar:'
-DIR+=$RDIR+'comtor_data/code/antlr-3.1.1.jar:'
-DIR+=$RDIR+'comtor_data/code/mysql-connector-java-5.1.6-bin.jar:'
-DIR+=$RDIR+'comtor_data/code/comtor.jar:'
-DIR+=$RDIR+'comtor_data/code/antlr-3.1.1-runtime.jar'
+DIR='export set CLASSPATH=.:$CLASSPATH:.:'
+DIR+=$RDIR
+DIR+='/comtor_data/code/stringtemplate-3.2.jar:'
+DIR+=$RDIR
+DIR+='/comtor_data/code/antlr-3.1.1.jar:'
+DIR+=$RDIR
+DIR+='/comtor_data/code/mysql-connector-java-5.1.6-bin.jar:'
+DIR+=$RDIR
+DIR+='/comtor_data/code/comtor.jar:'
+DIR+=$RDIR
+DIR+='/comtor_data/code/antlr-3.1.1-runtime.jar'
 
 echo "Compiling COMTOR code files..."
 
 cd code/
 mkdir classes
 
-CMD1='export set CLASSPATH=.:$CLASSPATH:.'+DIR
+CMD1=$DIR
 
 $CMD1
 
