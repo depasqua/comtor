@@ -6,11 +6,6 @@ MYSQL_USERNAME,string, ,"Username: ",r
 MYSQL_PASSWORD,string, ,"Password: ",r
 MYSQL_DB,string,"comtor","Database Name: ",r
 
-[comtoradmin]
-"Administrator Setup"
-"<p>Please enter information for the administrator. The e-mail address will appear on the website as a contact. The default password is ""comtor"". You may change the password when you log in.</p>"
-admin_fullname,string, ,"Full name: ",r
-admin_email,email, ,"E-mail Address: ",r
 
 [smtp]
 "SMTP (Mail) Configuration"

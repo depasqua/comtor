@@ -1,7 +1,52 @@
 <?php
 
+function InstallHeader($sections) {
+    ?>
+    <?php echo '<?xml version="1.0" encoding="utf-8"?>'; ?>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs">
+      <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>COMTOR Install Wizard</title>
+
+        <link rel="stylesheet" type="text/css" href="style.css"></link>
+      </head>
+      <body>
+
+      <img src="img/logo.gif" alt="COMTOR" />
+
+      <div id="steps">
+      <h3>
+        Install Steps<br/>
+        <a href="?reset=1">Restart</a>
+      </h3>
+
+      <ul><?php
+      foreach ($sections as $section)
+      {
+      ?><li><?php echo $section[1] ?></li><?php
+        }
+      ?></ul>
+        </div>
+        <div id="contentContainer">
+        <?php
+}
+
+function InstallFooter() {
+    ?>
+      </div>
+
+      </body>
+    </html>
+    <?php
+}
+
+
+
 
 session_start();
+
+
 if (!isset($_SESSION['currentstep']))
     $_SESSION['currentstep'] = 0;
 
@@ -79,7 +124,7 @@ $errors = false;
 if (sizeof($_POST) || $_GET['submit'])
 {
 include("pscripts/".$sections[$_SESSION['currentstep']][0].".php"); // run the pscript for this section
-echo "Running pscripts/".$sections[$_SESSION['currentstep']][0].".php<br />";
+// echo "Running pscripts/".$sections[$_SESSION['currentstep']][0].".php<br />";
 }
 
 if (!$errors)
@@ -96,20 +141,28 @@ if (!$errors && ($committedvalues || $_GET['submit']))
     $passtonextstep = true;
 }
 
-print_r($_SESSION['toconfig']);
+//print_r($_SESSION['toconfig']);
 if ($passtonextstep)
     $_SESSION['currentstep']++;
 $currentstep = $_SESSION['currentstep'];
 $nextstep = $currentstep + 1;
 $sectiontodisplay = ($currentstep)? $currentstep : 0;
 
+InstallHeader($sections);
 
-?><br />
-<a href="?reset=1">[reset]</a><?php
+?><br /><?php
 
-?><div style="color:red; font-weight:bold;"><?php
-echo $errortext;
-?></div><?php
+?><div style="color:red; font-weight:bold;">
+<ul><?php
+if (!empty($errorlist))
+foreach ($errorlist as $error)
+{
+    ?><li><?php
+    echo $error;
+    ?></li><?php
+}
+?></ul>
+</div><?php
 
 ?><form name="form" action="?submit=1" method="post"><?php
 echo $sections[$sectiontodisplay][2];
@@ -119,6 +172,6 @@ echo $sections[$sectiontodisplay][2];
 if ($nextstep < sizeof($sections))
     echo '<br /><span class="link" onclick="document.form.submit();">Next</span>';
 
-
+InstallFooter();
 
 ?>

@@ -1,8 +1,15 @@
 <?php 
 /*
 $errors = 1;
-$errorslist[] = "";
-$errortext = "Validation failed!";
+$errorlist[] = "Validation failed!";
+//$errortext = "Validation failed!";
 */
+
+// try connecting to the db
+// if (connect succeeded)
+//      determine current version
+//      run appropriate migrations!!!
+// if not
+//      throw error : (
 
 ?>
