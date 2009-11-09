@@ -1,6 +1,6 @@
 <?php
 
-function InstallHeader($sections) {
+function InstallHeader($sections, $currentstep) {
     ?>
     <?php echo '<?xml version="1.0" encoding="utf-8"?>'; ?>
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -22,9 +22,12 @@ function InstallHeader($sections) {
       </h3>
 
       <ul><?php
-      foreach ($sections as $section)
+      foreach ($sections as $key => $section)
       {
-      ?><li><?php echo $section[1] ?></li><?php
+      ?><li 
+      <?php if ($key == $currentstep) echo "class=\"current\"";?>
+      >
+      <?php echo $section[1]; ?></li><?php
         }
       ?></ul>
         </div>
@@ -152,9 +155,7 @@ $currentstep = $_SESSION['currentstep'];
 $nextstep = $currentstep + 1;
 $sectiontodisplay = ($currentstep)? $currentstep : 0;
 
-InstallHeader($sections);
-
-?><br /><?php
+InstallHeader($sections, $sectiontodisplay);
 
 ?><div style="color:red; font-weight:bold;">
 <ul><?php
