@@ -1,9 +1,5 @@
 <?php 
-/*
-$errors = 1;
-$errorlist[] = "Validation failed!";
-//$errortext = "Validation failed!";
-*/
+
 if (empty($_POST['MYSQL_HOST']))
 {
     $errors = true;
@@ -31,11 +27,8 @@ if (empty($_POST['MYSQL_DB']))
  $successful_mysql_connect = @mysql_connect($_POST['MYSQL_HOST'], $_POST['MYSQL_USERNAME'], $_POST['MYSQL_PASSWORD']);
 if ($successful_mysql_connect)
 {
-    // if (connect succeeded)
     //      determine current version
     //      run appropriate migrations!!!
-    // if not
-    //      throw error : (
 }
 else
 {
