@@ -100,10 +100,14 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
         {
             $this_section[2] .= '<input type="text" ';
             $this_section[2] .= 'name="'.$name.'" ';
-            if (defined($name))
+            if (isset($_POST[$name])) // was it submitted in this form?
+                $this_section[2] .= 'value="'.$_POST[$name].'" ';
+            elseif (defined($name)) // was it set in the old config file?
                 $this_section[2] .= 'value="'.constant($name).'" ';
-            elseif ($default)
-                $this_section[2] .= 'value="'.$default.'" ';
+            elseif ($default) // if not we should highlight it for the user!
+                $this_section[2] .= 'value="'.$default.'" style="background-color:#FFEC8B';
+            else 
+                $this_section[2] .= ' style="background-color:#FFEC8B" ';
             $this_section[2] .= '/>';
         }
         if ($required)
