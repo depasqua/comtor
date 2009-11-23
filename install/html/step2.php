@@ -1,39 +1,135 @@
-<h1>Database Setup</h1>
+<?php
 
-<?php require_once("error_box.php"); ?>
 
-<p>
-Please enter your MySQL username and password.  Please create the database that you specify and grant all privileges on the database to the user specified.
-</p>
 
-<form name="form" method="post" action="">
-<div>
-  <input type="hidden" name="step" value="<?php echo $step; ?>"/>
+session_start();
 
-  <fieldset>
-    <legend>MySQL Credentials</legend>
+
+if (!isset($_SESSION['currentstep']))
+    $_SESSION['currentstep'] = 0;
+
+if ($_GET['reset'] == "1")
+{
+    session_destroy();
+    session_start();
+}
+
+include("../comtor_data/config/config.php");
+$handle = fopen("../migrations/1.2/config/configspec.txt", "r");
+
+while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+    $num = count($data);
+    if (substr($data[0], 0, 1) == "[") // if the line starts with "[", then it's a new section
+    {
+        if (isset($this_section))
+            {
+                $sections[] = $this_section;
+                unset($this_section);
+            }
+        $slug = substr($data[0], 1, strlen($data[0])-2);
+        $this_section[0] = $slug;
+        // echo "section <b>".substr($data[0], 1, strlen($data[0])-2)."</b><br />";
+        $titlenext = true;
+    }
+    elseif ($titlenext)
+    {
+        $this_section[2] .= "<h1>".$data[0]."</h1>\n";
+        $this_section[1] = $data[0];
+        $titlenext = false;
+        $descnext = true;
+    }
+    elseif ($descnext)
+    {
+        $this_section[2] .= $data[0]."\n";
+        $descnext = false;
+    }
+    elseif ($data[0])
+    {
+        //echo "<p> $num fields in line $row: <br /></p>\n";
+        $name = $data[0];
+        $datatype = $data[1];
+        $default = $data[2];
+        $prompt = $data[3];
+        $required = ($data[4] == 'r')? true : false;
+        
+        $this_section[2] .= "\n".$prompt;
+        
+        if ($datatype == "string" || $datatype == "email" || $datatype == "host")
+        {
+            $this_section[2] .= '<input type="text" ';
+            $this_section[2] .= 'name="'.$name.'" ';
+            if (isset($_POST[$name])) // was it submitted in this form?
+                $this_section[2] .= 'value="'.$_POST[$name].'" ';
+            elseif (defined($name)) // was it set in the old config file?
+                $this_section[2] .= 'value="'.constant($name).'" ';
+            elseif ($default) // if not we should highlight it for the user!
+                $this_section[2] .= 'value="'.$default.'" style="background-color:#FFEC8B';
+            else 
+                $this_section[2] .= ' style="background-color:#FFEC8B" ';
+            $this_section[2] .= '/>';
+        }
+        if ($required)
+        {
+            $this_section[2] .= '<span style="color:red">*</span>';
+        }
+        
+        $this_section[2] .= "<br />";
+    }
+}
+$sections[] = $this_section; // add the last section to the array
+
+fclose($handle);
+
+// actual validation and running of the pscripts needs to happen here before moving onto the next step
+$errors = false;
+
+if (sizeof($_POST) || $_GET['submit'])
+{
+include("pscripts/".$sections[$_SESSION['currentstep']][0].".php"); // run the pscript for this section
+// echo "Running pscripts/".$sections[$_SESSION['currentstep']][0].".php<br />";
+}
+
+if (!$errors)
+    foreach ($_POST as $key => $value)
+    {
+        // add each post element to the accumulating array of variables to write to config
+        $_SESSION['toconfig'][$key] = $value;
+        $committedvalues = true;
+    }
     
-    <div class="floatContainer">
-      <label for="server">Database Server: </label>
-      <input type="text" id="server" name="server" value="<?php echo !empty($_POST['server']) ? $_POST['server'] : "localhost"; ?>" />
-    </div>
-    
-    <div class="floatContainer">
-      <label for="username">Username: </label>
-      <input type="text" id="username" name="username" value="<?php echo !empty($_POST['username']) ? $_POST['username'] : ""; ?>" />
-    </div>
+if (!$errors && ($committedvalues || $_GET['submit']))
+{
+    // if there are no validation errors, then proceed to the next step
+    $passtonextstep = true;
+}
 
-    <div class="floatContainer">
-      <label for="password">Password: </label>
-      <input type="password" id="password" name="password" value="<?php echo !empty($_POST['password']) ? $_POST['password'] : ""; ?>" />
-    </div>
+//print_r($_SESSION['toconfig']);
+if ($passtonextstep)
+    $_SESSION['currentstep']++;
+$currentstep = $_SESSION['currentstep'];
+$nextstep = $currentstep + 1;
+$sectiontodisplay = ($currentstep)? $currentstep : 0;
 
-    <div class="floatContainer">
-      <label for="dbname">Database Name: </label>
-      <input type="text" id="dbname" name="dbname" value="<?php echo !empty($_POST['dbname']) ? $_POST['dbname'] : "comtor"; ?>" />
-    </div>
-  </fieldset>
 
-  <span class="link" onclick="document.form.submit();">Next</span>
-</div>
-</form>
+?><div style="color:red; font-weight:bold;">
+<ul><?php
+if (!empty($errorlist))
+foreach ($errorlist as $error)
+{
+    ?><li><?php
+    echo $error;
+    ?></li><?php
+}
+?></ul>
+</div><?php
+
+?><form name="form" action="?submit=1" method="post"><?php
+echo $sections[$sectiontodisplay][2];
+?></form>
+<?php
+
+if ($nextstep < sizeof($sections))
+    echo '<br /><span class="link" onclick="document.form.submit();">Next</span>';
+
+
+?>

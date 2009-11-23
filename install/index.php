@@ -1,5 +1,6 @@
 <?php
 
+
 // Define default administrator password
 define("ADMIN_PASSWORD", "cmhXE1d/ItCiM");  // Password is "comtor"
 session_start();
@@ -9,7 +10,7 @@ if (empty($_POST) && isset($_GET['reset']))
   session_unset();
 
 if (!isset($_SESSION['step']))
-  $_SESSION['step'] = 1;
+  $_SESSION['step'] = 0;
 
 // Store directory information in session
 if (!isset($_SESSION["paths"]))
@@ -31,7 +32,7 @@ $step = $_SESSION['step'];
 // Setup step names
 $steps = array(
   "Software Check",
-  "Database Setup",
+  "Configuration Setup",
   "Administrator Setup",
 //  "Directory Setup",
   "Configuring",
@@ -41,11 +42,21 @@ $steps = array(
 );
 
 // Process form data
-if (!empty($_POST))
+if (!empty($_POST) || isset($_GET['upgrade']))
 {
   $error = null;
   switch ($step)
   {
+    case 0:
+        // Pick Install or Upgrade
+        if (isset($_GET['upgrade']))
+        {
+            $_SESSION['upgrade'] = ($_GET['upgrade'])? true : false;
+            $step++;
+            if ($_SESSION['upgrade'])
+                $step++; // if we're upgrading, skip the Software check
+        }
+    break;
     case 1:
       // Check fields
       if (!empty($_POST['pass']) && $_POST['pass'] == "T")
@@ -303,9 +314,9 @@ if (!empty($_POST))
 }
 
 // Check if there was posted data that was successfully processed
-if (!empty($_POST) && $step == $_SESSION['step'] + 1)
+if ((!empty($_POST) || isset($_GET['upgrade'])) && ($step > $_SESSION['step']))
 {
-  $_SESSION['step']++;
+  $_SESSION['step'] = $step;
   session_commit();
   header("Location: index.php");
 }
