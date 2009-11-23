@@ -1,5 +1,6 @@
 <?php
 
+$migration_releases = array ("1.0", "1.2");
 
 // Define default administrator password
 define("ADMIN_PASSWORD", "cmhXE1d/ItCiM");  // Password is "comtor"

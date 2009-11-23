@@ -48,62 +48,97 @@ if ($con)
                 // require_once('../../migrations/releases.php');
                 
                 // Constants
+
+                foreach ($migration_releases as $migration_release)
+                {
+                    if ($migration_release == "1.0")
+                    {
                 // START 1.0 MIGRATION CODE
-                if ($migration_release == "1.0")
-                {
-                  define("SCHEMA_PATH", "../migrations/1.0/db/schema.sql");
-                  define("MYSQL_DATA_PATH", escapeshellarg("../migrations/1.0/db/data.sql"));
+                      define("SCHEMA_PATH", "../migrations/1.0/db/schema.sql");
+                      define("MYSQL_DATA_PATH", escapeshellarg("../migrations/1.0/db/data.sql"));
 
-                          // Create new schema with view definers changed
-                          $host = ($_POST['server'] == "localhost") ? "localhost" : escapeshellarg($_POST['server']);
-                          $tmpFilename = tempnam(sys_get_temp_dir(), "SQL");
-                          if (($fh_in = @fopen(SCHEMA_PATH, "r")) && ($fh_out = @fopen($tmpFilename, "w")))
-                          {                 
-                            while ($line = fgets($fh_in))
-                            {
-                              $serverName = ($_POST['server'] == "localhost") ? "localhost" : $_SERVER['SERVER_NAME'];
-                              $line = str_replace("`comtor`@`localhost`", "`{$_POST['username']}`@`{$serverName}`", $line);
-                              fwrite($fh_out, $line);
-                            }                   
-                            fclose($fh_in);
-                            fclose($fh_out);
+                              // Create new schema with view definers changed
+                              $host = ($_POST['MYSQL_HOST'] == "localhost") ? "localhost" : escapeshellarg($_POST['MYSQL_HOST']);
+                              $tmpFilename = tempnam(sys_get_temp_dir(), "SQL");
+                              if (($fh_in = @fopen(SCHEMA_PATH, "r")) && ($fh_out = @fopen($tmpFilename, "w")))
+                              {                 
+                                while ($line = fgets($fh_in))
+                                {
+                                  $serverName = ($_POST['MYSQL_HOST'] == "localhost") ? "localhost" : $_SERVER['SERVER_NAME'];
+                                  $line = str_replace("`comtor`@`localhost`", "`{$_POST['MYSQL_USERNAME']}`@`{$serverName}`", $line);
+                                  fwrite($fh_out, $line);
+                                }                   
+                                fclose($fh_in);
+                                fclose($fh_out);
 
-                            // Import the database schema
-                            $hostOpt = ($host == "localhost") ? "" : "-h " . $host;  
-                            $cmd = sprintf("mysql %s -u %s -p%s %s < %s 2>&1", $hostOpt, escapeshellarg($_POST['username']), escapeshellarg($_POST['password']), escapeshellarg($_POST['dbname']), escapeshellarg($tmpFilename));
-                            exec($cmd, $output, $rtn);
-                            unlink($tmpFilename);
-                            if ($rtn != 0)
-                              $error = "Error importing schema. MySQL Output:<br/>" . nl2br(implode("<br/>", $output)); 
-                            else if (!empty($output))
-                              $error = "Error importing schema. MySQL Output:<br/>" . nl2br(implode("<br/>", $output));
-                            else
-                            {
-                              // Import the database data
-                              $cmd = sprintf("mysql %s -u %s -p%s %s < %s 2>&1", $hostOpt, escapeshellarg($_POST['username']), escapeshellarg($_POST['password']), escapeshellarg($_POST['dbname']), MYSQL_DATA_PATH);
-                              exec($cmd, $output);
-                              if (!empty($output))
-                                $error = "Error importing required data. MySQL Output:<br/>" . nl2br(implode("<br/>", $output));
+                                // Import the database schema
+                                $hostOpt = ($host == "localhost") ? "" : "-h " . $host;  
+                                $cmd = sprintf("mysql %s -u %s -p%s %s < %s 2>&1", $hostOpt, escapeshellarg($_POST['MYSQL_USERNAME']), escapeshellarg($_POST['MYSQL_PASSWORD']), escapeshellarg($_POST['MYSQL_DB']), escapeshellarg($tmpFilename));
+                                exec($cmd, $output, $rtn);
+                                unlink($tmpFilename);
+                                if ($rtn != 0)
+                                  {
+                                      $errors = 1;
+                                      $errorlist[] = "Error importing schema. MySQL Output:<br/>" . nl2br(implode("<br/>", $output)); 
+                                  }
+                                else if (!empty($output))
+                                  {
+                                      $errors = 1;
+                                      $errorlist[] = "Error importing schema. MySQL Output:<br/>" . nl2br(implode("<br/>", $output));
+                                  }
+                                else
+                                {
+                                  // Import the database data
+                                  $cmd = sprintf("mysql %s -u %s -p%s %s < %s 2>&1", $hostOpt, escapeshellarg($_POST['MYSQL_USERNAME']), escapeshellarg($_POST['MYSQL_PASSWORD']), escapeshellarg($_POST['MYSQL_DB']), MYSQL_DATA_PATH);
+                                  exec($cmd, $output);
+                                  if (!empty($output))
+                                    {
+                                        $errors = 1;
+                                        $errorlist[] = "Error importing required data. MySQL Output:<br/>" . nl2br(implode("<br/>", $output));
+                                    }
 
-                              // Store information in session
-                              $_SESSION["mysql"] = array(
-                                "server"=>$_POST['server'],
-                                "username"=>$_POST['username'],
-                                "password"=>$_POST['password'],
-                                "dbname"=>$_POST['dbname']
-                              );
+                                  // Store information in session
+                                  $_SESSION["mysql"] = array(
+                                    "server"=>$_POST['MYSQL_HOST'],
+                                    "username"=>$_POST['MYSQL_USERNAME'],
+                                    "password"=>$_POST['MYSQL_PASSWORD'],
+                                    "dbname"=>$_POST['MYSQL_DB']
+                                  );
 
-                              // Increment step
-                              $step++;
-                            }
+                                }
+                              }
+                              else
+                                {
+                                    $errors = true;
+                                    $errorlist[] = "Error importing schema.<br/>";
+                                }
+                    }
+                    // END 1.0 MIGRATION CODE
+                    else 
+                    {
+                        // run a normal migration
+                        $migrate_path = "../migrations/".$migration_release."/db/migrate.sql";
+                        $host = ($_POST['MYSQL_HOST'] == "localhost") ? "localhost" : escapeshellarg($_POST['MYSQL_HOST']);
+                        
+                        $hostOpt = ($host == "localhost") ? "" : "-h " . $host;  
+                        $cmd = sprintf("mysql %s -u %s -p%s %s < %s 2>&1", $hostOpt, escapeshellarg($_POST['MYSQL_USERNAME']), escapeshellarg($_POST['MYSQL_PASSWORD']), escapeshellarg($_POST['MYSQL_DB']), escapeshellarg($migrate_path));
+                        exec($cmd, $output, $rtn);
+                        if ($rtn != 0)
+                          {
+                              $errors = 1;
+                              $errorlist[] = "Error running migration to ".$migration_release.". MySQL Output:<br/>" . nl2br(implode("<br/>", $output)); 
                           }
-                          else
-                            $error = "Error importing schema.<br/>";
+                        else if (!empty($output))
+                          {
+                              $errors = 1;
+                              $errorlist[] = "Error running migration to ".$migration_release.". MySQL Output:<br/>" . nl2br(implode("<br/>", $output));
+                          }
+                    }
                 }
-                // END 1.0 MIGRATION CODE
-                else 
+                if (!$errors)
                 {
-                    // run a normal migration
+                    // If there were no errors running all the migrations, go to the next step!
+                    $step++;
                 }
                             
                             
