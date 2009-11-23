@@ -128,7 +128,7 @@ echo $sections[$sectiontodisplay][2];
 ?></form>
 <?php
 
-if ($nextstep < sizeof($sections))
+if ($nextstep <= sizeof($sections))
     echo '<br /><span class="link" onclick="document.form.submit();">Next</span>';
 
 

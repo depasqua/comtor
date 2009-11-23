@@ -11,8 +11,6 @@ MYSQL_DB,string,"comtor","Database Name: ",r
 "SMTP (Mail) Configuration"
 "<p>Please provide the following information concerning the SMTP (Mail) Server that COMTOR should use. This enables COMTOR to send email notifications to users. If your SMTP server does not require a username and password, please leave those blank.</p>"
 EMAIL_SMTP_HOST,host, ,"SMTP Hostname: ",r
-smtp_user,string, ,"SMTP Username: ",o
-smtp_pass,string, ,"SMTP Password: ",o
 
 [directory]
 "Directory Configuration"
@@ -22,7 +20,3 @@ URL_PATH,string,"localhost","URL: http://",r
 [writeconfig]
 "Write Configuration"
 "<p>Setup will now attempt to write the necessary configuration files.  You will be notified if any problems occur and how to fix them.</p>"
-
-[final]
-"Setup Complete!"
-"Congratulations!  COMTOR is now installed successfully!"

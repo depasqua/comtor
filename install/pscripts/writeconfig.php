@@ -14,14 +14,13 @@ $filename = "config.php";
             fwrite($fp, '$'.$key.' = "'.$value.'";'."\n");
         fwrite($fp, "?>\n");
         fclose($fp);
+        $_SESSION['config_done'] = true;
     }
     else
     {
         $errors = 1;
         $errorlist[] = "Could not open the file!";
     }
-
-// the content of 'data.txt' is now 123 and not 23!
 
 
 ?>

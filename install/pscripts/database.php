@@ -36,21 +36,44 @@ if ($con)
     {
          // Check that there are no tables in the database
             $result = mysql_query("SHOW TABLES");
-            if ((!$result || mysql_num_rows($result)) && !isset($_SESSION['dbempty']))
+            if ((!$result || mysql_num_rows($result)) && !isset($_SESSION['dbempty']) && !$_SESSION['upgrade'])
               {
                   $errors = true;
-                  $errorlist[] = "Database already contains tables.  Please drop all tables in database \"{$_POST['MYSQL_DB']}\".";
+                  $errorlist[] = "Database already contains tables.  Please drop all tables in database \"{$_POST['MYSQL_DB']}\" for a fresh install.";
               }
             else {
                 //      determine current version
+                
+                $versionq = "select * from version";
+                $result = mysql_query($versionq);
+                if (@mysql_num_rows($result)>0)
+                {
+                    // if we found a version in the DB
+                    $item = mysql_fetch_array($result);
+                    $current_db_version = $item['version'];
+                    
+                    // determine which migrations need to run
+                    $found_version = false;
+                    foreach ($migration_releases as $migration_release)
+                    {
+                        if ($found_version)
+                            $migration_releases_to_run[] = $migration_release;
+                        if ($migration_release == $current_db_version)
+                            $found_version = true;
+                    }
+                }
+                else 
+                    $migration_releases_to_run = $migration_releases;
+                
                 
                 // load in list of releases
                 // require_once('../../migrations/releases.php');
                 
                 // Constants
 
-                foreach ($migration_releases as $migration_release)
+                foreach ($migration_releases_to_run as $migration_release)
                 {
+                    echo "Migrating Database to ".$migration_release."<br />";
                     if ($migration_release == "1.0")
                     {
                 // START 1.0 MIGRATION CODE

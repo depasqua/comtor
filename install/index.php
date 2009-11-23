@@ -36,14 +36,14 @@ $steps = array(
   "Configuration Setup",
   "Administrator Setup",
 //  "Directory Setup",
-  "Configuring",
+  "Write Configs",
   "Cron Job Setup",
   "Source Code Compilation",
   "Finish"
 );
 
 // Process form data
-if (!empty($_POST) || isset($_GET['upgrade']))
+if (!empty($_POST) || isset($_GET['upgrade']) || $_GET['submit'])
 {
   $error = null;
   switch ($step)
@@ -69,7 +69,11 @@ if (!empty($_POST) || isset($_GET['upgrade']))
       break;
     // MySQL setup
     case 2:
-
+        if ($_SESSION['config_done'])
+          if ($_SESSION['upgrade'])
+            $step += 5;
+          else
+            $step++;
       break;
     // Admin user setup
     case 3:
@@ -112,15 +116,6 @@ if (!empty($_POST) || isset($_GET['upgrade']))
     
     // Configuring
     case 4:
-      // Check fields
-      if (!empty($_POST['smtp']) && !empty($_POST['url']))
-      {
-        // Store information in session
-        $_SESSION["smtp"] = $_POST['smtp'];
-        $_SESSION["url"] = $_POST['url'];
-        
-        clearstatcache();
-        
         // Create config file
         ob_start();
         require_once("config_php_template.php");
@@ -219,9 +214,7 @@ if (!empty($_POST) || isset($_GET['upgrade']))
           // Increment step
           $step++;
         }
-      }
-      else
-        $error = "Please fill in all fields.";
+
         
       break;
     // Crontab
@@ -236,7 +229,7 @@ if (!empty($_POST) || isset($_GET['upgrade']))
 }
 
 // Check if there was posted data that was successfully processed
-if ((!empty($_POST) || isset($_GET['upgrade'])) && ($step > $_SESSION['step']))
+if ((!empty($_POST) || isset($_GET['upgrade'])  || $_GET['submit']) && ($step > $_SESSION['step']))
 {
   $_SESSION['step'] = $step;
   session_commit();
