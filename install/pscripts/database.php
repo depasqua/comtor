@@ -44,7 +44,7 @@ if ($con)
             else {
                 //      determine current version
                 
-                $versionq = "select * from version";
+                $versionq = "select * from schema_version";
                 $result = mysql_query($versionq);
                 if (@mysql_num_rows($result)>0)
                 {
@@ -56,14 +56,18 @@ if ($con)
                     $found_version = false;
                     foreach ($migration_releases as $migration_release)
                     {
-                        if ($found_version)
-                            $migration_releases_to_run[] = $migration_release;
+                        if ($found_version) // if this release is after the current db version release
+                            $migration_releases_to_run[] = $migration_release; // add the migration to this release to the queue
                         if ($migration_release == $current_db_version)
                             $found_version = true;
                     }
+                    
                 }
-                else 
-                    $migration_releases_to_run = $migration_releases;
+                else // if we couldn't find a version in the database, we don't know what migrations to run!
+                {
+                    $errors = 1;
+                    $errorlist[] = "Could not determine current database schema version.";
+                }
                 
                 
                 // load in list of releases
@@ -71,6 +75,7 @@ if ($con)
                 
                 // Constants
 
+                if (is_array($migration_releases_to_run))
                 foreach ($migration_releases_to_run as $migration_release)
                 {
                     echo "Migrating Database to ".$migration_release."<br />";
