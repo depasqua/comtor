@@ -14,7 +14,7 @@ if ($_GET['reset'] == "1")
     session_start();
 }
 
-include($config_php_path);
+@include($config_php_path);
 $handle = fopen("../migrations/1.2/config/configspec.txt", "r");
 
 while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
