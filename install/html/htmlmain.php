@@ -13,7 +13,12 @@
   
   <div id="steps">
   <h3>
-    Install Steps<br/>
+    <?php 
+    if ($_SESSION['upgrade'])
+        echo "Upgrade";
+    else
+        echo "Install";
+    ?> Steps<br/>
     <a href="?reset=T">Restart</a>
   </h3>
   
