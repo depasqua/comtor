@@ -78,7 +78,7 @@ if ($con)
                 if (is_array($migration_releases_to_run))
                 foreach ($migration_releases_to_run as $migration_release)
                 {
-                    echo "Migrating Database to ".$migration_release."<br />";
+                    echo "<!--Migrating Database to ".$migration_release."<br />-->";
                     if ($migration_release == "1.0")
                     {
                 // START 1.0 MIGRATION CODE
