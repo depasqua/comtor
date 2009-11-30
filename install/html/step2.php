@@ -124,6 +124,20 @@ foreach ($errorlist as $error)
 </div><?php
 
 ?><form name="form" action="?submit=1" method="post"><?php
+
+if ($_SESSION['config_done']===TRUE)
+{
+    // The config step has been completed!  Show a success message and pass the user onto the next step!
+    ?>
+    <h1>Configuration Setup Completed</h1>
+        <p>Successfully set up the main configuration file!  
+        <?php
+            if (!$_SESSION['upgrade'])
+            echo "Click the button below to continue with the rest of the installation process.";
+        ?></p>
+    <span class="link" onclick="window.location.reload();">Next</span>
+    <?php
+}
 echo $sections[$sectiontodisplay][2];
 ?></form>
 <?php
