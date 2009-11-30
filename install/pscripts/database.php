@@ -41,7 +41,7 @@ if ($con)
                   $errors = true;
                   $errorlist[] = "Database already contains tables.  Please drop all tables in database \"{$_POST['MYSQL_DB']}\" for a fresh install.";
               }
-            elseif ($_SESSION['upgrade']) {
+            else {
                 //      determine current version
                 
                 $versionq = "select * from schema_version";
@@ -51,6 +51,7 @@ if ($con)
                     // if we found a version in the DB
                     $item = mysql_fetch_array($result);
                     $current_db_version = $item['version'];
+                    echo "<!--Current DB Version Found: ".$current_db_version."-->";
                     
                     // determine which migrations need to run
                     $found_version = false;
@@ -63,10 +64,16 @@ if ($con)
                     }
                     
                 }
-                else // if we couldn't find a version in the database, we don't know what migrations to run!
+                elseif ($_SESSION['upgrade']) // if we couldn't find a version in the database, we don't know what migrations to run!
                 {
                     $errors = 1;
                     $errorlist[] = "Could not determine current database schema version.";
+                }
+                else  // if we're not upgrading, and we can't find a schema version, it must be a fresh install!
+                {
+                    // that means run all the migrations!
+                    echo "<!-- Running All Migrations! -->\n";
+                    $migration_releases_to_run = $migration_releases;
                 }
                 
                 
@@ -76,6 +83,7 @@ if ($con)
                 // Constants
 
                 if (is_array($migration_releases_to_run))
+                {
                 foreach ($migration_releases_to_run as $migration_release)
                 {
                     echo "<!--Migrating Database to ".$migration_release."<br />-->";
@@ -163,11 +171,14 @@ if ($con)
                           }
                     }
                 }
+            }
+
                 if (!$errors)
                 {
                     // If there were no errors running all the migrations, go to the next step!
                     $step++;
                 }
+
                             
                             
                         }
