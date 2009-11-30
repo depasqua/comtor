@@ -28,6 +28,11 @@ if (!isset($_SESSION["paths"]))
   chdir("install");
 }
 
+// Specifcy where to look for the config.php file. 
+// The installer will use this to pull the old config file and write to it.
+// This file should NOT be included with the packaged code when distributed.
+$config_php_path = $_SESSION["paths"]["private"].DIRECTORY_SEPARATOR."config.php";
+
 // Current install step
 $step = $_SESSION['step'];
 
@@ -117,24 +122,7 @@ if (!empty($_POST) || isset($_GET['upgrade']) || $_GET['submit'])
     
     // Configuring
     case 4:
-        // Create config file
-        ob_start();
-        require_once("config_php_template.php");
-        $configData = ob_get_clean();
         
-        // Open config file
-        $error = "";
-        $filename = $_SESSION["paths"]["private"].DIRECTORY_SEPARATOR."config.php";
-        if ((is_writable($filename) || @touch ($filename)) && $fh = fopen($filename, "w"))
-        {
-          // Write to file and close
-          if (!fwrite($fh, $configData))
-            $error .= "Failed to write to \"".$filename."\"<br/>";
-          fclose($fh);
-        }
-        else
-          $error .= "Failed to write to \"".$filename."\"<br/>";
-          
         // Create www folder config file
         ob_start();
         require_once("www_config_php_template.php");

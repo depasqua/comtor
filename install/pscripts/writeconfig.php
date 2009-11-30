@@ -1,7 +1,8 @@
 <?php
 
 // try writing the config file, and return any errors
-$filename = "config.php";
+// where is the target config.php located?
+$filename = $config_php_path;
 
 // construct special case variables from the collected information
 $toconfig_dir = $_SESSION["paths"]["www"].DIRECTORY_SEPARATOR;
