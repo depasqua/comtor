@@ -1,5 +1,6 @@
 <?php
-
+// define the migrations that exist in the /migrations folder
+// this is used to determine what DB and config migrations to run.
 $migration_releases = array ("1.0", "1.2");
 
 // Define default administrator password
