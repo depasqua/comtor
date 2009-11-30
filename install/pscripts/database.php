@@ -41,7 +41,7 @@ if ($con)
                   $errors = true;
                   $errorlist[] = "Database already contains tables.  Please drop all tables in database \"{$_POST['MYSQL_DB']}\" for a fresh install.";
               }
-            else {
+            elseif ($_SESSION['upgrade']) {
                 //      determine current version
                 
                 $versionq = "select * from schema_version";
