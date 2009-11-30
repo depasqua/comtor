@@ -2,6 +2,8 @@
 // define the migrations that exist in the /migrations folder
 // this is used to determine what DB and config migrations to run.
 $migration_releases = array ("1.0", "1.2", "1.3");
+$latest_release = end($migration_releases);
+reset($migration_releases);
 
 // Define default administrator password
 define("ADMIN_PASSWORD", "cmhXE1d/ItCiM");  // Password is "comtor"
