@@ -30,7 +30,7 @@ echo "Compiling COMTOR code files..."
 cd code/
 mkdir classes
 
-CMD1='export set CLASSPATH=.:$CLASSPATH:.'+DIR
+CMD1='export set CLASSPATH=.:$CLASSPATH:.'+$DIR
 
 $CMD1
 
