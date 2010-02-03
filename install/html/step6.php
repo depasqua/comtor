@@ -8,7 +8,10 @@ This compiles the COMTOR java source code.<!-- and perform database backups-->.
 
 <h6>Please ensure you are in the main COMTOR directory and use a command-line to run the following:
 </h6>
-<code>bash compile.sh</code>
+<code>
+cd code<br>
+ant deploy
+</code>
 
 <form name="form" method="post" action="">
 <div>

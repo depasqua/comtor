@@ -12,26 +12,40 @@
 
 <project name="comtor" default="compile" basedir=".">
   <description>Builds the comtor application.</description>
-
   
   <!-- Define some basic properties for later on. -->
   <property name="src" location="src"/>
   <property name="classes" location="classes"/>
+  <property name="thirdpartyjars" location="${basedir}/../comtor_data/code/"/>
 
+  <target name="init" description="Pre-build tasks">
+    <mkdir dir="${classes}"/>
+  </target>
 
   <!-- Build up a classpath file path for later use. -->
   <path id="comtor.class.path">
-    <pathelement path="${java.class.path}/"/>
+    <pathelement location="${thirdpartyjars}/comtor.jar"/>
+    <pathelement location="${thirdpartyjars}/antlr-3.1.1.jar"/>
+    <pathelement location="${thirdpartyjars}/antlr-3.1.1-runtime.jar"/>
+    <pathelement location="${thirdpartyjars}/mysql-connector-java-5.1.6-bin.jar"/>
+    <pathelement location="${thirdpartyjars}/stringtemplate-3.2.jar"/>
     <pathelement path="${classes}"/>
     <pathelement path="${java.home}/jre/lib/tools.jar"/>
   </path>
 
   <!-- Compile the source files -->
-  <target name="compile" description="Compile the source">
-   <javac srcdir="${src}" destdir="${classes}" debug="on" excludes="comtor/incomplete/** comtor/examples/**">
+  <target name="compile" description="Compile the source" depends="init">
+   <echo>Compilation classpath: ${toString:comtor.class.path}</echo> 
+   <javac srcdir="${src}" destdir="${classes}" compiler="javac1.5" excludes="comtor/incomplete/** comtor/examples/**"   >
       <classpath refid="comtor.class.path"/> 
    </javac>
   </target>
+
+  <!-- Deploys comtor.jar to the proper path -->
+  <target name="deploy" description="jars and deploys comtor.jar to proper directory" depends="compile">
+    <jar destfile="${thirdpartyjars}/comtor.jar" basedir="${classes}" />
+  </target>
+
 
 
   <!-- Removes the class files and source backups -->

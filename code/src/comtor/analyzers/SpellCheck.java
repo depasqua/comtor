@@ -23,12 +23,13 @@
 package comtor.analyzers;
 
 import comtor.*;
-import comtor.analyzers.SpellCheckResources.*;
+//import comtor.analyzers.SpellCheckResources.*;
 import com.sun.javadoc.*;
 import java.util.*;
 import java.util.regex.*;
 import java.text.*;
 import java.io.*;
+import java.lang.*;
 import org.antlr.runtime.*;
 
 /**
@@ -40,11 +41,11 @@ import org.antlr.runtime.*;
  */
 public final class SpellCheck implements ComtorDoclet
 {
-  private String dict_file = "/home/comtor/words";
-  private String mispellingsFilename = "/home/comtor/mispellings";
+    private String dict_file = "";
+  //private String mispellingsFilename = "/home/comtor/mispellings";
 
   // Output stream for mispelled words
-  private PrintStream mispellingsFile = null;
+  //private PrintStream mispellingsFile = null;
 
   private Properties prop = new Properties();
   private float maxScore = 5;
@@ -72,9 +73,7 @@ public final class SpellCheck implements ComtorDoclet
    */
   public SpellCheck()
   {
-    // Add some acceptable words
-    validWords.add("java");
-    validWords.add("int");
+   
   }
 
   /**
@@ -87,51 +86,60 @@ public final class SpellCheck implements ComtorDoclet
   {
     prop.setProperty("title", "Spell Checker"); //doclet title
 
-    // Parse input files to get variable and class names
-    try
-    {
-      // Current working directory
-      String dir = System.getProperty("user.dir");
-      System.out.println("User directory: " + dir);
-      BufferedReader fileNames =  new BufferedReader(new FileReader(dir+"/source.txt"));
-      String line;
-      while((line = fileNames.readLine()) != null)
-      {
-        CharStream input = new ANTLRFileStream(line);
-        spellCheckGrammarLexer lex = new spellCheckGrammarLexer(input);
-        TokenStream tokens = new CommonTokenStream(lex);
-        spellCheckGrammarParser parser = new spellCheckGrammarParser(tokens);
-        parser.compilationUnit();
-
-        for (int i = 0; i < lex.varNames.size(); i++)
-          javaWords.add((String)lex.varNames.get(i));
-
-        // Parse all comments
-        for (int i = 0; i < lex.comments.size(); i++)
-          parseComment((String)lex.comments.get(i));
-
-        //System.out.println(lex.packages);
-      }
-    }
-    catch (Exception e)
-    {
-      System.out.println(e);
+  //Array of Java keywords, ends with 0 for easy endOfArray marking
+    String[] javaKeywords = {"abstract","assert","boolean","break","byte",
+      "case","catch","char","class","const","continue","default","do","double",
+      "else","enum","extends","final","finally","float","for","goto","if",
+      "implements","import","instanceof","int","interface","long","native",
+      "new","package","private","protected","public","return","short",
+      "strictfp","super","switch","synchronized","this","throw","throws",
+      "transient","try","void","volatile","while","java","0"};
+    // Add Java Keywords to list of valid words
+    int count = 0;
+    while (javaKeywords[count] != "0"){
+      validWords.add(javaKeywords[count]);
+      count++;
     }
 
-/* No longer needed since all comments are fetched by ANTLR
-    // Get comments for root document
+  //Counter for properties list.
+  int num = 0;
+  //Index for path name manipulation.
+  int index = 0;
+
+  //Finding out pathname/location of the dictionary.
+  dict_file = System.getProperty("user.dir");
+
+  index = dict_file.lastIndexOf("/");
+  dict_file = dict_file.substring(0, index);
+  index = dict_file.lastIndexOf("/");
+  dict_file = dict_file.substring(0, index);
+  dict_file = dict_file.concat("/resources/words");
+
+  //Trying to access the dictonary.
+   try
+    {
+      dict = new RandomAccessFile(dict_file, "r");
+    }
+    catch(Exception e)
+    {
+      System.out.println("Failed to load dictionary.");
+      dict = null;
+    }
+	
+  String word;
+
+  //Get commends for rootDoc.
     parseComment(rootDoc.commentText());
 
     // Get comments for each class
     ClassDoc[] classes = rootDoc.classes();
     for(int i = 0; i < classes.length; i++)
       processClass(classes[i]);
-*/
 
+  
     // Print misspelled words
     Iterator<String> it = potentialWords.iterator();
-    int num = 0;
-    String word;
+    
     while (it.hasNext())
     {
       word = it.next();
@@ -153,10 +161,6 @@ public final class SpellCheck implements ComtorDoclet
       {
         prop.setProperty("000.000."+num, "The following word was misspelled: " + word);
         num++;
-
-        // Add the word to the mispellings file
-        if (mispellingsFile != null)
-          mispellingsFile.println(word);
       }
     }
     if (num == 0)
@@ -164,7 +168,8 @@ public final class SpellCheck implements ComtorDoclet
 
     prop.setProperty("score", "" + getGrade());
 
-    return prop; //return the property list
+    return prop; //return the property list 
+    
   }
 
   /*************************************************************************
@@ -266,7 +271,7 @@ public final class SpellCheck implements ComtorDoclet
             if (validWord(tmp3))
               words.add(tmp3);
             else
-            {
+            {   
               // Valid if a number
               try
               {
@@ -306,6 +311,18 @@ public final class SpellCheck implements ComtorDoclet
     // Check against user defined words
     if (validWords.contains(word) || word.length() == 0)
       return true;
+      
+    //Check for camelCase
+    Character ch;
+    for (int i = 0; i < word.length(); i++){
+      ch = new Character(word.charAt(i));
+      if (Character.isLowerCase(ch) && i != (word.length() - 1)){
+        ch = new Character(word.charAt(i+1));
+        if (Character.isUpperCase(ch)){
+          return true;
+        }
+      }
+    }
 
     // Check against UNIX dictionary file
     if (dict != null)
@@ -412,9 +429,8 @@ public final class SpellCheck implements ComtorDoclet
   *************************************************************************/
   public void setConfigProperties(Properties props)
   {
-    // Get dictionary file and misspellings file
+    //Get dictionary file
     dict_file = props.getProperty("dictionary");
-    mispellingsFilename = props.getProperty("mispellings");
 
     // Open dictionary file
     try
@@ -425,17 +441,6 @@ public final class SpellCheck implements ComtorDoclet
     {
       System.out.println("Failed to load dictionary.");
       dict = null;
-    }
-
-    // Open mispelled words file
-    try
-    {
-      mispellingsFile = new PrintStream(new FileOutputStream(mispellingsFilename, true));
-    }
-    catch(Exception e)
-    {
-      System.out.println("Failed to open mispellings file.");
-      mispellingsFile = null;
     }
   }
 }
