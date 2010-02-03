@@ -20,10 +20,6 @@ Comment Mentor includes a number of tools, including:
  * CommentLength   : average comment length per class
  * PercentMethods  : percent of methods documented in a class
  * ControlFlow     : checks for the new @controlflow JavaDoc tag
- * PrePostTool     : checks for the new @precondition and @postconditions
-                      tags
- * XXX
-
+ * PrePostTool     : checks for the new @precondition and @postconditions tags
+ 
 Thanks, and enjoy using Comment Mentor.
-
- - the comtor devs
