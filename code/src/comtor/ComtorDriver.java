@@ -18,7 +18,6 @@
   *  59 Temple Place, Suite 330
   *  Boston, MA  02111-1307  USA
   *
-  * $Id: ComtorDriver.java,v 1.13 2008-10-22 20:11:56 ssigwart Exp $
   **************************************************************************/
 package comtor;
 

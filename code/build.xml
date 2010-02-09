@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
 <!--
   Build file to allow ant (http://jakarta.apache.org/ant/) to build the code.
-
-  $Id: build.xml,v 1.1.1.1 2006/07/10 16:22:02 locasto2 Exp $
 -->
 
 <!-- Define a project to compile with a default target of
