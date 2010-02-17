@@ -241,13 +241,17 @@ You can find the software in the following locations:
   </tr>
   
   <tr>
-    <td>PEAR Password</td>
-    <td class="status"><?php echo $pear_pswd ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
+    <td>PEAR Mail <?php if (!$pear_mail) { ?><div class="fail_details">Please install the PEAR libraries, and install the Mail module.  Try: 
+        <pre>$ sudo pear install Mail</pre>
+        or consult the documentation for your particular distribution.</div><?php } ?></td>
+    <td class="status"><?php echo $pear_mail ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
   
   <tr>
-    <td>PEAR Mail</td>
-    <td class="status"><?php echo $pear_mail ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
+    <td>PEAR Text/Password  <?php if (!$pear_pswd) { ?> <div class="fail_details">Please install the PEAR libraries, and install the Text/Password module.  Try: 
+          <pre>$ sudo pear install Text_Password</pre>
+          or consult the documentation for your particular distribution.</div><?php } ?></td>
+    <td class="status"><?php echo $pear_pswd ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
 
   <tr>
