@@ -90,10 +90,8 @@ foreach ($otherPrograms as $tmp)
 }
 
 // Check for ANT
-$ant = exec("ant");
-if (empty($ant))
-  $antcheck = false;
-$pass = $pass && $antcheck;
+$ant = checkForProgram("ant");
+$pass = $pass && $ant;
 
 // Get Java CLASSPATH
 $cp = exec("echo $CLASSPATH");
@@ -267,7 +265,7 @@ You can find the software in the following locations:
   
   <tr>
     <td>ANT</td>
-    <td class="status"><?php echo $antcheck ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
+    <td class="status"><?php echo $ant ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
 
   <tr>
