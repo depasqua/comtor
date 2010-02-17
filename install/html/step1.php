@@ -9,9 +9,9 @@ $php = (strlen($str > 0) && $str[0] == '5');
 $pass = $pass && $php;
 
 // Check for pear extensions
-//$pear_pswd = fileInIncludePath("Text/Password.php");
-//$pear_mail = fileInIncludePath("Mail.php");
-//$pass = $pass && $pear_pswd && $pear_mail;
+$pear_pswd = fileInIncludePath("Text/Password.php");
+$pear_mail = fileInIncludePath("Mail.php");
+$pass = $pass && $pear_pswd && $pear_mail;
 
 function checkForProgram($program)
 {
@@ -238,6 +238,16 @@ You can find the software in the following locations:
   <tr>
     <td>PHP 5</td>
     <td class="status"><?php echo $php ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
+  </tr>
+  
+  <tr>
+    <td>PEAR Password</td>
+    <td class="status"><?php echo $pear_pswd ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
+  </tr>
+  
+  <tr>
+    <td>PEAR Mail</td>
+    <td class="status"><?php echo $pear_mail ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
 
   <tr>
