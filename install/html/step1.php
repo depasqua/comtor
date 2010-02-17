@@ -89,10 +89,17 @@ foreach ($otherPrograms as $tmp)
   $pass = $pass && $$tmp;
 }
 
+// Check for ANT
+$ant = exec("ant");
+if (empty($ant))
+  $antcheck = false;
+$pass = $pass && $antcheck;
+
 // Get Java CLASSPATH
 $cp = exec("echo $CLASSPATH");
 if (empty($cp))
   $cp = ".";
+  
 
 // Get path to jars
 chdir("..");
@@ -174,6 +181,10 @@ You can find the software in the following locations:
 <tr>
   <td>PEAR</td>
   <td><a href="http://pear.php.net">http://pear.php.net</a></td>
+</tr>
+<tr>
+  <td>ANT</td>
+  <td><a href="http://ant.apache.org/">http://ant.apache.org/</a></td>
 </tr> 
 <tr>
   <td>Java 1.5 or above</td>
@@ -252,6 +263,11 @@ You can find the software in the following locations:
           <pre>$ sudo pear install Text_Password</pre>
           or consult the documentation for your particular distribution.</div><?php } ?></td>
     <td class="status"><?php echo $pear_pswd ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
+  </tr>
+  
+  <tr>
+    <td>ANT</td>
+    <td class="status"><?php echo $antcheck ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
 
   <tr>
