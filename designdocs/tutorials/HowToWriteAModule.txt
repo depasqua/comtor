@@ -155,9 +155,23 @@ number within each section.
 
 For example:
 
+prop.setProperty("000","First section.");
 prop.setProperty("000.001","First header.");
 prop.setProperty("000.001.0","First entry under first header.");
 prop.setProperty("000.001.1","Second entry under first header.");
 prop.setProperty("000.002","Second header.");
+prop.setProperty("001","Second section.");
 
 And so on.
+
+/*************************************************************************************/
+
+Please keep in mind when writing your doclets that currently, COMTOR (through the use of
+javadoc) can only see javadoc comments and general class structure (essentially, an
+interface, and no implementation). Javadoc does NOT recognize or see '//'-type comments,
+as they are considered part of implementation and ignored.
+
+/************************************************************************************/
+
+Finally, when writing your module, it is highly recommended that you create your own
+personal test file (a mock java program) to test your module.
