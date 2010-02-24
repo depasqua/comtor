@@ -1,6 +1,6 @@
 SPELLCHECK
 
-This document describes the method used in SpellCheck.java doclet used by COMTOR.
+This document describes the method used in the SpellCheck.java doclet used by COMTOR.
 
 SpellCheck uses a random access file created out of a dictionary (found in
 comtor_data/resources/words) and a validWords lists (among other smaller checks)
@@ -8,7 +8,7 @@ to determine if a word is correctly spelled or not.
 
 Because COMTOR currently uses javadoc (as of COMTOR v1.4), the SpellCheck module
 can only check the spelling of words recognized by javadoc; javadoc can only see
-comments within javadoc comment characters (/* and */). Therefore, double slash
+comments within javadoc comment characters (/** and */). Therefore, double slash
 comments (those after //, use for single line comments usually) are ignored.
 
 /********************************************************************************
