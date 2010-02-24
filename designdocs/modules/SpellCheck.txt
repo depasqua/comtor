@@ -1,0 +1,46 @@
+SPELLCHECK
+
+This document describes the method used in SpellCheck.java doclet used by COMTOR.
+
+SpellCheck uses a random access file created out of a dictionary (found in
+comtor_data/resources/words) and a validWords lists (among other smaller checks)
+to determine if a word is correctly spelled or not.
+
+Because COMTOR currently uses javadoc (as of COMTOR v1.4), the SpellCheck module
+can only check the spelling of words recognized by javadoc; javadoc can only see
+comments within javadoc comment characters (/* and */). Therefore, double slash
+comments (those after //, use for single line comments usually) are ignored.
+
+/********************************************************************************
+
+SpellCheck first parses through the entire RootDoc, pulling out the comments
+(using the method getCommentText()) at the rootDoc level, class level, method level,
+field level, template level, tag level, and parameter level. It does this with a
+private function called processClass, which acts upon a return list of classes
+fron the RootDoc. Additionally, the names of many of these levels are added to an
+ongoing list, such that they will not be flagged as spelled incorrecty should they
+show up in a comment.
+
+As each comment is pulled, it is then run through a method called parseComment,
+which will first replace all punctuation with spaces, and then covert each word to its
+lowercase version.
+
+After this, each word is checked against a series of tests, and words found to be
+valid are 'cut' from the list of potentially misspelled words.
+
+First, words are checked that they are not java keywords, and all camelCase words are
+similarly ignored.
+
+Next, words are checked against the dictionary by way of a binary search.
+
+Third, words are checked to make sure they are not integers.
+
+Fourth, words are checked for the '@' symbol, to remove all javadoc tags and email addresses.
+
+Lastly, remaining words are checked against the list of class, method, parameter, etc.
+names as compiled earlier, and removed. They are also checked to make sure they are not
+one of the class, method, parameter, etc. names with an 's' on the end.
+
+If words remain after this, they are added to the properties list to report to the user.
+
+**************************************************************************************/
