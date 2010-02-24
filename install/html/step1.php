@@ -264,7 +264,9 @@ You can find the software in the following locations:
   </tr>
   
   <tr>
-    <td>ANT</td>
+    <td>ANT <?php if (!$pear_pswd) { ?> <div class="fail_details">Please install Apache ANT. Try: 
+          <pre>$ sudo apt-get install ant</pre>
+          or consult the documentation for your particular distribution.</div><?php } ?></td>
     <td class="status"><?php echo $ant ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
 
@@ -289,8 +291,9 @@ You can find the software in the following locations:
   </tr>
   
   <tr>
-    <td>MySQL Connector/J  <?php if (!$conJ && (!$java || !$javac)) { ?> <div class="fail_details">Check for MySQL Connector/J failed because the check for Java or Javac failed above.
-        Please correct Java/Javac first.</div><?php } ?></td>
+    <td>MySQL Connector/J  <?php if (!$conJ && (!$java || !$javac)) { ?> <div class="fail_details">Check if MySQL Connector/J failed because the check for Java or Javac failed above. Please correct Java/Javac first. 
+    If this still fails, please check the /comtor_data/code/ directory, and ensure that appropriate jar is there. If not,  download from the link above and put it into that directory.
+        </div><?php } ?></td>
     <td class="status"><?php echo $conJ ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
   
@@ -301,7 +304,9 @@ You can find the software in the following locations:
   </tr>
 
   <tr>
-    <td>Crontab</td>
+    <td>Crontab <?php if (!$cron) { ?> <div class="fail_details">Please install cron. Try: 
+          <pre>$ sudo apt-get install cron</pre>
+          or consult the documentation for your particular distribution.</div><?php } ?></td>
     <td class="status"><?php echo $cron ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
   
