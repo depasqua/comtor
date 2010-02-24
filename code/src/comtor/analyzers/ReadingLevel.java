@@ -90,76 +90,76 @@ public class ReadingLevel implements ComtorDoclet
 	    return prop;	
 	}
 	
-  /*************************************************************************
-  * Processes a single class
-  *
-  * @param class Class to process
-  * @return String String to which all comments will be written/saved
-  *************************************************************************/
-  private String processClass(ClassDoc classDoc)
-  {
-  	String allComments = "";
+ 	/*************************************************************************
+ 	 * Processes a single class
+ 	 *
+ 	 * @param class Class to process
+ 	 * @return String String to which all comments will be written/saved
+ 	 *************************************************************************/
+	private String processClass(ClassDoc classDoc)
+	{
+		String allComments = "";
 
-    	// Add class comment
-    	allComments = parseComment(classDoc.commentText());
+		// Add class comment
+		allComments = parseComment(classDoc.commentText());
 
-    	// Get all fields
-    	FieldDoc[] fields = classDoc.fields();
-    	for(int h = 0; h < fields.length; h++)
-    	{
-      		// Add field comment
-      		allComments += parseComment(fields[h].commentText());
-    	}
+		// Get all fields
+		FieldDoc[] fields = classDoc.fields();
+		for(int h = 0; h < fields.length; h++)
+	    	{
+      			// Add field comment
+      			allComments += parseComment(fields[h].commentText());
+    		}
 
-    	// Get inner classes
-    	ClassDoc[] inner_classes = classDoc.innerClasses();
-    	for(int h = 0; h < inner_classes.length; h++)
-      		processClass(inner_classes[h]);
+    		// Get inner classes
+    		ClassDoc[] inner_classes = classDoc.innerClasses();
+    		for(int h = 0; h < inner_classes.length; h++)
+      			processClass(inner_classes[h]);
 
-    	// Get comments for tags
-    	Tag[] tags = classDoc.tags();
-    	for (int h = 0; h < tags.length; h++)
-      		allComments += parseComment(tags[h].text());
+    		// Get comments for tags
+    		Tag[] tags = classDoc.tags();
+    		for (int h = 0; h < tags.length; h++)
+      			allComments += parseComment(tags[h].text());
 
-    	// Get comments for each method
-    	MethodDoc[] methods = classDoc.methods();
-    	for(int j = 0; j < methods.length; j++)
-    	{
-      		// Get comments for tags
-      		tags = methods[j].tags();
-      		for (int h = 0; h < tags.length; h++)
-        		allComments += parseComment(tags[h].text());
+    		// Get comments for each method
+    		MethodDoc[] methods = classDoc.methods();
+    		for(int j = 0; j < methods.length; j++)
+    		{
+      			// Get comments for tags
+      			tags = methods[j].tags();
+      			for (int h = 0; h < tags.length; h++)
+        			allComments += parseComment(tags[h].text());
 
-      	// Get method comments
-      	allComments += parseComment(methods[j].commentText());
-    	}
+      			// Get method comments
+      			allComments += parseComment(methods[j].commentText());
+    		}
     
-    	return allComments;
-  }
+    		return allComments;
+  	}
 
-  /*************************************************************************
-  * Parses words out of comments and removes punctuation
-  *
-  * @param comment Comment to parse
-  * @return String String to which all comments are added after processing
-  *************************************************************************/
-  private String parseComment(String comment)
-  {
-	char temp;
-    	// Replace parenthesis, brackets, dashes, and periods with spaces
-    	comment = comment.replaceAll("[()<>-]|\\+"," ");
+	/*************************************************************************
+	 * Parses words out of comments and removes punctuation
+	 *
+	 * @param comment Comment to parse
+	 * @return String String to which all comments are added after processing
+	 *************************************************************************/
+ 	private String parseComment(String comment)
+	{
+		char temp;
+    		// Replace parenthesis, brackets, dashes, and periods with spaces
+    		comment = comment.replaceAll("[()<>-]|\\+"," ");
 
-	//Creates sentences out of comments to be analyzed.
-	if (comment.length() > 0){
-		temp = comment.charAt(comment.length() - 1);
-    		if (temp == '.' || temp == '?' || temp == '!');
-   		else
-    			comment += '.';
-    	}
+		//Creates sentences out of comments to be analyzed.
+		if (comment.length() > 0){
+			temp = comment.charAt(comment.length() - 1);
+    			if (temp == '.' || temp == '?' || temp == '!');
+   			else
+    				comment += '.';
+    		}
 
-	// Comment added to allComments to be analyzed for reading level.  
-	return comment;
-  }
+		// Comment added to allComments to be analyzed for reading level.  
+		return comment;
+  	}
 
 	// At present it simply counts the number of '.','?', and '!' 
 	//characters to estimate number of sentences.
