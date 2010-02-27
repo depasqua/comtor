@@ -173,5 +173,14 @@ as they are considered part of implementation and ignored.
 
 /************************************************************************************/
 
+NOTE: It is extremely useful to gain access to debugging information when writing your
+module. Because COMTOR is a web application driven by user action, it can be very
+difficult to determine if your module works as expected beyond compilation. It is
+strongly recommended that you read the HowToDebug.txt file found in the same directory
+as this file, which will explain things you can do to enable certain embedded features
+in COMTOR which will make debugging your module easier.
+
+/************************************************************************************/
+
 Finally, when writing your module, it is highly recommended that you create your own
 personal test file (a mock java program) to test your module.

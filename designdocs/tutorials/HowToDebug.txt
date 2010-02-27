@@ -1,0 +1,92 @@
+HOW TO DEBUG COMTOR
+
+COMTOR has a few ways to access additional information for debugging purposes.
+This document describes how to enable these features,  what information you can
+find, and where to find this information.
+
+How to Enable Debugging
+
+In order to gain access to the information that COMTOR stores internally for
+debugging purposes, there are two procedures you can do:
+
+/*******************************************************
+
+1. Create a properties list dump file:
+
+The Comtor Driver allows the user to create a file which will contain the exact contents
+of the properties lists of any number of modules when run. For example, when 
+the creation of this dump file is enabled, and code is submitted in the application,
+the properties lists that are returned from the modules in their raw form (which are
+normally used to create the report file shown to the user) are printed out to a file,
+which can be found in the /comtor_data/uploads/debug/dump file.
+
+This method is particularly useful for determining the output of your calculations,
+especially when trying to formulate your heirarchy in your report output. This can also
+be useful for finding any errors in the report.
+
+To enable this, do the following series of steps:
+
+1. Navigate to code/src/comtor/, and open up the ComtorDriver.java file.
+
+2. Find the section (it will be noticeable by the two long '/*******/' line which separate it
+from the rest of the code). It should be around lines 191, and 192. Uncomment the two lines
+that are specified. Directions are contained in this file around that section.
+
+3. Navigate to the comtor_data/uploads/ directory, and ensure that the debug folder is writable
+by the server. Additionally, you may wish to remove the dummy 'dump' file that is contained
+within this directory, though that is not entirely necessary.
+
+After these steps, the 'dump' file will contain the raw properties lists. It will only contain
+the raw properties lists of the MOST recently run submission. Upon a new submission, the
+dump file will be overwritten with the new raw properties lists.
+
+Note that the order that the properties are displayed SHOULD be the opposite order in which
+they are created. For example, if you set the 'title' property of a given module first, then
+in the dump file, it will appear at the bottom of the list of properties for that given
+module. Note that this is NOT always the case, and therefore should not be relied on for an
+accurate judge of the order in which properties are created. HOWEVER, keep in mind that the
+report generator actually sorts these properties, which will ensure the proper display when
+they are displayed to the user. Finally, each doclet's property lists are separated by several
+dashes ('--------') to help you determine which property lists are separate. To determine
+which property lists belong to a certain doclet, simply look at the 'title' property for 
+each section for the name of the doclet responsible for that section.
+
+To disable this function, please recomment the lines in ComtorDriver.java, and re'lock'
+the debug directory if you wish.
+
+/********************************************************
+
+2. Keep temporary upload directories.
+
+Normally, COMTOR will automatically delete temporarily made directories (created in the uploads
+directory for when code is submitted) in the interest of space and keeping the application
+directories clean. However, it is possible to prevent COMTOR from automatically doing so.
+
+When COMTOR is prevented from deleting these temporary directories, they will begin to
+accumulate in the comtor_data/uploads/ directory, with random names. Each assignment submission
+will have it's own directory, with several files contained within. In order to identify the
+directories, simply look at the Last Created/Last Modified metadata of the directories. When
+debugging, it will be useful to find the most recent directory for information on your most
+recent test run of your module.
+
+Within this directory are many useful files, but two are especially of note:
+
+Doclets.txt - This file will list the doclets selected for the assignment. This is especially
+useful when debugging the php front-end, to ensure that your doclet is actually recognized by
+the system.
+
+JavadocOut.txt - This file will contain all of the information that is ever 'system.out.println'd
+as the submitted code is processed through the Comtor Driver, through Javadoc, and through your
+modules. Therefore, in your own code, you can print messages that will appear in this file. Because
+these types of messages, and some runtime errors, are never reported to the user, it can be especially
+useful to look in this file for those messages.
+
+To enable this debugging feature, simply do the following:
+
+1. Navigate to the /www/scripts/ directory, and edit javadoc.sh.
+
+2. Find line 82, which should be something like 'rm ....', and should be the line under a comment
+that describes removing a temporary uploads directory. COMMENT this line out.
+
+Now,the temporary upload directories that are created will not be removed, and you will be able to
+view them and the information that is generated during run time.
