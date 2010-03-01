@@ -154,8 +154,8 @@ public final class SpellCheck implements ComtorDoclet {
 				//If there are misspellings, but none have been printed yet,
 				//write the leading line. Otherwise, print the word.
 				if (num == 0) {
-					prop.setProperty("000.000."+num, 
-						"The following word(s) is/were misspelled:");
+					prop.setProperty("000.000.", 
+						"The following word(s) is/are misspelled:");
 					num++;
 				}
 				prop.setProperty("000.000."+num, word);
@@ -164,7 +164,7 @@ public final class SpellCheck implements ComtorDoclet {
 		}
 		//If there were no misspellings:
 		if (num == 0)
-			prop.setProperty("000.000.0", "All words correctly spelled.");
+			prop.setProperty("000.000", "All words correctly spelled.");
 
 		//Set the score.
 		prop.setProperty("score", "" + getGrade());
