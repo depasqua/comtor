@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+  Build file to allow ant (http://ant.apache.org) to build the code.
+-->
+
+<project name="comtor testing files" default="compile" basedir=".">
+	<description>Builds the comtor test files.</description>
+  
+	<target name="compile" description="compiles the test files">
+		<javac srcdir="." compiler="javac1.5"/>
+	</target>
+	
+	<target name="clean" description="removes all .class and .jar files">
+		<delete quiet="false">
+		  <fileset dir="." includes="**/*.class"/>
+		  <fileset dir="." includes="**/*.jar"/>
+		</delete>
+	</target>
+	
+	<target name="dist" description="builds a jar files suitable for testing" depends="clean, compile">
+		<jar destfile="CheckForTags.jar" basedir=".">
+			<fileset dir="." includes="**/*.class"/>
+		</jar>		
+	</target>
+</project>
