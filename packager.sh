@@ -28,8 +28,7 @@ echo "Where would you like to place this package? (relative directory)"
 
 read RDEST
 
-DEST='.'
-DEST+="$RDEST"
+DEST="$RDEST"
 
 SRC='*'
 

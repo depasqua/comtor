@@ -15,7 +15,8 @@ if ($_GET['reset'] == "1")
 }
 
 @include($config_php_path);
-$handle = fopen("../migrations/1.2/config/configspec.txt", "r");
+$configspec_path = "../migrations/".$latest_release."/config/configspec.txt";
+$handle = fopen($configspec_path, "r");
 
 while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
     $num = count($data);

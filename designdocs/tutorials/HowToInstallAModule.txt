@@ -1,0 +1,33 @@
+To install a module and have it appear properly when creating assignments, two conditions must be met:
+
+1. The database MUST have ONE entry in the 'doclets' table, detailing the name, description, and associated java package. Please take note of the name of the doclet provided.
+
+2. The 'name' field specified above in the 'doclets' table MUST case-match the 'title' property in the source code of the doclet.
+
+For example, supposed you wanted to put your new module, 'Good Test', into the COMTOR application. To do this, one would:
+
+INSERT INTO 'tables' VALUES ('Good Test','This doclet provides a very good test.','comtor.packages.goodtest');
+
+(Note: the proceeding SQL statement is hypothetical, given that the structure of this table may have changed between this writing of this tutorial and the current released iteration of COMTOR. What is of note is the name 'Good Test'). 
+
+Then, in the body of my doclet, I would have something like:
+
+propertylist.setProperty('title','Good Test');
+
+Please note the exact case-match of the database entry and the 'title' property.
+
+Just for clarity, to have a doclet appear in the system, an entry is NOT required in any other table within the database.
+
+
+
+
+
+Given the knowledge above, to have a new module (or edited old module) recognized, one can follow the following series of steps:
+
+1. Write your module, and place it into the code/src/comtor/analyzers/ directory.
+2. Re-run 'ant deploy'.
+	Your module needs to be compiled. 'ant deploy' should have been run previously when installing the application; it can be run any number of times, and will compile any and all modules it finds within the directory specified in step 1. By re-running the ant build file, your new module will be compiled (and any errors will be reported), and a new comtor.jar will be placed in the comtor_data/code/ directory for use by the application.
+3. Enter your module in the 'doclets' table within the database.
+4. You're good to go!
+
+Note that in the above procedure, step 2 can be done indefinitely. This is particularly useful when making changes to existing modules wherein those changes need to be tested. Changes made will show immediately when the next code submission is run.

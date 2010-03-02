@@ -14,7 +14,7 @@ EMAIL_SMTP_HOST,host, ,"SMTP Hostname: ",r
 
 [directory]
 "Directory Configuration"
-"<p>Enter the URL that will be used to access the website. Since the web pages are stored in the www directory of the parent folder, this will most likely be the current URL but with ""install"" replaced with ""www"". Alternatively, you may set up Apache to point a URL directly to the www directory. In this case, enter that URL. In either case, do not include the ""http://"" part of the URL.</p><p>After submitting, error messages may appear indicating that the permissions are not correct on some files and directories. If any of these files or directories do not exist, please create them. Then change the permissions on the files so that the web server can read and write to them. After this step is over, you may change the permissions to readonly on the configuration files. However, you may not change the permissions on the ""uploads"" or ""template_c"" directories.</p>"
+"<p>Enter the URL that will be used to access the website. Since the web pages are stored in the www directory of the parent folder, this will most likely be the current URL but with ""install"" replaced with ""www"". Alternatively, you may set up Apache to point a URL directly to the www directory. In this case, enter that URL. In either case, do not include the ""http://"" part of the URL.</p><p>Before going to the next step, permissions on certain files need to be changed so that configuration details can be written and saved. Please open the command line, and navigate to the install/ directory. Next, run the following command:</p><code>bash permissions.sh unlock</code>"
 URL_PATH,string,"localhost","URL: http://",r
 
 [writeconfig]

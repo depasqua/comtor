@@ -68,7 +68,7 @@ public class PreAndPostCheck implements ComtorDoclet
 	public Properties analyze (RootDoc rootDoc)
 	{
 		// Set doclet title (Must match title on website for this to work)
-		prop.setProperty("title", "Pre/Post Conditions");
+		prop.setProperty("title", "Pre and Post Check");
 		
 	 	//variable declarations
 		String pre_text = "@pre_text";

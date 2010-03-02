@@ -2,16 +2,18 @@
 <div style="font-size: .8em; font-weight: bold;">Effective February 4, 2009</div>
 
 <h3>COMTOR principles</h3>
-<p>
-COMTOR was developed to address two core issues:
-To help users learn how to document their source code. 
-It is our hope that by using this system new programmers and computer science students will develop good documentation habits that will remain with them throughout their careers as software engineers and developers. We also hope that seasoned developers will be able to strengthen and evolve their current documentation skills through the use of the system.
-</p>
 
-<p>
+<p>COMTOR was developed to address two core issues:</p>
+<ul>
+<li>To help users learn how to document their source code. 
+It is our hope that by using this system new programmers and computer science students will develop good documentation habits that will remain with them throughout their careers as software engineers and developers. We also hope that seasoned developers will be able to strengthen and evolve their current documentation skills through the use of the system.
+</li>
+
+<li>
 To provide a standard for evaluating source code comments.
 Standards and conventions for the definition of quality source code documentation often vary among various computer science classes, professors, and institutions; often generating a wide range for what is considered an acceptable comment. COMTOR seeks to automate the process for evaluating comments and give students and professors an overall standard for quality documentation.
-</p>
+</li>
+</ul>
 
 <h3>Privacy Overview</h3>
 <p>

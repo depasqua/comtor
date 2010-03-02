@@ -9,9 +9,9 @@ $php = (strlen($str > 0) && $str[0] == '5');
 $pass = $pass && $php;
 
 // Check for pear extensions
-//$pear_pswd = fileInIncludePath("Text/Password.php");
-//$pear_mail = fileInIncludePath("Mail.php");
-//$pass = $pass && $pear_pswd && $pear_mail;
+$pear_pswd = fileInIncludePath("Text/Password.php");
+$pear_mail = fileInIncludePath("Mail.php");
+$pass = $pass && $pear_pswd && $pear_mail;
 
 function checkForProgram($program)
 {
@@ -89,10 +89,15 @@ foreach ($otherPrograms as $tmp)
   $pass = $pass && $$tmp;
 }
 
+// Check for ANT
+$ant = checkForProgram("ant");
+$pass = $pass && $ant;
+
 // Get Java CLASSPATH
 $cp = exec("echo $CLASSPATH");
 if (empty($cp))
   $cp = ".";
+  
 
 // Get path to jars
 chdir("..");
@@ -174,6 +179,10 @@ You can find the software in the following locations:
 <tr>
   <td>PEAR</td>
   <td><a href="http://pear.php.net">http://pear.php.net</a></td>
+</tr>
+<tr>
+  <td>ANT</td>
+  <td><a href="http://ant.apache.org/">http://ant.apache.org/</a></td>
 </tr> 
 <tr>
   <td>Java 1.5 or above</td>
@@ -239,6 +248,27 @@ You can find the software in the following locations:
     <td>PHP 5</td>
     <td class="status"><?php echo $php ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
+  
+  <tr>
+    <td>PEAR Mail <?php if (!$pear_mail) { ?><div class="fail_details">Please install the PEAR libraries, and install the Mail module.  Try: 
+        <pre>$ sudo pear install Mail</pre>
+        or consult the documentation for your particular distribution.</div><?php } ?></td>
+    <td class="status"><?php echo $pear_mail ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
+  </tr>
+  
+  <tr>
+    <td>PEAR Text/Password  <?php if (!$pear_pswd) { ?> <div class="fail_details">Please install the PEAR libraries, and install the Text/Password module.  Try: 
+          <pre>$ sudo pear install Text_Password</pre>
+          or consult the documentation for your particular distribution.</div><?php } ?></td>
+    <td class="status"><?php echo $pear_pswd ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
+  </tr>
+  
+  <tr>
+    <td>ANT <?php if (!$pear_pswd) { ?> <div class="fail_details">Please install Apache ANT. Try: 
+          <pre>$ sudo apt-get install ant</pre>
+          or consult the documentation for your particular distribution.</div><?php } ?></td>
+    <td class="status"><?php echo $ant ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
+  </tr>
 
   <tr>
     <td>Java (Version 1.5+)</td>
@@ -261,8 +291,9 @@ You can find the software in the following locations:
   </tr>
   
   <tr>
-    <td>MySQL Connector/J  <?php if (!$conJ && (!$java || !$javac)) { ?> <div class="fail_details">Check for MySQL Connector/J failed because the check for Java or Javac failed above.
-        Please correct Java/Javac first.</div><?php } ?></td>
+    <td>MySQL Connector/J  <?php if (!$conJ && (!$java || !$javac)) { ?> <div class="fail_details">Check if MySQL Connector/J failed because the check for Java or Javac failed above. Please correct Java/Javac first. 
+    If this still fails, please check the /comtor_data/code/ directory, and ensure that appropriate jar is there. If not,  download from the link above and put it into that directory.
+        </div><?php } ?></td>
     <td class="status"><?php echo $conJ ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
   
@@ -273,7 +304,9 @@ You can find the software in the following locations:
   </tr>
 
   <tr>
-    <td>Crontab</td>
+    <td>Crontab <?php if (!$cron) { ?> <div class="fail_details">Please install cron. Try: 
+          <pre>$ sudo apt-get install cron</pre>
+          or consult the documentation for your particular distribution.</div><?php } ?></td>
     <td class="status"><?php echo $cron ? "<span class=\"succeed\">Success</span>" : "<span class=\"fail\">Failed</span>" ?></td>
   </tr>
   

@@ -1,7 +1,9 @@
 <?php
 // define the migrations that exist in the /migrations folder
 // this is used to determine what DB and config migrations to run.
-$migration_releases = array ("1.0", "1.2");
+$migration_releases = array ("1.0", "1.2", "1.3");
+$latest_release = end($migration_releases);
+reset($migration_releases);
 
 // Define default administrator password
 define("ADMIN_PASSWORD", "cmhXE1d/ItCiM");  // Password is "comtor"
@@ -175,13 +177,15 @@ if (!empty($_POST) || isset($_GET['upgrade']) || $_GET['submit'])
           $error .= "Failed to write to \"".$filename."\"<br/>";
 
         // Chmod scripts
-        $filename = $_SESSION["paths"]["www"].DIRECTORY_SEPARATOR."scripts".DIRECTORY_SEPARATOR."javadoc.sh";
+        //NO LONGER NEEDED. PERMISSIONS.SH TAKES THE PLACE OF THIS.
+        /*$filename = $_SESSION["paths"]["www"].DIRECTORY_SEPARATOR."scripts".DIRECTORY_SEPARATOR."javadoc.sh";
         if (!is_executable($filename) && (!is_writable($filename) || !chmod($filename, 0755)))
           $error .= "Failed to chmod 755 \"".$filename."\"<br/>";
         // Chmod scripts          
         $filename = $_SESSION["paths"]["www"].DIRECTORY_SEPARATOR."scripts".DIRECTORY_SEPARATOR."config.sh";
         if (!is_executable($filename) && (!is_writable($filename) || !chmod($filename, 0755)))
           $error .= "Failed to chmod 755 \"".$filename."\"<br/>";
+        */
         
         // Check permissions on template_c
         $filename = $_SESSION["paths"]["www"].DIRECTORY_SEPARATOR."templates_c";
@@ -193,9 +197,11 @@ if (!empty($_POST) || isset($_GET['upgrade']) || $_GET['submit'])
           $error .= "Change the permissions on \"".$filename."\" to allow the apache user to write to the directory.<br/>";
           
         // Check permissions on mispellings file
-        $filename = $_SESSION["paths"]["resources"].DIRECTORY_SEPARATOR."mispellings";
+        //NO LONGER NEEDED. THIS FILE HAS BEEN REMOVED.
+        /*$filename = $_SESSION["paths"]["resources"].DIRECTORY_SEPARATOR."mispellings";
         if (!is_writable($filename))
           $error .= "Change the permissions on \"".$filename."\" to allow the apache user to write to the file.<br/>";
+        */
           
         // Check for error
         if (empty($error))
