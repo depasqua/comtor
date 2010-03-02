@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  Build file to allow ant (http://jakarta.apache.org/ant/) to build the code.
+  Build file to allow ant (http://ant.apache.org) to build the code.
 -->
 
 <!-- Define a project to compile with a default target of
@@ -34,7 +34,7 @@
   <!-- Compile the source files -->
   <target name="compile" description="Compile the source" depends="init">
    <echo>Compilation classpath: ${toString:comtor.class.path}</echo> 
-   <javac srcdir="${src}" destdir="${classes}" compiler="javac1.5" excludes="comtor/incomplete/** comtor/examples/**"   >
+   <javac srcdir="${src}" destdir="${classes}" compiler="javac1.5" excludes="comtor/incomplete/** comtor/examples/**">
       <classpath refid="comtor.class.path"/> 
    </javac>
   </target>
@@ -43,8 +43,6 @@
   <target name="deploy" description="jars and deploys comtor.jar to proper directory" depends="compile">
     <jar destfile="${thirdpartyjars}/comtor.jar" basedir="${classes}" />
   </target>
-
-
 
   <!-- Removes the class files and source backups -->
   <target name="clean" description="Clean source backups and obj files">
