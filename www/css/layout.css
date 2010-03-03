@@ -671,19 +671,18 @@ div.answers
 div.left_questions
 {
   float: left;
-  width: 480px;
+  width: 47%;
   margin-top: 10px;
   margin-bottom: 10px;
-  margin-right: 10px;
+  margin-right: 6%;
 }
 
 div.right_questions
 {
   float: left;
-  width: 480px;
+  width: 47%;
   margin-top: 10px;
   margin-bottom: 10px;
-  margin-right: 10px;
 }
 
 h2.questions
