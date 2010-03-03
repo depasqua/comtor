@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 #
 #######################################################################
 #                                                                     #
@@ -39,24 +39,25 @@ CMD1='tar '
 
 #######################################################################
 #                                                                     #
-#Listed below are the directories to exclude from release.            #
-#To add more, follow this format:                                     #
+# Listed below are the directories and files to exclude from release. #
+# To add more, follow this format:                                    #
 #                                                                     #
-#CMD1+="--exclude='./relative_directory_to_exclude' "                  #
+# CMD1+="--exclude=relative_directory_to_exclude "                    #
 #                                                                     #
 #######################################################################
 
-CMD1+="--exclude='./designdocs' "
-CMD1+="--exclude='./www/tutorials' "
-#The two below are removed due to permissions
-CMD1+="--exclude='./buildInstall.sh' "
-CMD1+="--exclude='./distro.sh' "
+CMD1+="--exclude=*.DS_Store "
+CMD1+="--exclude=*.gitignore "
+CMD1+="--exclude=designdocs "
+CMD1+="--exclude=packager.sh "
+CMD1+="--exclude=testingCode "
+CMD1+="--exclude=unitTesting "
 
 CMD1+="-czf "
-
 CMD1+="$DEST"/"$NAME"'.tar.gz '"$SRC"
 
 echo "Now packaging..."
+echo $CMD1
 $CMD1
 
 #chmod to change group permissions
@@ -66,4 +67,4 @@ CMD2+="$DEST"/"$NAME"'.tar.gz'
 $CMD2
 
 echo "Script done."
-exit $?
+#exit $?
