@@ -212,12 +212,16 @@ if (!empty($_POST) || isset($_GET['upgrade']) || $_GET['submit'])
 
         
       break;
-    // Crontab
+     //Prompt to relock certain files via permissions.sh
     case 5:
+      $step++;
+      break;
+    //Crontab
+    case 6:
       $step++;
       break;  
     //Compile source code
-    case 6:
+    case 7:
       $step++;
       break;
   }

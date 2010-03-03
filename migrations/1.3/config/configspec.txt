@@ -1,6 +1,6 @@
 [database]
 "Database Configuration"
-"<p>Please enter your MySQL database information. Please create the database that you specify and grant all privileges on the database to the user specified.</p>"
+"<p>Please enter your MySQL database information. Please create the database that you specify and grant all privileges on the database to the user specified.</p><p>Please be aware that this step may take some time to run, depending on your hardware.</p>"
 MYSQL_HOST,host,"localhost","Database Server: ",r
 MYSQL_USERNAME,string, ,"Username: ",r
 MYSQL_PASSWORD,string, ,"Password: ",r
@@ -14,12 +14,15 @@ EMAIL_SMTP_HOST,host, ,"SMTP Hostname: ",r
 EMAIL_SMTP_USER,string, ,"SMTP Username: ",n
 EMAIL_SMTP_PASSWORD,string, ,"SMTP Password: ",n
 
-
 [directory]
 "Directory Configuration"
-"<p>Enter the URL that will be used to access the website. Since the web pages are stored in the www directory of the parent folder, this will most likely be the current URL but with ""install"" replaced with ""www"". Alternatively, you may set up Apache to point a URL directly to the www directory. In this case, enter that URL. In either case, do not include the ""http://"" part of the URL.</p><p>After submitting, error messages may appear indicating that the permissions are not correct on some files and directories. If any of these files or directories do not exist, please create them. Then change the permissions on the files so that the web server can read and write to them. After this step is over, you may change the permissions to readonly on the configuration files. However, you may not change the permissions on the ""uploads"" or ""template_c"" directories.</p>"
+"<p>Enter the URL that will be used to access the website. Since the web pages are stored in the www directory of the parent folder, this will most likely be the current URL but with ""install"" replaced with ""www"". Alternatively, you may set up Apache to point a URL directly to the www directory. In this case, enter that URL. In either case, do not include the ""http://"" part of the URL.</p>"
 URL_PATH,string,"localhost","URL: http://",r
+
+[permissionunlock]
+"Preparation for Writing the Config"
+"<p>In order to write the configuration details in the following steps, it is necessary to change the permissions on certain files such that the server will be able to write to them. Therefore, please navigate to the main COMTOR directory via a terminal, and run the following commands:</p><code>cd install<br>bash permissions.sh unlock<br></code><p>You will be prompted later when it will be safe to relock those files, and how to do so.</p>"
 
 [writeconfig]
 "Write Configuration"
-"<p>Setup will now attempt to write the necessary configuration files.  You will be notified if any problems occur and how to fix them.</p>"
+"<p>Setup will now attempt to write the necessary configuration files.</p>"

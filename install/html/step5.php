@@ -1,13 +1,15 @@
-<h1>Cron Job Setup</h1>
+<h1>Relocking Configuration Files</h1>
 
 <?php require_once("error_box.php"); ?>
 
 <p>
-This sets up the cron job to send E-mail notifications<!-- and perform database backups-->.
+It is now safe to relock the files you previous unlocked. To do this, please navigate to the main COMTOR directory via a terminal, and run the following:
 </p>
 
-<h6>Please add the following cron job</h6>
-<code>0,30 * * * * /usr/bin/php -f <?php echo $_SESSION["paths"]["www"].DIRECTORY_SEPARATOR; ?>cron.php uaeefashdfkjghasdfhrt43a! >> <?php echo $_SESSION["paths"]["private"].DIRECTORY_SEPARATOR; ?>crontab.output</code>
+<code>
+cd install<br>
+bash permissions.sh lock<br>
+</code>
 
 <form name="form" method="post" action="">
 <div>
