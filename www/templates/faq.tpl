@@ -32,7 +32,7 @@
 	<h2 class="questions">Students</h2>
 	<h3 class="questions">Classes and Submissions</h3>
 	<ul>
-		<!--<li class="question"><a href="#student.enroll">How do I join a class?</a><br></li>-->
+		<li class="question"><a href="#student.enroll">How do I join a class?</a></li>
 		<li class="question"><a href="#student.submit">How do I submit source code to a professor's dropbox for analysis?</a></li>
 		<li class="question"><a href="#student.lang">What types of source code can I submit to COMTOR?</a></li>
 		<li class="question"><a href="#student.javadoc">What is a Javadoc comment?</a></li>
@@ -132,14 +132,14 @@
 	<h2>Students</h2>
 	<h3>Clases and Submissions</h3>
 
-	<!--<h4 id="student.enroll">How do I join a class?</h4>
+	<h4 id="student.enroll">How do I join a class?</h4>
 	<ol>
 		<li>Login (if you have not already created an account please create one).</li>
-		<li>Click the <span class="underline">Course Management</span> link in the left hand navigation bar.</li>
-		<li>Find the appropriate course and click enroll.</li>
+		<li>Click <a href="courses.php">Courses</a> under Course Management in the left hand navigation bar.</li>
+		<li>Find the appropriate course and click Enroll.</li>
 		<li>The system will then prompt you with a message box asking if you want to enroll.</li>
 		<li>Click OK.</li>
-	</ol>-->
+	</ol>
 
 	<h4 id="student.submit">How do I submit source code to a professor's dropbox for analysis?</h4>
 	<ol>
