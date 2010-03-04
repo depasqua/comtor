@@ -1,0 +1,89 @@
+PROCESS OF INSTALLER
+
+This document briefly describes the path that the installer takes from start
+to finish, and will be updated in the future to include more details about what
+is happening behind the scenes at each stage. Steps are organized below according
+to when screens are shown to the user.
+
+1. Prompt for Fresh Install or Upgrade
+	If Fresh Install is chosen, the installer will proceed to Step 2.
+	If Upgrade is chosen, the installer will proceed to Step 3.
+
+2. Software Check
+	Here, the installer will check for all of the require software, which
+	at this current date are:
+		PHP5
+		PEAR Mail
+		PEAR Text/Password
+		ANT
+		Java Version 1.5+
+		Javac Version 1.5+
+		Javadoc
+		Jar
+		MySQL Connector/J
+		ANTLR
+		Crontab
+		chmod
+		mkdir
+		mv
+		rm
+		find
+		cat
+		grep
+	Please note that there are other current dependencies, but these are, as
+	of COMTOR 1.4 either provided or not checked for. This include, but may
+	not be limited to the following:
+		PEAR Net/SMTP
+	As of the writing of this document, there MAY be a bug involving the check
+	for ANT.
+	
+3. Pscripts
+	At this stage, the installer will run any and all pscripts that are found
+	in the migrations/X.X/config/configspec.txt files, each section of which
+	MUST have a matching .php file in the install/pscripts/ directory. They will
+	be run in the order specified by the configspec.txt files, in order of
+	migration number. As of COMTOR 1.4, they are the following, and are run in
+	the following order:
+		Database Writing
+			The database is written to based on the .sql files found in
+			the migrations/X.X/db/ directory. They are run in order of
+			migration (i.e., 1.0 will run first, then 1.1, etc).
+		SMTP Configuration
+			Here, the SMTP server for outgoing mail will be configured.
+		Directory Configuration
+			Here, the www/ directory is configured.
+		Permissions Unlock
+			Here, the user is prompted to run the install/permissions.sh
+			script to write the proper permissions to some files that the
+			installer will need to write to. No actual configuration is
+			determined in this step (therefore, the associated .php file
+			is a dummy file).
+		Write Config
+			Here, the actual configuration file, which can be found at
+			comtor_data/config/config.php, is written to.
+	At this point, there are no other pscripts.
+
+4. Admin Setup
+	Here, the user is prompted for the admin name and email (the email is used as
+	the admin user name), and these are written to the database.
+
+5. Write Configuration
+	Again, more variables are written to at this point, and many files are initialized.
+	If the permissions.sh file was run properly several steps back, then there should
+	be no errors at this stage.
+	
+6. Permissions Relock
+	At this stage, the user is prompted to relock the files that were unlocked with
+	permissions.sh. This same script will relock the files. This step is NOT required,
+	as the user can leave those files unlocked if she/he wishes.
+	
+7. Cron Job
+	The user will be prompted to add a cron job for outgoing mail purposes.
+	
+8. Source Code Compilation
+	The user is prompted to run the code/build.xml file via the command 'ant deploy'
+	to compile the COMTOR Java source code.
+	
+9. Finish
+	At this point, the user is presented with a 'You're done!' message, a reminder of
+	the default password for the admin account, and a link to the www/ directory.
