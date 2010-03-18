@@ -1,5 +1,7 @@
 PROCESS OF INSTALLER
 
+NOTE: THIS IS AN OLD DESIGN DOCUMENT. AS OF COMTOR 1.5, THIS NO LONGER APPLIES.
+
 This document briefly describes the path that the installer takes from start
 to finish, and will be updated in the future to include more details about what
 is happening behind the scenes at each stage. Steps are organized below according

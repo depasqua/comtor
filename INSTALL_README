@@ -1,18 +1,178 @@
 Basic Comment Mentor Installation
 =================================
 
-[Summary]
+The following steps for installing COMTOR on your system apply to versions
+1.5 and later.
 
-This file contains both installation and removal instructions for COMTOR.
+To install COMTOR, please do the following:
 
-Comment Mentor uses a web application that requires some web server setup.
+1.	First, you will have to instantiate a new database for COMTOR. Please
+	be sure that you have the user permissions to do this.
+	
+	After you have created a new database, we will have to edit one of our
+	.sql files before we run it on our new database.
+	
+	Please naviate to the install/ directory, and find the 'admin.sql' file.
+	Within, please edit the following lines as indicated:
+	
+	XXXXXXXXXXXXXXXXXXXXXXXXX
+	
+	Finally, run the following .sql files on that database,
+	IN THE FOLLOWING ORDER:
+	
+		scheme.sql
+		data.sql
+		admin.sql
 
-[Web Application]
+2. 	Make sure you have the correct software dependencies that COMTOR needs.
+	They are the following:
+		PHP5
+		PEAR Mail
+		PEAR Text/Password
+		PEAR Net/SMTP
+		ANT
+		Java Version 1.5 (or later)
+		Javac Version 1.5 (or later)
+		Javadoc
+		jar
+		MySQL Connector/J
+		ANTLR
+		Crontab
+		chmod
+		mkdir
+		mv
+		rm
+		find
+		cat
+		grep
+		
+3.	You will next need set all of the configuration variables for use by COMTOR.
+	For your convenience, examples and explanations are listed for each file both
+	here and in the individual files, and in some cases, may include dummy values.
+	Just simply insert your own values.
+	
+	/www/config.php
+		In this file, you will see this line:
+			define("PRIVATE_DIR", "/home/comtor/private/comtor_dev/");
+		Please edit the second string within the double quotes to point to
+		wherever the /comtor_data/config/config.php file is (we will edit this
+		file later).
+		
+		For example:
+			define("PRIVATE_DIR", "/mywebsite/comtor/comtor_data/config/");
+			
+	/comtor_data/config/config.php
+		In this file, you will edit the following lines accordingly:
+			define("MYSQL_HOST", "localhost");
+				Please enter in the URL of your database host.
+				
+			define("MYSQL_USERNAME", "username");
+				Please enter the username through which COMTOR
+				can access the database.
+				
+			define("MYSQL_PASSWORD", "password");
+				Please enter the password COMTOR should use for
+				the username you specified above.
+				
+			define("MYSQL_DB", "comtordb");
+				Please enter the name of the database you created
+				in step 1 of this installation process.
+				
+			define("EMAIL_SMTP_HOST", "smtp.server.com");
+				Please define the host of the SMTP server to be
+				used for sending out mail from COMTOR.
+				
+			define("URL_PATH", "www.mywebsite.com/comtor/www/");
+				Please define the URL path to the www/ directory
+				of COMTOR.
+				
+			define("UPLOAD_DIR", "/mywebsite/comtor/comtor_data/uploads/");
+				Please define the directory path to the uploads/ directory
+				of COMTOR. It will always be in /comtor_data/.
+				
+			$dir = "/mywebsite/comtor/www/";
+				Please define the directory path to the www/ directory
+				of COMTOR.
+				
+		At the end of this file, you will see three other additional variables. Please
+		DO NOT change these.
+		
+	/comtor_data/config/java.properties
+		In this file, you will edit the following lines accordingly:
+			databaseUrl = jdbc:mysql://localhost/comtordb
+				Please enter the URL as seen by the java connection to
+				the COMTOR database. It will probably look much like what is
+				provided for you.
+				
+				For example:
+					jdbc:mysql://URL/path/of/my/database/server/NameOfDatabase
 
- 1) Unpack comtorX.X.X.tar.gz (if you are reading this file, you probably did so)
- 2) Visit the install directory in your browser and follow the on-screen instructions.
- 
- NOTE: Beyond all the work performed by the web installer, you will be required to
-    do two steps outside of the web interface. Please remember to do these as you
-    are prompted by the web installer.
+			username = root
+				Please enter the name of the username for the database through
+				which COMTOR can connect.
 
+			password = password
+				Please enter the password for the username specified above.
+				
+			dictionary = /mywebsite/comtor/comtor_data/resources/words
+				Please enter the path directory to the words file.
+				It will always be in /comtor_data/resources/words.
+				You should only need to edit the path before that.
+				
+		At the end of this file, you will see one other field. You can ignore this entry,
+		and leave it as is. It is currently not used.
+			
+	/www/scripts/config.sh
+		In this file, you will need to edit the following lines accordingly:
+			UPLOAD_PATH=/mywebsite/comtor/comtor_data/uploads
+				This is the directory path to the uploads directory.
+				It should be the same as what you specified above.
+				
+			CLASSES=/mywebsite/comtor/comtor_data/code/comtor.jar
+				This is the directory path to comtor.jar, which is
+				always found in the comtor_data/code/ directory.
+				
+			CLASSPATH='.:/mywebsite/comtor/comtor_data/code/stringtemplate-3.2.jar:/mywebsite/comtor/comtor_data/code/comtor.jar:/mywebsite/comtor/comtor_data/code/antlr-3.1.1.jar:/mywebsite/comtor/comtor_data/code/mysql-connector-java-5.1.6-bin.jar:/mywebsite/comtor/comtor_data/code/antlr-3.1.1-runtime.jar'
+				This is the classpath for specifying several packaged
+				dependencies, among other things. This classpath MUST
+				include the directory paths to the following five files:
+				
+					/comtor_data/code/stringtemplate-3.2.jar
+					/comtor_data/code/comtor.jar
+					/comtor_data/code/antlr-3.1.1.jar
+					/comtor_data/code/mysql-connector-java-5.1.6-bin.jar
+					/comtor_data/code/antlr-3.1.1-runtime.jar
+
+			JAVA_CONFIG=/mywebsite/comtor/comtor_data/config/java.properties
+				This is the directory path to the java.properties file
+				that you edited above. It should always be found in the
+				comtor_data/config/ directory.
+				
+			alias java='/usr/bin/java'
+			alias javac='/usr/bin/javac'
+			alias javadoc='/usr/bin/javadoc'
+			alias jar='/usr/bin/jar'
+			alias chmod='/bin/chmod'
+			alias mkdir='/bin/mkdir'
+			alias mv='/bin/mv'
+			alias rm='/bin/rm'
+			alias find='/usr/bin/find'
+			alias cat='/bin/cat'
+			alias grep='/bin/grep'
+				These are the paths to all of these commands. Please enter
+				the paths as they correspond on your system.
+				
+4. 	You will have to ensure you have the correct permission on certain directories
+	and files so that COMTOR can write to them.
+	
+	Please navigate to the XXXXXXXXXXXXXX directory, and run the following commands:
+		XXXXXXXXXXXXXXXXXXXXXXXx
+		XXXXXXXXXXXXXXXXXXXXXXXX TO BE DONE
+		
+5.	You will have to make a cronjob for the email notifications.
+	To do so, enter the following command into XXXXXXXXXXXXXXXXXXXX.
+		XXXXXXXXXXXXXXXXXXXXXXXXXXX TO BE DONE
+		
+6.	You will have to compile the source code.
+	To do so, XXXXXXXXXXXXXXX.
+		PACKAGER.SH SHOULD DO THIS ULTIMATELY, SO THIS STEP WILL BE TAKEN OUT.
