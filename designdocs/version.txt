@@ -25,6 +25,8 @@ This file outlines the details of each release number.
 	Tutorials and module explanations added to designdocs.
 [1.4.1]
 	RSS removed from welcome page
-[1.4.2] IN PROGRESS
+[1.4.2] ROLLED INTO 1.5
 	Permissions script to streamline install process, added prompts
 	Various installation process enhancements
+[1.5] IN PROGRESS
+	Installer was removed and replaced with instructions for manual installation.
