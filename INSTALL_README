@@ -13,14 +13,22 @@ To install COMTOR, please do the following:
 	.sql files before we run it on our new database.
 	
 	Please naviate to the install/ directory, and find the 'admin.sql' file.
-	Within, please edit the following lines as indicated:
+	Within, please edit as indicated:
 	
-	XXXXXXXXXXXXXXXXXXXXXXXXX
+	Please replace YOURNAMEHERE with the name you wish the initial admin account to have.
+	Please replace YOUREMAILHERE with the email you wish to log in with for the initial admin account.
+	
+	See the file for additional details.
+	
+	Please note, that the default password for your admin account is 'comtor', without
+	the single quotes. This can be changed later, but please DO NOT change it here. Please
+	use the web UI later if you wish to change this password. After you install, you
+	can see the FAQ on the website for more information on how to change your password.
 	
 	Finally, run the following .sql files on that database,
 	IN THE FOLLOWING ORDER:
 	
-		scheme.sql
+		schema.sql
 		data.sql
 		admin.sql
 
@@ -165,9 +173,12 @@ To install COMTOR, please do the following:
 4. 	You will have to ensure you have the correct permission on certain directories
 	and files so that COMTOR can write to them.
 	
-	Please navigate to the XXXXXXXXXXXXXX directory, and run the following commands:
-		XXXXXXXXXXXXXXXXXXXXXXXx
-		XXXXXXXXXXXXXXXXXXXXXXXX TO BE DONE
+	Please navigate to the main COMTOR directory, and run the following commands:
+		bash permissions.sh
+		
+	This script will run the various commands to ensure that COMTOR will be able
+	to write to specific directories and files. You are more than welcome to open this
+	file to run these commands manually if you wish.
 		
 5.	You will have to make a cronjob for the email notifications.
 	To do so, enter the following command into XXXXXXXXXXXXXXXXXXXX.
