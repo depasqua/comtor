@@ -4,6 +4,16 @@ Basic Comment Mentor Installation
 The following steps for installing COMTOR on your system apply to versions
 1.5 and later.
 
+Important Information:
+
+Four files are edited total for configuration. They are:
+	comtor_data/config/config.php
+	comtor_data/config/java.properties
+	www/config.php
+	www/scripts/config.sh
+	
+The default password for the initial admin account is 'comtor'.
+
 To install COMTOR, please do the following:
 
 1.	First, you will have to instantiate a new database for COMTOR. Please
@@ -181,9 +191,16 @@ To install COMTOR, please do the following:
 	file to run these commands manually if you wish.
 		
 5.	You will have to make a cronjob for the email notifications.
-	To do so, enter the following command into XXXXXXXXXXXXXXXXXXXX.
-		XXXXXXXXXXXXXXXXXXXXXXXXXXX TO BE DONE
+	To do so, add the following cron job:
+	(BE SURE TO EDIT IT BEFORE YOU ADD). Where it should be changed is in the paths.
+		0,30 * * * * /usr/bin/php -f your/path/to/comtor/www/cron.php uaeefashdfkjghasdfhrt43a! your/path/to/comtor/comtor_data/config/crontab.output
 		
 6.	You will have to compile the source code.
-	To do so, XXXXXXXXXXXXXXX.
-		PACKAGER.SH SHOULD DO THIS ULTIMATELY, SO THIS STEP WILL BE TAKEN OUT.
+	To do so, please navigate to the main directory, and run the following commands:
+	
+		cd code
+		ant deploy
+		
+7. 	You're done! Please keep in mind that the email you specified above will be used as
+	the initial log in username, and the default password is initiall 'comtor'.
+	Enjoy using COMTOR!
