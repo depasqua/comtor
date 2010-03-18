@@ -22,7 +22,7 @@ To install COMTOR, please do the following:
 	After you have created a new database, we will have to edit one of our
 	.sql files before we run it on our new database.
 	
-	Please naviate to the install/ directory, and find the 'admin.sql' file.
+	Please naviate to the database/ directory, and find the 'admin.sql' file.
 	Within, please edit as indicated:
 	
 	Please replace YOURNAMEHERE with the name you wish the initial admin account to have.
@@ -41,6 +41,8 @@ To install COMTOR, please do the following:
 		schema.sql
 		data.sql
 		admin.sql
+		
+	If you wish, you may delete this database/ directory, as it is no longer needed.
 
 2. 	Make sure you have the correct software dependencies that COMTOR needs.
 	They are the following:
@@ -200,6 +202,8 @@ To install COMTOR, please do the following:
 	
 		cd code
 		ant deploy
+		
+	NOTE: PACKAGER.SH MAY DO THIS ALREADY NOW, NEEDS TESTING.
 		
 7. 	You're done! Please keep in mind that the email you specified above will be used as
 	the initial log in username, and the default password is initiall 'comtor'.

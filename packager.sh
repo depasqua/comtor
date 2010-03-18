@@ -28,6 +28,17 @@ echo "Where would you like to place this package? (relative directory)"
 
 read RDEST
 
+echo "The packager will now compile the COMTOR source code for packaging."
+echo "Hit ENTER to continue."
+
+read PAUSE
+
+cd code
+ant deploy
+cd ..
+
+echo "Done compiling..."
+
 DEST="$RDEST"
 
 SRC='*'
