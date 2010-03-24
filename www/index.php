@@ -11,7 +11,6 @@ if(!isset($_SESSION['userId']))
 }
 
 require_once("smarty/Smarty.class.php");
-require_once("XML/RSS.php");
 
 $tpl = new Smarty();
 
