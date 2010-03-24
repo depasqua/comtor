@@ -1,4 +1,4 @@
-<?php
+e<?php
 
 /*******************************************************************************
 * Get last report from database for given user
@@ -49,7 +49,7 @@ function recordReportForCourse($userEventId, $courseId)
 *******************************************************************************/
 function userIdExists($userId)
 {
-  $result = mysql_query('SELECT userId FROM users_view WHERE userId='.$userId.' LIMIT 1');
+  $result = mysql_query('SELECT userId FROM users WHERE userId='.$userId.' LIMIT 1');
 
   // Check that result is a valid mysql resourse
   if (!$result)
@@ -70,7 +70,7 @@ function emailExists($email, $userId = null)
   if (is_numeric($userId))
     $where = " AND NOT userId=".$userId;
 
-  $result = mysql_query("SELECT email FROM users_view WHERE email='$email'{$where} LIMIT 1");
+  $result = mysql_query("SELECT email FROM users WHERE email='$email'{$where} LIMIT 1");
 
   // Check that result is a valid mysql resourse
   if (!$result)
@@ -159,10 +159,10 @@ function updateUser($userId, $name = null, $email = null, $cryptPassword = null,
 function getUserInfoByEmail($email, $columns = array())
 {
   // Create column selection text
-  if (($select = makeColumnStr($columns, "users_view")) === false)
+  if (($select = makeColumnStr($columns, "users")) === false)
     return false;
 
-  $query = "SELECT {$select} FROM users_view WHERE email='{$email}' LIMIT 1";
+  $query = "SELECT {$select} FROM users WHERE email='{$email}' LIMIT 1";
   $result = mysql_query($query);
 
   $user = false;
@@ -187,10 +187,10 @@ function getUserInfoById($userId, $columns = array())
     return false;
 
   // Create column selection text
-  if (($select = makeColumnStr($columns, "users_view")) === false)
+  if (($select = makeColumnStr($columns, "users")) === false)
     return false;
 
-  $query = "SELECT {$select} FROM users_view WHERE userId={$userId} LIMIT 1";
+  $query = "SELECT {$select} FROM users WHERE userId={$userId} LIMIT 1";
   $result = mysql_query($query);
 
   $user = false;
@@ -441,7 +441,7 @@ function getUserNameById($userId)
   if (!is_numeric($userId))
     return false;
 
-  $query = "SELECT name FROM users_view WHERE userId = {$userId} LIMIT 1";
+  $query = "SELECT name FROM users WHERE userId = {$userId} LIMIT 1";
   $result = mysql_query($query);
 
   $name = false;
@@ -917,10 +917,10 @@ function getUsers($fields = array(), $enabled = "all", $acctType = "all", $lower
     $where = ' WHERE ' . $where;
 
   // Create column selection text
-  if (($columns = makeColumnStr($fields, "users_view")) === false)
+  if (($columns = makeColumnStr($fields, "users")) === false)
     return false;
 
-  $query = "SELECT {$columns} FROM users_view {$where} ORDER BY name{$limit}";
+  $query = "SELECT {$columns} FROM users {$where} ORDER BY name{$limit}";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
