@@ -1,18 +1,22 @@
 Basic Comment Mentor Installation
-=================================
+===================================================================
 
 The following steps for installing COMTOR on your system apply to versions
 1.5 and later.
 
+===================================================================
+
 Important Information:
 
-Four files are edited total for configuration. They are:
+Four files are edited for configuration. They are:
 	comtor_data/config/config.php
 	comtor_data/config/java.properties
 	www/config.php
 	www/scripts/config.sh
 	
 The default password for the initial admin account is 'comtor'.
+
+===================================================================
 
 To install COMTOR, please do the following:
 
@@ -25,8 +29,8 @@ To install COMTOR, please do the following:
 	Please naviate to the database/ directory, and find the 'admin.sql' file.
 	Within, please edit as indicated:
 	
-	Please replace YOURNAMEHERE with the name you wish the initial admin account to have.
-	Please replace YOUREMAILHERE with the email you wish to log in with for the initial admin account.
+	Replace YOURNAMEHERE with the name you wish the initial admin account to have.
+	Replace YOUREMAILHERE with the email you wish to log in with for the initial admin account.
 	
 	See the file for additional details.
 	
@@ -46,11 +50,12 @@ To install COMTOR, please do the following:
 
 2. 	Make sure you have the correct software dependencies that COMTOR needs.
 	They are the following:
-		PHP5
+		PHP5				apt-get install php5
+		PHP5-MySQL Module		apt-get install php5-mysql
 		PEAR Mail
 		PEAR Text/Password
 		PEAR Net/SMTP
-		ANT
+		ANT				apt-get install ant
 		Java Version 1.5 (or later)
 		Javac Version 1.5 (or later)
 		Javadoc
@@ -72,6 +77,7 @@ To install COMTOR, please do the following:
 	Just simply insert your own values.
 	
 	/www/config.php
+		Please see the file for additional details.
 		In this file, you will see this line:
 			define("PRIVATE_DIR", "/home/comtor/private/comtor_dev/");
 		Please edit the second string within the double quotes to point to
@@ -82,6 +88,7 @@ To install COMTOR, please do the following:
 			define("PRIVATE_DIR", "/mywebsite/comtor/comtor_data/config/");
 			
 	/comtor_data/config/config.php
+		Please see the file for additional details.
 		In this file, you will edit the following lines accordingly:
 			define("MYSQL_HOST", "localhost");
 				Please enter in the URL of your database host.
@@ -102,7 +109,7 @@ To install COMTOR, please do the following:
 				Please define the host of the SMTP server to be
 				used for sending out mail from COMTOR.
 				
-			define("URL_PATH", "www.mywebsite.com/comtor/www/");
+			define("URL_PATH", "www.mywebsite.com/comtor/www");
 				Please define the URL path to the www/ directory
 				of COMTOR.
 				
@@ -126,6 +133,7 @@ To install COMTOR, please do the following:
 				
 				For example:
 					jdbc:mysql://URL/path/of/my/database/server/NameOfDatabase
+					jdbc:mysql://localhost/comtordb
 
 			username = root
 				Please enter the name of the username for the database through
@@ -139,6 +147,9 @@ To install COMTOR, please do the following:
 				It will always be in /comtor_data/resources/words.
 				You should only need to edit the path before that.
 				
+				For example:
+					dictonary = /home/yourname/public_html/comtor/comtor_data/resources/words
+				
 		At the end of this file, you will see one other field. You can ignore this entry,
 		and leave it as is. It is currently not used.
 			
@@ -148,9 +159,15 @@ To install COMTOR, please do the following:
 				This is the directory path to the uploads directory.
 				It should be the same as what you specified above.
 				
+				This should always be the absolute path. For example:
+					UPLOAD_PATH=/home/yourname/public_html/comtor/comtor_data/uploads
+				
 			CLASSES=/mywebsite/comtor/comtor_data/code/comtor.jar
 				This is the directory path to comtor.jar, which is
 				always found in the comtor_data/code/ directory.
+				
+				This should always be the absolute path. For example:
+					CLASSES=/home/yourname/public_html/comtor/comtor_data/code/comtor.jar
 				
 			CLASSPATH='.:/mywebsite/comtor/comtor_data/code/stringtemplate-3.2.jar:/mywebsite/comtor/comtor_data/code/comtor.jar:/mywebsite/comtor/comtor_data/code/antlr-3.1.1.jar:/mywebsite/comtor/comtor_data/code/mysql-connector-java-5.1.6-bin.jar:/mywebsite/comtor/comtor_data/code/antlr-3.1.1-runtime.jar'
 				This is the classpath for specifying several packaged
@@ -162,11 +179,27 @@ To install COMTOR, please do the following:
 					/comtor_data/code/antlr-3.1.1.jar
 					/comtor_data/code/mysql-connector-java-5.1.6-bin.jar
 					/comtor_data/code/antlr-3.1.1-runtime.jar
+					
+				Each of the references above should be the absolute path.
+					
+				NOTE: You will only have comtor_data/code/comtor.jar if you
+				used a packaged release of COMTOR. If you are installing COMTOR
+				using a cloned version of the repository, then you will need to do
+				step 6 listed below before you enter this information, as step 6 will
+				ensure that comtor.jar is created.
+				
+				Because this CLASSPATH isn't actually checked until you run COMTOR,
+				however, it is not necessarily vital that the code is compiled via
+				step 6 before you enter this information. Just keep in mind that
+				the comtor.jar that this field is refering to may not be created yet.
 
 			JAVA_CONFIG=/mywebsite/comtor/comtor_data/config/java.properties
 				This is the directory path to the java.properties file
 				that you edited above. It should always be found in the
 				comtor_data/config/ directory.
+				
+				This should be an absolute path. For example:
+					JAVA_CONFIG=/home/yourname/public_html/comtor/comtor_data/config/java.properties
 				
 			alias java='/usr/bin/java'
 			alias javac='/usr/bin/javac'
@@ -180,7 +213,8 @@ To install COMTOR, please do the following:
 			alias cat='/bin/cat'
 			alias grep='/bin/grep'
 				These are the paths to all of these commands. Please enter
-				the paths as they correspond on your system.
+				the paths as they correspond on your system. In general, you will not
+				have to edit these.
 				
 4. 	You will have to ensure you have the correct permission on certain directories
 	and files so that COMTOR can write to them.
@@ -203,8 +237,11 @@ To install COMTOR, please do the following:
 		cd code
 		ant deploy
 		
-	NOTE: PACKAGER.SH MAY DO THIS ALREADY NOW, NEEDS TESTING.
+	NOTE: If you are installing COMTOR from a packaged (tar'd) release, then you WILL NOT need
+	to do this step, as packaged releases always come precompiled. If you are installing COMTOR
+	from a cloned repository, then you WILL need to do this step. However, there is absolutely
+	no harm in recompiling the java source code, so you may do this step if you wish regardless.
 		
 7. 	You're done! Please keep in mind that the email you specified above will be used as
-	the initial log in username, and the default password is initiall 'comtor'.
+	the initial log in username, and the default password is initially 'comtor'.
 	Enjoy using COMTOR!

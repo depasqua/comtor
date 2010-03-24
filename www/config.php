@@ -1,6 +1,7 @@
 <?php
   //Define private directory where /comtor_data/config/config.php is.
   //For example, this can be "/home/comtor/comtor_data/config/".
+  //Please note that there is a "/" at the end of this string.
   //Remember not to include "config.php" at the end, as this is only defining where that
   //directory is.
   define("PRIVATE_DIR", "/home/comtor/private/comtor_dev/");
