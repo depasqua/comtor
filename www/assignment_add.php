@@ -49,43 +49,60 @@ if (!empty($_POST))
       $error[] = "Assignment name too long, truncating.";
       $_POST['name'] = substr($_POST['name'], 0, 255);
     }
-
-    // Validate and contruct open date
-    if (
-      !isset($_POST['Open_Month']) || !is_int((int)$_POST['Open_Month']) ||
-      !isset($_POST['Open_Day']) || !is_int((int)$_POST['Open_Day']) ||
-      !isset($_POST['Open_Year']) || !is_int((int)$_POST['Open_Year']) ||
-      !isset($_POST['Open_Hour']) || !is_int((int)$_POST['Open_Hour']) ||
-      !isset($_POST['Open_Minute']) || !is_int((int)$_POST['Open_Minute']) ||
-      !isset($_POST['Open_Meridian']) || ($_POST['Open_Meridian'] != 'am' && $_POST['Open_Meridian'] != 'pm')
-    )
+    
+    // Validate and parse open date
+    if (!isset($_POST['openDate']))
     {
       $error[] = "Assignment open date not fully entered.";
       $fatal = true;
     }
     else
     {
-      // Adjust hour for meridian
-      $hour = $_POST['Open_Hour'];
-      if ($_POST['Open_Meridian'] == 'am' && $hour == 12)
-        $hour = 0;
-      else if ($_POST['Open_Meridian'] == 'pm' && $hour != 12)
-        $hour += 12;
-
-      $openTime = mktime($hour, $_POST['Open_Minute'], 0, $_POST['Open_Month'], $_POST['Open_Day'], $_POST['Open_Year']);
+      $openMonth = strtok($_POST['openDate'], "/");
+      $openDay = strtok("/");
+      $openYear = strtok("/");
     }
 
-    // Validate and contruct close date
+    // Validate and contruct open time
+    if (!isset($_POST['openTime']))
+    {
+      $error[] = "Assignment open time not fully entered.";
+      $fatal = true;
+    }
+    else
+    {
+      $openHour = substr($_POST['openTime'], 0, 2);
+      $openMinute = substr($_POST['openTime'], 3, 2);
+      $openMeridian = substr($_POST['openTime'], 5, 2);
+      if ($openMeridian == 'AM' && $openHour == 12)
+        $openHour = 0;
+      else if ($openMeridian == 'PM' && $openHour != 12)
+        $openHour += 12;
+
+      $openTime = mktime($hour, $openMinute, 0, $openMonth, $openDay, $openYear);
+    }
+
+    // Validate and parse close date
+    if (!isset($_POST['closeDate']))
+    {
+      $error[] = "Assignment close date not fully entered.";
+      $fatal = true;
+    }
+    else
+    {
+      $closeMonth = strtok($_POST['closeDate'], "/");
+      $closeDay = strtok("/");
+      $closeYear = strtok("/");
+    }
+
+    // Validate and contruct close time
     if (
-      !isset($_POST['Close_Month']) || !is_int((int)$_POST['Close_Month']) ||
-      !isset($_POST['Close_Day']) || !is_int((int)$_POST['Close_Day']) ||
-      !isset($_POST['Close_Year']) || !is_int((int)$_POST['Close_Year']) ||
       !isset($_POST['Close_Hour']) || !is_int((int)$_POST['Close_Hour']) ||
       !isset($_POST['Close_Minute']) || !is_int((int)$_POST['Close_Minute']) ||
       !isset($_POST['Close_Meridian']) || ($_POST['Close_Meridian'] != 'am' && $_POST['Close_Meridian'] != 'pm')
     )
     {
-      $error[] = "Assignment close date not fully entered.";
+      $error[] = "Assignment close time not fully entered.";
       $fatal = true;
     }
     else
@@ -97,7 +114,7 @@ if (!empty($_POST))
       else if ($_POST['Close_Meridian'] == 'pm' && $hour != 12)
         $hour += 12;
 
-      $closeTime = mktime($hour, $_POST['Close_Minute'], 0, $_POST['Close_Month'], $_POST['Close_Day'], $_POST['Close_Year']);
+      $closeTime = mktime($hour, $_POST['Close_Minute'], 0, $closeMonth, $closeDay, $closeYear);
     }
 
     // Remove any html codes from posts

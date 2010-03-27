@@ -1,20 +1,28 @@
+{literal}
+<script type="text/javascript">
+	$(function() {
+		$("#openCalendar").datepicker();
+		$("#closeCalendar").datepicker();
+		$("#openTimeEntry").timeEntry({
+			spinnerImage: "jQuery/timeentry/spinnerDefault.png"
+		});
+	});	
+</script>
+{/literal}
+
 <form action="" method="post" name="form">
 <div>
 
 <label for="name">Assignment Name: <input id="name" name="name" value="{$name}" /></label>
-
 <br/>
 
 <label>Assignment Open Date:</label>
-{html_select_date time=$openTime|default:$smarty.now prefix='Open_' start_year=2000 end_year=2035}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-{html_select_time time=$openTime|default:$smarty.now prefix='Open_' use_24_hours=false minute_interval=5 display_seconds=false display_meridian=true}
-
+<input type="text" class="openCalendar" id="openCalendar" name="openDate" size="10" />
+<input type="text" class="openTimeEntry" id="openTimeEntry" name="openTime" size="7" />
 <br/>
 
 <label>Assignment Close Date:</label>
-{html_select_date time=$closeTime|default:$smarty.now prefix='Close_' start_year=2000 end_year=2035}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="text" class="closeCalendar" id="closeCalendar" name="closeDate" size="10" />
 {html_select_time time=$closeTime|default:$smarty.now prefix='Close_' use_24_hours=false minute_interval=5 display_seconds=false display_meridian=true}
 
 <br/>

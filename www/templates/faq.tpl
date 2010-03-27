@@ -1,67 +1,88 @@
-<div class="left_questions">
-	<h2 class="questions">General</h2>
-	<h3 class="questions">About COMTOR</h3>
-	<ul>
-		<li class="question"><a href="#gen.about.comtor">What does COMTOR stand for?</a></li>
-		<li class="question"><a href="#gen.about.features">What features does COMTOR measure?</a></li>
-		<li class="question"><a href="#gen.about.created">Who created COMTOR?</a></li>
-		<li class="question"><a href="#gen.about.whyUse">Why should I use this system?</a></li>
-		<li class="question"><a href="#gen.about.whoBenefit">Who will benefit most from this system?</a></li>
-		<li class="question"><a href="#gen.about.openSource">Is COMTOR an open source project?</a></li>
-		<li class="question"><a href="#gen.about.icons">I saw an icon I didn't understand. What does it mean?</a></li>
-	</ul>
-	<h3 class="questions">Account Management</h3>
-	<ul>
-		<li class="question"><a href="#gen.acct.create">How do I create an account?</a></li>
-		<li class="question"><a href="#gen.acct.email">Do I have to enter my college email address?</a></li>
-	</ul>
-	<h3 class="questions">Troubleshooting</h3>
-	<ul>
-		<li class="question"><a href="#gen.trouble.bugs">Where should I report bugs?</a></li>
-		<li class="question"><a href="#gen.trouble.login1">COMTOR keeps telling me my username does not exist. Why can't I log in?</a></li>
-		<li class="question"><a href="#gen.trouble.pswd">I forgot my password. Now what do I do?</a></li>
-		<li class="question"><a href="#gen.trouble.login2">I created an account and entered my email and my email password. Why can't I log in?</a></li>
-		<li class="question"><a href="#gen.trouble.temppswd">I created an account but no temporary password was sent to my email. How do I retrieve my account?</a></li>
-		<li class="question"><a href="#gen.trouble.compile">COMTOR says my code does not compile, but I know it does. What should I do?</a></li>
-		<li class="question"><a href="#gen.trouble.dropbox">Where is my professor's dropbox?</a></li>
-		<li class="question"><a href="#gen.trouble.main">Why do I always get points deducted for not commenting main?</a></li>
-	</ul>
-</div>
+{literal}
+<script type="text/javascript">
+	$(function() {
+		$("#tabs").tabs();
+		$("#aboutComtor").dialog({
+			autoOpen: false, modal: true
+		});
+		$("#features").dialog({
+			autoOpen: false, modal: true
+		});
+	});
+</script>
+{/literal}
 
-<div class="right_questions">
-	<h2 class="questions">Students</h2>
-	<h3 class="questions">Classes and Submissions</h3>
+<div id="tabs">
 	<ul>
-		<li class="question"><a href="#student.enroll">How do I join a class?</a></li>
-		<li class="question"><a href="#student.submit">How do I submit source code to a professor's dropbox for analysis?</a></li>
-		<li class="question"><a href="#student.lang">What types of source code can I submit to COMTOR?</a></li>
-		<li class="question"><a href="#student.javadoc">What is a Javadoc comment?</a></li>
-		<li class="question"><a href="#student.compile">How do I compile and run a Java program?</a></li>
-		<li class="question"><a href="#student.jar">What is a JAR file?</a></li>
+		<li><a href="#tabs-1">General</a></li>
+		<li><a href="#tabs-2">Students</a></li>
+		<li><a href="#tabs-3">Instructors</a></li>
 	</ul>
 
-	<h2 class="questions">Instructors</h3>
-	<h3 class="questions">Account Management</h3>
-	<ul>
-		<li class="question"><a href="#inst.acct.status">How do I obtain instructor status?</a></li>
-		<li class="question"><a href="#inst.acct.link">What type of link should I provide for professor status verification?</a><br></li>
-		<li class="question"><a href="#inst.acct.notify">How do I choose what types of emails I receive from COMTOR?</a><br></li>
-	</ul>
-	<h3 class="questions">Course Management</h3>
-	<ul>
-	<li class="question"><a href="#inst.course.add">How do I add a course?</a></li>
-	<li class="question"><a href="#inst.course.edit">How do I edit course information?</a></li>
-	<li class="question"><a href="#inst.course.enroll">How do I enroll students in a course?</a></li>
-	<li class="question"><a href="#inst.course.drop">How do I drop students from a course?</a></li>
-	<li class="question"><a href="#inst.course.dropbox">How do I view a student's dropbox?</a></li>
-	<li class="question"><a href="#inst.course.email">How do I send emails to students in a course?</a></li>
-	</ul>
-	<h3 class="questions">Assignment Management</h3>
-	<ul>
-	<li class="question"><a href="#inst.assign.add">How do I add an assignment?</a></li>
-	<li class="question"><a href="#inst.assign.edit">How do I edit an assignment?</a></li>
-	<li class="question"><a href="#inst.assign.delete">How do I delete an assignment?</a></li>
-	</ul>
+	<div id="tabs-1">
+		<h3 class="questions">About COMTOR</h3>
+		<ul>
+			<li class="question"><a href="#" onclick="jQuery('#aboutComtor').dialog('open'); return false">What does COMTOR stand for?</a></li>
+			<li class="question"><a href="#" onclick="jQuery('#features').dialog('open'); return false">What features does COMTOR measure?</a></li>
+			<li class="question"><a href="#gen.about.created">Who created COMTOR?</a></li>
+			<li class="question"><a href="#gen.about.whyUse">Why should I use this system?</a></li>
+			<li class="question"><a href="#gen.about.whoBenefit">Who will benefit most from this system?</a></li>
+			<li class="question"><a href="#gen.about.openSource">Is COMTOR an open source project?</a></li>
+			<li class="question"><a href="#gen.about.icons">I saw an icon I didn't understand. What does it mean?</a></li>
+		</ul>
+		<h3 class="questions">Account Management</h3>
+		<ul>
+			<li class="question"><a href="#gen.acct.create">How do I create an account?</a></li>
+			<li class="question"><a href="#gen.acct.email">Do I have to enter my college email address?</a></li>
+		</ul>
+		<h3 class="questions">Troubleshooting</h3>
+		<ul>
+			<li class="question"><a href="#gen.trouble.bugs">Where should I report bugs?</a></li>
+			<li class="question"><a href="#gen.trouble.login1">COMTOR keeps telling me my username does not exist. Why can't I log in?</a></li>
+			<li class="question"><a href="#gen.trouble.pswd">I forgot my password. Now what do I do?</a></li>
+			<li class="question"><a href="#gen.trouble.login2">I created an account and entered my email and my email password. Why can't I log in?</a></li>
+			<li class="question"><a href="#gen.trouble.temppswd">I created an account but no temporary password was sent to my email. How do I retrieve my account?</a></li>
+			<li class="question"><a href="#gen.trouble.compile">COMTOR says my code does not compile, but I know it does. What should I do?</a></li>
+			<li class="question"><a href="#gen.trouble.dropbox">Where is my professor's dropbox?</a></li>
+			<li class="question"><a href="#gen.trouble.main">Why do I always get points deducted for not commenting main?</a></li>
+		</ul>
+	</div>
+
+	<div id="tabs-2">
+		<h3 class="questions">Classes and Submissions</h3>
+		<ul>
+			<li class="question"><a href="#student.enroll">How do I join a class?</a></li>
+			<li class="question"><a href="#student.submit">How do I submit source code to a professor's dropbox for analysis?</a></li>
+			<li class="question"><a href="#student.lang">What types of source code can I submit to COMTOR?</a></li>
+			<li class="question"><a href="#student.javadoc">What is a Javadoc comment?</a></li>
+			<li class="question"><a href="#student.compile">How do I compile and run a Java program?</a></li>
+			<li class="question"><a href="#student.jar">What is a JAR file?</a></li>
+		</ul>
+	</div>
+	
+	<div id="tabs-3">
+		<h3 class="questions">Account Management</h3>
+		<ul>
+			<li class="question"><a href="#inst.acct.status">How do I obtain instructor status?</a></li>
+			<li class="question"><a href="#inst.acct.link">What type of link should I provide for professor status verification?</a><br></li>
+			<li class="question"><a href="#inst.acct.notify">How do I choose what types of emails I receive from COMTOR?</a><br></li>
+		</ul>
+		<h3 class="questions">Course Management</h3>
+		<ul>
+		<li class="question"><a href="#inst.course.add">How do I add a course?</a></li>
+		<li class="question"><a href="#inst.course.edit">How do I edit course information?</a></li>
+		<li class="question"><a href="#inst.course.enroll">How do I enroll students in a course?</a></li>
+		<li class="question"><a href="#inst.course.drop">How do I drop students from a course?</a></li>
+		<li class="question"><a href="#inst.course.dropbox">How do I view a student's dropbox?</a></li>
+		<li class="question"><a href="#inst.course.email">How do I send emails to students in a course?</a></li>
+		</ul>
+		<h3 class="questions">Assignment Management</h3>
+		<ul>
+		<li class="question"><a href="#inst.assign.add">How do I add an assignment?</a></li>
+		<li class="question"><a href="#inst.assign.edit">How do I edit an assignment?</a></li>
+		<li class="question"><a href="#inst.assign.delete">How do I delete an assignment?</a></li>
+		</ul>
+	</div>
 </div>
 
 <div class="answers">
@@ -69,11 +90,11 @@
 	<h2>General</h2>
 	<h3>About COMTOR</h3>
 
-	<h4 id="gen.about.comtor">What does COMTOR stand for?</h4>
-	COMTOR is short for COmment MenTOR.</p>
+	<div id="aboutComtor" title="What does COMTOR stand for?">
+	<p>COMTOR is short for COMment menTOR.</p></div>
 
-	<h4 id="gen.about.features">What features does COMTOR measure?</h4>
-	<a href="features.php">Click here</a> to check out what features we measure.</p>
+	<div id="features" title="What features does COMTOR measure?">
+	<p><a href="features.php">Click here</a> to check out what features we measure.</p></div>
 
 	<h4 id="gen.about.created">Who created COMTOR ?</h4>
 	COMTOR was developed by computer science students at The College of New Jersey working under the direction of Dr. DePasquale. Check out the <a href="about.php">About page</a> for the complete history of COMTOR.
