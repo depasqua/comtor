@@ -1,4 +1,4 @@
-e<?php
+<?php
 
 /*******************************************************************************
 * Get last report from database for given user
