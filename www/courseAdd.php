@@ -67,7 +67,7 @@ if($secure)
   $semester = "{$_POST['semester']} {$_POST['year']}";
 
   // Check if admin and professor is set
-  if ($_SESSION['acctType'] != "admin")
+  if ($_SESSION['acctType'] == "admin")
   {
     if (!isset($_POST['professor']) || !is_numeric($_POST['professor']))
     {
