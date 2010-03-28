@@ -26,5 +26,9 @@ cd ..
 cd www
 chmod go+w templates_c
 
+#unlock /www/scripts/javadoc.sh
+cd scripts
+chmod go+rx javadoc.sh
+
 echo "Done."
 
