@@ -79,7 +79,7 @@ if (!empty($_POST))
       else if ($openMeridian == 'PM' && $openHour != 12)
         $openHour += 12;
 
-      $openTime = mktime($hour, $openMinute, 0, $openMonth, $openDay, $openYear);
+      $openTime = mktime($openHour, $openMinute, 0, $openMonth, $openDay, $openYear);
     }
 
     // Validate and parse close date
@@ -95,26 +95,23 @@ if (!empty($_POST))
       $closeYear = strtok("/");
     }
 
-    // Validate and contruct close time
-    if (
-      !isset($_POST['Close_Hour']) || !is_int((int)$_POST['Close_Hour']) ||
-      !isset($_POST['Close_Minute']) || !is_int((int)$_POST['Close_Minute']) ||
-      !isset($_POST['Close_Meridian']) || ($_POST['Close_Meridian'] != 'am' && $_POST['Close_Meridian'] != 'pm')
-    )
+    // Validate and parse close time
+    if (!isset($_POST['closeTime']))
     {
       $error[] = "Assignment close time not fully entered.";
       $fatal = true;
     }
     else
     {
-      // Adjust hour for meridian
-      $hour = $_POST['Close_Hour'];
-      if ($_POST['Close_Meridian'] == 'am' && $hour == 12)
-        $hour = 0;
-      else if ($_POST['Close_Meridian'] == 'pm' && $hour != 12)
-        $hour += 12;
+      $closeHour = substr($_POST['closeTime'], 0, 2);
+      $closeMinute = substr($_POST['closeTime'], 3, 2);
+      $closeMeridian = substr($_POST['closeTime'], 5, 2);
+      if ($closeMeridian == 'AM' && $closeHour == 12)
+        $closeHour = 0;
+      else if ($closeMeridian == 'PM' && $closeHour != 12)
+        $closeHour += 12;
 
-      $closeTime = mktime($hour, $_POST['Close_Minute'], 0, $closeMonth, $closeDay, $closeYear);
+      $closeTime = mktime($closeHour, $closeMinute, 0, $closeMonth, $closeDay, $closeYear);
     }
 
     // Remove any html codes from posts

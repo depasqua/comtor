@@ -4,9 +4,27 @@
 		$("#openCalendar").datepicker();
 		$("#closeCalendar").datepicker();
 		$("#openTimeEntry").timeEntry({
-			spinnerImage: "jQuery/timeentry/spinnerDefault.png"
+			spinnerImage: "jQuery/timeentry/spinnerText.png",
+			spinnerSize: [30, 20, 8],
+			useMouseWheel: true
 		});
-	});	
+		$("#closeTimeEntry").timeEntry({
+			spinnerImage: "jQuery/timeentry/spinnerText.png",
+			spinnerSize: [30, 20, 8],
+			useMouseWheel: true
+		});
+	});
+
+	function getCurrentDate(){
+		var currentDate = new Date();
+		var currentMonth = currentDate.getMonth() + 1;
+		currentMonth += '';
+		var currentDay = currentDate.getDate();
+		currentDay += '';
+		var currentYear = currentDate.getFullYear();
+		currentYear += '';
+		return currentMonth + '/' + currentDay + '/' + currentYear;
+	}
 </script>
 {/literal}
 
@@ -17,14 +35,25 @@
 <br/>
 
 <label>Assignment Open Date:</label>
-<input type="text" class="openCalendar" id="openCalendar" name="openDate" size="10" />
+<input type="text" class="openCalendar" id="openCalendar" name="openDate" value="" size="10" />
 <input type="text" class="openTimeEntry" id="openTimeEntry" name="openTime" size="7" />
+{literal}
+<script type="text/javascript">
+/*var currentDate = new Date();
+var currentMonth = currentDate.getMonth() + 1;
+currentMonth += '';
+var currentDay = currentDate.getDate();
+currentDay += '';
+var currentYear = currentDate.getFullYear();
+currentYear += '';
+document.write(currentMonth + '/' + currentDay + '/' + currentYear);*/
+</script>
+{/literal}
 <br/>
 
 <label>Assignment Close Date:</label>
 <input type="text" class="closeCalendar" id="closeCalendar" name="closeDate" size="10" />
-{html_select_time time=$closeTime|default:$smarty.now prefix='Close_' use_24_hours=false minute_interval=5 display_seconds=false display_meridian=true}
-
+<input type="text" class="closeTimeEntry" id="closeTimeEntry" name="closeTime" size="7" />
 <br/>
 
 <h4>Mandatory Report Options (If none are selected, user can choose options)</h4>
