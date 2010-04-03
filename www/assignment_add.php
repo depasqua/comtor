@@ -74,9 +74,9 @@ if (!empty($_POST))
       $openHour = substr($_POST['openTime'], 0, 2);
       $openMinute = substr($_POST['openTime'], 3, 2);
       $openMeridian = substr($_POST['openTime'], 5, 2);
-      if ($openMeridian == 'AM' && $openHour == 12)
+      if ($openMeridian == "AM" && $openHour == 12)
         $openHour = 0;
-      else if ($openMeridian == 'PM' && $openHour != 12)
+      else if ($openMeridian == "PM" && $openHour != 12)
         $openHour += 12;
 
       $openTime = mktime($openHour, $openMinute, 0, $openMonth, $openDay, $openYear);
@@ -106,9 +106,9 @@ if (!empty($_POST))
       $closeHour = substr($_POST['closeTime'], 0, 2);
       $closeMinute = substr($_POST['closeTime'], 3, 2);
       $closeMeridian = substr($_POST['closeTime'], 5, 2);
-      if ($closeMeridian == 'AM' && $closeHour == 12)
+      if ($closeMeridian == "AM" && $closeHour == 12)
         $closeHour = 0;
-      else if ($closeMeridian == 'PM' && $closeHour != 12)
+      else if ($closeMeridian == "PM" && $closeHour != 12)
         $closeHour += 12;
 
       $closeTime = mktime($closeHour, $closeMinute, 0, $closeMonth, $closeDay, $closeYear);
@@ -244,18 +244,73 @@ if ($editing)
 {
   $tpl->assign('name', $assignment['name']);
 
-  // Open and close times
-  $tpl->assign('openTime', $assignment['openTime']);
-  $tpl->assign('closeTime', $assignment['closeTime']);
-
   // Get and assign current reporting options
   if ($options = getAssignmentOptions($assignmentId))
     $tpl->assign('assignmentOptions', $options);
 
   $submissions = numAssignmentSubmissions($_GET['assignment_id']);
   $tpl->assign("gradeInputsEnabled", ($submissions == 0));
-
 }
+else	// Not editing, so create the dates and times to prefill the textboxes with
+{
+  $month = date("m");
+  $leapYear = date("L");
+  $sevenDaysFromNow = date("d") + 7;
+
+  // Default close date is one week from today; adjust for a month changeover
+  if (($sevenDaysFromNow > 31) && ($month == 1 || $month == 3 || $month == 5 || $month == 7 || $month == 8 || $month == 10 || $month == 12))
+  {
+    $sevenDaysFromNow -= 31;
+  }
+  else if (($sevenDaysFromNow > 30) && ($month == 4 || $month == 6 || $month == 9 || $month == 11))
+  {
+    $sevenDaysFromNow -= 30;
+  }
+  else if (($sevenDaysFromNow > 28) && ($month == 2) && $leapYear == 0)
+  {
+    $sevenDaysFromNow -= 28;
+  }
+  else if (($sevenDaysFromNow > 29) && ($month == 2) && $leapYear == 1)
+  {
+    $sevenDaysFromNow -= 29;
+  }
+
+  // Append a leading 0 to match the format if the number is single-digit
+  if ($sevenDaysFromNow < 10)
+    $sevenDaysFromNow = "0" . $sevenDaysFromNow;
+
+  // Construct a MO/DA/YEAR format date for both the open and close dates
+  // Open date is today
+  $openDate = date("m/d/Y");
+  // Close date is one week from today
+  $closeDate = $month . "/" . $sevenDaysFromNow . date("/Y");
+
+  // Increase current minutes by 5 then round down to the nearest number that ends in 0 or 5
+  // If this would change the hour, just round down to 55
+  $minutes = date("i");
+  if ($minutes < 55)
+  {
+    $minutes = $minutes + 5 - ($minutes % 5);
+  }
+  else
+  {
+    $minutes = 55;
+  }
+
+  // Append a leading 0 to match the format if the number is single-digit
+  if ($minutes < 10)
+    $minutes = "0" . $minutes;
+
+  // Construct a 12:12AM style format time for both the open and close times
+  $openTime = date("h:") . $minutes . date("A");
+  $closeTime = $openTime;
+}
+
+$tpl->assign('openDate', $openDate);
+$tpl->assign('openTime', $openTime);
+
+$tpl->assign('closeDate', $closeDate);
+$tpl->assign('closeTime', $closeTime);
 
 // Get report types (doclets) from database
 $params = array(
