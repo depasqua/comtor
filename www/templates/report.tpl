@@ -21,7 +21,7 @@ function showFile(id)
 {/literal}
 
 <h3>{strtodate format="l F j, Y @ g:i:s A" date=$dateTime}</h3>
-<h4>Score: {$score|string_format:"%.2f"} out of {$max_score|string_format:"%.2f"}</h4>
+<!-- <h4>Score: {$score|string_format:"%.2f"} out of {$max_score|string_format:"%.2f"}</h4> -->
 
 <div id='submittedFiles'>
   <h3>Submitted Files</h3>
@@ -45,7 +45,7 @@ function showFile(id)
   {if !empty($d.props) }
     <div class='report'>
       <div class='docletDesc'>{$d.docletName} ({$d.docletDescription})</div>
-      <div class='docletScore'>Score: {$d.score|string_format:"%.2f"} out of {$d.max_score|string_format:"%.2f"}</div>
+      <!-- <div class='docletScore'>Score: {$d.score|string_format:"%.2f"} out of {$d.max_score|string_format:"%.2f"}</div> -->
       {foreach from=$d.props item="prop"}
         {if $prop.class == 'class'}<hr />{/if}
         <div class='{$prop.class}'>{$prop.value}</div>
