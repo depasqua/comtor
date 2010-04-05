@@ -33,7 +33,8 @@
 <input type="text" class="closeTimeEntry" id="closeTimeEntry" name="closeTime" value="{$closeTime}" size="7" />
 <br/>
 
-<h4>Mandatory Report Options (If none are selected, user can choose options)</h4>
+<h4>Required Doclets</h4>
+<p>Please select the doclets you'd like this assignment to run. If none are selected, user can choose which doclets they'd like to run.</p>
 <div class="reportOptions doclets">
   {foreach from=$doclets item="d"}
     <div class="doclet {cycle values="odd,even"}">
@@ -43,7 +44,7 @@
       <span class="doclet_description">{$d.docletDescription}</span>
     
       {* Grading Sections *}
-      {if is_array($d.gradeSections) && count($d.gradeSections) > 0 }
+{*      {if is_array($d.gradeSections) && count($d.gradeSections) > 0 }
         <div class="docletSubsection">
           <h6>Grading Breakdown</h6>
           {foreach from=$d.gradeSections item="gs"}
@@ -52,10 +53,10 @@
           <span style="font-weight: bold;">{$gs.sectionName}</span>: {$gs.sectionDesc}<br/>
           {/foreach}
         </div>
-      {/if}
+      {/if} *}
   
       {* Grading Parameters *}
-      {if is_array($d.gradeParams) && count($d.gradeParams) > 0 }
+{*      {if is_array($d.gradeParams) && count($d.gradeParams) > 0 }
         <div class="docletSubsection">
           <h6>Grading Parameters</h6>
           {foreach from=$d.gradeParams item="gp"}
@@ -64,8 +65,8 @@
           <span style="font-weight: bold;">{$gp.parameterName}</span>: {$gp.parameterDesc}<br/>
           {/foreach}
         </div>
-      {/if}
-    
+      {/if} *}
+      
     </div>
   {/foreach}
 </div>
