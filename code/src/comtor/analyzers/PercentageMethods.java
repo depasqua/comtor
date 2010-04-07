@@ -95,12 +95,10 @@ public class PercentageMethods implements ComtorDoclet
 
 				//Store percentCommented in the property list
 				prop.setProperty("" + classID + ".000", Math.round(percentCommented*100) 
-					+ " percent (" + methodsCommented + "/" + methods.length + ") of class " 
-					+ classes[i].name() + "s methods are commented.");
+					+ " percent (" + methodsCommented + "/" + methods.length + ") of the methods are commented.");
 			}
 			else //if there are no methods...
-				prop.setProperty("" + classID + ".000", "Class: " + classes[i].name() 
-					+ " has no JavaDoc\'d methods.");
+				prop.setProperty("" + classID + ".000", "This class has no JavaDoc\'d methods.");
 
 			methodsCommented = 0;
 			percentCommented = 0.0;
