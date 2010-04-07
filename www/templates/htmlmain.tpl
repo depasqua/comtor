@@ -12,7 +12,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
 	<script type="text/javascript" src="jQuery/js/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" src="jQuery/js/jquery-ui-1.8.custom.min.js"></script>	
+	<script type="text/javascript" src="jQuery/js/jquery-ui-1.8.custom.min.js"></script>
+	<script type="text/javascript" src="jQuery/mousewheel/jquery.mousewheel.js"></script>	
 	<script type="text/javascript" src="jQuery/timeentry/jquery.timeentry.js"></script>
 
 	<title>{$windowTitle|default:"COMTOR"}</title>

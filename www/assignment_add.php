@@ -50,23 +50,23 @@ if (!empty($_POST))
 			$_POST['name'] = substr($_POST['name'], 0, 255);
 		}
 
-		// Validate and parse open date
-		if (!isset($_POST['openDate']) || $_POST['openDate'] == "")
+		// Make sure openDate from POST is in MM/DD/YYYY format and parse it
+		if (!isset($_POST['openDate']) || !preg_match("#^\d{2}/\d{2}/\d{4}$#", $_POST['openDate']))
 		{
-			$error[] = "Assignment open date not fully entered.";
+			$error[] = "Assignment open date not correctly entered.";
 			$fatal = true;
 		}
 		else
 		{
-			$openMonth = strtok($_POST['openDate'], "/");
-			$openDay = strtok("/");
-			$openYear = strtok("/");
+			$openMonth = substr($_POST['openDate'], 0, 2);
+			$openDay = substr($_POST['openDate'], 3, 2);
+			$openYear = substr($_POST['openDate'], 6, 4);
 		}
 
-		// Validate and contruct open time
-		if (!isset($_POST['openTime']) || $_POST['openTime'] == "")
+		// Make sure openTime from POST is in 12:12AM style format and construct the open time
+		if (!isset($_POST['openTime']) || !preg_match("#^\d{2}:\d{2}AM|PM#", $_POST['openTime']))
 		{
-			$error[] = "Assignment open time not fully entered.";
+			$error[] = "Assignment open time not correctly entered.";
 			$fatal = true;
 		}
 		else
@@ -82,23 +82,23 @@ if (!empty($_POST))
 			$openTime = mktime($openHour, $openMinute, 0, $openMonth, $openDay, $openYear);
 		}
 
-		// Validate and parse close date
-		if (!isset($_POST['closeDate']) || $_POST['closeDate'] == "")
+		// Make sure closeDate from POST is in MM/DD/YYYY format and parse it
+		if (!isset($_POST['closeDate']) || !preg_match("#^\d{2}/\d{2}/\d{4}$#", $_POST['closeDate']))
 		{
-			$error[] = "Assignment close date not fully entered.";
+			$error[] = "Assignment close date not correctly entered.";
 			$fatal = true;
 		}
 		else
 		{
-			$closeMonth = strtok($_POST['closeDate'], "/");
-			$closeDay = strtok("/");
-			$closeYear = strtok("/");
+			$closeMonth = substr($_POST['closeDate'], 0, 2);
+			$closeDay = substr($_POST['closeDate'], 3, 2);
+			$closeYear = substr($_POST['closeDate'], 6, 4);
 		}
 
-		// Validate and parse close time
-		if (!isset($_POST['closeTime']) || $_POST['closeTime'] == "")
+		// Make sure closeTime from POST is in 12:12AM style format and construct the close time
+		if (!isset($_POST['closeTime']) || !preg_match("#^\d{2}:\d{2}AM|PM$#", $_POST['closeTime']))
 		{
-			$error[] = "Assignment close time not fully entered.";
+			$error[] = "Assignment close time not correctly entered.";
 			$fatal = true;
 		}
 		else

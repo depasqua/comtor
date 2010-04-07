@@ -5,13 +5,11 @@
 		$("#closeCalendar").datepicker();
 		$("#openTimeEntry").timeEntry({
 			spinnerImage: "jQuery/timeentry/spinnerText.png",
-			spinnerSize: [30, 20, 8],
-			useMouseWheel: true
+			spinnerSize: [30, 20, 8]
 		});
 		$("#closeTimeEntry").timeEntry({
 			spinnerImage: "jQuery/timeentry/spinnerText.png",
-			spinnerSize: [30, 20, 8],
-			useMouseWheel: true
+			spinnerSize: [30, 20, 8]
 		});
 	});
 </script>
