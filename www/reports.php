@@ -216,16 +216,32 @@ if(isset($_GET['userEventId']))
                 if(strlen($index) == 3)
                   $props2[] = array('class'=>'class', 'value'=>$prop['value']);
                 //property list index - 011.002
-                else if(strlen($index) == 7)
-                  $props2[] = array('class'=>'method', 'value'=>$prop['value']);
+                else if(strlen($index) == 7){
+                  if (preg_match("#\(Re\)$#", $prop['value']))
+                    $props2[] = array('class'=>'methodRed', 'value'=>substr($prop['value'], 0, -4));
+                  else if (preg_match("#\(Ye\)$#", $prop['value']))
+                    $props2[] = array('class'=>'methodYellow', 'value'=>substr($prop['value'], 0, -4));
+                  else if (preg_match("#\(Gr\)$#", $prop['value']))
+                    $props2[] = array('class'=>'methodGreen', 'value'=>substr($prop['value'], 0, -4));
+                  else if (preg_match("#\(Or\)$#", $prop['value']))
+                    $props2[] = array('class'=>'methodOrange', 'value'=>substr($prop['value'], 0, -4));
+                  else if (preg_match("#\(Bl\)$#", $prop['value']))
+                    $props2[] = array('class'=>'methodBlue', 'value'=>substr($prop['value'], 0, -4));
+                  else
+                    $props2[] = array('class'=>'method', 'value'=>$prop['value']);
+                }
                 //property list index - 001.002.a
                 else if(strlen($index) > 7){
-                  if ($docletId == 1){
-                    if (preg_match("#NCORRECT\)$#", $prop['value']))
-                      $props2[] = array('class'=>'comment', 'value'=>('<div class=\'incorrect\'>' . $prop['value'] . '</div>'));
-                    else
-                      $props2[] = array('class'=>'comment', 'value'=>$prop['value']);
-                  }
+                  if (preg_match("#\(Re\)$#", $prop['value']))
+                    $props2[] = array('class'=>'commentRed', 'value'=>substr($prop['value'], 0, -4));
+                  else if (preg_match("#\(Ye\)$#", $prop['value']))
+                    $props2[] = array('class'=>'commentYellow', 'value'=>substr($prop['value'], 0, -4));
+                  else if (preg_match("#\(Gr\)$#", $prop['value']))
+                    $props2[] = array('class'=>'commentGreen', 'value'=>substr($prop['value'], 0, -4));
+                  else if (preg_match("#\(Or\)$#", $prop['value']))
+                    $props2[] = array('class'=>'commentOrange', 'value'=>substr($prop['value'], 0, -4));
+                  else if (preg_match("#\(Bl\)$#", $prop['value']))
+                    $props2[] = array('class'=>'commentBlue', 'value'=>substr($prop['value'], 0, -4));
                   else
                     $props2[] = array('class'=>'comment', 'value'=>$prop['value']);
                 }
