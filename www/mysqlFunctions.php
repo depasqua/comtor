@@ -634,7 +634,7 @@ function getReportInfo($userEventId)
   if (!is_numeric($userEventId))
     return false;
 
-  $query = "SELECT * FROM userEventsViewWErrors WHERE userEventId={$userEventId} LIMIT 1";
+  $query = "SELECT * FROM userEvents WHERE userEventId={$userEventId} LIMIT 1";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
@@ -2283,7 +2283,7 @@ function getAssignments($courseId, $params = array())
       if ($userId !== null)
       {
         $row['submissions'] = array();
-        $query = 'SELECT userEventId, dateTime as submission_date, compilationError FROM userEventsViewWErrors WHERE userEventId IN (SELECT userEventId FROM assignmentEvents WHERE assignmentId=' . $row['assignmentId'] . ' AND userId=' . $userId . ') ORDER BY dateTime ASC';
+        $query = 'SELECT userEventId, dateTime as submission_date, compilationError FROM userEvents WHERE userEventId IN (SELECT userEventId FROM assignmentEvents WHERE assignmentId=' . $row['assignmentId'] . ' AND userId=' . $userId . ') ORDER BY dateTime ASC';
         $result = mysql_query($query);
         $version = 1;
         while ($submission = mysql_fetch_array($result, MYSQL_ASSOC))
