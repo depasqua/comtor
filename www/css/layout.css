@@ -710,8 +710,87 @@ li.question
 }
 
 
-div.incorrect
+div.commentRed
 {
+  font-size: 1em;
   background-color: #ed9898;
-  padding: 10px 10px 10px 10px;
+  padding: 10px 0px 10px 5px;
+  margin-left: 45px;
+}
+
+div.commentYellow
+{
+  font-size: 1em;
+  background-color: #ffff60;
+  padding: 10px 0px 10px 5px;
+  margin-left: 45px;
+}
+
+div.commentGreen
+{
+  font-size: 1em;
+  background-color: #b0ed98;
+  padding: 10px 0px 10px 5px;
+  margin-left: 45px;
+}
+
+div.commentOrange
+{
+  font-size: 1em;
+  background-color: #ffcc33;
+  padding: 10px 0px 10px 5px;
+  margin-left: 45px;
+}
+
+div.commentBlue
+{
+  font-size: 1em;
+  background-color: #99ccff;
+  padding: 10px 0px 10px 5px;
+  margin-left: 45px;
+}
+
+div.methodRed
+{
+  font-size: 1.05em;
+  font-style: italic;
+  background-color: #ed9898;
+  padding: 10px 0px 10px 5px;
+  margin-left: 20px;
+}
+
+div.methodYellow
+{
+  font-size: 1.05em;
+  font-style: italic;
+  background-color: #ffff60;
+  padding: 10px 0px 10px 5px;
+  margin-left: 20px;
+}
+
+div.methodGreen
+{
+  font-size: 1.05em;
+  font-style: italic;
+  background-color: #b0ed98;
+  padding: 10px 0px 10px 5px;
+  margin-left: 20px;
+}
+
+div.methodOrange
+{
+  font-size: 1.05em;
+  font-style: italic;
+  background-color: #ffcc33;
+  padding: 10px 0px 10px 5px;
+  margin-left: 20px;
+}
+
+div.methodBlue
+{
+  font-size: 1.05em;
+  font-style: italic;
+  background-color: #99ccff;
+  padding: 10px 0px 10px 5px;
+  margin-left: 20px;
 }
