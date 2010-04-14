@@ -219,8 +219,16 @@ if(isset($_GET['userEventId']))
                 else if(strlen($index) == 7)
                   $props2[] = array('class'=>'method', 'value'=>$prop['value']);
                 //property list index - 001.002.a
-                else if(strlen($index) > 7)
-                  $props2[] = array('class'=>'comment', 'value'=>$prop['value']);
+                else if(strlen($index) > 7){
+                  if ($docletId == 1){
+                    if (preg_match("#NCORRECT\)$#", $prop['value']))
+                      $props2[] = array('class'=>'comment', 'value'=>('<div class=\'incorrect\'>' . $prop['value'] . '</div>'));
+                    else
+                      $props2[] = array('class'=>'comment', 'value'=>$prop['value']);
+                  }
+                  else
+                    $props2[] = array('class'=>'comment', 'value'=>$prop['value']);
+                }
               }
 
               $doclet['props'] = $props2;
@@ -513,4 +521,17 @@ function colorize($str)
   return $str;
 }
 
+/******************************************************************************
+* Returns whether one string ends with another
+* @param string $str String of java program
+******************************************************************************/
+function endsWith($fullStr, $endStr)
+{
+  // Get the length of the end string to check for
+  $endStrLen = strlen($endStr);
+  // Look at the end of $fullStr for a substring the length of endStr
+  $fullStrEnd = substr($fullStr, strlen($fullStr) - $endStrLen);
+  // Check if they match
+  return $fullStrEnd == $endStr;
+}
 ?>

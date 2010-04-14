@@ -708,3 +708,10 @@ li.question
   list-style-type: square;
   margin-bottom: 1px;
 }
+
+
+div.incorrect
+{
+  background-color: #ed9898;
+  padding: 10px 10px 10px 10px;
+}
