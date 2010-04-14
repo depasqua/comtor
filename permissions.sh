@@ -11,7 +11,7 @@
 #access.                                                              #
 #                                                                     #
 #                                                                     #
-#To run this file, use the command "bash packager.sh".		      #
+#To run this file, use the command "bash permissions.sh".	      #
 #                                                                     #
 #######################################################################
 
