@@ -520,18 +520,4 @@ function colorize($str)
 
   return $str;
 }
-
-/******************************************************************************
-* Returns whether one string ends with another
-* @param string $str String of java program
-******************************************************************************/
-function endsWith($fullStr, $endStr)
-{
-  // Get the length of the end string to check for
-  $endStrLen = strlen($endStr);
-  // Look at the end of $fullStr for a substring the length of endStr
-  $fullStrEnd = substr($fullStr, strlen($fullStr) - $endStrLen);
-  // Check if they match
-  return $fullStrEnd == $endStr;
-}
 ?>
