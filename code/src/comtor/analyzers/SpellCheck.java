@@ -155,7 +155,7 @@ public final class SpellCheck implements ComtorDoclet {
 				//write the leading line. Otherwise, print the word.
 				if (num == 0) {
 					prop.setProperty("000.000.", 
-						"The following word(s) is/are misspelled:");
+						"The following word(s) is/are misspelled: (Ye)");
 					num++;
 				}
 				prop.setProperty("000.000."+num, word);

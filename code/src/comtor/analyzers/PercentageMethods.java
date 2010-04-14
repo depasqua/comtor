@@ -94,8 +94,14 @@ public class PercentageMethods implements ComtorDoclet
 				percentCommented = (double)((1.0*methodsCommented)/methods.length);
 
 				//Store percentCommented in the property list
-				prop.setProperty("" + classID + ".000", Math.round(percentCommented*100) 
-					+ " percent (" + methodsCommented + "/" + methods.length + ") of the methods are commented.");
+				if (methodsCommented == 0) {
+					prop.setProperty("" + classID + ".000", Math.round(percentCommented*100) 
+					+ " percent (" + methodsCommented + "/" + methods.length + ") of the methods are commented. (Re)");
+				}
+				else {
+					prop.setProperty("" + classID + ".000", Math.round(percentCommented*100) 
+						+ " percent (" + methodsCommented + "/" + methods.length + ") of the methods are commented.");
+				}
 			}
 			else //if there are no methods...
 				prop.setProperty("" + classID + ".000", "This class has no JavaDoc\'d methods.");

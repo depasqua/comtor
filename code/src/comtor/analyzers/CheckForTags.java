@@ -391,8 +391,7 @@ public class CheckForTags implements ComtorDoclet
 					{
 						// No @return tag(s) present in comments, correct
 						prop.setProperty(classID + "." + methodID + ".b",
-							"@return tag not required by this method. " +
-							"(CORRECT)");
+							"@return tag not required by this method.");
 						return_points += 4;
 					}
 					else
@@ -401,7 +400,7 @@ public class CheckForTags implements ComtorDoclet
 						prop.setProperty(classID + "." + methodID + ".b",
 							"The @return tag should not be present when " +
 							"the method's return type is 'void'. " +
-							"(PARTIALLY CORRECT)");
+							"(Ye)");
 						return_points += 3;
 					}
 				}
@@ -418,7 +417,7 @@ public class CheckForTags implements ComtorDoclet
 								"Although a @return tag is present, there " +
 								"is no comment following the tag to describe " +
 								"the return type, " + returnType + 
-								".  (PARTIALLY CORRECT)");
+								".  (Ye)");
 							return_points += 2;
 						}
 						else
@@ -426,8 +425,7 @@ public class CheckForTags implements ComtorDoclet
 							// A non-blank comment string was found
 							prop.setProperty(classID + "." + methodID + ".b",
 								"A @return tag is present and there is a " +
-								"comment describing the return type. " +
-								"(CORRECT)");
+								"comment describing the return type.");
 							return_points += 4;
 						}
 
@@ -437,7 +435,7 @@ public class CheckForTags implements ComtorDoclet
 						prop.setProperty(classID + "." + methodID + ".b", 
 						"There is no @return tag present to describe the " +
 						"returned value (of type '" + returnType + 
-						"'). (INCORRECT)");
+						"'). (Re)");
 
 					else if (returnTags.length > 1)
 						// If multiple @return tags are located in the comments,
@@ -446,7 +444,7 @@ public class CheckForTags implements ComtorDoclet
 						"Multiple @return tags were detected. A method's " +
 						"comments should only be documented with one @return " +
 						"tag, assuming the method returns a value or " +
-						"reference. (INCORRECT)");
+						"reference. (Re)");
 				}
 
 				// ========================
@@ -480,14 +478,14 @@ public class CheckForTags implements ComtorDoclet
 									"with the formal parameter '" +
 									parameter[s].name() + "' is present, but " +
 									"the comment for this parameter is " +
-									"missing from the tag. (INCORRECT)");
+									"missing from the tag. (Re)");
 							else
 							{
 								prop.setProperty(classID + "." + methodID +
 									".c" + count, "A @param tag is present, " +
 									"the parameter is named, and there is " +
 									"a comment describing the parameter '" +
-									parameter[s].name() + "'. (CORRECT)");
+									parameter[s].name() + "'.");
 								param_points++;
 							}
 							paramCount++;
@@ -500,7 +498,7 @@ public class CheckForTags implements ComtorDoclet
 						String count = numberFormat(paramCount);
 						prop.setProperty(classID + "." + methodID + ".c" +
 							count,  "There is no @param tag present to " +
-							"describe the parameter named '" + parameter[s].name() + "'. (INCORRECT)");
+							"describe the parameter named '" + parameter[s].name() + "'. (Re)");
 						paramCount++;
 					}
 					param_max++;
@@ -524,7 +522,7 @@ public class CheckForTags implements ComtorDoclet
 						prop.setProperty(classID + "." + methodID + ".c" +
 							count, "The @param tag named '" +
 								ptag.name() + "' fails to match any " + 
-								"formal parameter. (INCORRECT)");
+								"formal parameter. (Re)");
 						
 						// Increase the maximum points for this parameter
 						// by one, such that it lowers the score.
@@ -564,14 +562,14 @@ public class CheckForTags implements ComtorDoclet
 									".d" + num, "The @throws tag associated " +
 									"with the exception named '" + exceptions[s].name() + "' is present, " +
 									"but the comment for this exception " + 
-									"is missing from the tag. (INCORRECT)");
+									"is missing from the tag. (Re)");
 							else
 							{
 								prop.setProperty(classID + "." + methodID +
 								".d" + num, "A @throws tag is present, the " +
 								"exception is named, and there is a comment " +
 								"describing the exception named '" +
-								exceptions[s].name() + ". (CORRECT).");
+								exceptions[s].name() + ".");
 								throws_points++;
 							}
 							throwsCount++;
@@ -585,7 +583,7 @@ public class CheckForTags implements ComtorDoclet
 						prop.setProperty(classID + "." + methodID + ".d" +
 						num, "There is no @throws tag present to describe " +
 						"the exception named '" + exceptions[s].name() +
-						". (INCORRECT)");
+						". (Re)");
 						throwsCount++;
 					}
 					throws_max++;
@@ -607,7 +605,7 @@ public class CheckForTags implements ComtorDoclet
 						String num = numberFormat(throwsCount);
 						prop.setProperty(classID + "." + methodID + ".d" + num,
 							"The @throws tag named '" + throwsTags[s].text() + 
-							"' fails to match an exception type. (INCORRECT)");
+							"' fails to match an exception type. (Re)");
 
 						// Increase the maximum points for throws by one, 
 						// such that it lowers the score.
