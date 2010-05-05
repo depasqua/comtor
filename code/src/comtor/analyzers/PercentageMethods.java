@@ -96,7 +96,7 @@ public class PercentageMethods implements ComtorDoclet
 				//Store percentCommented in the property list
 				if (methodsCommented == 0) {
 					prop.setProperty("" + classID + ".000", Math.round(percentCommented*100) 
-					+ " percent (" + methodsCommented + "/" + methods.length + ") of the methods are commented. (Re)");
+					+ " percent (" + methodsCommented + "/" + methods.length + ") of the methods are commented.");
 				}
 				else {
 					prop.setProperty("" + classID + ".000", Math.round(percentCommented*100) 

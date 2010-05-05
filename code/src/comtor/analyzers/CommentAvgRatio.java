@@ -92,7 +92,7 @@ public final class CommentAvgRatio implements ComtorDoclet
 			        //Store length of comments for the method in the property list.
 			        if (commentLength == 0) {
 			        	prop.setProperty(classID + "." + methodID, "The length of comments for the method " 
-					+ methods[j].name() + " is " + commentLength + " words. (Re)");
+					+ methods[j].name() + " is " + commentLength + " words.");
 				}
 				else {
 					prop.setProperty(classID + "." + methodID, "The length of comments for the method " 
@@ -119,7 +119,7 @@ public final class CommentAvgRatio implements ComtorDoclet
 				
 				if (average == 0) {
 					prop.setProperty(classID + "." + methodLength, 
-					"Average length of comments: " + average + " words. (Re)");
+					"Average length of comments: " + average + " words.");
 				}
 				else {
 					prop.setProperty(classID + "." + methodLength, 

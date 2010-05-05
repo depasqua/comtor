@@ -113,13 +113,13 @@ public class PreAndPostCheck implements ComtorDoclet
 				//if there is no precondition text tag present
 				if ((preTextTags.length == 0) && (preExpTags.length == 0))
 				{
-	  				prop.setProperty(classID + "." + methodID + ".a", "No @pre_text or @pre_exp tag used for " + methods[j].name() + ". Please write a precondition for this method. (Re)");
+	  				prop.setProperty(classID + "." + methodID + ".a", "No @pre_text or @pre_exp tag used for " + methods[j].name() + ". Please write a precondition for this method. (INCORRECT)");
 				}
 				else if (preTextTags.length == 1) //there is one @pre_text tag for this method
 				{      		
 	  				if (preTextTags[0].text().trim().equals("")) //if there is no text following the tag
 	  				{	
-	    					prop.setProperty(classID + "." + methodID + ".a", "There is a @pre_text tag used for " + methods[j].name() + ". However there is no description of the precondition. Please write a precondition. (Ye)");
+	    					prop.setProperty(classID + "." + methodID + ".a", "There is a @pre_text tag used for " + methods[j].name() + ". However there is no description of the precondition. Please write a precondition. (PARTIALLY CORRECT)");
 	    					prePoints += onlyHasTagCredit;
 	  				}
 	  				else //there is text after the tag
@@ -138,7 +138,7 @@ public class PreAndPostCheck implements ComtorDoclet
 	      						}
 		      					else 
 					      		{
-	        						prop.setProperty(classID + "." + methodID + ".a", "There is a @pre_text tag used for " + methods[j].name() + ". More description of the precondition is needed for full credit. (Ye)");
+	        						prop.setProperty(classID + "." + methodID + ".a", "There is a @pre_text tag used for " + methods[j].name() + ". More description of the precondition is needed for full credit. (PARTIALLY CORRECT)");
 	        						prePoints += halfCredit;
 	      						}
 	    					}
@@ -146,12 +146,12 @@ public class PreAndPostCheck implements ComtorDoclet
 	    					{
 	      						if(preTextComment.length() > 5) //acceptable length
 	      						{
-	        						prop.setProperty(classID + "." + methodID + ".a", "There is a @pre_text tag used for " + methods[j].name() + ". A better description of the precondition is needed. Talk about the parameters and the conditions before the method executes. (Ye)");
+	        						prop.setProperty(classID + "." + methodID + ".a", "There is a @pre_text tag used for " + methods[j].name() + ". A better description of the precondition is needed. Talk about the parameters and the conditions before the method executes. (PARTIALLY CORRECT)");
 	        						prePoints += halfCredit;
 	      						}
 	      						else
 	      						{
-								prop.setProperty(classID + "." + methodID + ".a", "There is a @pre_text tag used for " + methods[j].name() + ". A better description of the precondition is needed. Try talking about the parameters and the conditions before the method executes.\n Also elaborate on the precondition more. (Ye)");
+								prop.setProperty(classID + "." + methodID + ".a", "There is a @pre_text tag used for " + methods[j].name() + ". A better description of the precondition is needed. Try talking about the parameters and the conditions before the method executes.\n Also elaborate on the precondition more. (PARTIALLY CORRECT)");
 	        						prePoints += halfCredit;
 	      						}
 	    					}
@@ -159,14 +159,14 @@ public class PreAndPostCheck implements ComtorDoclet
 	  			}
 	  			if(preTextTags.length > 1) //more than one @pre_text tag for a method
 	  			{
-	    				prop.setProperty(classID + "." + methodID + ".a", "There should not be more than one @pre_text tag used for " + methods[j].name() + ". Please remove duplicate @pre tags. (Ye)");
+	    				prop.setProperty(classID + "." + methodID + ".a", "There should not be more than one @pre_text tag used for " + methods[j].name() + ". Please remove duplicate @pre tags. (PARTIALLY CORRECT)");
 	    				prePoints += halfCredit;
 	  			}
 	    			if(preExpTags.length == 1) //there is a @pre_exp tag used for a method
 				{
 					if (preExpTags[0].text().trim().equals(""))//if there is no expression following the tag
 					{
-						prop.setProperty(classID + "." + methodID + ".c", "There is a @pre_exp tag used for " + methods[j].name() + ". However there is no expression following the tag. Please write a precondition expression for this method. (Ye)");
+						prop.setProperty(classID + "." + methodID + ".c", "There is a @pre_exp tag used for " + methods[j].name() + ". However there is no expression following the tag. Please write a precondition expression for this method. (PARTIALLY CORRECT)");
 						prePoints += onlyHasTagCredit;
 					}
 					else //there is text after the tag
@@ -184,27 +184,27 @@ public class PreAndPostCheck implements ComtorDoclet
 						}
 						else //comment is not a valid expression
 						{
-							prop.setProperty(classID + "." + methodID + ".c", "There is a @pre_exp tag used for " + methods[j].name() + ". However no valid expression was provided. Please write a valid precondition expression. (Ye)");
+							prop.setProperty(classID + "." + methodID + ".c", "There is a @pre_exp tag used for " + methods[j].name() + ". However no valid expression was provided. Please write a valid precondition expression. (PARTIALLY CORRECT)");
 	  						prePoints += halfCredit;
 						}
 					}
 				}
 				if (preExpTags.length > 1)
 				{
-					prop.setProperty(classID + "." + methodID + ".c", "There is more than one @pre_exp tag used for " + methods[j].name() + ". Only one @pre_exp tag should be used per method. (Re)");
+					prop.setProperty(classID + "." + methodID + ".c", "There is more than one @pre_exp tag used for " + methods[j].name() + ". Only one @pre_exp tag should be used per method. (INCORRECT)");
 					prePoints += halfCredit;
 				}
 				//if there is no postcondition tag present
 				if ((postTextTags.length == 0) && (postExpTags.length == 0))
 				{
-	  				prop.setProperty(classID + "." + methodID + ".b", "No @post_text or @post_exp tag used for " + methods[j].name() + ". Please write a postcondition for this method. (Re)");
+	  				prop.setProperty(classID + "." + methodID + ".b", "No @post_text or @post_exp tag used for " + methods[j].name() + ". Please write a postcondition for this method. (INCORRECT)");
 				}
 				else if (postTextTags.length == 1) //there is one @post_text tag for this method
 				{
 	  		
 	  				if (postTextTags[0].text().trim().equals("")) //if there is no text following the tag
 	  				{	
-	    					prop.setProperty(classID + "." + methodID + ".b", "There is a @post_text tag used for " + methods[j].name() + ". However there is no description of the postcondition. Please write a postcondition. (Ye)");
+	    					prop.setProperty(classID + "." + methodID + ".b", "There is a @post_text tag used for " + methods[j].name() + ". However there is no description of the postcondition. Please write a postcondition. (PARTIALLY CORRECT)");
 	    					postPoints += onlyHasTagCredit;
 	  				}
 	  				else //there is text after the tag
@@ -225,7 +225,7 @@ public class PreAndPostCheck implements ComtorDoclet
 	    						}
 	   				 		else
 	    						{
-	      							prop.setProperty(classID + "." + methodID + ".b", "There is a @post_text tag used for " + methods[j].name() + ". More description of the postcondition is needed for full credit. (Ye)");
+	      							prop.setProperty(classID + "." + methodID + ".b", "There is a @post_text tag used for " + methods[j].name() + ". More description of the postcondition is needed for full credit. (PARTIALLY CORRECT)");
 	      							postPoints += halfCredit;
 	    						}
 	    					}
@@ -233,12 +233,12 @@ public class PreAndPostCheck implements ComtorDoclet
 	    					{
 	      						if(postTextComment.length() > 5)//acceptable length
 	      						{
-	        						prop.setProperty(classID + "." + methodID + ".b", "There is a @post_text tag used for " + methods[j].name() + ". A better description of the postcondition is needed. Talk about the values returned or modified and the state of the program after the method executes. (Ye)");
+	        						prop.setProperty(classID + "." + methodID + ".b", "There is a @post_text tag used for " + methods[j].name() + ". A better description of the postcondition is needed. Talk about the values returned or modified and the state of the program after the method executes. (PARTIALLY CORRECT)");
 	        						postPoints += halfCredit;
 	     				 		}
 	      						else
 	      						{
-								prop.setProperty(classID + "." + methodID + ".b", "There is a @post_text tag used for " + methods[j].name() + ". A better description of the postcondition is needed. Try talking about the modified and/or returned values and the state of the program after the method executes.\n Also elaborate on the postcondition more. (Ye)");
+								prop.setProperty(classID + "." + methodID + ".b", "There is a @post_text tag used for " + methods[j].name() + ". A better description of the postcondition is needed. Try talking about the modified and/or returned values and the state of the program after the method executes.\n Also elaborate on the postcondition more. (PARTIALLY CORRECT)");
 	        						postPoints += halfCredit;
 	      						}
 	    					}
@@ -247,14 +247,14 @@ public class PreAndPostCheck implements ComtorDoclet
 	  			}
 	  			if(postTextTags.length > 1) //more than one @post_text tag for a method
 	  			{
-	    				prop.setProperty(classID + "." + methodID + ".b", "There should not be more than one @post_text tag used for " + methods[j].name() + ". Please remove duplicate @post tags. (Re)");
+	    				prop.setProperty(classID + "." + methodID + ".b", "There should not be more than one @post_text tag used for " + methods[j].name() + ". Please remove duplicate @post tags. (INCORRECT)");
 	    				postPoints += halfCredit;
 	  			}
 				if(postExpTags.length == 1) //there is a @post_exp tag used for a method
                                 {
                                         if(postExpTags[0].text().trim().equals("")) //if there is no expression following the tag
                                         {
-                                                prop.setProperty(classID + "." + methodID + ".d", "There is a @post_exp tag used for " + methods[j].name() + ". However there is no expression following the tag. Please write an expresssion. (Ye)");
+                                                prop.setProperty(classID + "." + methodID + ".d", "There is a @post_exp tag used for " + methods[j].name() + ". However there is no expression following the tag. Please write an expresssion. (PARTIALLY CORRECT)");
                                                 postPoints += onlyHasTagCredit;
                                         }
                                         else //there is text after the tag
@@ -272,14 +272,14 @@ public class PreAndPostCheck implements ComtorDoclet
                                                 }
                                                 else //comment is not a valid expression
                                                 {
-                                                        prop.setProperty(classID + "." + methodID + ".d", "There is a @post_exp tag used for " + methods[j].name() + ". However the postcondition given is not a valid expression. Please write a vaild expression. (Ye)");
+                                                        prop.setProperty(classID + "." + methodID + ".d", "There is a @post_exp tag used for " + methods[j].name() + ". However the postcondition given is not a valid expression. Please write a vaild expression. (PARTIALLY CORRECT)");
                                                         postPoints += halfCredit;
 						}
  					}
                                 }
                                 if (postExpTags.length > 1)
                                 {
-                                        prop.setProperty(classID + "." + methodID + ".d", "There is more than one @post_exp tag used for " + methods[j].name() + ". Only one @post_exp tag should be used per method. Please remove extra tags. (Re)");
+                                        prop.setProperty(classID + "." + methodID + ".d", "There is more than one @post_exp tag used for " + methods[j].name() + ". Only one @post_exp tag should be used per method. Please remove extra tags. (INCORRECT)");
                                         postPoints += halfCredit;
                                 }
 			}
