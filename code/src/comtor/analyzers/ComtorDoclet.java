@@ -1,6 +1,6 @@
 /**
  *  Comment Mentor: A Comment Quality Assessment Tool
- *  Copyright (C) 2010 The College of New Jersey
+ *  Copyright (C) 2011 The College of New Jersey
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,44 +21,43 @@ import comtor.*;
 import java.util.*;
 import com.sun.javadoc.*;
 
-public interface ComtorDoclet
-{
-  /**
-   * The analyze method in each analysis module performs the analysis and
-   * operates on the parsed source code (parsed by Javadoc program) as a 
-   * com.sun.javadoc.RootDoc object. The method returns a property list with 
-   * the grading results and the report.
-	*/
+public interface ComtorDoclet {
+	/**
+	 * The analyze method in each analysis module performs the analysis and
+	 * operates on the parsed source code (parsed by Javadoc program) as a 
+	 * com.sun.javadoc.RootDoc object. The method returns a property list with 
+	 * the grading results and the report.
+	 */
 	public Properties analyze(RootDoc root);
 
-  /**
-   * Sets the grading breakdown for the doclet.
-   *
-   * @param section The name of the section for which the max grade is set
-   * @param maxGrade The maximum grade for the section
-   */
-  public void setGradingBreakdown(String section, float maxGrade);
-
- /**
-  * Returns the grade for the doclet.
-  * 
-  * @return returns a float value of the grade for the doclet (post-processing)
-  */
-  public float getGrade();
-
- /**
-  * Sets a parameter used for doclet grading.
-  *
-  * @param param The name of the grading parameter
-  * @param value The value of the grading parameter
-  */
-  public void setGradingParameter(String param, String value);
-
- /**
-  * Sets the configuration properties loaded from the config file
-  *
-  * @param props A Properties list object containing any module configuration
-  * properties.
-  */
-  public void setConfigProperties(Properties props);
+	/**
+	 * Sets the grading breakdown for the doclet.
+	 *
+	 * @param section The name of the section for which the max grade is set
+	 * @param maxGrade The maximum grade for the section
+	 */
+	public void setGradingBreakdown(String section, float maxGrade);
+	
+	/**
+	 * Returns the grade for the doclet.
+	 * 
+	 * @return returns a float value of the grade for the doclet (post-processing)
+	 */
+	public float getGrade();
+	
+	/**
+	 * Sets a parameter used for doclet grading.
+	 *
+	 * @param param The name of the grading parameter
+	 * @param value The value of the grading parameter
+	 */
+	public void setGradingParameter(String param, String value);
+	
+	/**
+	 * Sets the configuration properties loaded from the config file
+	 *
+	 * @param props A Properties list object containing any module configuration
+	 * properties.
+	 */
+	public void setConfigProperties(Properties props);
 }
