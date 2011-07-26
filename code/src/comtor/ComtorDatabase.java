@@ -1,99 +1,84 @@
-/***************************************************************************
-  *  Comment Mentor: A Comment Quality Assessment Tool
-  *  Copyright (C) 2005 Michael E. Locasto
-  *
-  *  This program is free software; you can redistribute it and/or modify
-  *  it under the terms of the GNU General Public License as published by
-  *  the Free Software Foundation; either version 2 of the License, or
-  *  (at your option) any later version.
-  *
-  *  This program is distributed in the hope that it will be useful, but
-  *  WITHOUT ANY WARRANTY; without even the implied warranty of
-  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  *  General Public License for more details.
-  *
-  *  You should have received a copy of the GNU General Public License
-  *  along with this program; if not, write to the:
-  *  Free Software Foundation, Inc.
-  *  59 Temple Place, Suite 330
-  *  Boston, MA  02111-1307  USA
-  **************************************************************************/
+/**
+ *  Comment Mentor: A Comment Quality Assessment Tool
+ *  Copyright (C) 2011 The College of New Jersey
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package comtor;
 
 import comtor.analyzers.*;
 import java.io.*;
+import java.sql.*;
 import java.util.*;
 import java.text.*;
-import java.sql.*;
 
 /**
- * The <code>ComtorDatabase</code> class sets up a database connection
+ * The ComtorDatabase class attempts to establish a database connection for
+ * logging the data analysis data.
  *
  * @author Joe Brigandi
+ * @author Peter DePasquale
  */
 public class ComtorDatabase
 {
-  private String configFile = null;
+	/**
+	 * Gets a database connection
+	 *
+	 * @param configFile String representation of the database configuration file
+	 *
+	 * @return a reference to the connection for the database
+	 */
+	public static Connection getConnection(String configFile)
+	{
+		// Load the database properties from properties file
+		Properties properties = new Properties();
+		try {
+			properties.load(new FileInputStream(configFile));
+		}
+		catch (IOException e) {
+			System.out.println("Error opening the database configuration file.");
+		}
 
-  /**
-   * Gets a database connection
-   *
-   * @param configFile Config file for comtor database
-   */
-  public static Connection getConnection(String configFile)
-  {
-    // Load the database properties from properties file
-    Properties properties = new Properties();
-    try
-    {
-      properties.load(new FileInputStream(configFile));
-    }
-    catch (IOException e)
-    {
-      System.out.println("Error opening config file");
-    }
-    String url = properties.getProperty("databaseUrl");
-    String username = properties.getProperty("username");
-    String password = properties.getProperty("password");
-    Connection con = null;
+		String dbUrl = properties.getProperty("databaseUrl");
+		String dbUName = properties.getProperty("username");
+		String dbPasswd = properties.getProperty("password");
+		Connection dbConnection = null;
 
-    boolean hasDriver = false;
-    // Create class for the driver
-    try
-    {
-      Class.forName("com.mysql.jdbc.Driver");
-      hasDriver = true;
-    }
-    catch (Exception e)
-    {
-      System.out.println("Failed to load MySQL JDBC driver class.");
-      System.out.println(e);
-    }
+		try {
+			// Attempt to load the database driver
+			Class.forName("com.mysql.jdbc.Driver");
 
-    // Create connection to database if the driver was found
-    if (hasDriver)
-    {
-      try
-      {
-        con = DriverManager.getConnection(url, username, password);
-      }
-      catch(SQLException e)
-      {
-        System.out.println("Couldn't get connection!");
-        System.out.println("URL: \"" + url+"\"");
-        System.out.println("Username: \"" + username+"\"");
-//        System.out.println(e);
-        e.printStackTrace();
-      }
-    }
+			// Establish a connection to the database if the driver was loaded
+			dbConnection = DriverManager.getConnection(dbUrl, dbUName, dbPasswd);
 
+			// Check that a connection was made
+			if (dbConnection == null) {
+				System.out.println("Failed to connect to the database.");
+				System.out.println("URL: " + dbUrl);
+				System.out.println("Username: " + dbUName);
+			}
+		}
+		catch (SQLException e) {
+			System.out.println("Failed to obtain a connection to the database.");
+			System.out.println("URL: " + dbUrl);
+			System.out.println("Username: " + dbUName);
+		}
+		catch (Exception e) {
+			System.out.println("Failed to load MySQL JDBC driver.");
+			System.out.println(e);
+		}
 
-    // Check that a connection was made
-    if (con == null)
-    {
-      System.out.println("Couldn't get connection!");
-    }
-
-    return con;
-  }
+		return dbConnection;
+	}
 }
