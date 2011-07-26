@@ -1,31 +1,27 @@
-/***************************************************************************
-  *  Comment Mentor: A Comment Quality Assessment Tool
-  *  Copyright (C) 2005 Michael E. Locasto
-  *
-  *  This program is free software; you can redistribute it and/or modify
-  *  it under the terms of the GNU General Public License as published by
-  *  the Free Software Foundation; either version 2 of the License, or
-  *  (at your option) any later version.
-  *
-  *  This program is distributed in the hope that it will be useful, but
-  *  WITHOUT ANY WARRANTY; without even the implied warranty of
-  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  *  General Public License for more details.
-  *
-  *  You should have received a copy of the GNU General Public License
-  *  along with this program; if not, write to the:
-  *  Free Software Foundation, Inc.
-  *  59 Temple Place, Suite 330
-  *  Boston, MA  02111-1307  USA
-  *
-  **************************************************************************/
+/**
+ *  Comment Mentor: A Comment Quality Assessment Tool
+ *  Copyright (C) 2011 The College of New Jersey
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package comtor;
 
 import comtor.analyzers.*;
 import java.io.*;
+import java.sql.*;
 import java.util.*;
 import java.text.*;
-import java.sql.*;
 
 /**
  * The <code>GenerateErrorReport</code> class is a tool to insert a
@@ -50,20 +46,19 @@ public class GenerateErrorReport
     String configFile = null;
     if (args.length > 0)
       configFile = args[0];
-    try
-    {
-      if (configFile == null)
-      {
+
+    try {
+      if (configFile == null) {
         System.out.println("Database config file not set.");
         return;
       }
       else
         properties.load(new FileInputStream(configFile));
     }
-    catch (IOException e)
-    {
+    catch (IOException e) {
       System.out.println("Error opening config file.");
     }
+    
     String url = properties.getProperty("databaseUrl");
     String username = properties.getProperty("username");
     String password = properties.getProperty("password");
@@ -72,8 +67,7 @@ public class GenerateErrorReport
 
     // Try to open file containing javac output
     String output = "";
-    try
-    {
+    try {
       BufferedReader outputReader = new BufferedReader(new FileReader(dir + "/CompileOut.txt"));
 
       while (outputReader.ready())
@@ -82,50 +76,41 @@ public class GenerateErrorReport
       // Close file
       outputReader.close();
     }
-    catch (FileNotFoundException e)
-    {
+    catch (FileNotFoundException e) {
       System.out.println("Error opening compilation output file.");
       return;
     }
-    catch (IOException e)
-    {
+    catch (IOException e) {
       System.out.println("I/O Exception Occured.");
       return;
     }
 
     boolean hasDriver = false;
     // Create class for the driver
-    try
-    {
+    try {
       Class.forName("com.mysql.jdbc.Driver");
       hasDriver = true;
     }
-    catch (Exception e)
-    {
+    catch (Exception e) {
       System.out.println("Failed to load MySQL JDBC driver class.");
     }
 
     // Create connection to database if the driver was found
-    if (hasDriver)
-    {
-      try
-      {
+    if (hasDriver) {
+      try {
         con = DriverManager.getConnection(url, username, password);
       }
-      catch(SQLException e)
-      {
+      catch(SQLException e) {
         System.out.println( "Couldn't get connection!" );
       }
     }
 
     // Check that a connection was made
-    if (con != null)
-    {
+    if (con != null) {
       long userEventId = -1;
 
       // Store results from the report into the database
-      try
-      {
+      try {
         BufferedReader rd = new BufferedReader(new FileReader(dir + "/userId.txt")); // Read userId.txt to get userId
         String userId = rd.readLine(); // Store userId from text file
         rd.close();
@@ -151,22 +136,19 @@ public class GenerateErrorReport
         // Close the prepare statements
         compErrorPrepStmt.close();
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
         System.out.println("Exception Occurred");
         System.out.println(e);
       }
 
       // Store the java files for the report
-      try
-      {
+      try {
         // Prepare statement for storing files
         PreparedStatement filePrepStmt = con.prepareStatement("INSERT INTO files(userEventId, filename, contents) VALUES ("+userEventId+", ?, ?)");
 
         // Get the list of files from source.txt
         BufferedReader rd = new BufferedReader(new FileReader(dir + "/source.txt")); // Read userId.txt to get userId
-        while (rd.ready())
-        {
+        while (rd.ready()) {
            String filename = rd.readLine(); // Store userId from text file
            // Remove the "src/" from the beginning to get the real file name
            String realname = filename.substring(4);
@@ -183,12 +165,10 @@ public class GenerateErrorReport
         }
         rd.close();
       }
-      catch (IOException e)
-      {
+      catch (IOException e) {
         System.out.println("I/O Exception Occured.");
       }
-      catch (SQLException e)
-      {
+      catch (SQLException e) {
         System.out.println("SQL Exception Occured.");
       }
     }
