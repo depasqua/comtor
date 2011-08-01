@@ -45,6 +45,11 @@ public class ComtorDebugger {
 			// Create a new debug dump file, and prepare it for writing
 			PrintWriter dumpFile = new PrintWriter(new BufferedWriter(new FileWriter(path)));
 
+			// Write the header of the debug file
+			dumpFile.println("COMTOR Execution Report");
+			dumpFile.println((new java.util.Date()).toString());
+			dumpFile.println("==========================================");
+			
 			// For each vector element, each of which is a properties list from the reports created
  			for (Properties results : resultsVector) {
 				// Fetch the keys, add them to an array, sort and then print results
