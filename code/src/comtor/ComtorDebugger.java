@@ -32,7 +32,7 @@ public class ComtorDebugger {
 	public static void generateDebugFile(Vector<Properties> resultsVector) {
 	
 		// Set the path for the location of the debug dump file.
-		String path = System.getProperty("user.dir").concat("/debug_dump.txt");
+		String path = System.getProperty("user.dir").concat("/comtorReport.txt");
 		try {
 
 			// Check to see the debug file currently exists, if so, delete the old file to
