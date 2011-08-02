@@ -166,10 +166,10 @@ public class GenerateErrorReport
         rd.close();
       }
       catch (IOException e) {
-        System.out.println("I/O Exception Occured.");
+        System.err.println("I/O Exception Occured.");
       }
       catch (SQLException e) {
-        System.out.println("SQL Exception Occured.");
+        System.err.println("SQL Exception Occured.");
       }
     }
   }
