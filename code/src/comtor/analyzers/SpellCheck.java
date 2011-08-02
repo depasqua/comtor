@@ -119,8 +119,8 @@ public final class SpellCheck implements ComtorDoclet {
 			}
 
 			// Ensure that the word is not class/method/parameter/etc name with 's' added to end
-			else if (word.charAt(word.length()-1) == 's' && userSymbols.contains(
-					word.substring(0, word.length()-1))) {
+			else if (word.length() != 0 && word.charAt(word.length()-1) == 's' &&
+					userSymbols.contains(word.substring(0, word.length()-1))) {
 				it.remove();
 				words.add(word);
 			}
@@ -242,7 +242,10 @@ public final class SpellCheck implements ComtorDoclet {
 								int idx = tmp.lastIndexOf('.');
 								if (!tmp.contains("@") && (idx == -1 || idx == tmp.length())) {
 									tmp = tmp.replaceAll("[\\p{Punct}&&[^_]]","");
-									potentialWords.add(tmp);
+									if (!tmp.equals("")) 
+										// Don't add words that are no longer
+										// present following modification (e.g. '?.?')
+										potentialWords.add(tmp);
 								}
 							}
 						}
@@ -319,8 +322,8 @@ public final class SpellCheck implements ComtorDoclet {
 				}
 			}
 			catch (Exception e) {
-				System.out.println("Error searching for word in dictionary.");
-				System.out.println(e);
+				System.err.println("Error searching for word in dictionary.");
+				System.err.println(e);
 			}
 		}
 		return false;
