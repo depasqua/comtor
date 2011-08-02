@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <project name="comtor" default="compile" basedir=".">
-	<description>Builds the comtor application.</description>
+	<description>Build file for the COMTOR application(s)</description>
 	
 	<!-- Define some basic properties for later on. -->
 	<property name="src" location="src"/>
@@ -13,19 +13,23 @@
 	</target>
 	
 	<!-- Build up a classpath file path for later use. -->
-	<path id="comtor.class.path">
+	
+	<!-- Commented out for possible removal.
 		<pathelement location="${thirdpartyjars}/comtor.jar"/>
-		<pathelement location="${thirdpartyjars}/antlr-3.1.1.jar"/>
 		<pathelement location="${thirdpartyjars}/antlr-3.1.1-runtime.jar"/>
-		<pathelement location="${thirdpartyjars}/mysql-connector-java-5.1.6-bin.jar"/>
 		<pathelement location="${thirdpartyjars}/stringtemplate-3.2.jar"/>
+	-->
+	
+	<path id="comtor.class.path">
 		<pathelement path="${classes}"/>
+		<pathelement location="${thirdpartyjars}/antlr-3.1.1.jar"/>
+		<pathelement location="${thirdpartyjars}/mysql-connector-java-5.1.6-bin.jar"/>
 		<pathelement path="${java.home}/jre/lib/tools.jar"/>
+		<pathelement path="${java.home}/../Classes/classes.jar"/> <!-- classes.jar is tools.jar on the mac -->
 	</path>
 	
 	<!-- Compile the source files -->
 	<target name="compile" description="Compile the source" depends="init">
-		<echo>Compilation classpath: ${toString:comtor.class.path}</echo> 
 		<javac srcdir="${src}" destdir="${classes}" compiler="javac1.5" includeantruntime="false" excludes="comtor/incomplete/** comtor/examples/**">
 			<classpath refid="comtor.class.path"/> 
 		</javac>
@@ -41,53 +45,32 @@
 		<delete dir="${classes}"/>
 		
 		<delete>
-		<fileset dir="." includes="**/*~ debug_dump.txt" />
+			<fileset dir="." casesensitive="yes">
+				<include name="**/*~ "/>
+				<include name="comtorReport.txt"/>
+				<include name="comtor.jar"/>
+			</fileset>
 		</delete>		
 	</target>
 	
-	<!-- Executes the application using the files contained in the examples directory -->
-	<target name="run" description="Executes the application using files in the examples directory" depends="compile">
-		<javadoc doclet="comtor.ComtorDriver" docletpath="${classes}" additionalparam="--debug">
-			<fileset dir="${src}/comtor/examples">
-				<include name="**/*.java"/>
-			</fileset>
-		</javadoc>
-		
-		<loadfile property="programOutput" srcFile="debug_dump.txt"/>
-		<echo message="${programOutput}"/>
-	</target>
-	
-	<!-- Executes the application using the files contained in the examples directory -->
-	<target name="standalone" description="Executes the application on files from the user" depends="compile">
-		<!-- Prompt the user for the files (assume jar file for now) -->
-		<input message="Input the relative path of the jar file to process" addproperty="jarname"/>
-		<available file="${jarname}" property="jarfilePresent"/>
-		<fail unless="${jarfilePresent}" message="The jar file ${jarname} is not present."/>
-		<basename file="${jarname}" property="jarbasename"/>
-		
-		<!-- Create a temp dir, copy the jar file to the temp dir, and expand -->
+	<target name="makeStandAlone" depends="compile"
+		description="Builds a distributable .jar file for use as a stand-alone application">
 		<tstamp/>
-		<property name="tempdirname" value="comtortemp${DSTAMP}${TSTAMP}"/>		
-		<mkdir dir="${tempdirname}"/>
-		<mkdir dir="${tempdirname}/contents"/>
-		<copy file="${jarname}" todir="${tempdirname}"/>
-		<unjar src="${tempdirname}/${jarbasename}" dest="${tempdirname}/contents/"/>
-		
-		<!-- Attempt to execute the program on the codebase -->
-		<javadoc doclet="comtor.ComtorDriver" docletpath="${classes}" additionalparam="--debug">
-			<fileset dir="${tempdirname}/contents">
-				<include name="**/*.java"/>
+		<jar destfile="comtor.jar">
+			<manifest>
+				<attribute name="Main-Class" value="comtor.Comtor"/>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Implementation-Title" value="COMTOR"/>
+				<attribute name="Implementation-Version" value="${version} ${TODAY}"/> 
+				<attribute name="Implementation-Vendor" value="The College of New Jersey"/>
+			</manifest>
+			<fileset dir="classes">
+				<include name="**/*.class"/>
 			</fileset>
-			<classpath>
-				<fileset dir="${tempdirname}/contents">
-					<include name="**/*.jar"/>
-				</fileset>
-			</classpath>
-		</javadoc>
-		<delete dir="${tempdirname}"/>
-		<loadfile property="programOutput" srcFile="debug_dump.txt"/>
-		<echo message="${programOutput}"/>
-		
-		<!-- To do: add support for jar dependency in processed jar file -->
+			<fileset dir=".">
+				<include name="Doclets.txt"/>
+			</fileset>
+		</jar>
 	</target>
+
 </project>
