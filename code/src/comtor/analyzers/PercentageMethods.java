@@ -70,7 +70,7 @@ public class PercentageMethods implements ComtorDoclet
 			DecimalFormat formatter = new DecimalFormat("000");
 			String classID = formatter.format(classId); // ID number of this class, for the report
 			
-			prop.setProperty("" + classID, "Class: " + classdoc.name());
+			prop.setProperty("" + classID, "Class: " + classdoc.qualifiedName());
 			methods = classdoc.methods();
 			
 			for (MethodDoc methodoc : methods)
@@ -96,7 +96,7 @@ public class PercentageMethods implements ComtorDoclet
 						+ ") of the methods are commented.");
 			}
 			else //if there are no methods...
-				prop.setProperty(classID + ".000", "This class has no methods commented with JavaDoc.");
+				prop.setProperty(classID + ".000", "This class has no methods.");
 
 			classId++;
 		}
