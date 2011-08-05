@@ -20,6 +20,7 @@ package comtor.analyzers;
 import comtor.*;
 import com.sun.javadoc.*;
 import java.io.*;
+import java.net.*;
 import java.util.*;
 import java.util.regex.*;
 
@@ -54,6 +55,9 @@ public final class SpellCheck implements ComtorDoclet {
 	// Random access dictionary file
 	private RandomAccessFile dict = null;
 
+	// HashSet that contains the list of Java class names (good words)
+	private HashSet<String> javaClassNamesList = new HashSet<String>();
+	
 	/**
 	 * Examine each class and its methods. Calculate the length of each method's comments.
 	 *
@@ -79,13 +83,16 @@ public final class SpellCheck implements ComtorDoclet {
 		// Define a counter for the properties list
 		int num = 0;
 		
-		// Attempt to access the provided dictionary as a random access file.
+		// Attempt to access the local dictionary as a random access file.
 		String baseDir = System.getProperty("user.dir");
 		String dictFile = baseDir.substring(0, baseDir.lastIndexOf("/")).concat("/resources/words");
 		try {
 			dict = new RandomAccessFile(dictFile, "r");
 		}
 		catch (FileNotFoundException fnfe) {
+			System.err.println("Failed to load dictionary from " + dictFile);
+
+			// This is how the dictionary is deployed via the web site
 			dictFile = baseDir.substring(0, baseDir.lastIndexOf("/")).concat("/comtor_data/resources/words");
 			try {
 				dict = new RandomAccessFile(dictFile, "r");
@@ -99,12 +106,16 @@ public final class SpellCheck implements ComtorDoclet {
 			e.printStackTrace();
 			dict = null;
 		}
+		System.err.println("right in dict: " + validWord("right"));
+	
+		loadClassList();
 
+		//-------------------------------------//
 		// Obtain the comments for the rootDoc.
 		parseComment(rootDoc.commentText());
 
 		// Obtain the comments for each class
-		for(ClassDoc docClass : rootDoc.classes())
+		for (ClassDoc docClass : rootDoc.classes())
    			processClass(docClass);
 
 		// Start the report output, printing misspelled words
@@ -144,6 +155,102 @@ public final class SpellCheck implements ComtorDoclet {
 		// Set the score for this analysis and return the property list (report)
 		prop.setProperty("score", "" + getGrade());
 		return prop;
+	}
+
+	/**
+	 * Attempts to load the local and web-based java class list file. The local copy will be updated
+	 * if the internal version number is less than the web-based version number.
+	 *
+	 */
+	private void loadClassList() {
+		// Attempt to load/fetch the most recent list of Java class names
+		String netjavaclassnames = "http://www.comtor.org/javaclasslist.txt";
+		String localjavaclassnames = System.getProperty("user.dir") +
+									 System.getProperty("file.separator") + "javaclasslist.txt";
+		Scanner netjavascan = null;
+		Scanner localjavascan = null;
+		String netFileVersion = null;
+		String localFileVersion = null;
+		
+		try {
+			// Attempt to open / read most recent list on web
+			netjavascan = new Scanner((new URL(netjavaclassnames)).openStream());			
+			netFileVersion = netjavascan.nextLine();
+		} catch (MalformedURLException mue) {
+			;  // Bad URL, it's ok, default to local copy if possible.
+		} catch (IOException ioe) {
+			; // No access to the 'net, default to local copy if possible.
+		}
+		
+		try {
+			// Attempt to open / read local copy
+			File javafile = new File (localjavaclassnames);
+			if (javafile.exists()) {
+				localjavascan = new Scanner(javafile);
+				localFileVersion = localjavascan.nextLine();
+			}
+		} catch (IOException ioe) {
+			System.err.println(ioe);
+		}
+		
+		// Determine what version(s) we have, rewrite local version if needed
+		if (localFileVersion == null && netFileVersion != null) {
+			// Write a new local copy and use the 'net version
+			try {
+				System.out.println("Downloading new java class list file.");
+				PrintStream localFile = new PrintStream (new File(localjavaclassnames));
+				localFile.println(netFileVersion);
+				while (netjavascan.hasNextLine()) {
+					String line = netjavascan.nextLine();
+					localFile.println(line);
+					javaClassNamesList.add(line.toLowerCase());
+				}
+				localFile.close();
+			} catch (FileNotFoundException fnfe) {
+				System.err.println(fnfe);
+				System.exit(1);
+			}
+		} else if (localFileVersion == null && netFileVersion == null) {
+			// Well, there's not much else we can do...
+			System.err.println("Unable to load a local or remote dictionary file.");
+			System.exit(1);
+		} else if (localFileVersion != null && netFileVersion != null) {
+			// Check for freshness of local version
+			if (localFileVersion.compareTo(netFileVersion) < 0) {
+				// Update local copy, net copy is fresher
+				System.out.println("Updating local java class list file.");
+				try {
+					PrintStream localFile = new PrintStream (new File(localjavaclassnames));
+					localFile.println(netFileVersion);
+					while (netjavascan.hasNextLine()) {
+						String line = netjavascan.nextLine();
+						localFile.println(line);
+						javaClassNamesList.add(line.toLowerCase());
+					}
+					localFile.close();
+				} catch (FileNotFoundException fnfe) {
+					System.err.println(fnfe);
+					System.exit(1);
+				}
+			}
+		} else {
+			// Use the local version, 'net is unavailable.
+			System.err.println("Attempting to use local copy of java class list file");
+			try {
+				// Attempt to open / read local copy
+				File javafile = new File (localjavaclassnames);
+				if (javafile.exists()) {
+					localjavascan = new Scanner(javafile);
+					localjavascan.nextLine(); // drop the version number, we don't care right here
+				}
+				while (localjavascan.hasNextLine())
+					javaClassNamesList.add(localjavascan.nextLine().toLowerCase());
+
+				localjavascan.close();
+			} catch (IOException ioe) {
+				System.err.println(ioe);
+			}
+		}
 	}
 
 	/**
@@ -256,18 +363,19 @@ public final class SpellCheck implements ComtorDoclet {
 	}
 
 	/**
-	 * Verifies that the given word is in the dictionary or a user-defined word (symbol).
+	 * Verifies that the given word is in the dictionary, java class name list
+	 * or is a user-defined symbol.
 	 *
 	 * @param word Word to check
-	 * @return returns a true if the parameter exists in the dictionary or is a user-defined word
+	 * @return returns a true if the parameter exists in the dictionaries or is a user-defined word
 	 */
 	private boolean validWord(String word) {
 		word = word.toLowerCase();
 
-		// Check against user-defined words
-		if (validWords.contains(word) || word.length() == 0)
+		// Check against user-defined words, zero-length words, or java class name
+		if (word.length() == 0 || validWords.contains(word) || javaClassNamesList.contains(word))
 			return true;
-      
+
 		// Check for camelCase
 		Character ch;
 		for (int i = 0; i < word.length(); i++) {
