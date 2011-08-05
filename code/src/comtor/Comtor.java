@@ -29,14 +29,20 @@ import java.util.*;
  */
 public class Comtor {
 	private static HashMap<String,String> argsMap = new HashMap<String, String>();
+	private static Properties docPropList = new Properties();
 	
 	/**
-	 * Main method for the Comtor Standalone program.
+	 * Main method for the Comtor standalone program.
 	 *
 	 * @param args Parameters for the program. The only useful parameters are ones we can directly
 	 * pass to Javadoc, as everything really starts there and calls our doclet.
 	 */
 	public static void main (String [] args) {
+	
+		// Loads the list of doclets to execute from the config file in the from which
+		// execution is originating
+		loadDocletList();
+		
 		Vector<String> jdocsoptions = new Vector<String>();
 
 		// Validate the argument list and print the options listing if validation fails.
@@ -265,5 +271,40 @@ public class Comtor {
 				argsMap.put("limitto", args[++index]);
 		}
 		return valid;
+	}
+	
+	/**
+	 * Returns the list of doclets to execute
+	 *
+	 * @return the list of doclets to execute
+	 */
+	public static Properties getDocletList() {
+		return docPropList;
+	}
+	
+	/**
+	 * Attempts to load the doclet list (to execute specified doclets) through a Java properties
+	 * file
+	 */
+	public static void loadDocletList() {
+		try {
+			File docletListFile = new File (System.getProperty("user.dir").concat(
+					"/docletList.properties"));
+			if (docletListFile.exists()) {
+				docPropList.load(new FileInputStream(docletListFile));
+					
+			} else {
+				System.err.println("A 'docletList.properties' file must exist, providing the fully " +
+					"qualified class names of the doclets to execute.\nFor example, " +
+					"comtor.analyzers.SpellCheck");
+				System.err.println("This file must be in Java properties format. For example: ");
+				System.err.println("\tdoclet1 : comtor.analyzers.SpellCheck");
+				System.err.println("\tdoclet2 : comtor.analyzers.ReadingLevel");
+				System.exit(1);
+			}
+		} catch (IOException ioe) {
+			System.err.println(ioe);
+			System.exit(1);
+		}
 	}
 }
