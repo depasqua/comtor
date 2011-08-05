@@ -52,11 +52,10 @@ public class ComtorStandAlone extends Doclet {
 		try {			
 			Vector<Properties> resultsVector = new Vector<Properties>(); 
 			Vector<DocletThread> threads = new Vector<DocletThread>();
-			Scanner scan = new Scanner(new File("Doclets.txt"));
+			Properties docletSet = Comtor.getDocletList();
 
-			while (scan.hasNext()) {
-				// Store doclet as docletName
-				String docletName = scan.nextLine();
+			for (Object elem : docletSet.values()) {
+				String docletName = (String) elem;
 	
 				try {
 					// Create class for doclet
@@ -92,25 +91,16 @@ public class ComtorStandAlone extends Doclet {
 			// (Some of which are old, but may still be helpful - PJD 7/12/11), which can be found
 			// in the designdoc/tutorials directory.
 			ComtorDebugger.generateDebugFile(resultsVector);
-
-			scan.close();
 		}
 
 		// Exceptions from above.  This should be less catch-all and integrated above better.
 		catch (InterruptedException e) {
-			System.out.println("InterruptedException");
 			System.out.println(e.toString());
 		} catch (InstantiationException ie) {
-			System.out.println("InstantiationException");
 			System.out.println(ie.toString());
 		} catch (IllegalAccessException iae) {
-			System.out.println("IllegalAccessException");
 			System.out.println(iae.toString());
-		} catch (IOException ioe) {
-			System.out.println("IOException");
-			System.out.println(ioe.toString());
 		} catch (Exception e) {
-			System.out.println("Other Exception");
 			System.out.println(e.toString());
 		}
 		return true;
