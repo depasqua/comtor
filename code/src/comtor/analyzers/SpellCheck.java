@@ -46,14 +46,14 @@ public final class SpellCheck implements ComtorDoclet {
 	// User defined symbols such as class, field, method, and parameter names
 	private HashSet<String> userSymbols = new HashSet<String>();
 
-	// User defined valid words
+	// User-defined valid words (symbols)
 	private HashSet<String> validWords = new HashSet<String>();
 
 	// Words that are potentially wrong
 	private HashSet<String> potentialWords = new HashSet<String>();
 
-	// Random access dictionary file
-	private RandomAccessFile dict = null;
+	// Dictionary of English words
+	private HashSet<String> dictionary = new HashSet<String>();
 
 	// HashSet that contains the list of Java class names (good words)
 	private HashSet<String> javaClassNamesList = new HashSet<String>();
@@ -83,32 +83,10 @@ public final class SpellCheck implements ComtorDoclet {
 		// Define a counter for the properties list
 		int num = 0;
 		
-		// Attempt to access the local dictionary as a random access file.
-		String baseDir = System.getProperty("user.dir");
-		String dictFile = baseDir.substring(0, baseDir.lastIndexOf("/")).concat("/resources/words");
-		try {
-			dict = new RandomAccessFile(dictFile, "r");
-		}
-		catch (FileNotFoundException fnfe) {
-			System.err.println("Failed to load dictionary from " + dictFile);
-
-			// This is how the dictionary is deployed via the web site
-			dictFile = baseDir.substring(0, baseDir.lastIndexOf("/")).concat("/comtor_data/resources/words");
-			try {
-				dict = new RandomAccessFile(dictFile, "r");
-			}
-			catch (Exception e) {
-				System.err.println("Failed to load dictionary from " + dictFile);
-				dict = null;
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			dict = null;
-		}
+		// Load the dictionary and java class listing (both sets contain valid 'words')	
+		loadDataList("dictionary.txt", dictionary);
+		loadDataList("javaclasslist.txt", javaClassNamesList);
 		System.err.println("right in dict: " + validWord("right"));
-	
-		loadClassList();
 
 		//-------------------------------------//
 		// Obtain the comments for the rootDoc.
@@ -158,36 +136,43 @@ public final class SpellCheck implements ComtorDoclet {
 	}
 
 	/**
-	 * Attempts to load the local and web-based java class list file. The local copy will be updated
-	 * if the internal version number is less than the web-based version number.
+	 * Attempts to load the local and web-based versions of data lists. This method is used to load
+	 * both dictionary files and java class lists into HashSets for use in the spell checker.
+	 * Whenever possible, the local copy will be updated if its internal version number is less than
+	 * the web-based version number.
 	 *
+	 * @param fileName the base of the filename to attempt to load
+	 * @param dataList a reference to a hash set of strings which will hold the data list
 	 */
-	private void loadClassList() {
-		// Attempt to load/fetch the most recent list of Java class names
-		String netjavaclassnames = "http://www.comtor.org/javaclasslist.txt";
-		String localjavaclassnames = System.getProperty("user.dir") +
-									 System.getProperty("file.separator") + "javaclasslist.txt";
-		Scanner netjavascan = null;
-		Scanner localjavascan = null;
+	private void loadDataList(String fileName, HashSet<String> dataList) {
+		if (dataList == null)
+			dataList = new HashSet<String> ();
+			
+		// Attempt to load/fetch the most recent dictionary list.
+		String netFileName = "http://www.comtor.org/" + fileName;
+		String localFileName = System.getProperty("user.dir") +
+							   System.getProperty("file.separator") + fileName;
+		Scanner netScanner = null;
 		String netFileVersion = null;
+		Scanner localScanner = null;
 		String localFileVersion = null;
 		
 		try {
 			// Attempt to open / read most recent list on web
-			netjavascan = new Scanner((new URL(netjavaclassnames)).openStream());			
-			netFileVersion = netjavascan.nextLine();
+			netScanner = new Scanner((new URL(netFileName)).openStream());			
+			netFileVersion = netScanner.nextLine();
 		} catch (MalformedURLException mue) {
-			;  // Bad URL, it's ok, default to local copy if possible.
+			System.err.println(mue);  // Bad URL, it's ok, default to local copy if possible.
 		} catch (IOException ioe) {
-			; // No access to the 'net, default to local copy if possible.
+			System.err.println(ioe); // No access to the 'net, default to local copy if possible.
 		}
-		
+
 		try {
 			// Attempt to open / read local copy
-			File javafile = new File (localjavaclassnames);
-			if (javafile.exists()) {
-				localjavascan = new Scanner(javafile);
-				localFileVersion = localjavascan.nextLine();
+			File localFile = new File (localFileName);
+			if (localFile.exists()) {
+				localScanner = new Scanner(localFile);
+				localFileVersion = localScanner.nextLine();
 			}
 		} catch (IOException ioe) {
 			System.err.println(ioe);
@@ -197,13 +182,12 @@ public final class SpellCheck implements ComtorDoclet {
 		if (localFileVersion == null && netFileVersion != null) {
 			// Write a new local copy and use the 'net version
 			try {
-				System.out.println("Downloading new java class list file.");
-				PrintStream localFile = new PrintStream (new File(localjavaclassnames));
+				PrintStream localFile = new PrintStream (new File(localFileName));
 				localFile.println(netFileVersion);
-				while (netjavascan.hasNextLine()) {
-					String line = netjavascan.nextLine();
+				while (netScanner.hasNextLine()) {
+					String line = netScanner.nextLine();
 					localFile.println(line);
-					javaClassNamesList.add(line.toLowerCase());
+					dataList.add(line.toLowerCase());
 				}
 				localFile.close();
 			} catch (FileNotFoundException fnfe) {
@@ -212,44 +196,53 @@ public final class SpellCheck implements ComtorDoclet {
 			}
 		} else if (localFileVersion == null && netFileVersion == null) {
 			// Well, there's not much else we can do...
-			System.err.println("Unable to load a local or remote dictionary file.");
 			System.exit(1);
 		} else if (localFileVersion != null && netFileVersion != null) {
 			// Check for freshness of local version
 			if (localFileVersion.compareTo(netFileVersion) < 0) {
 				// Update local copy, net copy is fresher
-				System.out.println("Updating local java class list file.");
 				try {
-					PrintStream localFile = new PrintStream (new File(localjavaclassnames));
+					PrintStream localFile = new PrintStream (new File(localFileName));
 					localFile.println(netFileVersion);
-					while (netjavascan.hasNextLine()) {
-						String line = netjavascan.nextLine();
+					while (netScanner.hasNextLine()) {
+						String line = netScanner.nextLine();
 						localFile.println(line);
-						javaClassNamesList.add(line.toLowerCase());
+						dataList.add(line.toLowerCase());
 					}
 					localFile.close();
 				} catch (FileNotFoundException fnfe) {
 					System.err.println(fnfe);
 					System.exit(1);
 				}
-			}
-		} else {
+			} else
+				// Load the local version, no update was necessary
+				loadFileToList(localFileName, dataList);
+		} else
 			// Use the local version, 'net is unavailable.
-			System.err.println("Attempting to use local copy of java class list file");
-			try {
-				// Attempt to open / read local copy
-				File javafile = new File (localjavaclassnames);
-				if (javafile.exists()) {
-					localjavascan = new Scanner(javafile);
-					localjavascan.nextLine(); // drop the version number, we don't care right here
-				}
-				while (localjavascan.hasNextLine())
-					javaClassNamesList.add(localjavascan.nextLine().toLowerCase());
-
-				localjavascan.close();
-			} catch (IOException ioe) {
-				System.err.println(ioe);
+			loadFileToList(localFileName, dataList);
+	}
+	
+	/**
+	 * Attempts to load the specified local file into the specified hash set. The input assumes the
+	 * first line is a version number and it is disregarded for this use.
+	 *
+	 * @param localFileName the name of the local file to read
+	 * @param dataList a reference to the hash set into which the file contents are placed
+	 */
+	private void loadFileToList(String localFileName, HashSet<String> dataList) {
+		try {
+			Scanner scan = null;
+			File localFile = new File (localFileName);
+			if (localFile.exists()) {
+				scan = new Scanner(localFile);
+				scan.nextLine(); // drop the version number, we don't care right here
 			}
+			while (scan.hasNextLine())
+				dataList.add(scan.nextLine().toLowerCase());
+	
+			scan.close();
+		} catch (IOException ioe) {
+			System.err.println(ioe);
 		}
 	}
 
@@ -376,65 +369,14 @@ public final class SpellCheck implements ComtorDoclet {
 		if (word.length() == 0 || validWords.contains(word) || javaClassNamesList.contains(word))
 			return true;
 
-		// Check for camelCase
-		Character ch;
-		for (int i = 0; i < word.length(); i++) {
-			ch = new Character(word.charAt(i));
-			if (Character.isLowerCase(ch) && i != (word.length() - 1)) {
-				ch = new Character(word.charAt(i+1));
-				if (Character.isUpperCase(ch)) {
-					return true;
- 				}
-			}
-		}
-
-		// Check against UNIX dictionary file
-		if (dict != null) {
-			try {
-				long length = dict.length();
-
-				// Do binary search for word
-				long start = 0, mid;
-				mid = start + (length - start)/2;
-				int rec = 0;  // Just in case of infinite loop
-				while (rec < 250 && start < length && mid < dict.length() && mid >= 0) {
-					rec++;
-					dict.seek(mid);
-
-					// Ignore this line because we may be in the middle of a word
-					String ignore;
-					if (mid != 0)
-						ignore = dict.readLine();
-
-					if (dict.getFilePointer() < length) {
-						long filePos = dict.getFilePointer();
-						if (filePos < start)
-							break;
-
-						// Load the word
-						String tmp = dict.readLine().toLowerCase();
-
-						if (tmp.equals(word))
-							return true;
-						else if (word.compareTo(tmp) < 0)
-							length = filePos;
-						else
-							start = dict.getFilePointer();
-							
-						mid = start + (length - start)/2;
-					} else {
-						mid = start-1;
-						if (start == 0)
-							mid = 0;
-					}
-				}
-			}
-			catch (Exception e) {
-				System.err.println("Error searching for word in dictionary.");
-				System.err.println(e);
-			}
-		}
-		return false;
+		// Check against dictionary file
+		if (dictionary != null)
+			if (dictionary.contains(word))
+				return true;
+			else
+				return false;
+		else
+			return false;
 	}
 
 	/**
