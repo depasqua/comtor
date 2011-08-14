@@ -45,13 +45,13 @@ public class BasicInfo implements ComtorDoclet {
 		for (ClassDoc classItem : root.classes()) {
 			Properties result = processClass(classItem);
 			if (result != null)
-				prop.add(result);
+				prop.putAll(result);
 			
 			// List all inner classes
 			for (ClassDoc innerclass : classItem.innerClasses()) {
 				result = processClass(innerclass);
 				if (result != null)
-				prop.add(result);
+				prop.putAll(result);
 			}
 		}
 		
