@@ -33,76 +33,101 @@ public class PercentageMethods implements ComtorDoclet
 {
 	private Properties prop = new Properties();
 	private HashMap<String, Float> gradeBreakdown = new HashMap<String, Float>();
-	private HashMap<String, Integer> possibleScore = new HashMap<String, Integer>();
-	private HashMap<String, Integer> points = new HashMap<String, Integer>();
+	private int totalMethodsCommented = 0;
+	private int totalNumMethods = 0;
 
 	/**
-	 * Constructor
+	 * Constructor for this doclet. By default, it sets the total number of possible "points" to 5.
+	 * This values is used when "scoring" student submissions in the web-based client. The "points"
+	 * value can be modified via the web interface which in turn calls the setGradingBreakdown
+	 * method.
 	 */
 	public PercentageMethods() {
 		// Set default values for grade breakdown
-		gradeBreakdown.put("Percent", new Float(5.0));
-
-		// Set default values for scores
-		possibleScore.put("Percent", new Integer(0));
-		points.put("Percent", new Integer(0));
+		gradeBreakdown.put("TotalPoints", new Float(5.0));
 	}
 
 	/**
-	 * Examine each class, obtain each method. See if rawComment text has
-	 * a length more than zero. If so, count it in the total frequency of
-	 * commented methods for that class. Obtain percentage of commented
-	 * methods per class.
+	 * Examine each class, and obtains each method / constructor. Determines if rawComment text has
+	 * a length more than zero. If so, count it in the total frequency of commented methods for
+	 * that class. Obtain percentage of commented methods per class.
 	 *
 	 * @param rootDoc  the root of the documentation tree
 	 * @return some boolean value
 	 */
 	public Properties analyze(RootDoc rootDoc) {
 		prop.setProperty("title", "Percentage Methods");
+		prop.setProperty("note1", "Note that if a class contains no constructors, the compiler " + 
+			"include a no-argument, uncommented default constructor. Javadoc, and thus COMTOR, " +
+			"has no way to eliminate this constructor from this analysis.");
+		DecimalFormat formatter = new DecimalFormat("000.000");
 		
-		ClassDoc[] classes = rootDoc.classes();
-		MethodDoc[] methods = new MethodDoc[0];
-		
-		int classId = 0;
-		for (ClassDoc classdoc : classes) {
+		int classID = 0;
+		for (ClassDoc classdoc : rootDoc.classes()) {
 			int methodsCommented = 0;
+			int numMethods = 0;
 			double percentCommented = 0.0;
-			DecimalFormat formatter = new DecimalFormat("000");
-			String classID = formatter.format(classId); // ID number of this class, for the report
+			double propID = classID + 0.1;
 			
-			prop.setProperty("" + classID, "Class: " + classdoc.qualifiedName());
-			methods = classdoc.methods();
+			// Format the ID number of this class, for the report
+			prop.setProperty(formatter.format(classID), "Class: " + classdoc.qualifiedName());
 			
-			for (MethodDoc methodoc : methods)
-				if (methodoc.getRawCommentText().length() > 0)
+			// Count the number of commented methods
+			ExecutableMemberDoc[] members = classdoc.methods();
+			numMethods = members.length;
+			for (ExecutableMemberDoc docs : members)
+				if (docs.getRawCommentText().length() > 0)
 					methodsCommented++;
+				else {
+					propID += 0.001;
+					prop.setProperty(formatter.format(propID), "Method: " + docs.qualifiedName() +
+						" is not commented.");
+				}
+			
+			// Count the number of commented constructors
+			members = classdoc.constructors();
+			numMethods += members.length;
+			for (ExecutableMemberDoc docs : members)
+				if (docs.getRawCommentText().length() > 0)
+					methodsCommented++;
+				else {
+					propID += 0.001;
+					prop.setProperty(formatter.format(propID), "Method: " + docs.qualifiedName() +
+						" is not commented.");
+				}
+				
+			propID = classID + 0.1;
 
-			if  (methods.length != 0) {
-				// Set the points in the map
-				possibleScore.put("Percent", new Integer(possibleScore.get("Percent") +
-						methods.length));
-				points.put("Percent", new Integer(points.get("Percent") + methodsCommented));
+			// Generate the report results
+			if  (numMethods != 0) {
+				// Update the running totals for the data observed in this class
+				totalMethodsCommented += methodsCommented;
+				totalNumMethods += numMethods;
+				
 				// Calculate the percentage of commented methods.
-				percentCommented = ((double) methodsCommented) / methods.length;
+				percentCommented = ((double) methodsCommented) / numMethods;
 
 				// Store percentCommented in the property list
-				if (methodsCommented == 0)
-					prop.setProperty(classID + ".000", Math.round(percentCommented*100)
-						+ "% (" + methodsCommented + "/" + methods.length
-						+ ") of the methods are commented.");
-				else
-					prop.setProperty(classID + ".000", Math.round(percentCommented*100)
-						+ "% (" + methodsCommented + "/" + methods.length
-						+ ") of the methods are commented.");
+				prop.setProperty(formatter.format(propID), Math.round(percentCommented * 100)
+					+ "% (" + methodsCommented + "/" + numMethods
+					+ ") of the methods in " + classdoc.qualifiedName() + " are commented.");
 			}
-			else //if there are no methods...
-				prop.setProperty(classID + ".000", "This class has no methods.");
-
-			classId++;
+			else {
+				// No methods / constructors present.
+				prop.setProperty(formatter.format(propID), classdoc.qualifiedName() + " has no methods " +
+					"or constructors.");
+			}
+			classID++;
 		}
+		double totalPercent = (((double) totalMethodsCommented) / totalNumMethods);
+		NumberFormat percentFormatter = NumberFormat.getPercentInstance();
+		
+		prop.setProperty("metric1", totalMethodsCommented + " of " + totalNumMethods +
+			" methods were commented. (" + percentFormatter.format(totalPercent) + ")");
+		prop.setProperty("metric2", "A total of " + classID + " classes were processed.");
 		prop.setProperty("score", "" + getGrade());
 
-		//Return the property list.
+		// Return the property list (report)
 		return prop;
 	}
 
@@ -112,8 +137,7 @@ public class PercentageMethods implements ComtorDoclet
 	 * @param section Name of the section to set the max grade for
 	 * @param maxGrade Maximum grade for the section
 	 */
-	public void setGradingBreakdown(String section, float maxGrade)
-	{
+	public void setGradingBreakdown(String section, float maxGrade) {
 		gradeBreakdown.put(section, new Float(maxGrade));
 	}
 
@@ -123,12 +147,14 @@ public class PercentageMethods implements ComtorDoclet
 	 * @return the overall grade for the doclet, as a float
 	 */
 	public float getGrade() {
-		int possible;
-		float percent;
-
-		possible = possibleScore.get("Percent");
-		percent = (possible == 0) ? (float) 1.0 : (float) points.get("Percent") / possible;
-		return percent * gradeBreakdown.get("Percent");
+		float percent = 0;
+		
+		if (totalNumMethods == 0)
+			percent = 1.0f;
+		else
+			percent = ((float) totalMethodsCommented) / totalNumMethods;
+			
+		return percent * gradeBreakdown.get("TotalPoints");
 	}
 
 	/**
