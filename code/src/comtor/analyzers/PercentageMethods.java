@@ -92,12 +92,11 @@ public class PercentageMethods implements ComtorDoclet
 					methodsCommented++;
 				else {
 					propID += 0.001;
-					prop.setProperty(formatter.format(propID), "Method: " + docs.qualifiedName() +
+					prop.setProperty(formatter.format(propID), "Constructor: " + docs.qualifiedName() +
 						" is not commented.");
 				}
 				
 			propID = classID + 0.1;
-
 			// Generate the report results
 			if  (numMethods != 0) {
 				// Update the running totals for the data observed in this class
