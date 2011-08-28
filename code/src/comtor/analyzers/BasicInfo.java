@@ -20,6 +20,7 @@ package comtor.analyzers;
 import comtor.*;
 import com.sun.javadoc.*;
 import java.util.*;
+import java.text.*;
 
 /**
  * The BasicInfo analyzer provides basic information about what Javadoc finds. This module is used
@@ -30,31 +31,56 @@ import java.util.*;
  * @author Peter DePasquale
  */
 public class BasicInfo implements ComtorDoclet {
+	// A counter for the classes, used in the properties list
+	private int classID = 0;
+	
+	// Various counters
+	private int constructorCounter = 0;
+	private int methodCounter = 0;
+	private int fieldCounter = 0;
+
+	// The analysis report (property list) returned by this doclet
+	private Properties prop = new Properties();
+
+	// A formatter for the report
+	DecimalFormat formatter = new DecimalFormat("##0000.000");
+	float memberID = 0.000f;
+	
 	/**
 	 * The analyze method in each analysis module performs the analysis and
 	 * operates on the parsed source code (parsed by Javadoc program) as a 
 	 * com.sun.javadoc.RootDoc object. The method returns a property list with 
 	 * the grading results and the report.
 	 */
-	public Properties analyze(RootDoc root) {
-		Properties prop = new Properties();
-		if (root == null)
+	public Properties analyze(RootDoc rootDoc) {
+		prop.setProperty("title", "Basic Info");
+		if (rootDoc == null)
 			return null;
 		
-		// Iterate through the list of classes submitted to Javadoc
-		for (ClassDoc classItem : root.classes()) {
-			Properties result = processClass(classItem);
-			if (result != null)
-				prop.putAll(result);
-			
-			// List all inner classes
-			for (ClassDoc innerclass : classItem.innerClasses()) {
-				result = processClass(innerclass);
-				if (result != null)
-				prop.putAll(result);
-			}
-		}
 		
+		// Capture the starting time, just prior to the start of the analysis
+		long startTime = new Date().getTime();
+
+		// Iterate through the list of classes submitted to Javadoc
+		// Obtain and process the basic info about each class
+		for (ClassDoc classDoc : rootDoc.classes()) {
+   			classID++;
+			processClass(classDoc);
+   		}		
+	
+		// Capture the ending time, just after the termination of the analysis
+		long endTime = new Date().getTime();
+
+		// Add the counters metrics to the report
+		prop.setProperty("metric1", "A total of " + classID + " class(es) were processed.");
+		prop.setProperty("metric2", "A total of " + constructorCounter + " constructor(s) were processed.");
+		prop.setProperty("metric3", "A total of " + methodCounter + " method(s) were processed.");
+		prop.setProperty("metric4", "A total of " + fieldCounter + " field(s) were processed.");
+		prop.setProperty("start time", Long.toString(startTime));
+		prop.setProperty("end time", Long.toString(endTime));
+		prop.setProperty("execution time", Long.toString(endTime - startTime));
+		
+		// Return the report
 		return prop;
 	}
 	
@@ -62,32 +88,36 @@ public class BasicInfo implements ComtorDoclet {
 	 * Processes a class
 	 * 
 	 * @param classItem a reference to the class to analyze/process
-	 * @return a properties list for the analyzer report
 	 */
-	private Properties processClass(ClassDoc classItem) {
-		System.out.println("Class: " + classItem.qualifiedName());
+	private void processClass(ClassDoc classItem) {		
+		prop.setProperty(formatter.format(classID), "Class: " + classItem.qualifiedName());
+		memberID = 0.000f;
 		
 		// List all constructors
 		for (ConstructorDoc constrs : classItem.constructors()) {
-			System.out.println("\tConstructor: " + constrs.qualifiedName());
+			constructorCounter++;
+			memberID += 0.001f;
+			prop.setProperty(formatter.format(classID+memberID), "\tConstructor: " + constrs.name());
 			processExecutable(constrs);
 		}
 		
 		// List all methods
 		for (MethodDoc method : classItem.methods()) {
-			System.out.println("\tMethod: " + method.qualifiedName());
+			methodCounter++;
+			memberID += 0.001f;
+			prop.setProperty(formatter.format(classID+memberID), "\tMethod: " + method.name());
 			processExecutable(method);
 		}
 		
 		// List all fields
-		for (FieldDoc field : classItem.fields()) {
-			System.out.println("\tField: " + field.qualifiedName());
-			System.out.println("\t\ttype: " + field.type());
-			System.out.println("\t\tcomment text: " + field.commentText());
-			System.out.println("\t\tmodifiers: " + field.modifiers());
-			System.out.println();
-		}
-		return null;
+		DecimalFormat smallFmt = new DecimalFormat(".000");
+ 		for (FieldDoc field : classItem.fields()) {
+ 			fieldCounter++;
+			memberID += 0.001f;
+			prop.setProperty(formatter.format(classID+memberID), "\tField: " + field.name());
+			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(.000f), "\t\ttype: " + field.type());
+			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(.001f), "\t\tmodifiers: " + field.modifiers());
+ 		}
 	}
 	
 	/**
@@ -97,29 +127,38 @@ public class BasicInfo implements ComtorDoclet {
 	 * @return a properties list for the analyzer report
 	 */
 	private Properties processExecutable(ExecutableMemberDoc member) {
-		System.out.println("\t\tcomment text: " + member.commentText());
-		System.out.println("\t\tmodifiers: " + member.modifiers());
-		System.out.print("\t\tthrows: ");
+		DecimalFormat smallFmt = new DecimalFormat(".000");
+		float itemID = 0.000f;
+		prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\tmodifiers: " + member.modifiers());
+
 		Type[] types = member.thrownExceptionTypes();
 		if (types.length > 0) {
-			System.out.println();
-			for (int index = 0; index < types.length; index++)
-				System.out.println("\t\t\t" + types[index].qualifiedTypeName());
-			System.out.println();
-		} else
-			System.out.println("none.");
-
-		System.out.print("\t\tparameters: ");
+			itemID += 0.001f;
+			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\tthrows: ");
+			for (int index = 0; index < types.length; index++) {
+				itemID += 0.001f;
+				prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\t\t" + 
+					types[index].qualifiedTypeName());
+			}
+		} else {
+			itemID += 0.001f;
+			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\tthrows: none");
+		}
+		
 		Parameter[] params = member.parameters();
 		if (params.length > 0) {
-			System.out.println();
-			for (int index = 0; index < params.length; index++)
-				System.out.println("\t\t\t" + params[index].typeName() + '\t' + params[index].name());
-			System.out.println();
+			itemID += 0.001f;
+			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\tparameters:");
+			for (int index = 0; index < params.length; index++) {
+				itemID += 0.001f;
+				prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\t\t" +
+					params[index].typeName() + '\t' + params[index].name());
+			}
 		} else {
-			System.out.println("none.");
-			System.out.println();
+			itemID += 0.001f;
+			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\tparameters: none");
 		}
+
 		return null;
 	}
 	
@@ -129,8 +168,7 @@ public class BasicInfo implements ComtorDoclet {
 	 * @param section Name of the section to set the max grade for
 	 * @param maxGrade Maximum grade for the section
 	 */
-	public void setGradingBreakdown(String section, float maxGrade)
-	{
+	public void setGradingBreakdown(String section, float maxGrade) {
 		// Not needed for this analyzer
 	}
 	
