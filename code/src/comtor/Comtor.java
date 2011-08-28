@@ -62,9 +62,6 @@ public class Comtor {
 					
 				// Find packages in the sourcepath dir(s)
 				String[] packageList = findPackages(argsMap.get("sourcepath"));
-				for (String pkg : packageList) {
-					System.out.println("Java package found: " + pkg);
-				}
 
 				// Process the limiting option, if applicable
 				if (argsMap.containsKey("limitto")) {
@@ -84,8 +81,6 @@ public class Comtor {
 					for (String pkg : packageList) {
 						jdocsoptions.add(pkg);
 					}
-
-
 			}
 			if (argsMap.containsKey("classpath")) {
 				jdocsoptions.add("-classpath");
@@ -111,10 +106,10 @@ public class Comtor {
 	}
 	
 	/**
-	 * Locates all java packages in the provided path(s).
+	 * Locates all Java packages in the provided path(s).
 	 *
 	 * @param dirPath a semi-colon separated list of directories where packaged code may exist
-	 * @return an array of String of java packages
+	 * @return an array of String names of Java packages
 	 */
 	public static String[] findPackages(String filePath) {
 		Vector<String> packageListing = new Vector<String>();
@@ -128,51 +123,48 @@ public class Comtor {
 				// Add any found subdirs to a list to process
 				File targetDir = new File(dir);
 				if (targetDir.isDirectory()) {
-					// Check this directory's contents for subdirectories
-					String[] subDirList = targetDir.list();
-					for (String subDir : subDirList) {
-						File subDirPath = new File(dir + System.getProperty("file.separator") + subDir);
-						if (subDirPath.isDirectory()) {
-							if (containsJavaFiles(subDirPath))
-								packageListing.add(subDir);
-
-							// Obtain a list of sub-sub dirs
-							String[] subSubDirList = subDirPath.list();
-							for (String itemName : subSubDirList) {
-								File candidate = new File(subDirPath + 
-										System.getProperty("file.separator") + itemName);
-								if (candidate.isDirectory())
-									dirsToProcess.add(subDirPath +
-											System.getProperty("file.separator") + itemName);
-							}
-						}
-					}
-					// Show dirs left to process
-					while (dirsToProcess.size() > 0) {
-						String item = dirsToProcess.removeFirst();
-						File candidate = new File(item);
-						if (containsJavaFiles(candidate)) {
-							item = item.replaceAll(System.getProperty("file.separator"), ".");
-							packageListing.add(item.substring(item.indexOf(".")+1));
-						}
-						
-						// Check its contents
-						String [] listing = candidate.list();
-						for (String newitem : listing) {
-							File newFile = new File(item + System.getProperty("file.separator") + newitem);
-							if (newFile.isDirectory())
-								dirsToProcess.add(item + System.getProperty("file.separator") + newitem);
-						}
-					}	
+					dirsToProcess.add(targetDir.getPath());
+					dirsToProcess = addAllSubDirs(targetDir, dirsToProcess);
 				}
 			} catch (Exception e) {
 				System.err.println(e);
 			}
 		}
-		
-		// Process the list of dirs for subdirs. Any dir with java files in it is a package
+
+		// Process the list of 'found' directories looking for additional directories
+		// with Java files in them, indicating packaged code.
+		while (dirsToProcess.size() > 0) {
+			String item = dirsToProcess.removeFirst();
+			File candidate = new File(item);
+			if (containsJavaFiles(candidate)) {
+				item = item.replaceAll(System.getProperty("file.separator"), ".");
+				packageListing.add(item.substring(item.indexOf(".")+1));
+			}
+		}	
+
+		// Process the list of dirs for subdirs. Any dir with Java files in it is a package
 		// (except the top level ones)
 		return (String[]) packageListing.toArray(new String[packageListing.size()]);
+	}
+	
+	/**
+	 * Constructs a list of directories to process (where source code may be located)
+	 *
+	 * @param dir a File object (a directory) which will be recursively checked for java files and
+	 * other subdirectories to process
+	 * @return a reference to the modified linked list of directory paths
+	 **/
+	private static LinkedList<String> addAllSubDirs(File dir, LinkedList<String> list) {
+		String [] dirListing = dir.list();
+		for (String subDirName : dirListing) {
+			File subdir = new File(dir.getPath() + System.getProperty("file.separator") + subDirName);
+			if (subdir.isDirectory()) {
+				if (containsJavaFiles(subdir))
+					list.add(subdir.getPath());
+				list = addAllSubDirs(subdir, list);
+			}
+		}
+		return list;
 	}
 	
 	/**
@@ -181,7 +173,7 @@ public class Comtor {
 	 * @param directory the name of a directory to check for the presence of java files.
 	 * @return a true value if there are java files present, false otherwise
 	 */
-	public static boolean containsJavaFiles(File directory) {
+	private static boolean containsJavaFiles(File directory) {
 		boolean result = false;
 		try {
 			if (directory.isDirectory()) {
@@ -202,7 +194,7 @@ public class Comtor {
 	 * @param filePath a semi-colon separated list of directories where unpackaged code may exist
 	 * @return an array of Strings of dir/filenames of unpackaged java source code files
 	 */
-	public static String[] findFiles(String filePath) {
+	private static String[] findFiles(String filePath) {
 		Vector<String> fileListVector = new Vector<String>();
 		Scanner scanpath = new Scanner(filePath);
 		scanpath.useDelimiter(";");
@@ -225,7 +217,7 @@ public class Comtor {
 	 *
 	 * @return a string suitable for printing, used to detail the program's run time options
 	 */
-	public static String optionsListing() {
+	private static String optionsListing() {
 		String result = "\nUsage: Comtor -classpath <path> [options]\n\n";
 		result += "Required arguments:\n";
 		result += "-classpath <path>\tThe path(s) where javadoc will find user class files\n\n";
@@ -286,7 +278,7 @@ public class Comtor {
 	 * Attempts to load the doclet list (to execute specified doclets) through a Java properties
 	 * file
 	 */
-	public static void loadDocletList() {
+	private static void loadDocletList() {
 		try {
 			File docletListFile = new File (System.getProperty("user.dir").concat(
 					"/docletList.properties"));
