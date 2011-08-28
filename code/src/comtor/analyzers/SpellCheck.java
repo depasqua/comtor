@@ -37,25 +37,21 @@ public final class SpellCheck implements ComtorDoclet {
 	private Properties prop = new Properties();
 	private float maxScore = 5;
 	
-	// Correctly spelled words from user comments
+	// Correctly spelled words (goodWords), incorrectly spelled words (badWords), user-defined
+	// valid words (validWords) [from the www interface], and user-defined symbols (userSymbols)
+	// [from the source code]
 	private HashSet<String> goodWords = new HashSet<String>();
-
-	// Incorrectly spelled words from user comments
 	private HashSet<String> badWords = new HashSet<String>();
-
-	// User-defined valid words (via the web interface)
 	private HashSet<String> validWords = new HashSet<String>();
-
-	// User defined symbols such as class, field, method, and parameter names
 	private HashSet<String> userSymbols = new HashSet<String>();
 
 	// Dictionary of English words, Java class names, and HTML tags
 	private HashSet<String> dictionary = new HashSet<String>();
 
-	// Define a counter for the properties list
-	private int classID = 1;
+	// A counter for the classes, used in the properties list
+	private int classID = 0;
 
-	// Create a formatter for the report
+	// A formatter for the report
 	private DecimalFormat formatter = new DecimalFormat("000.000");
 	
 	/**
@@ -64,20 +60,12 @@ public final class SpellCheck implements ComtorDoclet {
 	 *
 	 * @param rootDoc a reference to the top of the parse tree
 	 */
-	private void init(RootDoc rootDoc) {
-		// Build the array of Java keywords. Note that 'java' is part of this list. While not a
-		// keyword, it is common enough to make it suitable to add to this list.
-		String[] javaKeywords = {"abstract", "assert", "boolean", "break", "byte", "case", "catch",
-			"char", "class", "const", "continue", "default", "do", "double", "else", "enum",
-			"extends", "final", "finally", "float", "for", "goto", "if", "implements", "import",
-			"instanceof", "int", "interface", "long", "native", "new", "package", "private",
-			"protected", "public", "return", "short", "strictfp", "super", "switch", "synchronized",
-			"this", "throw", "throws", "transient", "try", "void", "volatile", "while", "java"};
-
+	private void init (RootDoc rootDoc) {
 		// Load the dictionary and java class listing (both sets contain valid 'words')
 		Util.loadDataList("dictionary.txt", dictionary);
 		Util.loadDataList("javaclasslist.txt", dictionary);
 		Util.loadDataList("htmltags.txt", dictionary);
+		Util.loadDataList("javaKeywords.txt", dictionary);
 		
 		// Add all user-defined packages, classes, class variables, methods, and parameter names to
 		// a list of 'valid' words that may be referenced in a comment. Note that javaDoc does not
@@ -85,31 +73,35 @@ public final class SpellCheck implements ComtorDoclet {
 		// exhaustive.
 		for (PackageDoc packageDoc : rootDoc.specifiedPackages()) {
 			userSymbols.add(packageDoc.name().toLowerCase());
-			Scanner packagenameScanner = new Scanner(packageDoc.name().replaceAll("\\.", " "));
 			
 			// Also add the components of the package name to the list of symbols
+			Scanner packagenameScanner = new Scanner(packageDoc.name().replaceAll("\\.", " "));
 			while (packagenameScanner.hasNext())
 				userSymbols.add(packagenameScanner.next().toLowerCase());
 			
 			// Add enumerations to the user-symbol list
 			for (ClassDoc enumDoc : packageDoc.enums())
-				addClassMembers(enumDoc);
+				initAddClassMembers(enumDoc);
 	
 			// Add interfaces to the user-symbol list
 			for (ClassDoc classDoc : packageDoc.interfaces())
-				addClassMembers(classDoc);
+				initAddClassMembers(classDoc);
 				
 			// Add errors to the user-symbol list
 			for (ClassDoc classDoc : packageDoc.errors())
-				addClassMembers(classDoc);
+				initAddClassMembers(classDoc);
 				
 			// Add exceptions to the user-symbol list
 			for (ClassDoc classDoc : packageDoc.exceptions())
-				addClassMembers(classDoc);
+				initAddClassMembers(classDoc);
 		}
+		
 		// Add classes to the user-symbol list
-		for (ClassDoc classDoc : rootDoc.classes())
-			addClassMembers(classDoc);
+		for (ClassDoc classDoc : rootDoc.classes()) {
+			userSymbols.add(classDoc.name().toLowerCase());
+			userSymbols.add(classDoc.qualifiedName().toLowerCase());
+			initAddClassMembers(classDoc);
+		}
 	}
 	
 	/**
@@ -117,7 +109,7 @@ public final class SpellCheck implements ComtorDoclet {
 	 *
 	 * @param classDoc a reference to the ClassDoc object to process
 	 */
-	private void addClassMembers (ClassDoc classDoc) {
+	private void initAddClassMembers (ClassDoc classDoc) {
 		userSymbols.add(classDoc.name().toLowerCase());
 		userSymbols.add(classDoc.qualifiedName().toLowerCase());
 
@@ -137,6 +129,7 @@ public final class SpellCheck implements ComtorDoclet {
 			for (ClassDoc excepts : member.thrownExceptions()) {
 				userSymbols.add(excepts.name().toLowerCase());
 				userSymbols.add(excepts.qualifiedName().toLowerCase());
+				initAddClassMembers(excepts);
 			}
 		}
 		
@@ -151,6 +144,7 @@ public final class SpellCheck implements ComtorDoclet {
 			for (ClassDoc excepts : member.thrownExceptions()) {
 				userSymbols.add(excepts.name().toLowerCase());
 				userSymbols.add(excepts.qualifiedName().toLowerCase());
+				initAddClassMembers(excepts);
 			}
 		}
 		
@@ -164,18 +158,14 @@ public final class SpellCheck implements ComtorDoclet {
 		for (ClassDoc member : classDoc.innerClasses()) {
 			userSymbols.add(member.name().toLowerCase());
 			userSymbols.add(member.qualifiedName().toLowerCase());
-System.err.println("ClassID="+classID);
-			processClass(member);
-			classID++;
+			initAddClassMembers(member);
 		}
 		
 		// Recursively do the same for all interfaces implemented by this class
 		for (ClassDoc member : classDoc.interfaces()) {
 			userSymbols.add(member.name().toLowerCase());
 			userSymbols.add(member.qualifiedName().toLowerCase());
-System.err.println("ClassID="+classID);
-			processClass(member);
-			classID++;
+			initAddClassMembers(member);
 		}
 		
 		// Add the superclass to the list
@@ -207,30 +197,25 @@ System.err.println("ClassID="+classID);
 	 * @param rootDoc the root of the documentation tree provided by the JavaDoc parser
 	 * @return Properties list
 	 */
-	public Properties analyze(RootDoc rootDoc) {
+	public Properties analyze (RootDoc rootDoc) {
 		prop.setProperty("title", "Spell Checker");
 		
 		// Initialize the required tables
 		init(rootDoc);
-String[] symbolArry = userSymbols.toArray(new String[0]);
-Arrays.sort(symbolArry);
-System.err.println("Symbols:");
-for (String elem : symbolArry) 
-	System.err.println(elem);
 		
 		// Obtain and process the comments for the rootDoc.
 		prop.setProperty(formatter.format(0), "The following word(s) is/are misspelled:");
+		
 		// Obtain and process the comments for each class
 		for (ClassDoc classDoc : rootDoc.classes()) {
-System.err.println("ClassID="+classID);
-   			if (processClass(classDoc))
-				prop.setProperty(formatter.format(classID), "Class: " + classDoc.qualifiedName());
    			classID++;
+   			processClass(classDoc);
+			prop.setProperty(formatter.format(classID), "Class: " + classDoc.qualifiedName());
    		}
 
 		// Set the score for this analysis and return the property list (report)
 		prop.setProperty("score", "" + getGrade());
-		prop.setProperty("metric1", "A total of " + classID + " classes were processed.");
+		prop.setProperty("metric1", "A total of " + (classID-1) + " class(es) were processed.");
 		prop.setProperty("metric2", "There were " + goodWords.size() + " correctly spelled words.");
 		prop.setProperty("metric3", "There were " + badWords.size() + " incorrectly spelled words.");
 		prop.setProperty("metric4", "There were a total of " +
@@ -239,71 +224,58 @@ System.err.println("ClassID="+classID);
 	}
 
 	/**
-	 * Processes a single class
+	 * Processes a single class and it's comments to determine if there are any misspelled words
+	 * in the comments.
 	 *
 	 * @param class Class to process
 	 * @param classID The value of the classID counter, used to generate the reporting entry
-	 * @return a true value if a word was misspelled, false otherwise
 	 */
-	private boolean processClass(ClassDoc classDoc) {
-		boolean result = false; // only change (once) if there were any misspellings
+	private void processClass (ClassDoc classDoc) {
 		float memberNum = 0.000f;
-		DecimalFormat smallFormatter = new DecimalFormat(".000");
 
 		// Process the class' comments
-		if (parseComment(classID, memberNum, classDoc.commentText()))
-			result = true;
+		parseComment(classID, memberNum, classDoc.commentText());
 		
 		// Get all of the class' fields and the field's comments as well
 		for (FieldDoc classField : classDoc.fields()) {
 			memberNum += 0.001f;
-			if (parseComment(classID, memberNum, classField.commentText()))
-				result = true;
+			parseComment(classID, memberNum, classField.commentText());
 		}
 		
 		// Process all of the class's tag comments
 		for (Tag tagComment : classDoc.tags()) {
 			memberNum += 0.001f;
-			if (parseComment(classID, memberNum, tagComment.text()))
-				result = true;
+			parseComment(classID, memberNum, tagComment.text());
 		}
 
 		// Process each method in the class
 		for (MethodDoc method : classDoc.methods()) {
 			// Obtain the method's comments and process
-			if (parseComment(classID, memberNum, method.commentText()))
-				result = true;
+			memberNum += 0.001f;
+			parseComment(classID, memberNum, method.commentText());
 
 			// Obtain the comments for method's tags (param, returns, etc.) and process each
 			for (Tag tagComment : method.tags()) {
-				if (parseComment(classID, memberNum, tagComment.text()))
-					result = true;
+				memberNum += 0.001f;
+				parseComment(classID, memberNum, tagComment.text());
 			}
 		}
 
 		// Process each constructor in the class
 		for (ConstructorDoc constructor : classDoc.constructors()) {
 			// Obtain the method's comments and process
-			if (parseComment(classID, memberNum++, constructor.commentText()))
-				result = true;
+			memberNum += 0.001f;
+			parseComment(classID, memberNum, constructor.commentText());
 
 			// Obtain the comments for method's tags (param, returns, etc.) and process each
 			for (Tag tagComment : constructor.tags()) {
-				if (parseComment(classID, memberNum++, tagComment.text()))
-					result = true;
+				memberNum += 0.001f;
+				parseComment(classID, memberNum, tagComment.text());
 			}
 		}
 		
-		// Get inner classes, template type, tag comments (if any) and process their comments
-		for (ClassDoc innerClass : classDoc.innerClasses()) {
-			classID++; // need to increment first here, as it was not incremented yet
-System.err.println("ClassID="+classID);
-			if (processClass(innerClass)) {
-				prop.setProperty(formatter.format(classID), "Class: " + classDoc.qualifiedName());
-				result = true;
-			}
-		}
-		return result;
+		// Inner classes don't need to be processed. They are listed as part of the package-level
+		// iteration of classes (in analyze())
 	}
 
 	/**
@@ -315,13 +287,11 @@ System.err.println("ClassID="+classID);
 	 * @param commentString The comment string which we wish to parse
 	 * @param classID The value of the classID counter, used to generate the reporting entry
 	 * @param memberID The value of the memberID counter, used to generate the reporting entry
-	 * @return a true value if a word was misspelled, false otherwise
 	 */
-	private boolean parseComment(int classID, float memberID, String commentString) {
+	private void parseComment(int classID, float memberID, String commentString) {
 		String fmtID = formatter.format(((float) classID) + memberID);
 		DecimalFormat shortFormatter = new DecimalFormat("000");
 		int itemID = 0;
-		boolean result = false; // return true if we had misspelled words
 
 		// Replace all punctuation with spaces and then use a Scanner to process the "words"
 		// in the comment string
@@ -329,11 +299,11 @@ System.err.println("ClassID="+classID);
 		
    		while (scan.hasNext()) {
 			String word = scan.next();
-
+			
 			// If the word is a valid word, add it to the list of correctly spelled words
-			if (validWord(word))
+			if (validWord(word)) {
 				goodWords.add(word);
-			else {
+			} else {
 				// Check to see if the "word" is a valid if a number
 				try	{
 					Integer.parseInt(word);
@@ -341,16 +311,12 @@ System.err.println("ClassID="+classID);
 				}
 				// Conclude that the "word" is misspelled and place it in the correct list
 				catch (NumberFormatException e) {
-					int length = commentString.length() > 50 ? 50 : commentString.length();
-
 					String wordID = fmtID + '.' + shortFormatter.format(itemID++);
 					prop.setProperty(wordID, word);
 					badWords.add(word);
-					result = true;
 				}
 			}
 		}
-		return result;
 	}
 
 	/**
@@ -360,26 +326,38 @@ System.err.println("ClassID="+classID);
 	 * @param word Word to check
 	 * @return returns a true if the parameter exists in the dictionaries or is a user-defined word
 	 */
-	private boolean validWord(String word) {
-		word = word.toLowerCase();
-
-		// Check against user-defined words, zero-length words, or java class name
-		if (word.length() == 0 || validWords.contains(word) || userSymbols.contains(word) ||
-			(dictionary != null && dictionary.contains(word)) )
+	private boolean validWord(String baseWord) {
+		String word = baseWord.toLowerCase();			
+			
+		// Check against zero-length words
+		if (word.length() == 0)
 			return true;
-		else
-			// Ensure that the word is not a valid word with 's' added to end
-			if (word.length() != 0 && word.charAt(word.length()-1) == 's') {
-				word = word.substring(0, word.length()-1);
-				return validWord(word);
-			}
-			else
-				// Check against single chars of a 'special' nature (e.g. ', ") which may originate
-				// from things like '?', etc. which we see occasionally
-				if (word.length() == 1 && (word.equals("\"") || word.equals("'")))
-					return true;
-				else
-					return false;
+
+		// Check against single chars of a 'special' nature (e.g. ', ") which may originate
+		// from things like '?', etc. which we see occasionally
+		if (word.length() == 1 && (word.equals("\"") || word.equals("'")))
+			return true;
+
+		// Check for possessives (e.g. java's)
+		if (word.length() > 2 && word.substring(word.length()-2).equals("\'s"))
+			return validWord(word.substring(0, word.length()-2));
+
+		// Check for single quoted words (e.g. 'addConfigured')
+		if (word.length() >= 3 && word.charAt(0) == '\'' &&
+				word.charAt(word.length()-1) == '\'')
+			return validWord(word.substring(1, word.length()-1));
+		
+		// Determine if the word in question is in the list of valid words, symbols, or the
+		// dictionary
+		if (validWords.contains(word) || userSymbols.contains(word) || dictionary.contains(word))
+			return true;
+
+		// Ensure that the word is not a valid pluralized word.
+		// Note that this check must not precede the one for possessives or for the dictionary
+		if (word.length() > 1 && word.charAt(word.length()-1) == 's')
+			return validWord(word.substring(0, word.length()-1));
+
+		return false;
 	}
 
 	/**
