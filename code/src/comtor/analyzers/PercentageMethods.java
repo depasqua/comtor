@@ -56,13 +56,18 @@ public class PercentageMethods implements ComtorDoclet
 	 * @return some boolean value
 	 */
 	public Properties analyze(RootDoc rootDoc) {
+		// A counter for the classes, used in the properties list
+		int classID = 0;
+		DecimalFormat formatter = new DecimalFormat("##0000.000");
+			
 		prop.setProperty("title", "Percentage Methods");
 		prop.setProperty("note1", "Note that if a class contains no constructors, the compiler " + 
 			"include a no-argument, uncommented default constructor. Javadoc, and thus COMTOR, " +
 			"has no way to eliminate this constructor from this analysis.");
-		DecimalFormat formatter = new DecimalFormat("000.000");
-		
-		int classID = 0;
+
+		// Capture the starting time, just prior to the start of the analysis
+		long startTime = new Date().getTime();
+
 		for (ClassDoc classdoc : rootDoc.classes()) {
 			int methodsCommented = 0;
 			int numMethods = 0;
@@ -71,7 +76,7 @@ public class PercentageMethods implements ComtorDoclet
 			
 			// Format the ID number of this class, for the report
 			prop.setProperty(formatter.format(classID), "Class: " + classdoc.qualifiedName());
-			
+
 			// Count the number of commented methods
 			ExecutableMemberDoc[] members = classdoc.methods();
 			numMethods = members.length;
@@ -121,10 +126,16 @@ public class PercentageMethods implements ComtorDoclet
 		double totalPercent = (((double) totalMethodsCommented) / totalNumMethods);
 		NumberFormat percentFormatter = NumberFormat.getPercentInstance();
 		
-		prop.setProperty("metric1", totalMethodsCommented + " of " + totalNumMethods +
+		// Capture the ending time, just after the termination of the analysis
+		long endTime = new Date().getTime();
+
+		prop.setProperty("metric1", "A total of " + classID + " class(es) were processed.");
+		prop.setProperty("metric2", totalMethodsCommented + " of " + totalNumMethods +
 			" methods were commented. (" + percentFormatter.format(totalPercent) + ")");
-		prop.setProperty("metric2", "A total of " + classID + " classes were processed.");
 		prop.setProperty("score", "" + getGrade());
+		prop.setProperty("start time", Long.toString(startTime));
+		prop.setProperty("end time", Long.toString(endTime));
+		prop.setProperty("execution time", Long.toString(endTime - startTime));
 
 		// Return the property list (report)
 		return prop;
