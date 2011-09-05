@@ -57,7 +57,6 @@ public class BasicInfo implements ComtorDoclet {
 		if (rootDoc == null)
 			return null;
 		
-		
 		// Capture the starting time, just prior to the start of the analysis
 		long startTime = new Date().getTime();
 
