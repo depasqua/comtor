@@ -52,7 +52,7 @@ public final class SpellCheck implements ComtorDoclet {
 	private int classID = 0;
 
 	// A formatter for the report
-	private DecimalFormat formatter = new DecimalFormat("000.000");
+	private DecimalFormat formatter = new DecimalFormat("##0000.000");
 	
 	/**
 	 * Performs pre-analysis initialization tasks. For example, loading the various dictionaries
@@ -144,7 +144,8 @@ public final class SpellCheck implements ComtorDoclet {
 			for (ClassDoc excepts : member.thrownExceptions()) {
 				userSymbols.add(excepts.name().toLowerCase());
 				userSymbols.add(excepts.qualifiedName().toLowerCase());
-				initAddClassMembers(excepts);
+				if (!userSymbols.contains(excepts.name().toLowerCase()))
+					initAddClassMembers(excepts);
 			}
 		}
 		
@@ -158,14 +159,16 @@ public final class SpellCheck implements ComtorDoclet {
 		for (ClassDoc member : classDoc.innerClasses()) {
 			userSymbols.add(member.name().toLowerCase());
 			userSymbols.add(member.qualifiedName().toLowerCase());
-			initAddClassMembers(member);
+			if (!userSymbols.contains(member.name().toLowerCase()))
+				initAddClassMembers(member);
 		}
 		
 		// Recursively do the same for all interfaces implemented by this class
 		for (ClassDoc member : classDoc.interfaces()) {
 			userSymbols.add(member.name().toLowerCase());
 			userSymbols.add(member.qualifiedName().toLowerCase());
-			initAddClassMembers(member);
+			if (!userSymbols.contains(member.name().toLowerCase()))
+				initAddClassMembers(member);
 		}
 		
 		// Add the superclass to the list
@@ -206,6 +209,9 @@ public final class SpellCheck implements ComtorDoclet {
 		// Obtain and process the comments for the rootDoc.
 		prop.setProperty(formatter.format(0), "The following word(s) is/are misspelled:");
 		
+		// Capture the starting time, just prior to the start of the analysis
+		long startTime = new Date().getTime();
+
 		// Obtain and process the comments for each class
 		for (ClassDoc classDoc : rootDoc.classes()) {
    			classID++;
@@ -213,13 +219,22 @@ public final class SpellCheck implements ComtorDoclet {
 			prop.setProperty(formatter.format(classID), "Class: " + classDoc.qualifiedName());
    		}
 
+		// Capture the ending time, just after the termination of the analysis
+		long endTime = new Date().getTime();
+
 		// Set the score for this analysis and return the property list (report)
 		prop.setProperty("score", "" + getGrade());
-		prop.setProperty("metric1", "A total of " + (classID-1) + " class(es) were processed.");
+		prop.setProperty("metric1", "A total of " + classID + " class(es) were processed.");
 		prop.setProperty("metric2", "There were " + goodWords.size() + " correctly spelled words.");
 		prop.setProperty("metric3", "There were " + badWords.size() + " incorrectly spelled words.");
-		prop.setProperty("metric4", "There were a total of " +
+		float percent = ((float) badWords.size()) / (goodWords.size() + badWords.size());
+		String percentFormat = NumberFormat.getPercentInstance().format(percent); 
+		prop.setProperty("metric4", percentFormat + " of the words in the comments were misspelled.");
+		prop.setProperty("metric5", "There were a total of " +
 			(goodWords.size() + badWords.size()) + " words analyzed.");
+		prop.setProperty("start time", Long.toString(startTime));
+		prop.setProperty("end time", Long.toString(endTime));
+		prop.setProperty("execution time", Long.toString(endTime - startTime));
 		return prop;
 	}
 
