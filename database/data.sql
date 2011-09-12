@@ -541,6 +541,7 @@ INSERT INTO `schools` (`school`) VALUES ('Columbia Theological Seminary (GA)');
 INSERT INTO `schools` (`school`) VALUES ('Columbia Union College (MD)');
 INSERT INTO `schools` (`school`) VALUES ('Columbia University (NY)');
 INSERT INTO `schools` (`school`) VALUES ('Columbus College of Art & Design (OH)');
+INSERT INTO `schools` (`school`) VALUES ('Columbus State University (GA)');
 INSERT INTO `schools` (`school`) VALUES ('Conception Seminary College (MO)');
 INSERT INTO `schools` (`school`) VALUES ('Concord University (WV)');
 INSERT INTO `schools` (`school`) VALUES ('Concordia College - Moorhead (MN)');
