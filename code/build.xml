@@ -12,19 +12,12 @@
 		<mkdir dir="${classes}"/>
 	</target>
 	
-	<!-- Build up a classpath file path for later use. -->
-	
-	<!-- Commented out for possible removal.
-		<pathelement location="${thirdpartyjars}/comtor.jar"/>
-		<pathelement location="${thirdpartyjars}/antlr-3.1.1-runtime.jar"/>
-		<pathelement location="${thirdpartyjars}/stringtemplate-3.2.jar"/>
-	-->
-	
+	<!-- Build up a classpath file path for later use. -->	
 	<path id="comtor.class.path">
 		<pathelement path="${classes}"/>
 		<pathelement location="${thirdpartyjars}/antlr-3.1.1.jar"/>
 		<pathelement location="${thirdpartyjars}/mysql-connector-java-5.1.6-bin.jar"/>
-		<pathelement path="${java.home}/jre/lib/tools.jar"/>
+		<pathelement path="${java.home}/../lib/tools.jar"/>
 		<pathelement path="${java.home}/../Classes/classes.jar"/> <!-- classes.jar is tools.jar on the mac -->
 	</path>
 	
