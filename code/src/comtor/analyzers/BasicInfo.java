@@ -130,6 +130,7 @@ public class BasicInfo implements ComtorDoclet {
 		float itemID = 0.000f;
 		prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\tmodifiers: " + member.modifiers());
 
+		// Report on the exceptions declared to be thrown by this executable member
 		Type[] types = member.thrownExceptionTypes();
 		if (types.length > 0) {
 			itemID += 0.001f;
@@ -143,7 +144,8 @@ public class BasicInfo implements ComtorDoclet {
 			itemID += 0.001f;
 			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\tthrows: none");
 		}
-		
+
+		// Report on the formal parameters for this executable member		
 		Parameter[] params = member.parameters();
 		if (params.length > 0) {
 			itemID += 0.001f;
@@ -158,6 +160,9 @@ public class BasicInfo implements ComtorDoclet {
 			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\tparameters: none");
 		}
 
+		// Report on the return type for this executable member
+		// TO BE COMPLETED
+		
 		return null;
 	}
 	
