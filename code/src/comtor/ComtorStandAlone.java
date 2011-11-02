@@ -47,7 +47,6 @@ public class ComtorStandAlone extends Doclet {
 		String configFile = null;
 		String options[][] = rootDoc.options();
 		boolean done = false;
-		boolean debug = true;
 		
 		try {			
 			Vector<Properties> resultsVector = new Vector<Properties>(); 
@@ -87,10 +86,7 @@ public class ComtorStandAlone extends Doclet {
 					resultsVector.addElement(docThrd.getProperties());
 			}
 				
-			// The following line is for debugging only. Please consult debug.txt for details.
-			// (Some of which are old, but may still be helpful - PJD 7/12/11), which can be found
-			// in the designdoc/tutorials directory.
-			ComtorDebugger.generateDebugFile(resultsVector);
+			generateOutputFile(resultsVector);
 		}
 
 		// Exceptions from above.  This should be less catch-all and integrated above better.
@@ -104,6 +100,52 @@ public class ComtorStandAlone extends Doclet {
 			System.out.println(e.toString());
 		}
 		return true;
+	}
+
+	private static void generateOutputFile(Vector<Properties> resultsVector) {
+	
+		// Set the path for the location of the report output file.
+		String path = System.getProperty("user.dir").concat("/comtorReport.txt");
+		try {
+
+			// Check to see the output file currently exists, if so, delete the old file to
+			// replace it with a new one. We should improve this to use a date/time stamp in
+			// the file name so that deletion is redundant.
+			File outputFile = new File(path);
+			if (outputFile.exists())
+				outputFile.delete();
+
+			// Create a new output report file, and prepare it for writing
+			PrintWriter outFilePW = new PrintWriter(new BufferedWriter(new FileWriter(path)));
+
+			// Write the header of the debug file
+			outFilePW.println("COMTOR Execution Report");
+			outFilePW.println((new java.util.Date()).toString());
+			outFilePW.println("==========================================");
+			
+			// For each vector element, each of which is a properties list from the reports created
+ 			for (Properties results : resultsVector) {
+				// Fetch the keys, add them to an array, sort and then print results
+				Enumeration keyList = results.keys();
+				String keyArray[] = new String[results.size()];
+				int index = 0;
+				for (Enumeration e = keyList; e.hasMoreElements(); ) {
+					String key = (String) e.nextElement();
+					keyArray[index++] = key;
+				}
+				Arrays.sort(keyArray);
+				
+				for (String key : keyArray)
+					outFilePW.println(key + '\t' + results.getProperty(key));
+
+				outFilePW.println("------------------------------------------------------");
+			}
+			outFilePW.close();
+		}
+		catch (IOException e) {
+			System.out.println(e);
+			System.out.println("Path: " + path);
+		}
 	}
 
 	/**
