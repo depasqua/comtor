@@ -50,8 +50,6 @@ public class ComtorDriver extends Doclet {
 	public static int optionLength(String option) {
 		if (option.equals("--config-file") || option.equals("--assignment-id"))
 			return 2;
-		else if (option.equals("--debug"))
-			return 1;
 
 		return 0;
 	}
@@ -87,7 +85,6 @@ public class ComtorDriver extends Doclet {
 		String configFile = null;
 		String options[][] = rootDoc.options();
 		boolean done = false;
-		boolean debug = true;
 		
 		for (int i = 0; done == false && i < options.length; i++) {
 			if (options[i][0].equals("--config-file")) {
@@ -96,12 +93,10 @@ public class ComtorDriver extends Doclet {
 			} else if (options[i][0].equals("--assignment-id")) {
 				System.out.println("Assignment Id: " + options[i][1]);
 				assignmentId = Integer.parseInt(options[i][1]);
-			} else if (options[i][0].equals("--debug")) {
-				debug = true;
 			}
 		}
 
-		if (!debug && ((configFile == null) || (assignmentId == -1))) {
+		if (configFile == null || assignmentId == -1) {
 			System.out.println("Missing either config file or assignment id.");
 			return false;
 		}
@@ -112,29 +107,27 @@ public class ComtorDriver extends Doclet {
 			Connection db = null;
 			
 			// Get database connection so that we can get doclet grading settings and parameters
-			if (!debug) {
-				db = ComtorDatabase.getConnection(configFile);
-				if (db == null)
-					return false;
-	
-				// Prepare statement to get grading information
-				docletSectionsPrepStmt = db.prepareStatement(
-					"SELECT sectionName, maxGrade FROM docletGradeSections " +
-					"dGS LEFT JOIN assignmentGradeBreakdownsView aGBW ON " +
-					"dGS.docletGradeSectionId = aGBW.docletGradeSectionId " +
-					" WHERE docletId IN (SELECT docletId FROM doclets WHERE" +
-					"javaName=?) AND assignmentId=?");
-				docletSectionsPrepStmt.setLong(2, assignmentId);
-	
-				// Prepare statement to get grading parameters
-				docletParametersPrepStmt = db.prepareStatement(
-					"SELECT parameterName, param FROM docletGradeParameters " +
-					"dGP LEFT JOIN assignmentGradeParametersView aGPW ON " +
-					"dGP.docletGradeParameterId = aGPW.docletGradeParameterId" +
-					"WHERE docletId IN (SELECT docletId FROM doclets WHERE " +
-					"javaName=?) AND assignmentId=?");
-				docletParametersPrepStmt.setLong(2, assignmentId);
-			}
+			db = ComtorDatabase.getConnection(configFile);
+			if (db == null)
+				return false;
+
+			// Prepare statement to get grading information
+			docletSectionsPrepStmt = db.prepareStatement(
+				"SELECT sectionName, maxGrade FROM docletGradeSections " +
+				"dGS LEFT JOIN assignmentGradeBreakdownsView aGBW ON " +
+				"dGS.docletGradeSectionId = aGBW.docletGradeSectionId " +
+				" WHERE docletId IN (SELECT docletId FROM doclets WHERE" +
+				"javaName=?) AND assignmentId=?");
+			docletSectionsPrepStmt.setLong(2, assignmentId);
+
+			// Prepare statement to get grading parameters
+			docletParametersPrepStmt = db.prepareStatement(
+				"SELECT parameterName, param FROM docletGradeParameters " +
+				"dGP LEFT JOIN assignmentGradeParametersView aGPW ON " +
+				"dGP.docletGradeParameterId = aGPW.docletGradeParameterId" +
+				"WHERE docletId IN (SELECT docletId FROM doclets WHERE " +
+				"javaName=?) AND assignmentId=?");
+			docletParametersPrepStmt.setLong(2, assignmentId);
 			
 			Vector<Properties> resultsVector = new Vector<Properties>(); 
 			Vector<DocletThread> threads = new Vector<DocletThread>();
@@ -153,12 +146,8 @@ public class ComtorDriver extends Doclet {
 					System.out.println("Starting " + docletName);	
 					DocletThread docThrd = new DocletThread();
 					docThrd.setRootDoc(rootDoc);
-					if (!debug) {
-						docThrd.setDocletSectionsPrepStatements(
-							docletSectionsPrepStmt, docletParametersPrepStmt);
-					} else
-						docThrd.setDebug();
-					
+					docThrd.setDocletSectionsPrepStatements(
+						docletSectionsPrepStmt, docletParametersPrepStmt);					
 					docThrd.setAnalyzer(comtorDoclet);
 					docThrd.start();
 					threads.add(docThrd);
@@ -181,19 +170,12 @@ public class ComtorDriver extends Doclet {
 					resultsVector.addElement(docThrd.getProperties());
 			}
 				
-			// The following line is for debugging only. Please consult debug.txt for details.
-			// (Some of which are old, but may still be helpful - PJD 7/12/11), which can be found
-			// in the designdoc/tutorials directory.
-			if (debug)
-				ComtorDebugger.generateDebugFile(resultsVector);
-			else {
-				// Create report generator, set its configuration and passes it the results vector.
-				GenerateReport report = new GenerateReport();
-				report.setConfigFilename(configFile);
-				report.generateReport(resultsVector);
-				docletSectionsPrepStmt.close();
-				db.close();
-			}
+			// Create report generator, set its configuration and passes it the results vector.
+			GenerateReport report = new GenerateReport();
+			report.setConfigFilename(configFile);
+			report.generateReport(resultsVector);
+			docletSectionsPrepStmt.close();
+			db.close();
 			scan.close();
 		}
 
@@ -231,7 +213,6 @@ public class ComtorDriver extends Doclet {
 		private PreparedStatement docletParametersPrepStmt;
 		private PreparedStatement docletSectionsPrepStmt;
 		private RootDoc rootDoc;
-		private boolean debug = false;
 		
 		/**
 		 * Sets the root document with which the doclet will work
@@ -242,14 +223,6 @@ public class ComtorDriver extends Doclet {
 			this.rootDoc = rootDoc;
 		}
         
-		/**
-		 * Sets the debug flag to true (used for stand alone mode)
-		 *
-		 */
-		public void setDebug() {
-			debug = true;
-		}
-
 		/**
 		 * Sets the doclet that will process the root document
 		 *
@@ -279,33 +252,32 @@ public class ComtorDriver extends Doclet {
 		public void run() {
 			System.out.println("\tRunning analyzer: " + doclet);
 
-			if (!debug) {
-				// Get assignment specific information from database
-				try {
+			// Get assignment specific information from database
+			try {
 
-					// Get and set grading options
-					docletSectionsPrepStmt.setString(1, (doclet.getClass()).getName());
-					ResultSet result = docletSectionsPrepStmt.executeQuery();
+				// Get and set grading options
+				docletSectionsPrepStmt.setString(1, (doclet.getClass()).getName());
+				ResultSet result = docletSectionsPrepStmt.executeQuery();
 
-					if (result.first()) {
-						do {
-							doclet.setGradingBreakdown(result.getString(1), result.getFloat(2));
-						} while (result.next());
-					}
-
-					// Get and set grading parameters
-					docletParametersPrepStmt.setString(1, (doclet.getClass()).getName());
-					result = docletParametersPrepStmt.executeQuery();
-
-					if (result.first()) {
-						do {
-							doclet.setGradingParameter(result.getString(1), result.getString(2));
-						} while (result.next());
-					}
-				} catch (SQLException e) {
-					System.out.println(e);
+				if (result.first()) {
+					do {
+						doclet.setGradingBreakdown(result.getString(1), result.getFloat(2));
+					} while (result.next());
 				}
+
+				// Get and set grading parameters
+				docletParametersPrepStmt.setString(1, (doclet.getClass()).getName());
+				result = docletParametersPrepStmt.executeQuery();
+
+				if (result.first()) {
+					do {
+						doclet.setGradingParameter(result.getString(1), result.getString(2));
+					} while (result.next());
+				}
+			} catch (SQLException e) {
+				System.out.println(e);
 			}
+
 			// call the analyze method to perform the analysis
 			list = doclet.analyze(rootDoc);
 			System.out.println("\tAnalyzer completed: " + doclet);
