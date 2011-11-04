@@ -21,11 +21,12 @@ import java.io.*;
 import java.util.*;
 
 /**
- * This class contains a main method (wrapper) used to call the debug version of COMTOR. The 
- * debug version is used to check the processing and output of modules as they are developed, as
- * well as used for the 'standalone' version of the application to be deployed for research and/or
+ * This class contains a main method (wrapper) used to call the stand alone version of COMTOR. This 
+ * version is used to check the processing and output of modules as they are developed (debugging),
+ * as well, it is the 'standalone' version of the application to be deployed for research and/or
  * to the cloud.
  *
+ * @author Peter DePasquale
  */
 public class Comtor {
 	private static HashMap<String,String> argsMap = new HashMap<String, String>();
@@ -38,116 +39,91 @@ public class Comtor {
 	 * pass to Javadoc, as everything really starts there and calls our doclet.
 	 */
 	public static void main (String [] args) {
-	
-		// Loads the list of doclets to execute from the config file in the from which
-		// execution is originating
-		loadDocletList();
-		
-		Vector<String> jdocsoptions = new Vector<String>();
-
 		// Validate the argument list and print the options listing if validation fails.
 		if (!checkArgs(args)) {
 			System.out.println(optionsListing());
 			System.exit(1);
 		} else {
 			// Process the arguments
-			if (argsMap.containsKey("sourcepath")) {
-				jdocsoptions.add("-sourcepath");
-				jdocsoptions.add(argsMap.get("sourcepath"));
-
-				// Find non-packaged code in sourcepath dir(s) and add it to the options vector
-				String[] fileList = findFiles(argsMap.get("sourcepath"));
-				for (String file : fileList)
-					jdocsoptions.add(file);
-					
-				// Find packages in the sourcepath dir(s). Remove any upper level directories
-				// encountered, until we reach the trimto dir, if applicable
-				System.out.println("Found the following packages:");
-				LinkedList<String> packageList = findPackages(argsMap.get("sourcepath"), 
-					argsMap.get("trimto"));
-
-				// Process the limiting option, if applicable
-				if (argsMap.containsKey("limitto")) {
-					Scanner scanlimits = new Scanner(argsMap.get("limitto"));
-					scanlimits.useDelimiter(";");
-					
-					// Place the list of limiting packages into its own linked list for processing
-					System.out.println("\nLimiting to the following package(s):");
-					LinkedList<String> limits = new LinkedList<String>();
-					while (scanlimits.hasNext()) {
-						String limitPkg = scanlimits.next();
-						limits.add(limitPkg);
-						System.out.println("\t" + limitPkg);
-					}
-					
-					// Remove any known packages that are not in the limitto list
-					for (String limit : limits) {
-						for (String pkg : packageList) {
-							if (pkg.equals(limit)) {
-								jdocsoptions.add(pkg);
-							}
-						}
-					}				
-					
-				} else {					
-					// Add the list of packages to the options list being sent to Javadoc
-					for (String pkg : packageList) {
-						jdocsoptions.add(pkg);
-					}
-				}
+			if (argsMap.containsKey("dir")) {
+				String dirpath = argsMap.get("dir");
+				start(dirpath);
 			}
-			if (argsMap.containsKey("classpath")) {
-				jdocsoptions.add("-classpath");
-				jdocsoptions.add(argsMap.get("classpath"));
-			}
-			
-			// Add the -private option to the javadoc parameter list, ensuring that ALL classes
-			// and members are processed.
-			jdocsoptions.add("-private");
-			
-			String[] optionslist = new String[jdocsoptions.size()];
-			int index = 0;
-			System.out.println("\njavadoc options: ");
-			for (String option : jdocsoptions) {
-				optionslist[index] = jdocsoptions.elementAt(index);
-				System.out.println("\t"+optionslist[index]);
-				index++;
-			}
-			System.err.println();
-	
-			// Execute the javadoc processor handing it a String name of the application (for error
-			// output), the name of the doclet to execute (our debug version of the master doclet),
-			// and an array of arguments
-			com.sun.tools.javadoc.Main.execute("COMTOR", "comtor.ComtorStandAlone", optionslist);
 		}
 	}
 	
 	/**
-	 * Locates all Java packages in the provided path(s).
+	 * This processes the source code path and commences execution. More importantly, this method
+	 * is where other interface can connect to the analyzer. That is, the cloud implementation can
+	 * simply call this method to commence execution.
 	 *
-	 * @param dirPath a semi-colon separated list of directories where packaged code may exist
-	 * @param trimDr a dir name which will be used to trim the path of any candidate package, up
-	 * to the first occurrence of the trimDir value
+	 * @param dirpath the directory path (a single dir) which is searched for both pacakged and
+	 * non-packaged source code.
+	 *
+	 */
+	public static void start(String dirpath) {
+		Vector<String> jdocsoptions = new Vector<String>();
+
+		if (dirpath.equals("."))
+			dirpath = System.getProperty("user.dir");
+	
+		// Loads the list of doclets to execute from the config file in the from which
+		// execution is originating
+		loadDocletList();
+		
+		// Find non-packaged code in the specified dir and add them to the options vector
+		String[] fileList = findFiles(dirpath);
+		for (String file : fileList)
+			jdocsoptions.add(file);
+	
+		// Find packages in the specified dir and add them to the options vector.
+		System.out.println("Found the following packages:");
+		LinkedList<String> packageList = findPackages(argsMap.get("dir"));
+
+		// Add the list of packages to the options list being sent to Javadoc
+		for (String pkg : packageList)
+			jdocsoptions.add(pkg);
+		
+		// Add the -private option to the javadoc parameter list, ensuring that ALL classes
+		// and members are processed.
+		jdocsoptions.add("-private");
+		
+		jdocsoptions.add("-sourcepath");
+		jdocsoptions.add(argsMap.get("dir"));
+
+		// Process the options list for preparation in handing it to Javadoc
+		String[] optionslist = new String[jdocsoptions.size()];
+		int index = 0;
+		System.out.println("\njavadoc options: ");
+		for (String option : jdocsoptions) {
+			optionslist[index] = jdocsoptions.elementAt(index);
+			System.out.println("\t" + optionslist[index++]);
+		}
+
+		// Execute the javadoc processor handing it a String name of the application (for error
+		// output), the name of the doclet to execute (our stand alone version of the master doclet
+		// that does attempt to database its results), and an array of arguments.
+		com.sun.tools.javadoc.Main.execute("COMTOR", "comtor.ComtorStandAlone", optionslist);
+	}
+	
+	/**
+	 * Locates all Java packages in the provided path.
+	 *
+	 * @param dirpath a directory where packaged code may exist
 	 * @return a linked list of String names of Java packages
 	 */
-	private static LinkedList<String> findPackages(String filePath, String trimDir) {
+	private static LinkedList<String> findPackages(String dirpath) {
 		LinkedList<String> packageListing = new LinkedList<String>();
 		LinkedList<String> dirsToProcess = new LinkedList<String>();
 		
-		Scanner scanpath = new Scanner(filePath);
-		scanpath.useDelimiter(";");
-		while (scanpath.hasNext()) {
-			String dir = scanpath.next();
-			try {
-				// Add any found subdirs to a list to process
-				File targetDir = new File(dir);
-				if (targetDir.isDirectory()) {
-					dirsToProcess.add(targetDir.getPath());
-					dirsToProcess = addAllSubDirs(targetDir, dirsToProcess);
-				}
-			} catch (Exception e) {
-				System.err.println(e);
+		try {
+			// Add any found subdirs to a list to process
+			File targetDir = new File(dirpath);
+			if (targetDir.isDirectory()) {
+				dirsToProcess = addAllSubDirs(targetDir, dirsToProcess);
 			}
+		} catch (Exception e) {
+			System.err.println(e);
 		}
 
 		// Process the list of 'found' directories looking for additional directories
@@ -155,26 +131,12 @@ public class Comtor {
 		String fileSep = System.getProperty("file.separator");
 		while (dirsToProcess.size() > 0) {
 			String item = dirsToProcess.removeFirst();
-			File candidate = new File(item);
+			item = item.substring(item.indexOf(dirpath) + dirpath.length() +1);
+			File candidate = new File(dirpath + fileSep + item);
 			if (containsJavaFiles(candidate)) {
-				// We've found suspected package locations..., trim as needed
-				int location = -1;
-				if (trimDir != null) {
-					location = item.indexOf(fileSep + trimDir + fileSep);
-					// If we are using trimto, then only add dirs that have been trimmed
-					if (location != -1) {
-						item = item.substring(location+1);
-						item = item.replaceAll(fileSep, ".");
-						packageListing.add(item);
-						System.out.println("\t"+item);
-					}
-
-				}
-				else {
-					item = item.replaceAll(fileSep, ".");
-					packageListing.add(item);
-					System.out.println("\t"+item);
-				}
+				item = item.replaceAll(fileSep, ".");
+				packageListing.add(item);
+				System.out.println("\t" + item);
 			}
 		}	
 
@@ -224,27 +186,34 @@ public class Comtor {
 	}
 
 	/**
-	 * Locates all of the Java source code files (ending with .java) in the directories
-	 * specified in the path. Path directories are specified with a semi-colon delimited list
+	 * Locates all of the Java source code files (ending with .java) in the directory
+	 * specified in the path. Subdirectories are assumed to be packaged code and are processed
+	 * separately.
 	 *
-	 * @param filePath a semi-colon separated list of directories where unpackaged code may exist
+	 * @param filePath a director path where unpackaged code may exist
 	 * @return an array of Strings of dir/filenames of unpackaged java source code files
 	 */
-	private static String[] findFiles(String filePath) {
+	private static String[] findFiles(String dirpath) {
+		String fileSeparator = System.getProperty("file.separator");
 		Vector<String> fileListVector = new Vector<String>();
-		Scanner scanpath = new Scanner(filePath);
-		scanpath.useDelimiter(";");
-		while (scanpath.hasNext()) {
-			String dir = scanpath.next();
-			try {
-				File targetDir = new File (dir);
-				if (targetDir.isDirectory())
-					for (String val : targetDir.list(new JavaFilter()))
-						fileListVector.add(dir + System.getProperty("file.separator") + val);
-			} catch(Exception e) {
-				System.err.println(e);
-			}
+		File targetDir = null;
+		try {
+			targetDir = new File(dirpath);
+			if (targetDir.isDirectory())
+				for (String val : targetDir.list(new JavaFilter()))
+					fileListVector.add(dirpath + fileSeparator + val);
+		} catch(Exception e) {
+			System.err.println(e);
+			System.exit(1);
 		}
+		
+		System.err.println("Unpackaged source files found in dir: " + dirpath + fileSeparator);
+		for (String filename : fileListVector) {
+			String basename = filename.substring(filename.lastIndexOf(fileSeparator) + 1);
+			System.err.println("\t" + basename);
+		}
+		
+		System.err.println();
 		return (String[]) fileListVector.toArray(new String[fileListVector.size()]);
 	}			
 
@@ -254,22 +223,13 @@ public class Comtor {
 	 * @return a string suitable for printing, used to detail the program's run time options
 	 */
 	private static String optionsListing() {
-		String result = "\nUsage: Comtor -classpath <path> [options]\n\n";
-		result += "Required arguments:\n";
-		result += "-classpath <path>\tThe path(s) where javadoc will find user class files\n\n";
-
+		String result = "\nUsage: java -jar comtor.jar -dir dirname\n\n";
 		result += "Options:\n";
-		result += "-sourcepath <path>\tThe search path(s) for finding default-packaged " +
-			"(non-packaged) source files (.java) when\n";
-		result += "\t\t\tpassing package names into javadoc.\n\n";
-
-		result += "-limitto <path>\t\tLimit Comtor to process only those source code files found " +
-			"in the specified packages.\n\n";
-			
-		result += "-trimto <dir>\t\t\n\n";
-
-		result += "-help\t\t\tThis help message\n";
-		result += "\nNote that where applicable, <path> values are semi-colon separated directory lists\n";
+		
+		result += "-dir dirname\t\tSpecified the pathname of the directory in which COMTOR will "; 
+		result += "search for Java source code\n\t\t\tfiles (packaged and non-packaged).\n\n";
+		
+		result += "-help | --help\t\tThis help message\n";
 		result += "\n\n";
 		return result;
 	}
@@ -284,24 +244,15 @@ public class Comtor {
 		boolean valid = true;
 		
 		for (int index = 0; valid && index < args.length; index++) {
-			if (args[index].equals("-help"))
+			if (args[index].equals("-help") || args[index].equals("--help"))
 				valid = false;
 
-			// All following arguments should have one value that follows
+			// All following arguments should have one value that follows each argument
 			if (index+1 >= args.length || args[index+1] == null)
 				valid = false;
 
-			if (valid && args[index].equals("-sourcepath"))
-				argsMap.put("sourcepath", args[++index]);
-			
-			else if (valid && args[index].equals("-classpath"))
-				argsMap.put("classpath", args[++index]);
-
-			else if (valid && args[index].equals("-limitto"))
-				argsMap.put("limitto", args[++index]);
-				
-			else if (valid && args[index].equals("-trimto"))
-				argsMap.put("trimto", args[++index]);
+			else if (valid && args[index].equals("-dir"))
+				argsMap.put("dir", args[++index]);
 		}
 		return valid;
 	}
