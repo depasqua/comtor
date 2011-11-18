@@ -7,10 +7,10 @@
 <tr>
   <th>Professor</th>
   <th>Course Section</th>
-  <th>Course Name</th>
+  <th class="medium">Course Name</th>
   <th>Semester</th>
-  <th class="large">Comments</th>
-  <th class="large">Actions</th>
+  <th>Comments</th>
+  <th>Actions</th>
 </tr>
 
 {foreach from=$courses_all item="c"}
