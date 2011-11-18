@@ -12,6 +12,10 @@ $breadcrumbs[] = array('text' => 'Video Tutorials', 'href' => 'tutorials.php');
 $breadcrumbs[] = array('text' => 'Tutorial', 'href' => 'tutorial.php?video='.$_GET['video']);
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Assign video
 $tpl->assign("video", "tutorials/".$_GET['video']);
 

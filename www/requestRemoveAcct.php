@@ -34,6 +34,10 @@ $_SESSION['breadcrumbs'][] = array('text' => 'Home', 'href' => 'index.php');
 $_SESSION['breadcrumbs'][] = array('text' => 'Requests', 'href' => 'requests.php');
 $_SESSION['breadcrumbs'][] = array('text' => 'Request Account Type Change', 'href' => 'index.php');
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Redirect to general output template
 header('Location: submission.php');
 exit;

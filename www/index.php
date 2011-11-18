@@ -54,6 +54,10 @@ $breadcrumbs = array();
 $breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Assign page html
 $tpl->assign('tpldata', $tpldata);
 

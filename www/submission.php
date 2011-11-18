@@ -28,6 +28,10 @@ else
   $tpl->assign('breadcrumbs', $breadcrumbs);
 }
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Fetch template
 $tpldata = $tpl->fetch("general.tpl");
 $tpl->assign('tpldata', $tpldata);

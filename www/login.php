@@ -77,6 +77,10 @@ else
   }
 }
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 $tpldata = $message . '<br /><a href="loginForm.php">Back to login</a>.';
 $tpl->assign('tpldata', $tpldata);
 

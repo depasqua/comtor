@@ -15,6 +15,10 @@ $breadcrumbs[] = array('text' => 'FAQ', 'href' => 'faq.php');
 $breadcrumbs[] = array('text' => 'Compiling', 'href' => 'faq_compile.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Fetch template
 $tpldata = $tpl->fetch("faq_compile.tpl");
 $tpl->assign('tpldata', $tpldata);

@@ -92,6 +92,10 @@ $breadcrumbs[] = array('text' => $text, 'href' => 'courseManage.php?courseId='.$
 $breadcrumbs[] = array('text' => 'Enroll Students', 'href' => 'findStudents.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Fetch template
 $tpldata = $tpl->fetch("course_add_students.tpl");
 $tpl->assign('tpldata', $tpldata);

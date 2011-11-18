@@ -94,6 +94,10 @@ if (isset($userInfo) && $userId != $_SESSION['user_id'])
 $breadcrumbs[] = array('text' => $text, 'href' => 'dropbox.php?courseId='.$courseId.'&amp;userId='.$userId);
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Fetch template
 $tpldata = $tpl->fetch('dropbox.tpl');
 $tpl->assign('tpldata', $tpldata);

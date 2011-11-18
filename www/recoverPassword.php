@@ -50,6 +50,10 @@ else
   }
 }
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 $tpl->assign('tpldata', $message);
 
 // Display template

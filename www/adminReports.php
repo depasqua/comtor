@@ -28,6 +28,10 @@ $breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Admin Reports', 'href' => 'adminReports.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Fetch template
 $tpldata = $tpl->fetch("admin_reports.tpl");
 $tpl->assign('tpldata', $tpldata);

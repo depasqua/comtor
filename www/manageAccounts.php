@@ -61,6 +61,10 @@ $breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Account Management', 'href' => 'manageAccounts.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Fetch template
 $tpldata = $tpl->fetch("acct_manage_all.tpl");
 $tpl->assign('tpldata', $tpldata);

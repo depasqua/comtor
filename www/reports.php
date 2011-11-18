@@ -470,6 +470,10 @@ function formatDateTime($timestamp)
 $breadcrumbs[] = array('text' => 'View Reports', 'href' => 'reports.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Fetch template
 $tpldata = $tpl->fetch($template);
 $tpl->assign('tpldata', $tpldata);

@@ -115,6 +115,10 @@ switch ($state)
 }
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Fetch template
 $template = "schools_all.tpl";
 if ($state == "new" || $state == "edit")

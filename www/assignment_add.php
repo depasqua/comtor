@@ -387,6 +387,10 @@ $breadcrumbs[] = array('text' => 'Dropbox', 'href' => 'dropbox.php');
 $breadcrumbs[] = array('text' => 'Add Assignment', 'href' => 'assignment_add.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Register function to determine input values
 $tpl->register_function('gradeSectionInputValue', 'gradeSectionInputValue');
 $tpl->register_function('gradeParameterInputValue', 'gradeParameterInputValue');

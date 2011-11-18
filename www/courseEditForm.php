@@ -76,6 +76,10 @@ $breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Edit Course', 'href' => 'courseEditForm.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Fetch template
 $tpldata = $tpl->fetch("course_add.tpl");
 $tpl->assign('tpldata', $tpldata);

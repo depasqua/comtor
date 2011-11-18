@@ -148,6 +148,10 @@ if ($userId != $_SESSION['userId'])
 $breadcrumbs[] = array('text' => $text, 'href' => 'editAcct.php?userId='.$userId);
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Fetch template
 $tpldata = $tpl->fetch("acct_edit.tpl");
 $tpl->assign('tpldata', $tpldata);

@@ -64,6 +64,10 @@ $text = (isset($course['section']) && isset($course['name'])) ? $course['section
 $breadcrumbs[] = array('text' => $text, 'href' => 'courseManage.php?courseId='.$courseId);
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Fetch template
 $tpldata = $tpl->fetch("course_manage.tpl");
 $tpl->assign('tpldata', $tpldata);

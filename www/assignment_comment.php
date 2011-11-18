@@ -108,6 +108,10 @@ $breadcrumbs[] = array('text' => 'Dropbox', 'href' => isset($_GET['loc']) ? $_GE
 $breadcrumbs[] = array('text' => 'Submission Comment', 'href' => 'assignment_comment.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
+// Assign tooltips
+// $tooltips = file_get_contents('tooltips/test.html');
+// $tpl->assign('tooltips', $tooltips);
+
 // Fetch template
 $tpldata = $tpl->fetch('assignment_comment.tpl');
 $tpl->assign('tpldata', $tpldata);
