@@ -18,7 +18,7 @@ $tpl->assign('users', getCurrentUsers());
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Online Users', 'href' => '#');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 

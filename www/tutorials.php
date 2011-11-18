@@ -10,7 +10,7 @@ require_once("header1.php");
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Video Tutorials', 'href' => 'tutorials.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 

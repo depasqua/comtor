@@ -24,7 +24,7 @@ if (isset($_SESSION['breadcrumbs']))
 else
 {
   $breadcrumbs = array();
-  $breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+  $breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
   $tpl->assign('breadcrumbs', $breadcrumbs);
 }
 

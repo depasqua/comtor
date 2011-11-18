@@ -67,7 +67,7 @@ else
     $name = stripslashes($name);
     // E-mail temporary password to user
     $subject = 'Account Validation';
-    $body = "Dear $name,\n\nThank you for registering with Comment Mentor.  Your account has been successfully created.  Please use your email address and the following temporary password to login within 30 days.  At that time, you will have the option to change your password.\n\nComment Mentor: http://" . URL_PATH . "\n\nPassword = $tempPassword";
+    $body = "<img src=\"https://secure.comtor.org/comtorapp/img/logo.gif\" alt=\"COMTOR\"/>\nDear $name,\n\nThank you for registering with COMTOR.  Your account has been successfully created.  Please use your email address and the following temporary password to login within 30 days.  At that time, you will have the option to change your password.\n\nCOMTOR: http://" . URL_PATH . "\n\nPassword = $tempPassword";
     $body = nl2br($body);
     $result = sendMail($body, $email, null, $subject);
 

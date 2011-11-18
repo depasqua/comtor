@@ -102,7 +102,7 @@ $tpl->assign(securityFormInputs());
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => $courseInfo['section'] . ': ' . $courseInfo['name'], 'href' => 'courses.php?courseId='.$courseId);
 $breadcrumbs[] = array('text' => 'Dropbox', 'href' => isset($_GET['loc']) ? $_GET['loc'] : 'dropbox.php');
 $breadcrumbs[] = array('text' => 'Submission Comment', 'href' => 'assignment_comment.php');

@@ -111,7 +111,7 @@ mysql_close();
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Courses', 'href' => 'courses.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 

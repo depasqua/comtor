@@ -57,7 +57,7 @@ $tpl->assign('usersDLinks', listPages($_GET['lowerDis'], $_GET['totalDis'], $num
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Account Management', 'href' => 'manageAccounts.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 

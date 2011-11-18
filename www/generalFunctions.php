@@ -122,7 +122,8 @@ function sendMail($content, $recipients, $from = null, $subject = null, $bcc = f
 
   // Add disclaimer if sent from default E-mail address
   if ($headers['From'] == EMAIL_FROM)
-    $content .= "<br/><br/><div style=\"text-align: center;\">This is an automated E-mail.  Please do not reply.  If you have any questions, please contact Dr. Depasquale.</div>";
+    $content .= "<br/><br/><div style=\"text-align: center;\">This is an automated E-mail.  Please do not reply.  If you have any questions, please email <a href=\"mailto:comtor@tcnj.edu\">
+comtor@tcnj.edu</a>.</div>";
 
   // Set content type
   $headers['Content-Type'] = 'text/html';

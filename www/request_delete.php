@@ -87,7 +87,7 @@ else
 
 // Assign breadcrumbs
 $_SESSION['breadcrumbs'] = array();
-$_SESSION['breadcrumbs'][] = array('text' => 'COMTOR', 'href' => 'index.php');
+$_SESSION['breadcrumbs'][] = array('text' => 'Home', 'href' => 'index.php');
 $_SESSION['breadcrumbs'][] = array('text' => 'Requests', 'href' => 'requests.php');
 $_SESSION['breadcrumbs'][] = array('text' => 'Delete Request', 'href' => 'request_delete.php');
 

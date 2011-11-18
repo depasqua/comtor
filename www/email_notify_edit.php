@@ -123,7 +123,7 @@ $tpl->assign(securityFormInputs());
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $text = 'E-Mail Notifications';
 $breadcrumbs[] = array('text' => $text, 'href' => 'email_notify_edit.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);

@@ -27,9 +27,13 @@ $tpl->assign(securityFormInputs());
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Add Course', 'href' => 'courseAddForm.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
+
+// Assign tooltips
+$tooltips = file_get_contents('tooltips/test.html');
+$tpl->assign('tooltips', $tooltips);
 
 // Fetch template
 $tpldata = $tpl->fetch("course_add.tpl");

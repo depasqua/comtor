@@ -149,7 +149,7 @@ if ($users = getUsers(array("userId", "name"), "enabled", "student", false, fals
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $text = (isset($course['section']) && isset($course['name'])) ? $course['section'].': '.$course['name'] : 'Course #'.$courseId;
 $breadcrumbs[] = array('text' => $text, 'href' => 'courseManage.php?courseId='.$courseId);
 $breadcrumbs[] = array('text' => 'E-Mail', 'href' => 'course_email.php');

@@ -85,7 +85,7 @@ $tpl->assign('usersLinks', listPages($_GET['lowerEn'], $_GET['totalEn'], $numUse
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Courses', 'href' => 'courses.php');
 $text = (isset($course['section']) && isset($course['name'])) ? $course['section'].': '.$course['name'] : 'Course #'.$courseId;
 $breadcrumbs[] = array('text' => $text, 'href' => 'courseManage.php?courseId='.$courseId);

@@ -102,7 +102,7 @@ if ($schools = getSchools())
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Schools', 'href' => 'schools.php');
 switch ($state)
 {

@@ -48,7 +48,7 @@ if ($userId != null)
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Requests', 'href' => 'requests.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 

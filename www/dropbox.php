@@ -14,7 +14,7 @@ include("connect.php");
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 
 if (!isset($_SESSION['courseId']) || !isset($_SESSION['courseInfo']))
 {

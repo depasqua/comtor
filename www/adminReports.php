@@ -24,7 +24,7 @@ $tpl->assign('doclets', getDocletUsage());
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Admin Reports', 'href' => 'adminReports.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 

@@ -30,7 +30,7 @@ $_SESSION['content']['error'] = implode('<br/>', $error);
 
 // Assign breadcrumbs
 $_SESSION['breadcrumbs'] = array();
-$_SESSION['breadcrumbs'][] = array('text' => 'COMTOR', 'href' => 'index.php');
+$_SESSION['breadcrumbs'][] = array('text' => 'Home', 'href' => 'index.php');
 $_SESSION['breadcrumbs'][] = array('text' => 'Requests', 'href' => 'requests.php');
 $_SESSION['breadcrumbs'][] = array('text' => 'Request Account Type Change', 'href' => 'index.php');
 

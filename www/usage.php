@@ -38,7 +38,7 @@ if (getUserAcctType($userId) == "student")
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'System Usage', 'href' => 'usage.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 

@@ -51,7 +51,7 @@ $tpldata = $tpl->fetch("welcome.tpl");
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
 // Assign page html

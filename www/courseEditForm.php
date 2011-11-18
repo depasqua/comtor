@@ -72,7 +72,7 @@ $tpl->assign('edit', true);
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Edit Course', 'href' => 'courseEditForm.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 

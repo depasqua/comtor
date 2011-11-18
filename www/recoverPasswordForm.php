@@ -8,7 +8,7 @@ require_once("header1.php");
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Password Recovery', 'href' => 'recoverPasswordForm.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 

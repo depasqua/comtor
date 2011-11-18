@@ -216,7 +216,7 @@ $tpl->assign(securityFormInputs());
 
 // Assign breadcrumbs
 $breadcrumbs = array();
-$breadcrumbs[] = array('text' => 'COMTOR', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
 $breadcrumbs[] = array('text' => 'Add Doclet', 'href' => 'doclet_add.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
