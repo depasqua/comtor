@@ -50,7 +50,7 @@ public class GenerateReport {
 	public void generateReport(Vector<Properties> resultsVector) {
 		// Load the database properties from properties file
 		Properties properties = new Properties();
-		Connection conn = ComtorDatabase.getConnection(configFile);
+		Connection conn = ComtorDriver.getConnection(configFile);
 
 		// Check that a connection was made
 		if (conn != null) {
