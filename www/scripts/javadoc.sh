@@ -25,7 +25,7 @@ mv $2 src
 cd $UPLOAD_PATH
 mv $1.txt $1
 cd $1
-cp $1.txt Doclets.txt
+cp $1.txt docletList.properties
 rm $1.txt
 
 #unjar the jar file in src dir and set the permissions
