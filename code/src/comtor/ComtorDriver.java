@@ -107,7 +107,7 @@ public class ComtorDriver extends Doclet {
 			Connection db = null;
 			
 			// Get database connection so that we can get doclet grading settings and parameters
-			db = ComtorDatabase.getConnection(configFile);
+			db = getConnection(configFile);
 			if (db == null)
 				return false;
 
@@ -131,7 +131,7 @@ public class ComtorDriver extends Doclet {
 			
 			Vector<Properties> resultsVector = new Vector<Properties>(); 
 			Vector<DocletThread> threads = new Vector<DocletThread>();
-			Scanner scan = new Scanner(new File("Doclets.txt"));
+			Scanner scan = new Scanner(new File("docletList.properties"));
 
 			while (scan.hasNext()) {
 				// Store doclet as docletName
@@ -291,5 +291,55 @@ public class ComtorDriver extends Doclet {
 		public Properties getProperties() {
 			return list;
 		}
+	}
+
+	/**
+	 * Gets a database connection
+	 *
+	 * @param configFile String representation of the database configuration file
+	 *
+	 * @return a reference to the connection for the database
+	 */
+	public static Connection getConnection(String configFile)
+	{
+		// Load the database properties from properties file
+		Properties properties = new Properties();
+		try {
+			properties.load(new FileInputStream(configFile));
+		}
+		catch (IOException e) {
+			System.out.println("Error opening the database configuration file.");
+		}
+
+		String dbUrl = properties.getProperty("databaseUrl");
+		String dbUName = properties.getProperty("username");
+		String dbPasswd = properties.getProperty("password");
+		Connection dbConnection = null;
+
+		try {
+			// Attempt to load the database driver
+			Class.forName("com.mysql.jdbc.Driver");
+
+			// Establish a connection to the database if the driver was loaded
+			dbConnection = DriverManager.getConnection(dbUrl, dbUName, dbPasswd);
+
+			// Check that a connection was made
+			if (dbConnection == null) {
+				System.out.println("Failed to connect to the database.");
+				System.out.println("URL: " + dbUrl);
+				System.out.println("Username: " + dbUName);
+			}
+		}
+		catch (SQLException e) {
+			System.out.println("Failed to obtain a connection to the database.");
+			System.out.println("URL: " + dbUrl);
+			System.out.println("Username: " + dbUName);
+		}
+		catch (Exception e) {
+			System.out.println("Failed to load MySQL JDBC driver.");
+			System.out.println(e);
+		}
+
+		return dbConnection;
 	}
 }
