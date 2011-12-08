@@ -14,8 +14,8 @@ public class SendJavaMail {
 
 	protected void sendMail(String email) {
 		String host = "smtp.gmail.com";
-		String from = "excel542";
-		String pass = "notme101089";
+		String from = "username";
+		String pass = "password";
 		Properties props = System.getProperties();
 		props.put("mail.smtp.starttls.enable", "true"); // added this line
 		props.put("mail.smtp.host", host);
