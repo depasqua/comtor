@@ -423,7 +423,7 @@ private boolean processMethodCall(RootDoc rootDoc, int pkgID, int classID, int m
 		    }
 	    }
 	
-    }
+    
     // if the method/constructor cannot be found anywhere in the current class, write that to prop, and return false. 
 	prop.setProperty(numberFormat(pkgID)+"."+numberFormat(classID)+"."+numberFormat(methodID)+"."+numberFormat(partID),
 	methodName + " does not exist in class " + currentClass.name());
