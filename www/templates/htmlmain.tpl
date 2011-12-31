@@ -61,7 +61,7 @@
       {/if}
       
       {if $smarty.const.DEVELOPMENT|default:false}
-  		<div style="float:left; font-size: 50px; font-weight: bold; color: #a00000;">Gruvelopment</div>
+  		<div style="float:left; font-size: 50px; font-weight: bold; color: #a00000;">Development</div>
 	  {/if}
 </div>
 
@@ -102,6 +102,8 @@
             {/if}
           {/foreach}
           <li class="heading">General</li>
+		  <li class="button"><a href="reportBugs.php">Report Bugs</a></li>
+		  <li class="button"><a href="requestFeatures.php">Request Features</a></li>
           <li class="button"><a href="features.php">Features We Measure</a></li>
           <li class="button"><a href="faq.php">FAQ</a></li>
           <li class="button"><a href="tutorials.php">Video Tutorials</a></li>
@@ -155,7 +157,7 @@ function getCookie(name)
     {if isset($success) }<div class="success">{$success}</div>{/if}
     {if isset($error) }<div class="error">{$error}</div>{/if}
 	
-	<!-- Tooltips GRUBER WAS HERE-->
+	<!-- Tooltips -->
 	{if isset($tooltips) }
 	<div class="help_button help_slider"></div>
 	<div class="help_popup help_slider">
