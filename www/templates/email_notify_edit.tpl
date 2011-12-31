@@ -26,7 +26,7 @@ function verify()
 <div>
   <!-- Notification Frequency -->
   <div>
-    <span class="formLabel">Notification Frequency:</span><br/>
+    <h3>Notification Frequency:</h3>
     {foreach from=$notify_frequencies key="id" item="freq"}
       <input type="radio" class="radio" name="frequency" value="{$id}" {if $user_freq == $id}checked="checked"{/if} />{$freq}<br/>
     {/foreach}
@@ -34,7 +34,7 @@ function verify()
 
   <!-- Notification Types -->
   <div>
-    <span class="formLabel">Notification Types:</span><br/>
+    <h3>Notification Types:</h3>
     {foreach from=$notify_types key="id" item="type"}
       <input type="checkbox" class="checkbox" name="notify_types[]" value="{$id}" {if $id & $user_notify_types}checked="checked"{/if} /> {$type}<br/>
     {/foreach}
