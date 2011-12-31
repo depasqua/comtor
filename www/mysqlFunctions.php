@@ -190,7 +190,7 @@ function getUserInfoById($userId, $columns = array())
   if (($select = makeColumnStr($columns, "users")) === false)
     return false;
 
-  $query = "SELECT {$select} FROM users WHERE userId={$userId} LIMIT 1";
+  $query = "SELECT {$select} FROM users INNER JOIN schools WHERE users.schoolID=schools.schoolID && users.userId={$userId} LIMIT 1";
   $result = mysql_query($query);
 
   $user = false;
