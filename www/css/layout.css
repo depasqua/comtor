@@ -374,6 +374,19 @@ div.class
   font-weight: bold;
 }
 
+div.metricsHeader
+{
+  font-size: 1.2em;
+  padding-top: 10px;
+  font-weight: bold;
+}
+
+div.metricsBody
+{
+	font-size: 1.05em;
+	padding-left: 25px;
+}
+
 div.method
 {
   padding-left: 25px;
@@ -430,7 +443,7 @@ h6
   display: inline;
   font-size: 1em;
   font-weight: bold;
-  margin: 10px 5px 0px 0px;
+  margin: 10px 0px 5px 20px;
 }
 
 
@@ -592,6 +605,7 @@ input, select
 input.checkbox, input.radio
 {
   margin-right: 5px;
+  margin-left: 20px;
 }
 
 input.fewChars
