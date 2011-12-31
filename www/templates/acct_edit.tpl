@@ -60,7 +60,7 @@ function verify()
 <table id="frame">
  <tr>
   <td>Name:</td>
-  <td><input type="text" name="name" value="{$name}" /></td>
+  <td><input type="text" name="name" size="50" value="{$name}" /></td>
  </tr>
 
  <tr>
