@@ -45,6 +45,7 @@ $tpldata = $tpl->fetch('submit_files.tpl');
 // Assign breadcrumbs
 $breadcrumbs = array();
 $breadcrumbs[] = array('text' => 'Home', 'href' => 'index.php');
+$breadcrumbs[] = array('text' => 'Submit', 'href' => 'submit.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
 // Assign tooltips
