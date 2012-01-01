@@ -1,23 +1,50 @@
 <h2>Comment Analysis Features</h2>
-<p>
-New features are constantly being added so check back frequently for information on new additions!
-</p>
+<p>New features are constantly being added so check back frequently for information on new additions!</p>
 
-<p>
-COMTOR generates a report based on a user's submitted source code. Currently there are five modules, listed below, along with a short description of their purpose.
-</p>
+<p>COMTOR generates a report based on a user's submitted source code. Currently there are five modules, listed below, along with a short description of their purpose.</p>
 
 <ul>
-  <li><span class="bold">Check for Tags (requires the presence of Javadoc tags)</span>
-    <p class="indentAll">
-       Searches submitted source code to evaluate whether all user-defined methods contain the correct use of three core Javadoc tags.</p>
+	<li><span class="bold">Spell Checker</span>
+		<p class="indentAll">Checks the spelling in comments. (Note: There may be some words that are spelled correctly, marked incorrect because they are not present in the dictionary.)</p>
+	
+		<p class="indentAll"><span class="bold">Report Example:</span></p>
+	
+		<div class='reportExample'>
+			<div class='docletDesc'>Spell Checker (Checks the spelling in comments. (Note: There may be some words that are spelled correctly, marked incorrect because they are not present in the dictionary.))</div>
+			<hr />
+			<div class='class'>Class: edu.tcnj.FileOne</div>
+			<div class='member'>Class comments</div>
+			<div class='comment'>foobar</div>
+			<div class='comment'>COMTOR</div>
+			<div class='member'>Field / instance variable comments (field: foo)</div>
+			<div class='comment'>agout</div>
+			<div class='member'>Method comments (method: main)</div>
+			<div class='comment'>jjj</div>
+			<div class='member'>Method tag comments (method: main, tag: @param)</div>
+			<div class='comment'>listr</div>
+	
+			<div class='class'>Class: edu.tcnj.FileTwo</div>
+			<div class='member'>Class comments</div>
+			<div class='comment'>Commentr</div>
+	
+			<div class='metricsHeader'>Analysis Metrics:</div>
+			<div class='metricsBody'>Analysis time: 9 ms</div>
+			<div class='metricsBody'>A total of 2 class(es) were processed.</div>
+			<div class='metricsBody'>There were 17 correctly spelled words. Duplicate words were counted once.</div>
+			<div class='metricsBody'>There were 6 incorrectly spelled words. Duplicate words were counted once.</div>
+			<div class='metricsBody'>There were 5 duplicate words (spelled correctly or incorrectly).</div>
+			<div class='metricsBody'>21% of the words in the comments were misspelled.</div>
+			<div class='metricsBody'>There were a total of 28 words analyzed.</div>
+		</div>
+	</li>
 
-    <p class="indentAll">
-        This module verifys that the <span class="tag">@return</span>, <span class="tag">@param</span>, and <span class="tag">@throws</span> tags are used appropriately. All methods that return a non-void value must have a valid <span class="tag">@return</span> tag in the comment block above the method's header line.  The <span class="tag">@return</span> tag should not be present for methods with a return type of void. All method parameters should have an <span class="tag">@param</span> tag with an comment indicating the purpose of the parameter. There should not be any <span class="tag">@param</span> tags for non-existent parameters. Each exception that a method throws should have an <span class="tag">@throws</span> tag. There should not be any <span class="tag">@throws</span> tags present in methods that do not throw exceptions.</p>
+	<li><span class="bold">Check for Tags (requires the presence of Javadoc tags)</span>
+		<p class="indentAll">Searches submitted source code to evaluate whether all user-defined methods contain the correct use of three core Javadoc tags.</p>
+
+		<p class="indentAll">This module verifys that the <span class="tag">@return</span>, <span class="tag">@param</span>, and <span class="tag">@throws</span> tags are used appropriately. All methods that return a non-void value must have a valid <span class="tag">@return</span> tag in the comment block above the method's header line.  The <span class="tag">@return</span> tag should not be present for methods with a return type of void. All method parameters should have an <span class="tag">@param</span> tag with an comment indicating the purpose of the parameter. There should not be any <span class="tag">@param</span> tags for non-existent parameters. Each exception that a method throws should have an <span class="tag">@throws</span> tag. There should not be any <span class="tag">@throws</span> tags present in methods that do not throw exceptions.</p>
         
-    <p class="indentAll">
-<span class="bold">Code Example:</span>
-</p>
+        <p class="indentAll"><span class="bold">Code Example:</span></p>
+
 <pre>
 <p class="codeExample">/**
  * Attempts to recursively traverse the maze. Inserts special characters
@@ -114,21 +141,6 @@ COMTOR generates a report based on a user's submitted source code. Currently the
 	</div>
 	</li>
 	
- <li><span class="bold">Spell Checker</span>
-  <p class="indentAll">
-    Checks the spelling in comments. (Note: There may be some words that are spelled correctly, marked incorrect because they are not present in the dictionary.)
-  </p>
-    <p class="indentAll">
-<span class="bold">Report Example:</span>
-</p>
-	<div class='reportExample'>
-		<div class='docletDesc'>Spell Checker (Checks the spelling in comments. (Note:  There may be some words that are spelled correctly, marked incorrect because they are not present in the dictionary.))</div>
-		<div class='docletScore'>4.50 out of 5.00</div>
-		<div class='comment'>The following word was misspelled: Javadoc</div>
-		<div class='comment'>The following word was misspelled: null</div>
-		<div class='comment'>The following word was misspelled: Comtor</div>	
-	</div>
- </li>
 </ul>
 
 <h2>Additional Features Provided</h2>
