@@ -101,8 +101,7 @@
 				{/if}
 				{/foreach}
 				<li class="heading">General</li>
-				<li class="button"><a href="reportBugs.php">Report Bugs</a></li>
-				<li class="button"><a href="requestFeatures.php">Request Features</a></li>
+				<li class="button"><a href="bugsAndFeatures.php">Bugs / Features Trackers</a></li>
 				<li class="button"><a href="features.php">Features We Measure</a></li>
 				<li class="button"><a href="faq.php">FAQ</a></li>
 				<li class="button"><a href="tutorials.php">Video Tutorials</a></li>
