@@ -212,11 +212,18 @@ if(isset($_GET['userEventId']))
               foreach($props as $prop)
               {
                 $index = $prop['attribute'];
-                // property list index - 011
-                if(strlen($index) == 3)
+                // Set the display class and output for classname heading lines in the output
+                if (strlen($index) == 8 && substr_count($index, ".") == 1 &&
+                	substr($index, -4) == ".000")
                   $props2[] = array('class'=>'class', 'value'=>$prop['value']);
-                //property list index - 011.002
-                else if(strlen($index) == 7){
+
+				// Set the display class and output for class member labels in the output
+				else if (strlen($index) == 12 && substr_count($index, ".") == 2 &&
+					substr($index, -4) == ".000")
+				  $props2[] = array('class'=>'member', 'value'=>$prop['value']);
+				
+                // property list index - 011.002
+                else if (strlen($index) == 7 && ctype_digit(substr($index, 0, 4)) ) {
                   if (preg_match("#\(Re\)$#", $prop['value']))
                     $props2[] = array('class'=>'methodRed', 'value'=>substr($prop['value'], 0, -4));
                   else if (preg_match("#\(Ye\)$#", $prop['value']))
@@ -230,8 +237,9 @@ if(isset($_GET['userEventId']))
                   else
                     $props2[] = array('class'=>'method', 'value'=>$prop['value']);
                 }
+
                 //property list index - 001.002.a
-                else if(strlen($index) > 7){
+                else if(strlen($index) > 7 && ctype_digit(substr($index, 0, 4))) {
                   if (preg_match("#\(Re\)$#", $prop['value']))
                     $props2[] = array('class'=>'commentRed', 'value'=>substr($prop['value'], 0, -4));
                   else if (preg_match("#\(Ye\)$#", $prop['value']))
@@ -245,6 +253,14 @@ if(isset($_GET['userEventId']))
                   else
                     $props2[] = array('class'=>'comment', 'value'=>$prop['value']);
                 }
+                
+                // handle metrics
+                else if (substr($index, 0, 6) == "metric") {
+                  $props2[] = array('class'=>'metricsBody', 'value'=>$prop['value']);
+                }
+                else if ($index == "execution time") {
+                  $props2[] = array('class'=>'metricsBody', 'value'=>'Analysis time: ' . $prop['value'] .' ms');
+				}
               }
 
               $doclet['props'] = $props2;
