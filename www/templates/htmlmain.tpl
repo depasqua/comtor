@@ -180,9 +180,13 @@ function getCookie(name)
 	</div>
 </div>
 
+{php}
+	$this->assign('currentYear', date("Y"));
+{/php}
+
 <div class="footer">
 	<a href="about.php">About Comment Mentor</a><br/>
-	Copyright &copy; 2012 TCNJ
+	Copyright &copy; {$currentYear} TCNJ
 	<div class="tcnj_logo">
 		<a href="http://www.tcnj.edu"><img src="img/tcnj_logo-small.gif" alt="TCNJ Logo" border="0" /></a>
 	</div>
