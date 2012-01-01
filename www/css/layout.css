@@ -372,6 +372,7 @@ div.class
 {
   font-size: 1.2em;
   font-weight: bold;
+  padding-top: 10px;
 }
 
 div.metricsHeader
@@ -385,6 +386,12 @@ div.metricsBody
 {
 	font-size: 1.05em;
 	padding-left: 25px;
+}
+
+div.member
+{
+	font-size: 1.1em;
+	padding-left: 15px;
 }
 
 div.method
