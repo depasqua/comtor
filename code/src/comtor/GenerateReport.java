@@ -148,9 +148,7 @@ public class GenerateReport {
 				
 				while (rd.ready()) {
 					String filename = rd.readLine(); // Store userId from text file
-					// Remove the "src/" from the beginning to get the real file name
-					String realname = filename.substring(4);
-					filePrepStmt.setString(1, realname);
+					filePrepStmt.setString(1, filename);
 					
 					// Read in the contents of the files
 					String contents = "";
