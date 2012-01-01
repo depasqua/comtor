@@ -42,6 +42,7 @@ function showFile(id)
 
 {else}
   {foreach from=$doclets item="d"}
+  {assign var="firstMetric" value="true"}
   {if !empty($d.props) }
     <div class='report'>
       <div class='docletDesc'>{$d.docletName}<br><small>{$d.docletDescription}</small></div>
@@ -49,6 +50,12 @@ function showFile(id)
       <hr />
       {foreach from=$d.props item="prop"}
         {*{if $prop.class == 'class'}<hr />{/if}*}
+
+        {if $prop.class == 'metricsBody' and $firstMetric == 'true'}
+          <div class='metricsHeader'>Analysis Metrics:</div>
+          {assign var="firstMetric" value="false"}
+        {/if}
+
         <div class='{$prop.class}'>{$prop.value}</div>
       {/foreach}
     </div>
