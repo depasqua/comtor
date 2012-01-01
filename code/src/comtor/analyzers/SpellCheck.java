@@ -36,6 +36,8 @@ public final class SpellCheck implements ComtorDoclet {
 	// The analysis report (property list) returned by this doclet
 	private Properties prop = new Properties();
 	private float maxScore = 5;
+	private long totalWordCount = 0;
+	private long duplicateWord = 0;
 	
 	// Correctly spelled words (goodWords), incorrectly spelled words (badWords), user-defined
 	// valid words (validWords) [from the www interface], and user-defined symbols (userSymbols)
@@ -207,7 +209,8 @@ public final class SpellCheck implements ComtorDoclet {
 		init(rootDoc);
 		
 		// Obtain and process the comments for the rootDoc.
-		prop.setProperty(formatter.format(0), "The following word(s) is/are misspelled:");
+		prop.setProperty(formatter.format(-1), "The following word(s) is/are misspelled. Note that " +
+			"JavaDoc tags (e.g. @param, @returns, etc.) are not considered as comments.");
 		
 		// Capture the starting time, just prior to the start of the analysis
 		long startTime = new Date().getTime();
@@ -225,13 +228,16 @@ public final class SpellCheck implements ComtorDoclet {
 		// Set the score for this analysis and return the property list (report)
 		prop.setProperty("score", "" + getGrade());
 		prop.setProperty("metric1", "A total of " + classID + " class(es) were processed.");
-		prop.setProperty("metric2", "There were " + goodWords.size() + " correctly spelled words.");
-		prop.setProperty("metric3", "There were " + badWords.size() + " incorrectly spelled words.");
-		float percent = ((float) badWords.size()) / (goodWords.size() + badWords.size());
+		prop.setProperty("metric2", "There were " + goodWords.size() + " correctly spelled words. " +
+			"Duplicate words were counted once.");
+		prop.setProperty("metric3", "There were " + badWords.size() + " incorrectly spelled words. " +
+			"Duplicate words were counted once.");
+		prop.setProperty("metric4", "There were " + duplicateWord + " duplicate words (spelled " +
+			"correctly or incorrectly).");
+		float percent = ((float) badWords.size() / totalWordCount);
 		String percentFormat = NumberFormat.getPercentInstance().format(percent); 
-		prop.setProperty("metric4", percentFormat + " of the words in the comments were misspelled.");
-		prop.setProperty("metric5", "There were a total of " +
-			(goodWords.size() + badWords.size()) + " words analyzed.");
+		prop.setProperty("metric5", percentFormat + " of the words in the comments were misspelled.");
+		prop.setProperty("metric6", "There were a total of " + totalWordCount + " words analyzed.");
 		prop.setProperty("start time", Long.toString(startTime));
 		prop.setProperty("end time", Long.toString(endTime));
 		prop.setProperty("execution time", Long.toString(endTime - startTime));
@@ -249,46 +255,52 @@ public final class SpellCheck implements ComtorDoclet {
 		float memberNum = 0.000f;
 
 		// Process the class' comments
-		parseComment(classID, memberNum, classDoc.commentText());
-		
-		// Get all of the class' fields and the field's comments as well
-		for (FieldDoc classField : classDoc.fields()) {
-			memberNum += 0.001f;
-			parseComment(classID, memberNum, classField.commentText());
-		}
+		parseComment(classID, memberNum, classDoc.commentText(), "Class comments");
 		
 		// Process all of the class's tag comments
 		for (Tag tagComment : classDoc.tags()) {
 			memberNum += 0.001f;
-			parseComment(classID, memberNum, tagComment.text());
-		}
-
-		// Process each method in the class
-		for (MethodDoc method : classDoc.methods()) {
-			// Obtain the method's comments and process
-			memberNum += 0.001f;
-			parseComment(classID, memberNum, method.commentText());
-
-			// Obtain the comments for method's tags (param, returns, etc.) and process each
-			for (Tag tagComment : method.tags()) {
-				memberNum += 0.001f;
-				parseComment(classID, memberNum, tagComment.text());
-			}
+			parseComment(classID, memberNum, tagComment.text(), "Class tag comments (tag: " + 
+				tagComment.name() + ")");
 		}
 
 		// Process each constructor in the class
 		for (ConstructorDoc constructor : classDoc.constructors()) {
 			// Obtain the method's comments and process
 			memberNum += 0.001f;
-			parseComment(classID, memberNum, constructor.commentText());
+			parseComment(classID, memberNum, constructor.commentText(), "Constructor comments " +
+				"(constructor: " + constructor.name() + ")");
 
 			// Obtain the comments for method's tags (param, returns, etc.) and process each
 			for (Tag tagComment : constructor.tags()) {
 				memberNum += 0.001f;
-				parseComment(classID, memberNum, tagComment.text());
+				parseComment(classID, memberNum, tagComment.text(), "Constructor tag comments " +
+					"(constructor: " + constructor.name() + ", tag: " + tagComment.name() + ")");
 			}
 		}
 		
+		// Process all of the class' fields and the field's comments as well
+		for (FieldDoc classField : classDoc.fields()) {
+			memberNum += 0.001f;
+			parseComment(classID, memberNum, classField.commentText(), "Field / instance variable " +
+				"comments (field: " + classField.name() + ")");
+		}
+		
+		// Process each method in the class
+		for (MethodDoc method : classDoc.methods()) {
+			// Obtain the method's comments and process
+			memberNum += 0.001f;
+			parseComment(classID, memberNum, method.commentText(), "Method comments (method: " +
+				method.name() + ")");
+
+			// Obtain the comments for method's tags (param, returns, etc.) and process each
+			for (Tag tagComment : method.tags()) {
+				memberNum += 0.001f;
+				parseComment(classID, memberNum, tagComment.text(), "Method tag comments " +
+					"(method: " + method.name() + ", tag: " + tagComment.name() + ")");
+			}
+		}
+
 		// Inner classes don't need to be processed. They are listed as part of the package-level
 		// iteration of classes (in analyze())
 	}
@@ -303,10 +315,12 @@ public final class SpellCheck implements ComtorDoclet {
 	 * @param classID The value of the classID counter, used to generate the reporting entry
 	 * @param memberID The value of the memberID counter, used to generate the reporting entry
 	 */
-	private void parseComment(int classID, float memberID, String commentString) {
+	private void parseComment(int classID, float memberID, String commentString, String label) {
 		String fmtID = formatter.format(((float) classID) + memberID);
 		DecimalFormat shortFormatter = new DecimalFormat("000");
 		int itemID = 0;
+		String wordID = fmtID + '.' + shortFormatter.format(itemID++);
+		prop.setProperty(wordID, label);
 
 		// Replace all punctuation with spaces and then use a Scanner to process the "words"
 		// in the comment string
@@ -314,23 +328,32 @@ public final class SpellCheck implements ComtorDoclet {
 		
    		while (scan.hasNext()) {
 			String word = scan.next();
+			totalWordCount++;
 			
 			// If the word is a valid word, add it to the list of correctly spelled words
 			if (validWord(word)) {
-				goodWords.add(word);
+				if (!goodWords.add(word))
+					duplicateWord++;
 			} else {
 				// Check to see if the "word" is a valid if a number
 				try	{
 					Integer.parseInt(word);
-					goodWords.add(word);
+					if (!goodWords.add(word))
+						duplicateWord++;
 				}
 				// Conclude that the "word" is misspelled and place it in the correct list
 				catch (NumberFormatException e) {
-					String wordID = fmtID + '.' + shortFormatter.format(itemID++);
+					wordID = fmtID + '.' + shortFormatter.format(itemID++);
 					prop.setProperty(wordID, word);
-					badWords.add(word);
+					if (!badWords.add(word))
+						duplicateWord++;
 				}
 			}
+		}
+		if (itemID == 1) {
+			// No "misspelled" words were found in this member, thus remove this member from
+			// the report
+			prop.remove(fmtID + '.' + shortFormatter.format(itemID-1));
 		}
 	}
 
