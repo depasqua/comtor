@@ -19,50 +19,106 @@ package comtor.analyzers;
 
 import comtor.*;
 import com.sun.javadoc.*;
-import java.util.regex.*;
 import java.io.*;
 
 import java.util.*;
 import java.text.*;
 
-public class ReadingLevel implements ComtorDoclet
+/**
+ * The ReadingLevel class is a tool to calculate the Flesh-Kinkade reading level in comments.
+ * Flesch-Kincaid Grade Level = 
+ *        (0.39* average sentence length in words) + (11.8 * average # syllables per word) - 15.59
+ *
+ * @author Autumn Breese
+ * @author Peter DePasquale
+ * @link http://en.wikipedia.org/wiki/Flesch-Kincaid_readability_test
+ */
+ public class ReadingLevel implements ComtorDoclet
 {
 	private Properties prop = new Properties();
 
+	// A counter for the classes, used in the properties list
+	private int classID = 0;
+
+	/**
+	 * Examine each class, its methods, fields, etc. Calculate the length of each item's comments.
+	 *
+	 * @param rootDoc the root of the documentation tree provided by the Javadoc parser
+	 * @return Properties list containing the result set
+	 */
 	public Properties analyze(RootDoc rootDoc) {
 		prop.setProperty("title", "Reading Level");
+		DecimalFormat fmt = new DecimalFormat("##0000.000");
+		DecimalFormat reportFmt = new DecimalFormat("#####0.000");
 
 		// Initialize variable for reading comments
 		String allComments = "";
 
+		// Capture the starting time, just prior to the start of the analysis
+		long startTime = new Date().getTime();
+
 		// Extract the list of classes to analyze, and process them.
 		ClassDoc[] classes = rootDoc.classes();
-		for (ClassDoc classdoc : classes)
-			allComments += processClass(classdoc);
+		for (ClassDoc classdoc : classes) {
+   			classID++;
+			prop.setProperty(fmt.format(classID), "Class: " + classdoc.qualifiedName());
+			String classComments = processClass(classdoc);
+			allComments += classComments;
 
-		// Count the number of sentences, words, and syllables
+			// Calculate the F-K score for all comments in this class
+			int numWords = countWords(classComments);
+			int numSentences = countSentences(classComments);
+			int numSyllables = countSyllables(classComments);
+			prop.setProperty(fmt.format(classID+.001), "Number of sentences: " + numSentences);
+			prop.setProperty(fmt.format(classID+.002), "Number of words: " + numWords);
+			prop.setProperty(fmt.format(classID+.003), "Number of syllables: " + numSyllables);
+			
+			// Check for uncommented results
+			double result = 0.0d;
+			if (numWords != 0 && numSentences != 0)
+				result = calcFKScore((double) numWords / numSentences, (double) numSyllables / numWords);
+
+			prop.setProperty(fmt.format(classID+.004), "Flesch-Kincaid reading level score: " + 
+				reportFmt.format(result));
+		}
+
+		// Calculate the F-K score for all comments
 		int numWords = countWords(allComments);
 		int numSentences = countSentences(allComments);
 		int numSyllables = countSyllables(allComments);
 
-		// See http://en.wikipedia.org/wiki/Flesch-Kincaid_readability_test
-		// Flesch-Kincaid Grade Level =
-		//		(0.39* Average Sentence Length) + (11.8 * Average Syllables / Word) - 15.59
-		double avgSentenceLength = (double) numWords / numSentences;
-		double avgSyllablesPerWord = (double) numSyllables / numWords;
-		double fkScore = (0.39 * avgSentenceLength) + (11.8 * avgSyllablesPerWord) - 15.59;
+		// Capture the ending time, just after the termination of the analysis
+		long endTime = new Date().getTime();
 
-		DecimalFormat fmt = new DecimalFormat("#0.00");
-		prop.setProperty("000.000.000", "Average sentence length: " + fmt.format(avgSentenceLength));
-		prop.setProperty("000.000.001", "Average syllables per word: " + fmt.format(avgSyllablesPerWord));
-		prop.setProperty("000.000.002", "Total number of sentences: " + fmt.format(numSentences));
-		prop.setProperty("000.000.003", "Total number of words: " + fmt.format(numWords));
-		prop.setProperty("000.000.004", "Total number of syllables: " + fmt.format(numSyllables));
-		prop.setProperty("000.000.005", "Flesch-Kincaid Grade Level: " + fmt.format(fkScore));
+		prop.setProperty("metric1", "Overall total number of sentences: " + numSentences);
+		prop.setProperty("metric2", "Overall total number of words: " + numWords);
+		prop.setProperty("metric3", "Overall total number of syllables: " + numSyllables);
+		// Check for uncommented results
+		double result = 0.0d;
+		if (numWords != 0 && numSentences != 0)
+			result = calcFKScore((double) numWords / numSentences, (double) numSyllables / numWords);
+
+		prop.setProperty("metric4", "Flesch-Kincaid reading level score: " + 
+			reportFmt.format(result));
 		prop.setProperty("score", "" + getGrade());
+		prop.setProperty("start time", Long.toString(startTime));
+		prop.setProperty("end time", Long.toString(endTime));
+		prop.setProperty("execution time", Long.toString(endTime - startTime));
 		return prop;
 	}
-	
+
+	/**
+	 * Calculates the Flesch-Kincaid readability score based on the two parameters.
+	 *
+	 * @param avgSentLng the average length of the sentences (in number of words) for the passage
+	 *        in question.
+	 * @param avgSyllPerWord the average number of syllables per word for the passage in question.
+	 * @return the calculated F-K score
+	 */
+	public double calcFKScore(double avgSentLng, double avgSyllPerWord) {
+		return (0.39 * avgSentLng) + (11.8 * avgSyllPerWord) - 15.59;
+	}
+
 	/**
  	 * Processes a single class
 	 *
@@ -72,36 +128,31 @@ public class ReadingLevel implements ComtorDoclet
 	private String processClass(ClassDoc classDoc) {
 		String allComments = "";
 
-		// Add class comment
+		// Process the class' comment
 		allComments = parseComment(classDoc.commentText());
-
-		// Get all fields
-		FieldDoc[] fields = classDoc.fields();
-		for (FieldDoc field : fields)
-			// Add field comment
+		for (Tag tagComment : classDoc.tags())
+			allComments += parseComment(tagComment.text());
+		
+		// Process each constructor and its tag comments
+		for (ConstructorDoc constructor : classDoc.constructors()) {
+			allComments += parseComment(constructor.commentText());
+			
+			for (Tag tagComment : constructor.tags())
+				allComments += parseComment(tagComment.text());
+		}
+			
+		// Process each fields
+		for (FieldDoc field : classDoc.fields())
 			allComments += parseComment(field.commentText());
 
-		// Get inner classes
-		ClassDoc[] innerClasses = classDoc.innerClasses();
-		for (ClassDoc innerClass : innerClasses)
-			processClass(innerClass);
-
-		// Get comments for tags
-		Tag[] tags = classDoc.tags();
-		for (Tag tag : tags)
-			allComments += parseComment(tag.text());
-
-		// Get comments for each method
-		MethodDoc[] methods = classDoc.methods();
-		for (MethodDoc method : methods) {
-			// Get comments for tags
-			tags = method.tags();
-			for (Tag tag : tags)
-				allComments += parseComment(tag.text());
-
-			// Get method comments
+		// Process each method and its tag comments
+		for (MethodDoc method : classDoc.methods()) {
 			allComments += parseComment(method.commentText());
+
+			for (Tag tagComment : method.tags())
+				allComments += parseComment(tagComment.text());
 		}
+
 		return allComments;
   	}
 
@@ -109,25 +160,20 @@ public class ReadingLevel implements ComtorDoclet
 	 * Parses words out of comments and removes punctuation
 	 *
 	 * @param comment Comment to parse
-	 * @return String String to which all comments are added after processing
+	 * @return String a string containing all comments are added after processing
 	 **/
 	private String parseComment(String comment) {
-		char temp;
 		// Replace parenthesis, brackets, dashes, and periods with spaces
 		comment = comment.replaceAll("[()<>-]|\\+"," ");
 
 	
 	// Creates sentences out of comments to be analyzed.
 		if (comment.length() > 0) {
-			temp = comment.charAt(comment.length() - 1);
-			if (temp == '.' || temp == '?' || temp == '!')
-				;
-			else
-				comment += '.';
+			char temp = comment.charAt(comment.length() - 1);
+			if (temp != '.' && temp != '?' && temp != '!')
+				comment += ". ";
 		}
 
-
-		// Comment added to allComments to be analyzed for reading level.
 		return comment;
 	}
 	
@@ -139,9 +185,11 @@ public class ReadingLevel implements ComtorDoclet
 	 */
 	public static int countWords(String source) {
 		int wordCount = 0;
-		Matcher match = Pattern.compile("[ ]+").matcher(source);
-		while (match.find())
+		Scanner scan = new Scanner(source);
+		while (scan.hasNext()) {
 			wordCount++;
+			scan.next();
+		}
 		return wordCount;
 	}
 	
@@ -158,9 +206,9 @@ public class ReadingLevel implements ComtorDoclet
 		
 		// Count the number of standard vowels in the target string
 		for (int index = 0; index < target.length(); index++) {
-			char targetChar = target.charAt(index);
-			if (targetChar=='a' || targetChar=='e' || targetChar=='i' ||
-					targetChar=='o' || targetChar=='u')
+			if (target.charAt(index)=='a' || target.charAt(index)=='e' ||
+					target.charAt(index)=='i' || target.charAt(index)=='o' ||
+					target.charAt(index)=='u');
 				vowelCount++;
 		}
 
