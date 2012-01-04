@@ -8,7 +8,7 @@
 
 <p>Comment Mentor attempts to address these difficulties by providing a tool that automates the grading process. Not only does it assist the grader, it can assist the student or developer before code is submitted by making sure comments are at some threshold level of quality before code is submitted. Guessing games are, in large part, eliminated. Of course, some may still be tempted to game the system, but any improvement is likely to have a large impact.</p>
 
-<p>Comment Mentor can currently be used only as a web application, though we are considering porting to a command-line tool as well. It currently understands how to parse Java language source code because it takes advantage of the JavaDoc tool and API. Other languages are slated for development; we welcome your suggestions and help on developing the appropriate tools.</p>
+<p>Comment Mentor can currently be used only as a web application, though we are considering porting to a command-line tool as well. It currently understands how to parse Java language source code because it takes advantage of the Javadoc tool and API. Other languages are slated for development; we welcome your suggestions and help on developing the appropriate tools.</p>
 
 <p>Comment Mentor is <span style="font-weight: bold;">not</span> a compiler. It doesn't alter your source code, only derives measurements from comments that are encoded a certain way.</p>
 
