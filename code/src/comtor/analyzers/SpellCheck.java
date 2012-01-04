@@ -64,10 +64,12 @@ public final class SpellCheck implements ComtorDoclet {
 	 */
 	private void init (RootDoc rootDoc) {
 		// Load the dictionary and java class listing (both sets contain valid 'words')
-		Util.loadDataList("dictionary.txt", dictionary);
-		Util.loadDataList("javaclasslist.txt", dictionary);
-		Util.loadDataList("htmltags.txt", dictionary);
-		Util.loadDataList("javaKeywords.txt", dictionary);
+		String name = "comtor.analyzers.SpellCheck";
+		boolean downloadAttempt = Util.loadDataList("dictionary.txt", dictionary, true, 
+			this.getClass().getName());
+		Util.loadDataList("javaclasslist.txt", dictionary, downloadAttempt, this.getClass().getName());
+		Util.loadDataList("htmltags.txt", dictionary, downloadAttempt, this.getClass().getName());
+		Util.loadDataList("javaKeywords.txt", dictionary, downloadAttempt, this.getClass().getName());
 		
 		// Add all user-defined packages, classes, class variables, methods, and parameter names to
 		// a list of 'valid' words that may be referenced in a comment. Note that javaDoc does not
@@ -199,18 +201,16 @@ public final class SpellCheck implements ComtorDoclet {
 	/**
 	 * Examine each class and its methods. Calculate the length of each method's comments.
 	 *
-	 * @param rootDoc the root of the documentation tree provided by the JavaDoc parser
-	 * @return Properties list
+	 * @param rootDoc the root of the documentation tree provided by the Javadoc parser
+	 * @return Properties list containing the result set
 	 */
 	public Properties analyze (RootDoc rootDoc) {
 		prop.setProperty("title", "Spell Checker");
+		prop.setProperty(formatter.format(-1), "The following word(s) is/are misspelled. Note " +
+			"that Javadoc tags (e.g. @param, @return, etc.) are not considered as comments.");
 		
 		// Initialize the required tables
 		init(rootDoc);
-		
-		// Obtain and process the comments for the rootDoc.
-		prop.setProperty(formatter.format(-1), "The following word(s) is/are misspelled. Note that " +
-			"JavaDoc tags (e.g. @param, @returns, etc.) are not considered as comments.");
 		
 		// Capture the starting time, just prior to the start of the analysis
 		long startTime = new Date().getTime();
@@ -253,54 +253,79 @@ public final class SpellCheck implements ComtorDoclet {
 	 */
 	private void processClass (ClassDoc classDoc) {
 		float memberNum = 0.000f;
+		boolean misspell = false;
 
 		// Process the class' comments
-		parseComment(classID, memberNum, classDoc.commentText(), "Class comments");
+		boolean misspellingFound = parseComment(classID, memberNum, classDoc.commentText(),
+			"Class comments");
+		if (misspellingFound)
+			misspell = true;
 		
 		// Process all of the class's tag comments
 		for (Tag tagComment : classDoc.tags()) {
 			memberNum += 0.001f;
-			parseComment(classID, memberNum, tagComment.text(), "Class tag comments (tag: " + 
-				tagComment.name() + ")");
+			misspellingFound = parseComment(classID, memberNum, tagComment.text(),
+				"Class tag comments (tag: " +  tagComment.name() + ")");
+			if (misspellingFound)
+				misspell = true;
 		}
 
 		// Process each constructor in the class
 		for (ConstructorDoc constructor : classDoc.constructors()) {
 			// Obtain the method's comments and process
 			memberNum += 0.001f;
-			parseComment(classID, memberNum, constructor.commentText(), "Constructor comments " +
-				"(constructor: " + constructor.name() + ")");
+			misspellingFound = parseComment(classID, memberNum, constructor.commentText(),
+				"Constructor comments " + '[' + constructor.name() + '(' +
+				Util.getParamTypeList(constructor) + ")]");
+			if (misspellingFound)
+				misspell = true;
 
 			// Obtain the comments for method's tags (param, returns, etc.) and process each
 			for (Tag tagComment : constructor.tags()) {
 				memberNum += 0.001f;
-				parseComment(classID, memberNum, tagComment.text(), "Constructor tag comments " +
-					"(constructor: " + constructor.name() + ", tag: " + tagComment.name() + ")");
+				misspellingFound = parseComment(classID, memberNum, tagComment.text(),
+					"Constructor tag comments " + '[' + constructor.name() + '(' +
+					Util.getParamTypeList(constructor) + ")], tag: " + tagComment.name() + ")");
+				if (misspellingFound)
+					misspell = true;
 			}
 		}
 		
 		// Process all of the class' fields and the field's comments as well
 		for (FieldDoc classField : classDoc.fields()) {
 			memberNum += 0.001f;
-			parseComment(classID, memberNum, classField.commentText(), "Field / instance variable " +
-				"comments (field: " + classField.name() + ")");
+			misspellingFound = parseComment(classID, memberNum, classField.commentText(),
+				"Field / instance variable comments (field: " + classField.name() + ")");
+			if (misspellingFound)
+				misspell = true;
 		}
 		
 		// Process each method in the class
 		for (MethodDoc method : classDoc.methods()) {
 			// Obtain the method's comments and process
 			memberNum += 0.001f;
-			parseComment(classID, memberNum, method.commentText(), "Method comments (method: " +
-				method.name() + ")");
+			misspellingFound = parseComment(classID, memberNum, method.commentText(),
+				"Method comments [" + method.name() + '(' + Util.getParamTypeList(method) + ")]");
+			if (misspellingFound)
+				misspell = true;
 
 			// Obtain the comments for method's tags (param, returns, etc.) and process each
 			for (Tag tagComment : method.tags()) {
 				memberNum += 0.001f;
-				parseComment(classID, memberNum, tagComment.text(), "Method tag comments " +
-					"(method: " + method.name() + ", tag: " + tagComment.name() + ")");
+				misspellingFound = parseComment(classID, memberNum, tagComment.text(),
+					"Method tag comments [" + method.name() + '(' + Util.getParamTypeList(method) + 
+					")], tag: " + tagComment.name() + ")");
+				if (misspellingFound)
+					misspell = true;
 			}
 		}
 
+		if (!misspellingFound) {
+			memberNum += 0.001f;
+			prop.setProperty(formatter.format((float) classID + memberNum), "No misspellings " +
+				"were found in this class.");
+		}
+		
 		// Inner classes don't need to be processed. They are listed as part of the package-level
 		// iteration of classes (in analyze())
 	}
@@ -314,8 +339,10 @@ public final class SpellCheck implements ComtorDoclet {
 	 * @param commentString The comment string which we wish to parse
 	 * @param classID The value of the classID counter, used to generate the reporting entry
 	 * @param memberID The value of the memberID counter, used to generate the reporting entry
+	 * @return returns a true value if there was a misspelled word found.
 	 */
-	private void parseComment(int classID, float memberID, String commentString, String label) {
+	private boolean parseComment(int classID, float memberID, String commentString, String label) {
+		boolean result = false;
 		String fmtID = formatter.format(((float) classID) + memberID);
 		DecimalFormat shortFormatter = new DecimalFormat("000");
 		int itemID = 0;
@@ -345,6 +372,7 @@ public final class SpellCheck implements ComtorDoclet {
 				catch (NumberFormatException e) {
 					wordID = fmtID + '.' + shortFormatter.format(itemID++);
 					prop.setProperty(wordID, word);
+					result = true;
 					if (!badWords.add(word))
 						duplicateWord++;
 				}
@@ -355,6 +383,7 @@ public final class SpellCheck implements ComtorDoclet {
 			// the report
 			prop.remove(fmtID + '.' + shortFormatter.format(itemID-1));
 		}
+		return result;
 	}
 
 	/**
