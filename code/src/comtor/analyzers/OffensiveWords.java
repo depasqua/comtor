@@ -52,7 +52,7 @@ public final class OffensiveWords implements ComtorDoclet {
 		prop.setProperty("title", "Offensive Words");
 
 		// Load the bad words list into a hashset
-		Util.loadDataList("badwords.txt", badWordsList);
+		Util.loadDataList("badwords.txt", badWordsList, true, this.getClass().getName());
 		
 		// Capture the starting time, just prior to the start of the analysis
 		long startTime = new Date().getTime();
