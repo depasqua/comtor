@@ -11,7 +11,7 @@ directory.
 [Executive Summary]
 
 Comment Mentor is a tool for automatically assessing the quality of source
-code comments. It currently works on JavaDoc-style comments for Java code.
+code comments. It currently works on Javadoc-style comments for Java code.
 It is built with the Apache Ant tool and is known to work with the JDK 5.x.
 Comment Mentor measures a number of features of source code comments and
 rates the features of your code against standard code bases that have been
