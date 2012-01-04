@@ -24,7 +24,7 @@ import java.text.*;
 
 /**
  * The PercentageMethods class is a tool to measure the percentage of methods in a class 
- * that are documented with a JavaDoc header.
+ * that are documented with a Javadoc header.
  *
  * @author Joe Brigandi
  * @author Peter DePasquale
@@ -53,7 +53,7 @@ public class PercentageMethods implements ComtorDoclet
 	 * that class. Obtain percentage of commented methods per class.
 	 *
 	 * @param rootDoc  the root of the documentation tree
-	 * @return some boolean value
+	 * @return Properties list containing the result set
 	 */
 	public Properties analyze(RootDoc rootDoc) {
 		// A counter for the classes, used in the properties list
@@ -61,9 +61,10 @@ public class PercentageMethods implements ComtorDoclet
 		DecimalFormat formatter = new DecimalFormat("##0000.000");
 			
 		prop.setProperty("title", "Percentage Methods");
-		prop.setProperty("note1", "Note that if a class contains no constructors, the compiler " + 
-			"include a no-argument, uncommented default constructor. Javadoc, and thus COMTOR, " +
-			"has no way to eliminate this constructor from this analysis.");
+		prop.setProperty(formatter.format(-1), "Note that if a class contains no user-defined " +
+			"constructors, the compiler includes a no-argument, uncommented default constructor. " +
+			"Javadoc, and thus COMTOR, has no way to eliminate this constructor from this " +
+			"analysis.");
 
 		// Capture the starting time, just prior to the start of the analysis
 		long startTime = new Date().getTime();
@@ -72,36 +73,38 @@ public class PercentageMethods implements ComtorDoclet
 			int methodsCommented = 0;
 			int numMethods = 0;
 			double percentCommented = 0.0;
-			double propID = classID + 0.1;
+			double propID = classID;
 			
 			// Format the ID number of this class, for the report
 			prop.setProperty(formatter.format(classID), "Class: " + classdoc.qualifiedName());
 
-			// Count the number of commented methods
-			ExecutableMemberDoc[] members = classdoc.methods();
-			numMethods = members.length;
-			for (ExecutableMemberDoc docs : members)
-				if (docs.getRawCommentText().length() > 0)
-					methodsCommented++;
-				else {
-					propID += 0.001;
-					prop.setProperty(formatter.format(propID), "Method: " + docs.qualifiedName() +
-						" is not commented.");
-				}
-			
 			// Count the number of commented constructors
-			members = classdoc.constructors();
+			ExecutableMemberDoc[] members = classdoc.constructors();
 			numMethods += members.length;
 			for (ExecutableMemberDoc docs : members)
 				if (docs.getRawCommentText().length() > 0)
 					methodsCommented++;
 				else {
 					propID += 0.001;
-					prop.setProperty(formatter.format(propID), "Constructor: " + docs.qualifiedName() +
-						" is not commented.");
+					prop.setProperty(formatter.format(propID)+".000", "Constructor " + 
+						docs.qualifiedName() + '(' + Util.getParamTypeList(docs) + 
+						") is not commented. (See note above.)");
 				}
 				
-			propID = classID + 0.1;
+			// Count the number of commented methods
+			members = classdoc.methods();
+			numMethods = members.length;
+			for (ExecutableMemberDoc docs : members)
+				if (docs.getRawCommentText().length() > 0)
+					methodsCommented++;
+				else {
+					propID += 0.001;
+					prop.setProperty(formatter.format(propID)+".000", "Method " +
+						docs.qualifiedName() + '(' + Util.getParamTypeList(docs) +
+						") is not commented.");
+				}
+			
+			propID += 0.001;
 			// Generate the report results
 			if  (numMethods != 0) {
 				// Update the running totals for the data observed in this class
@@ -112,14 +115,14 @@ public class PercentageMethods implements ComtorDoclet
 				percentCommented = ((double) methodsCommented) / numMethods;
 
 				// Store percentCommented in the property list
-				prop.setProperty(formatter.format(propID), Math.round(percentCommented * 100)
-					+ "% (" + methodsCommented + "/" + numMethods
-					+ ") of the methods in " + classdoc.qualifiedName() + " are commented.");
+				prop.setProperty(formatter.format(propID)+".000", methodsCommented + " of the " + 
+					numMethods + " constructors / methods (" + Math.round(percentCommented * 100) + 
+					"%) in " + classdoc.qualifiedName() + " are commented.");
 			}
 			else {
 				// No methods / constructors present.
-				prop.setProperty(formatter.format(propID), classdoc.qualifiedName() + " has no methods " +
-					"or constructors.");
+				prop.setProperty(formatter.format(propID), classdoc.qualifiedName() + 
+					" has no methods or constructors.");
 			}
 			classID++;
 		}
@@ -130,8 +133,9 @@ public class PercentageMethods implements ComtorDoclet
 		long endTime = new Date().getTime();
 
 		prop.setProperty("metric1", "A total of " + classID + " class(es) were processed.");
-		prop.setProperty("metric2", totalMethodsCommented + " of " + totalNumMethods +
-			" methods were commented. (" + percentFormatter.format(totalPercent) + ")");
+		prop.setProperty("metric2", "A total of " + totalMethodsCommented + " of the " + 
+			totalNumMethods + " methods (" + percentFormatter.format(totalPercent) + ") " +
+			"present were commented.");
 		prop.setProperty("score", "" + getGrade());
 		prop.setProperty("start time", Long.toString(startTime));
 		prop.setProperty("end time", Long.toString(endTime));
