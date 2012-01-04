@@ -20,6 +20,7 @@ package comtor.analyzers;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import com.sun.javadoc.*;
 
 public class Util {
 	/**
@@ -30,8 +31,12 @@ public class Util {
 	 *
 	 * @param fileName the base of the filename to attempt to load
 	 * @param dataList a reference to a hash set of strings which will hold the data list
+	 * @param download if set to false, do not attempt to access the host for downloads
+	 * @return returns a true value if the data list is loaded (via download or local files). This
+	 *         act as a flag for subsequent download attempts (if download is false, skip download)
 	 */
-	public static void loadDataList(String fileName, HashSet<String> dataList) {
+	public static boolean loadDataList(String fileName, HashSet<String> dataList, 
+			boolean download, String analyzerName) {
 		if (dataList == null)
 			dataList = new HashSet<String> ();
 			
@@ -43,17 +48,24 @@ public class Util {
 		String netFileVersion = null;
 		Scanner localScanner = null;
 		String localFileVersion = null;
+		boolean result = download;
 		
-		try {
-			// Attempt to open / read most recent list on web
-			netScanner = new Scanner((new URL(netFileName)).openStream());			
-			netFileVersion = netScanner.nextLine();
-		} catch (MalformedURLException mue) {
-			System.err.println(mue);  // Bad URL, it's ok, default to local copy if possible.
-		} catch (IOException ioe) {
-			System.err.println(ioe); // No access to the 'net, default to local copy if possible.
+		if (download) {
+			try {
+				// Attempt to open / read most recent list on web
+				netScanner = new Scanner((new URL(netFileName)).openStream());			
+				netFileVersion = netScanner.nextLine();
+			} catch (MalformedURLException mue) {
+				System.err.println(mue);  // Bad URL, it's ok, default to local copy if possible.
+				result = false;
+			} catch (IOException ioe) {
+				// No access to the 'net, default to local copy if possible.
+				System.err.println("Exception from " + analyzerName);
+				System.err.println("\t" + ioe);
+				result = false;
+			}
 		}
-
+		
 		try {
 			// Attempt to open / read local copy
 			File localFile = new File (localFileName);
@@ -107,6 +119,8 @@ public class Util {
 		} else
 			// Use the local version, 'net is unavailable.
 			loadFileToList(localFileName, dataList);
+		
+		return result;
 	}
 	
 	/**
@@ -132,4 +146,21 @@ public class Util {
 			System.err.println(ioe);
 		}
 	}
+
+	/**
+	 * Returns a comma separated list of parameter types (e.g. int, int, float).
+	 *
+	 * @param params an array of parameters for an executable object (constructor, method)
+	 * @return a string representation of the list of parameter types
+	 */
+	public static String getParamTypeList(ExecutableMemberDoc exec) {
+		String paramList = "";
+		for (Parameter param : exec.parameters()) {
+			if (paramList.length() != 0)
+				paramList += ", ";
+			paramList += param.type();
+		}
+		return paramList;
+	}
+
 }
