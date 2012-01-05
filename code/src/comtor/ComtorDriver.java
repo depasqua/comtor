@@ -131,35 +131,39 @@ public class ComtorDriver extends Doclet {
 			
 			Vector<Properties> resultsVector = new Vector<Properties>(); 
 			Vector<DocletThread> threads = new Vector<DocletThread>();
-			Scanner scan = new Scanner(new File("docletList.properties"));
 
-			while (scan.hasNext()) {
-				// Store doclet as docletName
-				String docletName = scan.nextLine();
-	
-				try {
-					// Create class for doclet
-					Class docletClass = Class.forName(docletName);
-	
-					// Create new instance of the class and start thread
-					ComtorDoclet comtorDoclet = (ComtorDoclet) docletClass.newInstance();
-					System.out.println("Starting " + docletName);	
-					DocletThread docThrd = new DocletThread();
-					docThrd.setRootDoc(rootDoc);
-					docThrd.setDocletSectionsPrepStatements(
-						docletSectionsPrepStmt, docletParametersPrepStmt);					
-					docThrd.setAnalyzer(comtorDoclet);
-					docThrd.start();
-					threads.add(docThrd);
-				} catch (ClassNotFoundException e) {
-					System.out.println("Class not found: " + e);
-				} catch (ExceptionInInitializerError e) {
-					System.out.println(e);
-				} catch (LinkageError e) {
-					System.out.println(e);
+			File docletListFile = new File ("docletList.properties");
+			if (docletListFile.exists()) {
+				Properties docPropList = new Properties();
+				docPropList.load(new FileInputStream(docletListFile));
+
+				for (Object elem : docPropList.values()) {
+					String docletName = (String) elem;
+
+					try {
+						// Create class for doclet
+						Class docletClass = Class.forName(docletName);
+		
+						// Create new instance of the class and start thread
+						ComtorDoclet comtorDoclet = (ComtorDoclet) docletClass.newInstance();
+						System.out.println("Starting " + docletName);	
+						DocletThread docThrd = new DocletThread();
+						docThrd.setRootDoc(rootDoc);
+						docThrd.setDocletSectionsPrepStatements(
+							docletSectionsPrepStmt, docletParametersPrepStmt);					
+						docThrd.setAnalyzer(comtorDoclet);
+						docThrd.start();
+						threads.add(docThrd);
+					} catch (ClassNotFoundException e) {
+						System.out.println("Class not found: " + e);
+					} catch (ExceptionInInitializerError e) {
+						System.out.println(e);
+					} catch (LinkageError e) {
+						System.out.println(e);
+					}
 				}
 			}
-
+			
 			// Wait for all threads to complete
 			for (int i = 0; i < threads.size(); i++) {
 				DocletThread docThrd = threads.get(i);
@@ -176,7 +180,6 @@ public class ComtorDriver extends Doclet {
 			report.generateReport(resultsVector);
 			docletSectionsPrepStmt.close();
 			db.close();
-			scan.close();
 		}
 
 		// Exceptions from above.  This should be less catch-all and integrated above better.
