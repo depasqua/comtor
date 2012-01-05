@@ -7,9 +7,11 @@
 	<property name="src" location="src"/>
 	<property name="classes" location="classes"/>
 	<property name="thirdpartyjars" location="${basedir}/../comtor_data/code/"/>
+	<property name="version" value="2.0.0"/>
 	
 	<target name="init" description="Pre-build tasks">
 		<mkdir dir="${classes}"/>
+		<tstamp/>
 	</target>
 	
 	<!-- Build up a classpath file path for later use. -->	
@@ -32,9 +34,8 @@
 	<target name="deploy" description="jars and deploys comtor.jar to proper directory" depends="compile">
 		<jar destfile="${thirdpartyjars}/comtor.jar" basedir="${classes}">
 			<manifest>
-				<attribute name="Main-Class" value="comtor.Comtor"/>
 				<attribute name="Built-By" value="${user.name}"/>
-				<attribute name="Implementation-Title" value="COMTOR"/>
+				<attribute name="Implementation-Title" value="COMTOR WWW DEPLOY"/>
 				<attribute name="Implementation-Version" value="${version} ${TODAY}"/> 
 				<attribute name="Implementation-Vendor" value="The College of New Jersey"/>
 			</manifest>
@@ -61,7 +62,7 @@
 			<manifest>
 				<attribute name="Main-Class" value="comtor.Comtor"/>
 				<attribute name="Built-By" value="${user.name}"/>
-				<attribute name="Implementation-Title" value="COMTOR"/>
+				<attribute name="Implementation-Title" value="COMTOR CLI"/>
 				<attribute name="Implementation-Version" value="${version} ${TODAY}"/> 
 				<attribute name="Implementation-Vendor" value="The College of New Jersey"/>
 			</manifest>
