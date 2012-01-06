@@ -66,12 +66,18 @@ else
 
     $name = stripslashes($name);
     // E-mail temporary password to user
-    $subject = 'Account Validation';
-    $body = "<img src=\"https://secure.comtor.org/comtorapp/img/logo.gif\" alt=\"COMTOR\"/>\nDear $name,\n\nThank you for registering with COMTOR.  Your account has been successfully created.  Please use your email address and the following temporary password to login within 30 days.  At that time, you will have the option to change your password.\n\nCOMTOR: http://" . URL_PATH . "\n\nPassword = $tempPassword";
+    $subject = 'COMTOR Account Validation';
+    $body = "<img src=\"https://secure.comtor.org/comtorapp/img/logo.gif\" alt=\"COMTOR\"/>\n" .
+    	"Dear $name,\n\nThank you for registering with COMTOR.  Your account has been " .
+    	"successfully created.  Please use your email address and the following temporary " .
+    	"password to login within 30 days. At that time, you will have the option to change your " .
+    	"password.\n\nCOMTOR: http://" . URL_PATH . "\n\nPassword = $tempPassword\n\n";
     $body = nl2br($body);
     $result = sendMail($body, $email, null, $subject);
 
-    $message = "Congratulations $name!  Your account has been successfully created.<br/>Please check your email for a temporary password to be used at your first login.<br/>Please click <a href=\"index.php\">here</a> to login.";
+    $message = "Congratulations $name!  Your account has been successfully created.<br/>Please " .
+    	"check your email for a temporary password to be used at your first login.<br/>Please " .
+    	"click <a href=\"index.php\">here</a> to login.";
   }
   else
   {
