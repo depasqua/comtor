@@ -13,7 +13,7 @@ $breadcrumbs[] = array('text' => 'Login', 'href' => 'loginForm.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
 // Assign tooltips
-$tooltips = file_get_contents('tooltips/test.html');
+$tooltips = file_get_contents('tooltips/loginForm.html');
 $tpl->assign('tooltips', $tooltips);
 
 // Fetch template

@@ -17,8 +17,8 @@ $breadcrumbs[] = array('text' => 'Register', 'href' => 'register.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
 // Assign tooltips
-// $tooltips = file_get_contents('tooltips/test.html');
-// $tpl->assign('tooltips', $tooltips);
+$tooltips = file_get_contents('tooltips/registerForm.html');
+$tpl->assign('tooltips', $tooltips);
 
 // Fetch template
 $tpldata = $tpl->fetch("register.tpl");
