@@ -186,7 +186,7 @@ function getCookie(name)
 
 <div class="footer">
 	<a href="about.php">About Comment Mentor</a><br/>
-	Copyright &copy; {$currentYear} TCNJ
+	<small>Version 2.0.1 - 1/16/12 - Copyright &copy; {$currentYear} TCNJ</small>
 	<div class="tcnj_logo">
 		<a href="http://www.tcnj.edu"><img src="img/tcnj_logo-small.gif" alt="TCNJ Logo" border="0" /></a>
 	</div>
