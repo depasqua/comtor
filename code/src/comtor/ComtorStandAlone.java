@@ -105,7 +105,8 @@ public class ComtorStandAlone extends Doclet {
 	private static void generateOutputFile(Vector<Properties> resultsVector) {
 	
 		// Set the path for the location of the report output file.
-		String path = System.getProperty("user.dir").concat("/comtorReport.txt");
+		String path = Comtor.getCodeDir() + System.getProperty("file.separator") +
+			"comtorReport.txt";
 		try {
 
 			// Check to see the output file currently exists, if so, delete the old file to

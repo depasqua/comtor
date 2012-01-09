@@ -31,6 +31,7 @@ import java.util.*;
 public class Comtor {
 	private static HashMap<String,String> argsMap = new HashMap<String, String>();
 	private static Properties docPropList = new Properties();
+	private static String codeDir = "";
 	
 	/**
 	 * Main method for the Comtor standalone program.
@@ -46,8 +47,7 @@ public class Comtor {
 		} else {
 			// Process the arguments
 			if (argsMap.containsKey("dir")) {
-				String dirpath = argsMap.get("dir");
-				start(dirpath);
+				start(argsMap.get("dir"));
 			}
 		}
 	}
@@ -59,13 +59,13 @@ public class Comtor {
 	 *
 	 * @param dirpath the directory path (a single dir) which is searched for both pacakged and
 	 * non-packaged source code.
-	 *
 	 */
 	public static void start(String dirpath) {
 		Vector<String> jdocsoptions = new Vector<String>();
 
 		if (dirpath.equals("."))
 			dirpath = System.getProperty("user.dir");
+		codeDir = dirpath;
 	
 		// Loads the list of doclets to execute from the config file in the from which
 		// execution is originating
@@ -78,7 +78,7 @@ public class Comtor {
 	
 		// Find packages in the specified dir and add them to the options vector.
 		System.out.println("Found the following packages:");
-		LinkedList<String> packageList = findPackages(argsMap.get("dir"));
+		LinkedList<String> packageList = findPackages(codeDir);
 
 		// Add the list of packages to the options list being sent to Javadoc
 		for (String pkg : packageList)
@@ -87,9 +87,9 @@ public class Comtor {
 		// Add the -private option to the javadoc parameter list, ensuring that ALL classes
 		// and members are processed.
 		jdocsoptions.add("-private");
-		
+
 		jdocsoptions.add("-sourcepath");
-		jdocsoptions.add(argsMap.get("dir"));
+		jdocsoptions.add(codeDir);
 
 		// Process the options list for preparation in handing it to Javadoc
 		String[] optionslist = new String[jdocsoptions.size()];
@@ -104,6 +104,17 @@ public class Comtor {
 		// output), the name of the doclet to execute (our stand alone version of the master doclet
 		// that does attempt to database its results), and an array of arguments.
 		com.sun.tools.javadoc.Main.execute("COMTOR", "comtor.ComtorStandAlone", optionslist);
+	}
+	
+	/**
+	 * Returns the directory in which unjarred source code files exist for processing. This was
+	 * required since we can't depend on the user.dir system property when on Tomcat/in the cloud.
+	 *
+	 * @return the string path of the location of the source code files (which in turn will be the
+	 * location of the report output file).
+	 */
+	public static String getCodeDir() {
+		return codeDir;
 	}
 	
 	/**
@@ -272,8 +283,8 @@ public class Comtor {
 	 */
 	private static void loadDocletList() {
 		try {
-			File docletListFile = new File (System.getProperty("user.dir").concat(
-					"/docletList.properties"));
+			File docletListFile = new File (codeDir + System.getProperty("file.separator") +
+				"docletList.properties");
 			if (docletListFile.exists()) {
 				docPropList.load(new FileInputStream(docletListFile));
 					
