@@ -1,0 +1,26 @@
+@CHARSET "UTF-8";
+@font-face {
+	font-family: SEGA;
+	src: url('SEGA.ttf');
+}
+@font-face {
+	font-family: VIPERS;
+	src: url('VIPESRG_.ttf');
+}
+@font-face {
+	font-family: VIPERSS;
+	src: url('VIPESSRG.ttf');
+}
+h2 {
+		text-align: left;
+		font-family: VIPERS;
+		font-size: 62px;
+	}
+body {
+	background-color: #FFFFFF;
+	width:35%;
+	padding:10px;
+	border:5px double #66CD00;
+	margin:10px;
+	height: 300px;
+}
