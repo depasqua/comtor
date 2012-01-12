@@ -3,7 +3,7 @@
 <project name="comtor" default="compile" basedir=".">
 	<description>Build file for the COMTOR application(s)</description>
 	
-	<!-- Define some basic properties for later on. -->
+	<!-- Define some basic properties. -->
 	<property name="src" location="src"/>
 	<property name="classes" location="classes"/>
 	<property name="thirdpartyjars" location="${basedir}/../comtor_data/code/"/>
@@ -21,16 +21,35 @@
 		<pathelement location="${thirdpartyjars}/mysql-connector-java-5.1.6-bin.jar"/>
 		<pathelement path="${java.home}/../lib/tools.jar"/>
 		<pathelement path="${java.home}/../Classes/classes.jar"/> <!-- classes.jar is tools.jar on the mac -->
+		<fileset dir="webdeploy/WEB-INF/lib">
+			<include name="*.jar"/>
+			<include name="*.zip"/>
+		</fileset>
 	</path>
 	
 	<!-- Compile the source files -->
 	<target name="compile" description="Compile the source" depends="init">
-		<javac srcdir="${src}" destdir="${classes}" compiler="javac1.5" includeantruntime="false" excludes="comtor/incomplete/** comtor/examples/**">
+		<javac srcdir="${src}" destdir="${classes}" compiler="javac1.5" includeantruntime="false"
+				excludes="org/comtor/incomplete/** org/comtor/examples/**">
 			<classpath refid="comtor.class.path"/> 
 		</javac>
 	</target>
 	
-	<!-- Deploys comtor.jar to the proper path -->
+	<!-- Removes the class files, source backups, and debug output -->
+	<target name="clean" description="Clean source backups, old reports, and .class files">
+		<delete dir="${classes}"/>
+		
+		<delete>
+			<fileset dir="." casesensitive="yes">
+				<include name="**/*~ "/>
+				<include name="comtorReport.txt"/>
+				<include name="comtor.jar"/>
+				<include name="comtor.war"/>
+			</fileset>
+		</delete>		
+	</target>
+	
+	<!-- Deploys comtor.jar to the proper path (used for full-web experimentation version) -->
 	<target name="deploy" description="jars and deploys comtor.jar to proper directory" depends="compile">
 		<jar destfile="${thirdpartyjars}/comtor.jar" basedir="${classes}">
 			<manifest>
@@ -42,25 +61,13 @@
 		</jar>		
 	</target>
 	
-	<!-- Removes the class files, source backups, and debug output -->
-	<target name="clean" description="Clean source backups and obj files">
-		<delete dir="${classes}"/>
-		
-		<delete>
-			<fileset dir="." casesensitive="yes">
-				<include name="**/*~ "/>
-				<include name="comtorReport.txt"/>
-				<include name="comtor.jar"/>
-			</fileset>
-		</delete>		
-	</target>
-	
-	<target name="makeStandAlone" depends="compile"
+	<!-- Builds the command line version (stand alone) jar file of COMTOR -->
+	<target name="cli" depends="compile"
 		description="Builds a distributable .jar file for use as a stand-alone application">
 		<tstamp/>
 		<jar destfile="comtor.jar">
 			<manifest>
-				<attribute name="Main-Class" value="comtor.Comtor"/>
+				<attribute name="Main-Class" value="org.comtor.drivers.Comtor"/>
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Implementation-Title" value="COMTOR CLI"/>
 				<attribute name="Implementation-Version" value="${version} ${TODAY}"/> 
@@ -68,11 +75,18 @@
 			</manifest>
 			<fileset dir="classes">
 				<include name="**/*.class"/>
-			</fileset>
-			<fileset dir=".">
-				<include name="Doclets.txt"/>
+				<exclude name="org/comtor/cloud/*.class"/>
 			</fileset>
 		</jar>
+	</target>
+
+	<!-- Builds the war file for TOMCAT/cloud release -->
+	<target name="war" depends="compile">
+		<war destfile="comtor.war" webxml="webdeploy/WEB-INF/web.xml">
+			<fileset dir="webdeploy/Web-Content"/>
+			<lib dir="webdeploy/WEB-INF/lib"/>
+			<classes dir="classes"/>
+		</war>
 	</target>
 
 </project>
