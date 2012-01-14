@@ -93,7 +93,7 @@ public class PercentageMethods implements ComtorDoclet
 				
 			// Count the number of commented methods
 			members = classdoc.methods();
-			numMethods = members.length;
+			numMethods += members.length;
 			for (ExecutableMemberDoc docs : members)
 				if (docs.getRawCommentText().length() > 0)
 					methodsCommented++;
