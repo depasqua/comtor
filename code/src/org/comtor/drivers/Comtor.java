@@ -104,6 +104,8 @@ public class Comtor {
 		// output), the name of the doclet to execute (our stand alone version of the master doclet
 		// that does attempt to database its results), and an array of arguments.
 		com.sun.tools.javadoc.Main.execute("COMTOR", "org.comtor.drivers.ComtorStandAlone", optionslist);
+		
+		System.out.println("Execution complete.");
 	}
 	
 	/**
