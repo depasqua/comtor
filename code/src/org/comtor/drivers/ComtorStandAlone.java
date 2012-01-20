@@ -33,6 +33,10 @@ import java.util.*;
  * @author Peter DePasquale
  */
 public class ComtorStandAlone extends Doclet {
+
+	// Stores the current operational mode
+	private static Mode currentMode = Mode.CLI;
+	
 	/**
 	* Accepts a property list from the called doclets and puts them
 	* in a vector. It then passes the vector to the report generator.
@@ -209,5 +213,24 @@ public class ComtorStandAlone extends Doclet {
 		public Properties getProperties() {
 			return list;
 		}
+	}
+	
+	/**
+	 * Returns the current mode of operation
+	 *
+	 * @return the current mode of operation as an enum value
+	 */
+	public static Mode getMode() {
+		return currentMode;
+	}
+	
+	/**
+	 * Sets the current mode of operation
+	 * 
+	 * @param newMode a enum value of the current mode
+	 * @see org.comtor.analyzers.Mode
+	 */
+	public static void setMode(Mode newMode) {
+		currentMode = newMode;
 	}
 }

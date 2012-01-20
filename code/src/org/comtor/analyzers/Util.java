@@ -22,6 +22,9 @@ import java.net.*;
 import java.util.*;
 import com.sun.javadoc.*;
 
+import org.comtor.cloud.*;
+import org.comtor.drivers.*;
+
 public class Util {
 	/**
 	 * Attempts to load the local and web-based versions of data lists. This method is used to load
@@ -41,9 +44,15 @@ public class Util {
 			dataList = new HashSet<String> ();
 			
 		// Attempt to load/fetch the most recent dictionary list.
-		String netFileName = "http://www.comtor.org/" + fileName;
+		Mode currentMode = ComtorStandAlone.getMode();
 		String localFileName = System.getProperty("user.dir") +
-							   System.getProperty("file.separator") + fileName;
+					System.getProperty("file.separator") + fileName;
+		
+		if (currentMode == Mode.CLOUD)
+				localFileName = ServletSupport.getTempDir() + 
+					System.getProperty("file.separator") + fileName;
+
+		String netFileName = "http://www.comtor.org/" + fileName;
 		Scanner netScanner = null;
 		String netFileVersion = null;
 		Scanner localScanner = null;
