@@ -7,29 +7,52 @@
 	<property name="src" location="src"/>
 	<property name="classes" location="classes"/>
 	<property name="thirdpartyjars" location="${basedir}/../comtor_data/code/"/>
-	<property name="version" value="2.0.0"/>
+	<property name="version" value="2.0.1"/>
+	<property name="cloudhost" value="http://dev.comtor.org:8080"/>
 	
-	<target name="init" description="Pre-build tasks">
+	<!-- Build up a classpath file path for later use. -->
+	<condition property="toolsjar" value="${java.home}/../Classes/classes.jar"
+		else="${java.home}/../lib/tools.jar">
+		<and>
+			<os family="mac"/>
+			<os family="unix"/>
+		</and>
+	</condition>
+			
+	<path id="comtor.class.path">
+		<pathelement path="${classes}"/>
+		<fileset dir="${thirdpartyjars}">
+			<include name="*.jar"/>
+		</fileset>
+		<pathelement path="${toolsjar}"/>
+		<fileset dir="webdeploy/WEB-INF/lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	
+	<!-- Determine Tomcat deployment path (support for version testing) -->
+	<condition property="deploymentpath" value="/comtorDev" else="/comtor">
+		<isset property="testing"/>
+	</condition>
+
+	<!-- ================ -->
+	<!-- START OF TARGETS -->
+	<!-- ================ -->
+	
+	<!-- Help Task -->
+	<target name="help" description="Provides help text for executing cloud based targets">
+		
+	</target>
+
+	<!-- Initialization tasks (no description attribute, it's a minor task) -->
+	<target name="init">
 		<mkdir dir="${classes}"/>
 		<tstamp/>
 	</target>
 	
-	<!-- Build up a classpath file path for later use. -->	
-	<path id="comtor.class.path">
-		<pathelement path="${classes}"/>
-		<pathelement location="${thirdpartyjars}/antlr-3.1.1.jar"/>
-		<pathelement location="${thirdpartyjars}/mysql-connector-java-5.1.6-bin.jar"/>
-		<pathelement path="${java.home}/../lib/tools.jar"/>
-		<pathelement path="${java.home}/../Classes/classes.jar"/> <!-- classes.jar is tools.jar on the mac -->
-		<fileset dir="webdeploy/WEB-INF/lib">
-			<include name="*.jar"/>
-			<include name="*.zip"/>
-		</fileset>
-	</path>
-	
 	<!-- Compile the source files -->
 	<target name="compile" description="Compile the source" depends="init">
-		<javac srcdir="${src}" destdir="${classes}" compiler="javac1.5" includeantruntime="false"
+		<javac srcdir="${src}" destdir="${classes}" compiler="javac1.6" includeantruntime="false"
 				excludes="org/comtor/incomplete/** org/comtor/examples/**">
 			<classpath refid="comtor.class.path"/> 
 		</javac>
@@ -50,7 +73,7 @@
 	</target>
 	
 	<!-- Deploys comtor.jar to the proper path (used for full-web experimentation version) -->
-	<target name="deploy" description="jars and deploys comtor.jar to proper directory" depends="compile">
+	<target name="deploy" description="jars and deploys comtor.jar to proper directory">
 		<jar destfile="${thirdpartyjars}/comtor.jar" basedir="${classes}">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}"/>
@@ -62,8 +85,7 @@
 	</target>
 	
 	<!-- Builds the command line version (stand alone) jar file of COMTOR -->
-	<target name="cli" depends="compile"
-		description="Builds a distributable .jar file for use as a stand-alone application">
+	<target name="cli" depends="compile" description="Builds a distributable .jar file for use as a stand-alone application">
 		<tstamp/>
 		<jar destfile="comtor.jar">
 			<manifest>
@@ -81,12 +103,77 @@
 	</target>
 
 	<!-- Builds the war file for TOMCAT/cloud release -->
-	<target name="war" depends="compile">
+	<target name="war" depends="compile" description="Builds the war file for the cloud release.">
+		<mkdir dir="webdeploy/Web-Content/files"/>
+		<concat destfile="webdeploy/Web-Content/files/README">This directory will contain session directories.</concat>
 		<war destfile="comtor.war" webxml="webdeploy/WEB-INF/web.xml">
 			<fileset dir="webdeploy/Web-Content"/>
 			<lib dir="webdeploy/WEB-INF/lib"/>
 			<classes dir="classes"/>
 		</war>
+		<delete dir="webdeploy/Web-Content/files"/>
+	</target>
+	
+	<!-- Ensures the user has set the scp server info in the form of: user@host:/dir" -->
+	<target name="scpserver.check">
+		<condition property="scpserver.set">
+			<and>
+				<isset property="scplocation"/>
+				<isset property="scpkey"/>
+			</and>
+		</condition>
+	</target>
+	
+	<!-- Copys the file to the server via scp -->
+	<target name="copytoserver" if="scpserver.set" depends="war, scpserver.check, copytoserver.fail" description="Copies the war file to the cloud server.">
+		<scp file="comtor.war" todir="${scplocation}" keyfile="${user.home}/.ec2/comtor.pem"/>
+	</target>
+	
+	<!-- Stops the build and outputs a message if the scp copy location property was not set by user -->
+	<target name="copytoserver.fail" unless="scpserver.set">
+		<fail>Please set the following properties:
+	* the scp copy destination on the ant command line as: -Dscplocation=user@host:/dir and/or
+	* the location of the public key file as: -Dscpkey=~/.ssh/keyfile
+		</fail>
+	</target>
+
+	<!-- Ensures the user has set the deployment credentials to provide to the servlet container -->
+	<target name="deploy.credentials.check">
+		<condition property="deploy.credentials.set">
+			<and>
+				<isset property="username"/>
+				<isset property="password"/>
+			</and>
+		</condition>
+	</target>
+	
+	<!-- Stops the build and outputs a message if the war deployment credentials were not set by user -->
+	<target name="deploywar.fail" unless="deploy.credentials.set">
+		<fail>Please set the following properties:
+	* the username of the servlet manager: -Dusername=user
+	* the password of the servlet manager: -Dpassword=passwd
+		</fail>
+	</target>
+
+	<!-- Deploys the specified war file previously existing on the server -->
+	<target name="deploywar" if="deploy.credentials.set" depends="copytoserver, deploy.credentials.check, deploywar.fail" description="Deploys the war file on the cloud server.">
+		<get src="${cloudhost}/manager/stop?path=${deploymentpath}" username="${username}"
+			password="${password}" dest="stop.txt"/>
+		<loadfile srcFile="stop.txt" property="stopOutput"/>
+		<echo>${stopOutput}</echo>
+		<delete file="stop.txt"/>
+
+		<get src="${cloudhost}/manager/undeploy?path=${deploymentpath}" username="${username}"
+			password="${password}" dest="undeploy.txt"/>
+		<loadfile srcFile="undeploy.txt" property="undeployOutput"/>
+		<echo>${undeployOutput}</echo>
+		<delete file="undeploy.txt"/>
+
+		<get src="${cloudhost}/manager/deploy?path=${deploymentpath}&amp;war=file:/home2/depasqua/comtor.war"
+			username="${username}" password="${password}" dest="deploy.txt"/>
+		<loadfile srcFile="deploy.txt" property="deployOutput"/>
+		<echo>${deployOutput}</echo>
+		<delete file="deploy.txt"/>
 	</target>
 
 </project>
