@@ -59,10 +59,8 @@ CMD1='tar '
 
 CMD1+="--exclude=*.DS_Store "
 CMD1+="--exclude=*.gitignore "
-CMD1+="--exclude=designdocs "
 CMD1+="--exclude=packager.sh "
-CMD1+="--exclude=testingCode "
-CMD1+="--exclude=unitTesting "
+CMD1+="--exclude=code/ "
 
 CMD1+="-czf "
 CMD1+="$DEST"/"$NAME"'.tar.gz '"$SRC"

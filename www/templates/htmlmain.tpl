@@ -186,24 +186,27 @@ function getCookie(name)
 
 <div class="footer">
 	<a href="about.php">About Comment Mentor</a><br/>
-	<small>Version 2.0.1 - 1/16/12 - Copyright &copy; {$currentYear} TCNJ</small>
+	<small>Version 2.0.2 - 1/21/12 - Copyright &copy; {$currentYear} TCNJ</small>
 	<div class="tcnj_logo">
 		<a href="http://www.tcnj.edu"><img src="img/tcnj_logo-small.gif" alt="TCNJ Logo" border="0" /></a>
 	</div>
 </div>
 
+</body>
 <!-- Google Analytics Code -->
 {literal}
 <script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-1641868-4");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-{/literal}
 
-</body>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1641868-6']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+{/literal}
 </html>
