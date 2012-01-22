@@ -73,7 +73,7 @@
 	</target>
 	
 	<!-- Deploys comtor.jar to the proper path (used for full-web experimentation version) -->
-	<target name="deploy" description="jars and deploys comtor.jar to proper directory">
+	<target name="deploy" description="jars and deploys comtor.jar to proper directory" depends="compile">
 		<jar destfile="${thirdpartyjars}/comtor.jar" basedir="${classes}">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}"/>
