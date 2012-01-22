@@ -142,6 +142,7 @@ To install COMTOR, please do the following:
 			password = password
 				Please enter the password for the username specified above.
 				
+
 			dictionary = /mywebsite/comtor/comtor_data/resources/words
 				Please enter the path directory to the words file.
 				It will always be in /comtor_data/resources/words.
@@ -231,17 +232,6 @@ To install COMTOR, please do the following:
 	(BE SURE TO EDIT IT BEFORE YOU ADD). Where it should be changed is in the paths.
 		0,30 * * * * /usr/bin/php -f your/path/to/comtor/www/cron.php uaeefashdfkjghasdfhrt43a! your/path/to/comtor/comtor_data/config/crontab.output
 		
-6.	You will have to compile the source code.
-	To do so, please navigate to the main directory, and run the following commands:
-	
-		cd code
-		ant deploy
-		
-	NOTE: If you are installing COMTOR from a packaged (tar'd) release, then you WILL NOT need
-	to do this step, as packaged releases always come precompiled. If you are installing COMTOR
-	from a cloned repository, then you WILL need to do this step. However, there is absolutely
-	no harm in recompiling the java source code, so you may do this step if you wish regardless.
-		
-7. 	You're done! Please keep in mind that the email you specified above will be used as
+6. 	You're done! Please keep in mind that the email you specified above will be used as
 	the initial log in username, and the default password is initially 'comtor'.
 	Enjoy using COMTOR!
