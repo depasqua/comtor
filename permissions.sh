@@ -17,18 +17,18 @@
 
 echo "Unlocking..."
 
-#unlock /comtor_data/uploads
+# unlock /comtor_data/uploads
 cd comtor_data
 chmod go+w uploads
 cd ..
 
-#unlock /www/templates_c
+# unlock /www/templates_c
 cd www
+mkdir templates_c
 chmod go+w templates_c
 
-#unlock /www/scripts/javadoc.sh
+# unlock /www/scripts/javadoc.sh
 cd scripts
 chmod go+rx javadoc.sh
 
 echo "Done."
-
