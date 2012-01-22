@@ -79,10 +79,6 @@ $(document).ready(function() {
   <th class="medium">Name</th>
   <th class="small">Account Type</th>
   <th class="large">School</th>
-  <!--<th class="mini">Dropbox</th>
-  <th class="mini">Reports</th>
-  <th class="mini">Usage</th>
-  <th>Actions</th>-->
 </tr>
 
 {assign var='name' value='even'}
@@ -97,16 +93,7 @@ $(document).ready(function() {
 	<td class="selector mini"><input type="radio" name="user" value="{$u.email},{if $u.acctType == 'professor'}profId{else}userId{/if}=,{$u.userId},{$rand}" /></td>
   <td class="medium">{$u.name}</td>
   <td class="small">{$u.acctType}</td>
-  <td class="large">Not working{$u.school}</td>
-  <!--<td class="mini center"><a href="dropbox.php?{if $u.acctType == 'professor'}profId{else}userId{/if}={$u.userId}"><img src="img/icons/magnifying_glass.png" alt="View Dropbox" /></a></td>
-  <td class="mini center"><a href="reports.php?{if $u.acctType == 'professor'}profId{else}userId{/if}={$u.userId}"><img src="img/icons/magnifying_glass.png" alt="View Reports" /></a></td>
-  <td class="mini center"><a href="usage.php?userId={$u.userId}"><img src="img/icons/magnifying_glass.png" alt="View Usage" /></a></td>
-  <td class="medium">
-    <a href="editAccount.php?userId={$u.userId}"><img src="img/icons/edit.png" alt="Edit" /></a>
-    <a href="disableAccount.php?userId={$u.userId}&amp;rand={$rand}" onclick="return verifyAction('disable', '{$u.name}');"><img src="img/icons/lock.png" alt="Disable" /></a>
-    <a href="deleteAccount.php?userId={$u.userId}&amp;rand={$rand}" onclick="return verifyAction('delete', '{$u.name}');"><img src="img/icons/delete.png" alt="Delete" /></a>
-    <a href="mailto:{$u.email}"><img src="img/icons/email.png" alt="Email" /></a>
-  </td>-->
+  <td class="large">{$u.school}</td>
 </tr>
 {/foreach}
 
