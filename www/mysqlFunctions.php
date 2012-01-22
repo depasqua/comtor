@@ -920,7 +920,7 @@ function getUsers($fields = array(), $enabled = "all", $acctType = "all", $lower
   if (($columns = makeColumnStr($fields, "users")) === false)
     return false;
 
-  $query = "SELECT {$columns} FROM users {$where} ORDER BY name{$limit}";
+  $query = "SELECT {$columns}, schools.school FROM users INNER JOIN schools ON (users.schoolID=schools.schoolID) {$where} ORDER BY name{$limit}";
   $result = mysql_query($query);
 
   // Checks that result is a valid mysql resource and also that there were
