@@ -16,7 +16,7 @@ CLASSES=$COMTOR_DATA/code/comtor.jar
 #	/comtor_data/code/mysql-connector-java-5.1.6-bin.jar
 #	/comtor_data/code/antlr-3.1.1-runtime.jar
 # See below for an example.
-CLASSPATH='.:$COMTOR_DATA/code/stringtemplate-3.2.jar:$COMTOR_DATA/code/comtor.jar:$COMTOR_DATA/code/antlr-3.1.1.jar:$COMTOR_DATA/code/mysql-connector-java-5.1.6-bin.jar:$COMTOR_DATA/code/antlr-3.1.1-runtime.jar'
+CLASSPATH=.:$COMTOR_DATA/code/stringtemplate-3.2.jar:$COMTOR_DATA/code/comtor.jar:$COMTOR_DATA/code/antlr-3.1.1.jar:$COMTOR_DATA/code/mysql-connector-java-5.1.6-bin.jar:$COMTOR_DATA/code/antlr-3.1.1-runtime.jar
 
 
 # Define the directory of the java.properties file

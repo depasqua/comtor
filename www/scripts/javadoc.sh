@@ -14,9 +14,10 @@ set -u
 . scripts/config.sh
 export set CLASSPATH=$CLASSPATH
 
-# change the permissions on the temporary directory ($1) and doclet list file ($2)
+# change the permissions on the temporary directory ($1) and doclet list file ($1.txt)
 chmod 755 $UPLOAD_PATH/$1
 cd $UPLOAD_PATH/$1
+mv $UPLOAD_PATH/$1.txt ./docletList.properties
 
 # unjar the jar file in temp dir and set the permissions
 jar xf $2
@@ -47,11 +48,12 @@ EOF
 
 # Run javadoc if code compiled
 if [ $compiled = 0 ]; then
-  javadoc -private --assignment-id $4 --config-file $JAVA_CONFIG -doclet comtor.ComtorDriver -docletpath $CLASSES $sourceFiles > javadocOut.txt 2>&1
-  echo "javadoc -private --config-file $JAVA_CONFIG -doclet comtor.ComtorDriver -docletpath $CLASSES $sourceFiles" > $UPLOAD_PATH/$1/debug.txt
+  javadoc -private --assignment-id $4 --config-file $JAVA_CONFIG -doclet org.comtor.drivers.ComtorDriver -docletpath $CLASSES $sourceFiles > javadocOut.txt 2>&1
+  echo "javadoc -private --assignment-id $4 --config-file $JAVA_CONFIG -doclet org.comtor.drivers.ComtorDriver -docletpath $CLASSES $sourceFiles" > $UPLOAD_PATH/$1/debug.txt
   javadocRtn=$?
 else
-  java -cp $CLASSES:$CLASSPATH comtor.GenerateErrorReport $JAVA_CONFIG
+  java -cp $CLASSES:$CLASSPATH org.comtor.reporting.GenerateErrorReport $JAVA_CONFIG
+  echo "java -cp $CLASSES:$CLASSPATH org.comtor.reporting.GenerateErrorReport $JAVA_CONFIG" >> $UPLOAD_PATH/$1/debug.txt
 fi
 
 if [ $javadocRtn != 0 ]; then
