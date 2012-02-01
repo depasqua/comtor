@@ -23,12 +23,12 @@ mv $UPLOAD_PATH/$1.txt ./docletList.properties
 jar xf $2
 
 # find the list of java files within the src dir and store the list in source.txt
-find . -name *.java > source.txt
+find . -name "*.java" > source.txt
 
 # Check that there is source code
 if [ ! -s "source.txt" ]; then
   # Delete the temporary folder
-  rm -r $UPLOAD_PATH/$1
+  #rm -r $UPLOAD_PATH/$1
   exit 3
 fi
 
