@@ -89,7 +89,7 @@ $tpl->assign('rand', md5(session_id()));
 // Finish Breadcrumbs
 $breadcrumbs[] = array('text' => $courseInfo['section'] . ': ' . $courseInfo['name'], 'href' => 'courses.php?courseId='.$courseId);
 $text = 'Dropbox';
-if (isset($userInfo) && $userId != $_SESSION['user_id'])
+if (isset($userInfo) && $userId != $_SESSION['userId'])
   $text .= ' (' . $userInfo['name'] . ')';
 $breadcrumbs[] = array('text' => $text, 'href' => 'dropbox.php?courseId='.$courseId.'&amp;userId='.$userId);
 $tpl->assign('breadcrumbs', $breadcrumbs);
