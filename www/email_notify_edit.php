@@ -129,8 +129,8 @@ $breadcrumbs[] = array('text' => $text, 'href' => 'email_notify_edit.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
 // Assign tooltips
-// $tooltips = file_get_contents('tooltips/test.html');
-// $tpl->assign('tooltips', $tooltips);
+$tooltips = file_get_contents('tooltips/notificationSettings.html');
+$tpl->assign('tooltips', $tooltips);
 
 // Fetch template
 $tpldata = $tpl->fetch("email_notify_edit.tpl");
