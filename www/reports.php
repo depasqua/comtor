@@ -126,7 +126,7 @@ if(isset($_GET['userEventId']))
   if (($reportInfo = getReportInfo($userEventId)) !== false)
   {
     // Check that current user can view the report
-    if ($reportInfo['userId'] == $userId || $reportInfo['profId'] == $userId || $_SESSION['acctType'] == admin)
+    if ($reportInfo['userId'] == $userId || $reportInfo['profId'] == $userId || $_SESSION['acctType'] == "admin")
     {
       $compileError = $reportInfo['compilationError'];
       unset($reportInfo['compilationError']);
@@ -487,8 +487,8 @@ $breadcrumbs[] = array('text' => 'View Reports', 'href' => 'reports.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
 // Assign tooltips
-// $tooltips = file_get_contents('tooltips/test.html');
-// $tpl->assign('tooltips', $tooltips);
+$tooltips = file_get_contents('tooltips/reports.html');
+$tpl->assign('tooltips', $tooltips);
 
 // Fetch template
 $tpldata = $tpl->fetch($template);
