@@ -66,6 +66,7 @@ div.help_slider
 	right: 0px;
 	z-index:200;
 }
+
 div.help_button
 {
 	z-index:100;
@@ -89,6 +90,7 @@ div.help_button
 #close{
 	cursor: pointer;
 }
+
 a#close:link, a#close:visited {
 	color: #333;
 	text-decoration: none;
@@ -99,9 +101,11 @@ a#close:hover {
 	color: #666;
 	text-decoration: none;
 }
+
 a#close img{
 	margin: 0px 0px 1px 5px;
 }
+
 div.help_popup
 {
 	width:350px;
@@ -111,6 +115,7 @@ div.help_popup
 	-moz-border-radius: 10px 0px 0px 10px; 
 	-webkit-border-radius: 10px 0px 0px 10px; 
 }
+
 div.help_close_button
 {
 	height: 20px;
@@ -223,10 +228,10 @@ div.sidebar li
 
 div.sidebar li.heading
 {
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #2773ba), color-stop(1, #043766) );
+/*	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #2773ba), color-stop(1, #043766) );
 	background:-moz-linear-gradient( center top, #2773ba 5%, #043766 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#2773ba', endColorstr='#043766');
-	background-color:#2773ba;
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#2773ba', endColorstr='#043766'); */
+	background-color:#FF6633;
 	border:1px solid #333333;
 	color:#ffffff;
 	font-weight:bold;
@@ -303,8 +308,9 @@ div.footer
 
 div.tcnj_logo
 {
-  background-color: #283e6f;
-  border-top: 2px solid #081e4f;
+  background-color: #F5F5F5;
+  border-top: 1px solid #E6E6E6;
+  border-top: 1px solid #E6E6E6;
   margin-top: 5px;
   padding: 5px 0px;
 }

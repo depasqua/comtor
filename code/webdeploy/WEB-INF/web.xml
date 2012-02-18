@@ -3,18 +3,18 @@
 	<display-name>COMTOR web app</display-name>
 
 	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
 	<servlet>
-		<description>Servlet to upload a jar file to the system</description>
-		<display-name>File Upload</display-name>
-		<servlet-name>FileAndJar</servlet-name>
-		<servlet-class>org.comtor.cloud.FileAndJar</servlet-class>
+		<description>Servlet to upload and process a Java jar file with COMTOR</description>
+		<display-name>Cloud Upload</display-name>
+		<servlet-name>CloudUpload</servlet-name>
+		<servlet-class>org.comtor.cloud.CloudUpload</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>FileAndJar</servlet-name>
-		<url-pattern>/FileAndJar</url-pattern>
+		<servlet-name>CloudUpload</servlet-name>
+		<url-pattern>/upload</url-pattern>
 	</servlet-mapping>
 </web-app>

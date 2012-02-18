@@ -33,7 +33,7 @@ import org.comtor.drivers.*;
 import org.comtor.analyzers.*;
 
 @SuppressWarnings("serial")
-public class FileAndJar extends HttpServlet {
+public class CloudUpload extends HttpServlet {
 	private static final String DESTINATION_DIR_PATH = "/files";
 	private File tmpDir;
 	private File destinationDir;

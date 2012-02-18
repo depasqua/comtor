@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>/** COMTOR **/</title>
+		<link rel="stylesheet" type="text/css" href="styles/login.css" media="screen"/>
+		<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+		<script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
+
+		<script>
+		  $(document).ready(function() {
+			$("#uploadForm").validate();
+		  });
+		</script>
+	</head>
+
+	<body>
+		<img style="margin-left: auto; margin-right: auto; display: block;" src="imgs/comtorLogo.png" width="320" alt="COMTOR logo"/>
+		<br/>
+
+		<form action="upload" id="uploadForm" enctype="multipart/form-data" method="POST">
+			<div style="margin-top:2px; float: left; width: 290px;">
+				<label for="email">E-mail:</label><br/>
+				<input type="text" name="email" class="required email"><br/>
+				<label style="margin-top: 10px;">File:</label><br/>
+				<input type="file" name="jarfile" class="required"/><br/>
+			</div>
+			<div style="margin-top: 2px; float: right; width: 290px;">
+				<fieldset>
+					<legend>Select analysis modules to execute</legend>
+					<input class="analysis" type="checkbox" name="spellcheck" value="org.comtor.analyzers.SpellCheck"/>Spell Checker<br/>
+					<input class="analysis" type="checkbox" name="offensivewords" value="org.comtor.analyzers.OffensiveWords"/>Offensive Words<br/>
+					<input class="analysis" type="checkbox" name="percentagemethods" value="org.comtor.analyzers.PercentageMethods"/>Percentage of methods commented<br/>
+				</fieldset>
+				<br/>
+			</div>
+			<div style="text-align:center; clear: both; width: 600px;">
+				<input type="Submit" id="check" class="submit" value="Analyze!"/><br/>
+			</div>
+		</form>
+
+		<br/>
+		<div style="text-align: center;">
+			Learn more about the <a style="color: #FF6633;" href="http://www.comtor.org">COMTOR project</a> today.
+		</div>
+	</body>
+</html>

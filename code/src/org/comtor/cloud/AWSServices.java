@@ -22,12 +22,89 @@ import java.net.*;
 import java.util.*;
 import java.text.*;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 import com.amazonaws.*;
 import com.amazonaws.services.s3.*;
 import com.amazonaws.services.s3.model.*;
+import com.amazonaws.services.simpleemail.AWSJavaMailTransport;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
+import com.amazonaws.services.simpleemail.model.ListVerifiedEmailAddressesResult;
+import com.amazonaws.services.simpleemail.model.VerifyEmailAddressRequest;
 import com.amazonaws.auth.PropertiesCredentials;
 
 public class AWSServices {
+	/**
+	 * Sends the COMTOR report to the specified recipient. This method is called after
+	 * the report is stored to S3 (by storeReportS3), as it assumes the report has been
+	 * generated and stored.
+	 *
+	 * @param toAddr the recipient's email address
+	 * @param url the url of the report's location
+	 */
+	public static void sendReportEmail(String toAddr, String url) {
+        try {
+			PropertiesCredentials credentials = new PropertiesCredentials(
+					new File("AwsCredentials.properties"));
+			AmazonSimpleEmailService ses = new AmazonSimpleEmailServiceClient(credentials);
+			
+			/*
+			 * Setup JavaMail to use the Amazon Simple Email Service by specifying
+			 * the "aws" protocol.
+			 */
+			Properties props = new Properties();
+			props.setProperty("mail.transport.protocol", "aws");
+	
+			/*
+			 * Setting mail.aws.user and mail.aws.password are optional. Setting
+			 * these will allow you to send mail using the static transport send()
+			 * convince method.  It will also allow you to call connect() with no
+			 * parameters. Otherwise, a user name and password must be specified
+			 * in connect.
+			 */
+			props.setProperty("mail.aws.user", credentials.getAWSAccessKeyId());
+			props.setProperty("mail.aws.password", credentials.getAWSSecretKey());
+	
+			Session session = Session.getInstance(props);
+
+            // Create a new Message
+            Message msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress("comtor@tcnj.edu"));
+            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddr));
+            msg.setSubject("COMTOR Results");
+            msg.setText("Go here: " + url);
+            msg.saveChanges();
+
+            // Reuse one Transport object for sending all your messages
+            // for better performance
+            Transport t = new AWSJavaMailTransport(session, null);
+            t.connect();
+            t.sendMessage(msg, null);
+
+            // Close your transport when you're completely done sending
+            // all your messages
+            t.close();
+        } catch (AddressException e) {
+            e.printStackTrace();
+            System.out.println("Caught an AddressException, which means one or more of your "
+                    + "addresses are improperly formatted.");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            System.out.println("Caught a MessagingException, which means that there was a "
+                    + "problem sending your message to Amazon's E-mail Service check the "
+                    + "stack trace for more information.");
+        } catch (IOException ieo) {
+        	System.out.println(ieo);
+        }
+	}
+
 	/**
 	 * Stores the specified report on the S3 store.
 	 *
@@ -44,7 +121,8 @@ public class AWSServices {
 			Date expiring = new Date(112, 2, 31);
 
 			// Obtain AWS credentials
-			AmazonS3 s3 = new AmazonS3Client(new PropertiesCredentials(new File("AwsCredentials.properties")));
+			AmazonS3 s3 = new AmazonS3Client(new PropertiesCredentials(
+				new File("AwsCredentials.properties")));
 			s3.putObject(new PutObjectRequest(bucketName, key, report));
 			reportURL = s3.generatePresignedUrl(bucketName, key, expiring);
 
