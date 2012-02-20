@@ -29,10 +29,6 @@ form {
 	display: block;
 }
 
-input.analysis {
-	margin-bottom: 15px;
-}
-
 input.required {
     width: 230px;
     background: #E6E6E6;
@@ -45,6 +41,12 @@ input.required {
     -webkit-border-radius: 3px;
     -webkit-transition-property: -webkit-box-shadow, background;
     -webkit-transition-duration: 0.25s;
+}
+
+input[name=module] {
+	margin-bottom: 10px;
+	padding: 6px;
+	width: 20px;
 }
 
 input:hover {
@@ -62,12 +64,8 @@ input.submit {
 }
 
 a {
-	color: #000;
+	color: #FF6633;
 	text-decoration: none;
-}
-
-a:hover {
-	color: #CCCC33;
 }
 
 label {
@@ -78,5 +76,6 @@ label {
 label.error {
 	margin-top: -10px;
 	float: left;
-	color: red; 
+	color: #FF6633;
+	display: none;
 }

@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>/** COMTOR **/</title>
-		<link rel="stylesheet" type="text/css" href="styles/login.css" media="screen"/>
+		<link rel="stylesheet" type="text/css" href="styles/style.css" media="screen"/>
 		<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
 		<script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
 
@@ -11,26 +11,58 @@
 			$("#uploadForm").validate();
 		  });
 		</script>
+
+		<script type="text/javascript">
+		
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-1641868-7']);
+		  _gaq.push(['_trackPageview']);
+		
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+		
+		</script>
 	</head>
 
 	<body>
-		<img style="margin-left: auto; margin-right: auto; display: block;" src="imgs/comtorLogo.png" width="320" alt="COMTOR logo"/>
+		<img style="margin-left: auto; margin-right: auto; display: block;" width="320" 
+				src="imgs/comtorLogo.png" alt="COMTOR logo"/>
 		<br/>
 
+		<div style="text-align: center; font-size: small; color: #9C9C9C">
+			Upload your Java source code in a .jar file and we'll analyze the comments!
+		</div>
+		
 		<form action="upload" id="uploadForm" enctype="multipart/form-data" method="POST">
-			<div style="margin-top:2px; float: left; width: 290px;">
+			<div style="margin-top:2px; float: left; width: 250px;">
 				<label for="email">E-mail:</label><br/>
 				<input type="text" name="email" class="required email"><br/>
 				<label style="margin-top: 10px;">File:</label><br/>
 				<input type="file" name="jarfile" class="required"/><br/>
 			</div>
-			<div style="margin-top: 2px; float: right; width: 290px;">
+			<div style="margin-top: 2px; float: right; width: 350px;">
 				<fieldset>
 					<legend>Select analysis modules to execute</legend>
-					<input class="analysis" type="checkbox" name="spellcheck" value="org.comtor.analyzers.SpellCheck"/>Spell Checker<br/>
-					<input class="analysis" type="checkbox" name="offensivewords" value="org.comtor.analyzers.OffensiveWords"/>Offensive Words<br/>
-					<input class="analysis" type="checkbox" name="percentagemethods" value="org.comtor.analyzers.PercentageMethods"/>Percentage of methods commented<br/>
-				</fieldset>
+					<label for="mod_spellcheck" style="margin-bottom: 10px;">
+						<input class="required" type="checkbox"	id="mod_spellcheck" name="module"
+							minlength="1" value="org.comtor.analyzers.SpellCheck"/>Spelling checker
+					</label><br/>
+					
+					<label for="mod_offensive" style="margin-bottom: 10px;">
+						<input class="required" type="checkbox" id="mod_offensive" name="module"
+							value="org.comtor.analyzers.OffensiveWords"/>Offensive word checker
+					</label><br/>
+					
+					<label for="mod_percent" style="margin-bottom: 10px;">
+						<input class="required" type="checkbox" id="mod_percent" name="module"
+							value="org.comtor.analyzers.PercentageMethods"/>% of methods commented
+					</label><br/>
+					
+					<label for="module" class="error">Please select at least one!</label>
+					</fieldset>
 				<br/>
 			</div>
 			<div style="text-align:center; clear: both; width: 600px;">
@@ -39,8 +71,10 @@
 		</form>
 
 		<br/>
-		<div style="text-align: center;">
-			Learn more about the <a style="color: #FF6633;" href="http://www.comtor.org">COMTOR project</a> today.
+		<div style="font-size: small; text-align: center;">
+			Learn more about the <a href="http://www.comtor.org">
+			COMTOR project</a> today.<br/>
+			See our FAQ!
 		</div>
 	</body>
 </html>
