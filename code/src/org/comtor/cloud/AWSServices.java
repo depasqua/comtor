@@ -22,22 +22,19 @@ import java.net.*;
 import java.util.*;
 import java.text.*;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.mail.*;
+import javax.mail.internet.*;
 
 import com.amazonaws.*;
 import com.amazonaws.services.s3.*;
 import com.amazonaws.services.s3.model.*;
-import com.amazonaws.services.simpleemail.AWSJavaMailTransport;
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
-import com.amazonaws.services.simpleemail.model.ListVerifiedEmailAddressesResult;
-import com.amazonaws.services.simpleemail.model.VerifyEmailAddressRequest;
+
+import com.amazonaws.services.simpleemail.*;
+import com.amazonaws.services.simpleemail.model.*;
+
+import com.amazonaws.services.simpledb.*;
+import com.amazonaws.services.simpledb.model.*;
+
 import com.amazonaws.auth.PropertiesCredentials;
 
 public class AWSServices {
@@ -50,54 +47,37 @@ public class AWSServices {
 	 * @param url the url of the report's location
 	 */
 	public static void sendReportEmail(String toAddr, String url) {
+		String comtorEmail = "comtor@tcnj.edu";
         try {
 			PropertiesCredentials credentials = new PropertiesCredentials(
 					new File("AwsCredentials.properties"));
 			AmazonSimpleEmailService ses = new AmazonSimpleEmailServiceClient(credentials);
 			
-			/*
-			 * Setup JavaMail to use the Amazon Simple Email Service by specifying
-			 * the "aws" protocol.
-			 */
-			Properties props = new Properties();
-			props.setProperty("mail.transport.protocol", "aws");
-	
-			/*
-			 * Setting mail.aws.user and mail.aws.password are optional. Setting
-			 * these will allow you to send mail using the static transport send()
-			 * convince method.  It will also allow you to call connect() with no
-			 * parameters. Otherwise, a user name and password must be specified
-			 * in connect.
-			 */
-			props.setProperty("mail.aws.user", credentials.getAWSAccessKeyId());
-			props.setProperty("mail.aws.password", credentials.getAWSSecretKey());
-	
-			Session session = Session.getInstance(props);
-
             // Create a new Message
-            Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress("comtor@tcnj.edu"));
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddr));
-            msg.setSubject("COMTOR Results");
-            msg.setText("Go here: " + url);
-            msg.saveChanges();
+            com.amazonaws.services.simpleemail.model.Message msg =
+            	new com.amazonaws.services.simpleemail.model.Message().withSubject(new Content("COMTOR Results"));
+            SendEmailRequest request = new SendEmailRequest().withSource(comtorEmail);
+            Destination dest = new Destination().withToAddresses(toAddr);
+			request.withDestination(dest);
 
-            // Reuse one Transport object for sending all your messages
-            // for better performance
-            Transport t = new AWSJavaMailTransport(session, null);
-            t.connect();
-            t.sendMessage(msg, null);
+            String msgText = "<img style=\"margin-left: auto; margin-right: auto; display: block;\" " +
+					"src=\"http://dev.comtor.org:8080/comtor/imgs/comtorLogo.png\" width=\"320\" " +
+					"alt=\"COMTOR logo\"/>";
+			msgText += "Thank you for your submission to the COMTOR system. Your report is "; 
+			msgText += "now available for access/download at the following URL: " + url + ". ";
+			msgText += "This link will remain active for a period of 5 days.\n\n";
+			msgText += "You can reach the COMTOR team at " + comtorEmail + ".";
 
-            // Close your transport when you're completely done sending
-            // all your messages
-            t.close();
-        } catch (AddressException e) {
+			Content htmlContent = new Content().withData(msgText);
+			Body body = new Body().withHtml(htmlContent);
+			msg.setBody(body);
+			
+			request.setMessage(msg);
+			ses.sendEmail(request);
+
+        } catch (AmazonClientException e) {
             e.printStackTrace();
-            System.out.println("Caught an AddressException, which means one or more of your "
-                    + "addresses are improperly formatted.");
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            System.out.println("Caught a MessagingException, which means that there was a "
+            System.out.println("Caught a AmazonClientException, which means that there was a "
                     + "problem sending your message to Amazon's E-mail Service check the "
                     + "stack trace for more information.");
         } catch (IOException ieo) {
@@ -118,13 +98,14 @@ public class AWSServices {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmssSSSZ");
 			String key = sessionID + '-' + formatter.format(new Date());
 			String bucketName = "org.comtor.reports";
-			Date expiring = new Date(112, 2, 31);
+			GregorianCalendar expiring = new GregorianCalendar();
+			expiring.add(Calendar.DATE, 5);
 
 			// Obtain AWS credentials
 			AmazonS3 s3 = new AmazonS3Client(new PropertiesCredentials(
 				new File("AwsCredentials.properties")));
 			s3.putObject(new PutObjectRequest(bucketName, key, report));
-			reportURL = s3.generatePresignedUrl(bucketName, key, expiring);
+			reportURL = s3.generatePresignedUrl(bucketName, key, expiring.getTime());
 
         } catch (AmazonServiceException ase) {
             System.out.println("Caught an AmazonServiceException, which means your request made it "
@@ -145,5 +126,49 @@ public class AWSServices {
         	System.out.println(np);
         }
     	return reportURL;
+	}
+	
+	/**
+	 * Logs the request handled by this instance of the system to the SDB service.
+	 * 
+	 * @param requestIP the String representation of the requesting client's IP address
+	 * @param sessionNum the String representation of the client's session ID
+	 * @param reportURL the String representation of the report's URL
+	 * @param emailAddr the String representation of the client's email address
+	 * @param dateTime the String representation of the current date/time 
+	 */
+	public static void storeCloudUse(String requestIP, String sessionID, String reportURL,
+			String emailAddr, String dateTime) {
+
+        try {
+	        AmazonSimpleDB sdb = new AmazonSimpleDBClient(new PropertiesCredentials(
+					new File("AwsCredentials.properties")));
+
+            // Set the domain to use
+            String myDomain = "org.comtor.cloud.usage";
+	        List<ReplaceableItem> data = new ArrayList<ReplaceableItem>();
+	        data.add(new ReplaceableItem(dateTime).withAttributes(
+                new ReplaceableAttribute("IP Address", requestIP, true),
+                new ReplaceableAttribute("Session ID", sessionID, true),
+                new ReplaceableAttribute("Report URL", reportURL, true),
+                new ReplaceableAttribute("Email Address", emailAddr, true)));
+	        
+            sdb.batchPutAttributes(new BatchPutAttributesRequest(myDomain, data));
+        } catch (AmazonServiceException ase) {
+            System.out.println("Caught an AmazonServiceException, which means your request made it "
+                    + "to Amazon SimpleDB, but was rejected with an error response for some reason.");
+            System.out.println("Error Message:    " + ase.getMessage());
+            System.out.println("HTTP Status Code: " + ase.getStatusCode());
+            System.out.println("AWS Error Code:   " + ase.getErrorCode());
+            System.out.println("Error Type:       " + ase.getErrorType());
+            System.out.println("Request ID:       " + ase.getRequestId());
+        } catch (AmazonClientException ace) {
+            System.out.println("Caught an AmazonClientException, which means the client encountered "
+                    + "a serious internal problem while trying to communicate with SimpleDB, "
+                    + "such as not being able to access the network.");
+            System.out.println("Error Message: " + ace.getMessage());
+        } catch (IOException ieo) {
+        	System.out.println(ieo);
+        }
 	}
 }
