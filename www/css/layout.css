@@ -293,9 +293,9 @@ div.breadcrumbs
 	margin:0px -20px 10px -20px;
 	padding:10px;
 	background-color:#f5f5f5;
-	border: solid 1px #e6e6e6;
+	border: solid 1px #CCCC33;
 	border-left: none;
-	border-right:none;
+	border-right: none;
 }
 
 /* Footer */
@@ -309,8 +309,7 @@ div.footer
 div.tcnj_logo
 {
   background-color: #F5F5F5;
-  border-top: 1px solid #E6E6E6;
-  border-top: 1px solid #E6E6E6;
+  border-top: 1px solid #CCCC33;
   margin-top: 5px;
   padding: 5px 0px;
 }
