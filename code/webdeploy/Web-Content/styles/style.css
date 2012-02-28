@@ -79,3 +79,40 @@ label.error {
 	color: #FF6633;
 	display: none;
 }
+
+.comtorLogo {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
+.tagline {
+	text-align: center;
+	font-size: small;
+	color: #9C9C9C
+}
+
+.footer {
+	font-size: small;
+	text-align: center;
+}
+
+.section {
+	margin-left: 150px;
+	font-weight: bold;
+	font-size: large;
+}
+
+.faqList {
+	margin-left: 150px;
+	margin-right: 150px;
+}
+
+dd {
+	margin-bottom: 20px;
+}
+
+dt {
+	font-style: italic;
+	font-size: 1.2em;
+}

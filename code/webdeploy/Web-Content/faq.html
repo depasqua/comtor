@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>/** COMTOR **/</title>
+		<link rel="stylesheet" type="text/css" href="styles/style.css" media="screen"/>
+
+		<script type="text/javascript">
+		
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-1641868-7']);
+		  _gaq.push(['_trackPageview']);
+		
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+		
+		</script>
+	</head>
+
+	<body>
+		<img class="comtorLogo" width="320" src="imgs/comtorLogo.png" alt="COMTOR logo"/><br/>
+
+		<span class="section">Frequently Asked Questions (FAQ)</span>
+		<dl class="faqList">
+			<dt>Who is COMTOR for?</dt>
+				<dd>COMTOR is provided as a free service in the hopes that it will benefit the
+					educational community. COMTOR is provided for non-commercial use. If your
+					requirements are beyond our intended use cases, please contact us regarding your
+					interests. The COMTOR service is monitored for its use and if necessary we will
+					curtail non-educational access and initiate a usage discussion.</dd>
+		
+			<dt>Who sponsors COMTOR?</dt>
+				<dd>COMTOR's development has been funded by The College of New Jersey's (TCNJ)
+				Information Technology mini grants program, the 
+				<a href="http://cra-w.org/ArticleDetails/tabid/77/ArticleID/51/Collaborative-Research-Experience-for-Undergraduates-CREU.aspx">
+				CRA's CREU</a> program, and the <a href="http://nsf.gov/">
+				National Science Foundation</a>.</dd>
+				
+			<dt>Where is COMTOR running?</dt>
+				<dd>Our system for local research experimentation is housed on the TCNJ campus.
+				This cloud-based version is running on <a href="http://aws.amazon.com">
+				Amazon Web Services</a>.</dd>
+				
+			<dt>What information do you collect?</dt>
+				<dd>When you use the COMTOR system (this cloud-based interface), we store:
+					<ul>
+					<li>your email address - so that we may later determine how many times you possibly
+					used our system</li>
+					<li>the date and time of your upload - so that we may later determine how
+					frequently you used our system</li>
+					<li>your IP address - so that we may later determine where in the world you
+					used our system</li>
+					<li>the URL of your report - so that we can debug your reports, if needed
+					analyze the system responsiveness, and anonymously aggregate our analysis</li>
+					</ul>
+				We do not store your source code. Don't believe us? You can see exactly 
+				<a href="http://comtor.git.sourceforge.net/git/gitweb.cgi?p=comtor/comtor;a=blob;f=code/src/org/comtor/cloud/AWSServices.java;hb=HEAD">
+				where we execute the call</a> to the Amazon SDB service to store our reports and
+				what we store. Really. Look for the method named <tt>storeCloudUse</tt>.
+				</dd>
+				
+			<dt>Will you sell the data you collect?</dt>
+				<dd>No.</dd>
+				
+			<dt>Will you release the data you collect?</dt>
+				<dd>We will only release the anonymized, aggregated usage statistics in our
+				research papers and to reports to our sponsors, like the National Science
+				Foundation.</dd>
+				
+			<dt>Where can I find more information about this project?</dt>
+				<dd>The formal home for the COMTOR project can be found at <a href="http://www.comtor.org">
+				www.comtor.org</a>.</dd>
+				
+			<dt>I have questions. Whom should I email?</dt>
+				<dd>You can reach the COMTOR Principal Investigator (PI) Pete DePasquale at 
+				<a href="mailto:comtor@tcnj.edu">comtor@tcnj.edu</a>.</dd>
+
+			<dt>Who else is working on COMTOR?</dt>
+				<dd>There are four principals involved in the project at this time: Pete DePasquale,
+				Dr. Miroslav Martinovic (CO-PI, Computer Science, TCNJ), Dr. Michael Locasto 
+				(consultant, Computer Science Department, University of Calgary), and Dr. Lisa
+				Kaczmarczyk (Independent Assessment Consultant). A bevy of TCNJ students have
+				additionally contributed to the overall COMTOR project.</dd>
+				
+			<dt>This is cool. What else are you up to?</dt>
+				<dd>We have plans for additional tools and capabilities. While we do talk
+				about some of our direction on our <a href="http://www.comtor.org">main web site 
+				and wiki</a>, we are not yet ready to announce anything else at this time.</dd>
+				
+			<dt>I would like to get involved. How can I do so?</dt>
+				<dd>Our faculty community is centering around our <a href="http://gplus.comtor.org">
+				Google Plus presence</a>. Developers can get involved by talking with the PI (see
+				above) and/or visiting our <a href="http://www.sourceforge.net/projects/comtor">
+				SourceForge.net presence</a>.</dd>
+				
+			<dt>When was the FAQ last updated?</dt>
+				<dd>This FAQ was last updated on February 20th, 2012.</dd>
+				
+		</dl>
+	<span class="footer" style="margin-left: 120px">Return to the <a href="index.html">home page</a>.</span>
+	</body>
+</html>
