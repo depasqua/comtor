@@ -23,7 +23,7 @@
 <body>
 
 <div id="header_bar">
-	<img id="logo" alt="COMTOR Logo" src="img/logo.gif" />
+	<img id="logo" alt="COMTOR Logo" src="img/logo2.png" />
 	{if isset($courses) && count($courses) > 0}
 		<div class="course_select">
 		{if $smarty.session.acctType == 'student'}
@@ -188,7 +188,7 @@ function getCookie(name)
 	<a href="about.php">About Comment Mentor</a><br/>
 	<small>Version 2.0.3 - 01/24/12 - Copyright &copy; {$currentYear} TCNJ</small>
 	<div class="tcnj_logo">
-		<a href="http://www.tcnj.edu"><img src="img/tcnj_logo-small.gif" alt="TCNJ Logo" border="0" /></a>
+		<a href="http://www.tcnj.edu"><img src="img/tcnjLogo.png" height="35" alt="TCNJ Logo" border="0" /></a>
 	</div>
 </div>
 
