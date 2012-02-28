@@ -35,7 +35,7 @@ function file_extension($filename) {
 }
 
 $ext = file_extension($fileName);
-if ($ext != jar)
+if ($ext != "jar")
 	$message = "You need to upload a jar file (with a .jar file extension)!<br/>";
 
 // Check that there is an assignment set
