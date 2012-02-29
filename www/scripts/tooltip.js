@@ -24,10 +24,10 @@ function toolTipSetup() {
 	
 	height = $(window).height() / 2;
 	
-	$('.help_popup').css('height', height);
-	$('.viewport').css('height', (height-40));
+	$('.help_popup').css('height', height+80);
+	$('.viewport').css('height', (height+50));
 	
-	$('.help_button').css('top', (height-12));
+	$('.help_button').css('top', 65);
 	$('.help_popup').css('top', (height/2));
 }
 
