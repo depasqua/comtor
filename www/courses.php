@@ -116,8 +116,8 @@ $breadcrumbs[] = array('text' => 'Courses', 'href' => 'courses.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
 // Assign tooltips
-// $tooltips = file_get_contents('tooltips/test.html');
-// $tpl->assign('tooltips', $tooltips);
+$tooltips = file_get_contents('tooltips/courses.html');
+$tpl->assign('tooltips', $tooltips);
 
 // Fetch template
 $tpldata = $tpl->fetch("course_manage_all.tpl");

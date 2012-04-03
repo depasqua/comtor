@@ -156,8 +156,8 @@ $breadcrumbs[] = array('text' => 'E-Mail', 'href' => 'course_email.php');
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
 // Assign tooltips
-// $tooltips = file_get_contents('tooltips/test.html');
-// $tpl->assign('tooltips', $tooltips);
+$tooltips = file_get_contents('tooltips/courseEmail.html');
+$tpl->assign('tooltips', $tooltips);
 
 // Fetch template
 $tpldata = $tpl->fetch('email.tpl');

@@ -95,8 +95,8 @@ $breadcrumbs[] = array('text' => $text, 'href' => 'dropbox.php?courseId='.$cours
 $tpl->assign('breadcrumbs', $breadcrumbs);
 
 // Assign tooltips
-// $tooltips = file_get_contents('tooltips/test.html');
-// $tpl->assign('tooltips', $tooltips);
+$tooltips = file_get_contents('tooltips/dropbox.html');
+$tpl->assign('tooltips', $tooltips);
 
 // Fetch template
 $tpldata = $tpl->fetch('dropbox.tpl');
