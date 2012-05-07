@@ -65,7 +65,7 @@ public class CheckAuthor implements ComtorDoclet
 		long startTime = new Date().getTime();
 
 		for (ClassDoc classdoc : rootDoc.classes()) {
-		        msgIndex = 0.0f;
+		        msgIndex = 0.001f;
 			// Format the ID number of this class, for the report
 			prop.setProperty(formatter.format(classID), 
 					 "Class: " + classdoc.qualifiedName());
