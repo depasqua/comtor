@@ -45,7 +45,8 @@ public class CheckAuthor implements ComtorDoclet
 	}
 
 	/**
-	 * Examine each class, and determines if an '@author' tag is present for the class.
+	 * Examine each class, and determines if an '@author' tag is
+	 * present for the class.
 	 *
 	 * @param rootDoc  the root of the documentation tree
 	 * @return Properties list containing the result set
@@ -53,8 +54,10 @@ public class CheckAuthor implements ComtorDoclet
 	public Properties analyze(RootDoc rootDoc) {
 		// A counter for the classes, used in the properties list
 		int classID = 0;
-		DecimalFormat formatter = new DecimalFormat("##0000.000");
-			
+		DecimalFormat formatter = new DecimalFormat("##0000.000");	
+		Tag [] tags = new Tag[0];
+		float msgIndex = 0.0f;
+		
 		prop.setProperty("title", "Check Author");
 		prop.setProperty(formatter.format(-1), "Preamble notes go here.");
 
@@ -62,9 +65,31 @@ public class CheckAuthor implements ComtorDoclet
 		long startTime = new Date().getTime();
 
 		for (ClassDoc classdoc : rootDoc.classes()) {
-			
+		        msgIndex = 0.0f;
 			// Format the ID number of this class, for the report
-			prop.setProperty(formatter.format(classID), "Class: " + classdoc.qualifiedName());
+			prop.setProperty(formatter.format(classID), 
+					 "Class: " + classdoc.qualifiedName());
+			tags = classdoc.tags("@author");
+
+			if (tags.length > 0)
+			{
+			    // Search for at least one occurence of the specified tag
+			    // that also contains non-blank corresponding text
+			    for (int index = 0; index < tags.length; index++)
+			    {
+				if (tags[index].text().equals(""))
+				{
+				    prop.setProperty(formatter.format(classID+msgIndex), 
+						     "empty @author tag found in class.");
+				    msgIndex += 0.001;
+				}
+			    }
+			}else{
+			    //report no @author tags
+			    prop.setProperty(formatter.format(classID+msgIndex), 
+					     "no @author tags found in class.");
+			    msgIndex += 0.001;
+			}
 
 			classID++;
 		}
