@@ -91,12 +91,13 @@ public class PercentTreeGV
 	long startTime = new Date().getTime();
 	
 	try{
-	    //open the file; we will write to it later
 	    f = new File(filename);
 	    fout = new PrintWriter(new BufferedWriter(new FileWriter(f)));
-	    fout.print("digraph COMTOR {\n");
+	    fout.print("strict digraph COMTOR {\n");
 	    fout.print("ranksep=3;\n");
 	    fout.print("ratio=auto;\n");
+	    //fout.print("bgcolor=black;\n");
+	    fout.print("root=\""+GVNode.DEFAULT_ROOT_NODE_NAME+"\";\n");
 	    
 	}catch(IOException ioex){
 	    prop.setProperty("I/O Exception: error opening .dot output file",
@@ -110,28 +111,59 @@ public class PercentTreeGV
 	    GVNode rootNode = new GVNode();
 	    rootNode.name = GVNode.DEFAULT_ROOT_NODE_NAME;
 	    rootNode.commented = false;
+	    rootNode.shape = "oval";
 	    m_nodes.put(rootNode.name,
 			rootNode);
 		    
 	    classes = rootDoc.classes();
+	    
 	    for (int i = 0; i < classes.length; ++i) 
 	    {
 		ClassDoc cd = classes[i];
-		
-		addMembers(cd.fields());
+		GVNode classNode = new GVNode();
+		String s = cd.getRawCommentText();
+		String qualifiedEdge = new String(cd.qualifiedName());
+
+		classNode.name = cd.name();
+		classNode.commented = (s!=null && !s.equals("")) ? true : false;
+		classNode.shape = "ellipse";
+		m_nodes.put(cd.qualifiedName(),
+			    classNode);
+
+		qualifiedEdge = qualifiedEdge.replace((CharSequence)".",
+						      (CharSequence)"\"->\"");
+		m_edges.put(cd.qualifiedName(),
+			    qualifiedEdge);
+
+		/* "manually" put in an edge from the rootNode to this FQCN */
+		m_edges.put(rootNode.name
+			    +"->"
+			    +cd.qualifiedName(),
+			    /* no leading quote needed here, as output routine puts it in */
+			    rootNode.name
+			    +"\""
+			    +"->"
+			    +"\""
+			    +qualifiedEdge);
+
+		//if this is a constructor, then we need to duplicate the name within the edge
+		addMembers(cd.constructors(), "hexagon", true);
 		addEdges(cd.qualifiedName(),
 			 cd.name(),
-			 cd.fields());
-		
-		addMembers(cd.constructors());
+			 cd.constructors(),
+			 true);
+
+		addMembers(cd.fields(), "box", false);
 		addEdges(cd.qualifiedName(),
 			 cd.name(),
-			 cd.constructors());
-		
-		addMembers(cd.methods());
+			 cd.fields(),
+			 false);
+				
+		addMembers(cd.methods(), "circle", true);
 		addEdges(cd.qualifiedName(),
 			 cd.name(),
-			 cd.methods());
+			 cd.methods(),
+			 true);
 		
 		classID++;
 	    }
@@ -154,7 +186,7 @@ public class PercentTreeGV
 	// Capture the ending time, just after the termination of the analysis
 	long endTime = new Date().getTime();
 	
-	prop.setProperty("output filename", filename);
+	prop.setProperty("output filename", f.getAbsolutePath());
 	prop.setProperty("metric1", "A total of " + classID + " class(es) were processed.");
 	prop.setProperty("score", "" + getGrade());
 	prop.setProperty("start time", Long.toString(startTime));
@@ -168,10 +200,14 @@ public class PercentTreeGV
     /**
      * Add edges to m_edges of the form:
      * &lt;\""package1.package2.class1" -&gt; "package1.package2.class1.field1";\"&gt;, "class1 -> field1"
+     *
+     * @param name - the brief name of the parent class
+     * @param qualfix - the FQCN of the parent class
      */
     private void addEdges(String qualfix, 
 			  String name, 
-			  MemberDoc[] members)
+			  MemberDoc[] members,
+			  boolean isRoutine)
     {
 	//tokenize the prefix down by '.'
 	//see if any new path components are included
@@ -183,25 +219,34 @@ public class PercentTreeGV
 	//3. for new "firsts", add edge "." -> "<newfirst>";
 
 	String dot = ".";
-	String arrow = "->";
+	String arrow = "\"->\"";
 	String qualifiedEdge = "";
+
+	if(null==members)
+	    return;
 
 	for (int i = 0; i<members.length;i++)
 	{
-	    /*
-	    m_edges.put(qualfix
-			+" -> "
-			+members[i].qualifiedName(),
-			name
-			+" -> "
-			+members[i].name()
-			);
-	    */
 	    qualifiedEdge = new String(members[i].qualifiedName());
 	    qualifiedEdge = qualifiedEdge.replace((CharSequence)dot,
 						  (CharSequence)arrow);
-	    m_edges.put(members[i].qualifiedName(),
-			qualifiedEdge);
+	    if(isRoutine)
+	    {
+		ExecutableMemberDoc exmdoc = (ExecutableMemberDoc)members[i];
+
+		if(exmdoc.qualifiedName().equals(qualfix))
+		{
+		    //this is a constructor; it needs a "doubling" of the classname
+		    m_edges.put(exmdoc.qualifiedName()+name+exmdoc.signature(),
+				qualifiedEdge+"\"->\""+name+exmdoc.signature());
+		}else{
+		    m_edges.put(exmdoc.qualifiedName()+exmdoc.signature(),
+				qualifiedEdge+exmdoc.signature());
+		}
+	    }else{
+		m_edges.put(members[i].qualifiedName(),
+			    qualifiedEdge);
+	    }
 	}
 
 	return;
@@ -212,7 +257,9 @@ public class PercentTreeGV
      *
      * @param members
      */
-    private void addMembers(MemberDoc[] members)
+    private void addMembers(MemberDoc[] members, 
+			    String shape, 
+			    boolean isRoutine)
     {
 	GVNode node = null;
 
@@ -220,13 +267,24 @@ public class PercentTreeGV
 	{
 	    node = new GVNode();
 	    node.name = members[i].name();
+	    node.shape = shape;
 	    if( (null!=members[i].getRawCommentText()) &&
 		!members[i].getRawCommentText().equals("") )
 	    {
 		node.commented = true;
+	    }else{
+		node.commented = false;
 	    }
-	    m_nodes.put(members[i].qualifiedName(),
-			node);
+	    if(isRoutine)
+	    {
+		node.name+=((ExecutableMemberDoc)members[i]).signature();
+		m_nodes.put(members[i].qualifiedName()
+			    +((ExecutableMemberDoc)members[i]).signature(),
+			    node);
+	    }else{
+		m_nodes.put(members[i].qualifiedName(),
+			    node);
+	    }
 	}
 	return;
     }
@@ -250,16 +308,16 @@ public class PercentTreeGV
 	{
 	    node = (GVNode)nodes.nextElement();
 	    if(node.commented)
-		fout.print("\""+node.name+"\""+" [ style=\"filled\",color=\"green\" ];\n");
+		fout.print("\""+node.name+"\""+" [ label=\"\",shape=\""+node.shape+"\",style=\"filled\",color=\"green\" ];\n");
 	    else
-		fout.print("\""+node.name+"\""+" [ style=\"filled\",color=\"grey\" ];\n");
+		fout.print("\""+node.name+"\""+" [ label=\"\",shape=\""+node.shape+"\",style=\"filled\",color=\"grey\" ];\n");
 	}	
 
 	//write edges
 	while( edges.hasMoreElements() )
 	{
 	    edge = (String)edges.nextElement();
-	    fout.print(edge+" [ color=\"purple\",arrowhead=\"dot\" ] ;\n");
+	    fout.print("\""+edge+"\""+" [ color=\"black\",arrowhead=\"dot\" ] ;\n");
 	}
 	
     }
@@ -313,9 +371,10 @@ public class PercentTreeGV
 
     private class GVNode
     {
-	public static final String DEFAULT_ROOT_NODE_NAME = ".";
+	public static final String DEFAULT_ROOT_NODE_NAME = "centre";
 	public String name = null;
 	public boolean commented = false;
+	public String shape = "box";
     }
 
     //should really have a private GVProgram class whose toString
