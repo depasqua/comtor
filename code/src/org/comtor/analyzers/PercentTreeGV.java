@@ -30,6 +30,15 @@ import java.text.*;
  * class, or data member.  Each leaf is shaded green if it has a
  * Javadoc comment associated with it and red if not.
  *
+ * This module periodically flushes its in-memory hashtables to the
+ * file so that it doesn't run out of memory by trying to keep all 
+ * the elements of a large code base in memory at once.
+ *
+ * RUNNING NOTES: The output is saved to "comments.dot". You can
+ * create a visual rendering of this data via:
+ * 
+ *  twopi -Tpdf -ograph.pdf comments.dot
+ *
  * @see PercentageMethods
  * @author Michael E. Locasto
  */
@@ -73,7 +82,8 @@ public class PercentTreeGV
      * @param rootDoc  the root of the documentation tree
      * @return Properties list containing the result set
      */
-    public Properties analyze(RootDoc rootDoc) {
+    public Properties analyze(RootDoc rootDoc) 
+    {
 	// A counter for the classes, used in the properties list
 	int classID = 0;
 	DecimalFormat formatter = new DecimalFormat("##0000.000");	
@@ -81,6 +91,8 @@ public class PercentTreeGV
 	PrintWriter fout = null;
 	boolean outputFail = false;
 	//string filename = "comment-density-"+System.currentTimeMillis()+".dot";
+	//purposefully induce namespace collision on output file; many output
+	//files are the equivalent of digital pollution.
 	String filename = "comments.dot";
 	ClassDoc [] classes = null;
 	
@@ -98,7 +110,6 @@ public class PercentTreeGV
 	    fout.print("ratio=auto;\n");
 	    //fout.print("bgcolor=black;\n");
 	    fout.print("root=\""+GVNode.DEFAULT_ROOT_NODE_NAME+"\";\n");
-	    
 	}catch(IOException ioex){
 	    prop.setProperty("I/O Exception: error opening .dot output file",
 			     ioex.getMessage());
@@ -113,65 +124,93 @@ public class PercentTreeGV
 	    rootNode.commented = false;
 	    rootNode.shape = "oval";
 	    m_nodes.put(rootNode.name,
-			rootNode);
-		    
+			rootNode);		    
 	    classes = rootDoc.classes();
-	    
-	    for (int i = 0; i < classes.length; ++i) 
-	    {
-		ClassDoc cd = classes[i];
-		GVNode classNode = new GVNode();
-		String s = cd.getRawCommentText();
-		String qualifiedEdge = new String(cd.qualifiedName());
-
-		classNode.name = cd.name();
-		classNode.commented = (s!=null && !s.equals("")) ? true : false;
-		classNode.shape = "ellipse";
-		m_nodes.put(cd.qualifiedName(),
-			    classNode);
-
-		qualifiedEdge = qualifiedEdge.replace((CharSequence)".",
-						      (CharSequence)"\"->\"");
-		m_edges.put(cd.qualifiedName(),
-			    qualifiedEdge);
-
-		/* "manually" put in an edge from the rootNode to this FQCN */
-		m_edges.put(rootNode.name
-			    +"->"
-			    +cd.qualifiedName(),
-			    /* no leading quote needed here, as output routine puts it in */
-			    rootNode.name
-			    +"\""
-			    +"->"
-			    +"\""
-			    +qualifiedEdge);
-
-		//if this is a constructor, then we need to duplicate the name within the edge
-		addMembers(cd.constructors(), "hexagon", true);
-		addEdges(cd.qualifiedName(),
-			 cd.name(),
-			 cd.constructors(),
-			 true);
-
-		addMembers(cd.fields(), "box", false);
-		addEdges(cd.qualifiedName(),
-			 cd.name(),
-			 cd.fields(),
-			 false);
-				
-		addMembers(cd.methods(), "circle", true);
-		addEdges(cd.qualifiedName(),
-			 cd.name(),
-			 cd.methods(),
-			 true);
-		
-		classID++;
-	    }
-	    
 	    try
 	    {
-		writeDotFile(fout);
-		
+		for (int i = 0; i < classes.length; ++i) 
+		{
+		    int classNamePos = 0;
+		    ClassDoc cd = classes[i];
+		    GVNode classNode = new GVNode();
+		    String s = cd.getRawCommentText();
+		    String qualifiedEdge = new String(cd.qualifiedName());
+		    
+		    //classNode.name = cd.name();
+		    classNode.name = cd.qualifiedName();
+		    classNode.commented = (s!=null && !s.equals("")) ? true : false;
+		    classNode.shape = "ellipse";
+		    m_nodes.put(cd.qualifiedName(),
+				classNode);
+		    
+		    //strip off last component of qualifiedEdge
+		    classNamePos = qualifiedEdge.lastIndexOf("."+cd.name());
+		    if(-1==classNamePos)
+		    {
+			//this is an error; cd.qualifiedName does not contain cd.name()
+			System.err.println("analyze(): error: cd.qualifiedName does not contain cd.name");
+		    }
+		    
+		    //this is "inclusive", so we go one _before_ the period char
+		    qualifiedEdge = qualifiedEdge.substring(0, classNamePos);
+		    
+		    //replace periods with arrows
+		    qualifiedEdge = qualifiedEdge.replace((CharSequence)".",
+							  (CharSequence)"\"->\"");
+		    
+		    //need to replace last element (i.e., classname) with FQCN
+		    //append cd.qualifiedName to qualified edge (with an arrow)
+		    
+		    qualifiedEdge += "\"->\"";
+		    qualifiedEdge += cd.qualifiedName();
+		    
+		    m_edges.put(cd.qualifiedName(),
+				qualifiedEdge);
+		    
+		    /* "manually" put in an edge from the rootNode to this FQCN */
+		    m_edges.put(rootNode.name
+				+"->"
+				+cd.qualifiedName(),
+				/* no leading quote needed here, as output routine puts it in */
+				rootNode.name
+				+"\""
+				+"->"
+				+"\""
+				+qualifiedEdge);
+		    
+		    //if this is a constructor, then we need to duplicate the name within the edge
+		    addMembers(cd.constructors(), "hexagon", true);
+		    writeDotFile(fout);
+
+		    addEdges(cd.qualifiedName(),
+			     cd.name(),
+			     cd.constructors(),
+			     true);
+		    writeDotFile(fout);
+		    flushHash();
+		    
+		    //need to replace parent class name element with FQCN
+		    addMembers(cd.fields(), "box", false);
+		    writeDotFile(fout);
+		    addEdges(cd.qualifiedName(),
+			     cd.name(),
+			     cd.fields(),
+			     false);
+		    writeDotFile(fout);
+		    flushHash();
+		    
+		    addMembers(cd.methods(), "circle", true);
+		    writeDotFile(fout);
+		    addEdges(cd.qualifiedName(),
+			     cd.name(),
+			     cd.methods(),
+			     true);
+		    writeDotFile(fout);
+		    flushHash();		    
+
+		    classID++;
+		}
+	      
 		fout.print("}\n");
 		fout.close();
 	    }catch(IOException ioex1){
@@ -197,6 +236,14 @@ public class PercentTreeGV
 	return prop;
     }
     
+    /** Empty m_nodes and m_edges */
+    private void flushHash()
+    {
+	//nodex
+	m_nodes.clear();
+	m_edges.clear();
+    }
+
     /**
      * Add edges to m_edges of the form:
      * &lt;\""package1.package2.class1" -&gt; "package1.package2.class1.field1";\"&gt;, "class1 -> field1"
@@ -209,6 +256,7 @@ public class PercentTreeGV
 			  MemberDoc[] members,
 			  boolean isRoutine)
     {
+	//FALSE START 1:
 	//tokenize the prefix down by '.'
 	//see if any new path components are included
 	//if so, insert into m_edges before handling the
@@ -221,15 +269,32 @@ public class PercentTreeGV
 	String dot = ".";
 	String arrow = "\"->\"";
 	String qualifiedEdge = "";
+	int classNamePos = -1;
 
 	if(null==members)
 	    return;
 
 	for (int i = 0; i<members.length;i++)
 	{
-	    qualifiedEdge = new String(members[i].qualifiedName());
+	    //don't do this: qualifiedEdge = new String(members[i].qualifiedName());
+	    //approach: need to chop off last component of qualifiedName from qualifiedEdge
+	    //before appending members[i].qualifiedName()
+	    qualifiedEdge = new String(qualfix);
+	    classNamePos = qualifiedEdge.lastIndexOf("."+name);
+
+	    if (-1==classNamePos )
+	    {
+		System.err.println("addEdges(): error: class name not included in FQCN");
+	    }
+	    //chop off classname
+	    qualifiedEdge = qualifiedEdge.substring(0, classNamePos); 
+
+	    //replace dots with arrows
 	    qualifiedEdge = qualifiedEdge.replace((CharSequence)dot,
 						  (CharSequence)arrow);
+	    qualifiedEdge += "\"->\"";
+	    qualifiedEdge += qualfix; //"full" name of class
+
 	    if(isRoutine)
 	    {
 		ExecutableMemberDoc exmdoc = (ExecutableMemberDoc)members[i];
@@ -237,25 +302,35 @@ public class PercentTreeGV
 		if(exmdoc.qualifiedName().equals(qualfix))
 		{
 		    //this is a constructor; it needs a "doubling" of the classname
-		    m_edges.put(exmdoc.qualifiedName()+name+exmdoc.signature(),
-				qualifiedEdge+"\"->\""+name+exmdoc.signature());
+		    //fix: need to insert Nodes to m_nodes that match these generated names [DONE];
+		    //also need to pay attention to the qualfix+qualfix+qualfix style
+		    m_edges.put(exmdoc.qualifiedName()+qualfix+exmdoc.signature(),
+				//qualifiedEdge+"\"->\""+qualfix+"\"->\""+qualfix+exmdoc.signature());
+				qualifiedEdge+"\"->\""+qualfix+exmdoc.signature());
 		}else{
 		    m_edges.put(exmdoc.qualifiedName()+exmdoc.signature(),
-				qualifiedEdge+exmdoc.signature());
+				qualifiedEdge+"\"->\""+exmdoc.qualifiedName()+exmdoc.signature());
 		}
 	    }else{
 		m_edges.put(members[i].qualifiedName(),
-			    qualifiedEdge);
+			    qualifiedEdge
+			    +"\"->\""
+			    +members[i].qualifiedName());
 	    }
 	}
-
 	return;
     }
 
     /**
      * Accept all elements of the code, and enter a node into the hashtable for it.
      *
-     * @param members
+     * Caller should purge the hashtable (write output to a file and
+     * then call <code>m_nodes.clear()</code> ) after the method completes.
+     *
+     * @param members - an array of javadoc-produced class members to iterate over
+     *                  an have their names added to <code>m_nodes</code>
+     * @param shape - a string that is eventually passed to graphviz
+     * @param isRoutine - true if this member is a method or constructor
      */
     private void addMembers(MemberDoc[] members, 
 			    String shape, 
@@ -266,7 +341,8 @@ public class PercentTreeGV
 	for (int i = 0; i < members.length; ++i) 
 	{
 	    node = new GVNode();
-	    node.name = members[i].name();
+	    //node.name = members[i].name();
+	    node.name = members[i].qualifiedName();
 	    node.shape = shape;
 	    if( (null!=members[i].getRawCommentText()) &&
 		!members[i].getRawCommentText().equals("") )
@@ -290,10 +366,12 @@ public class PercentTreeGV
     }
 
     /**
-     * Take the accumulated hashtable and output its contents as
+     * Take the accumulated hashtables and output their contents as
      * a graphviz DOT file.
      * 
-     * @param f the handle to the .dot file
+     * @param fout the handle to the .dot file; assume this is already
+     * open and available for writing. Caller assumes responsibility for
+     * flushing and closing.
      */
     private void writeDotFile(PrintWriter fout)
 	throws IOException
@@ -319,7 +397,7 @@ public class PercentTreeGV
 	    edge = (String)edges.nextElement();
 	    fout.print("\""+edge+"\""+" [ color=\"black\",arrowhead=\"dot\" ] ;\n");
 	}
-	
+	return;
     }
 
 	/*
@@ -369,6 +447,17 @@ public class PercentTreeGV
 	return "PercentTreeGV uses graphviz format to record the density of comments in a codebase.";
     }
 
+    /**
+     * Represents a node; holds meta-data for writing to the .dot
+     * file, such as the shape that graphviz should draw for this
+     * node. Each node represents a program element like a class,
+     * constructor, data member (i.e., field), or method.
+     *
+     * In a perfect world, we should really employ a GVProgram library
+     * whose toString creates the GV program, or has facilities for
+     * gradually constructing a .dot file via a programmatic interface
+     * (i.e., hiearchy of objects) to an edgemap or adjacency matrix.
+     */
     private class GVNode
     {
 	public static final String DEFAULT_ROOT_NODE_NAME = "centre";
@@ -377,7 +466,5 @@ public class PercentTreeGV
 	public String shape = "box";
     }
 
-    //should really have a private GVProgram class whose toString
-    //creates the GV program.
 
 }
