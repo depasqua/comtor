@@ -19,10 +19,9 @@ package org.comtor.drivers;
 
 import org.comtor.analyzers.*;
 import com.sun.javadoc.*;
-import java.io.*;
 import java.sql.*;
-import java.text.*;
 import java.util.*;
+import org.comtor.reporting.*;
 
 /**
  * The ComtorDriver class is a tool to run COMTOR doclets (analysis modules)
@@ -38,8 +37,8 @@ public class ComtorStandAlone extends Doclet {
 	private static Mode currentMode = Mode.CLI;
 	
 	/**
-	* Accepts a property list from the called doclets and puts them
-	* in a vector. It then passes the vector to the report generator.
+	* Accepts a rootDoc object (the parsed Java code tree) and calls the 
+	* analysis modules in parallel.
 	*
 	* @param	rootDoc the root of the documentation tree
 	* @return	boolean true if a successful execution, false otherwise
@@ -52,8 +51,10 @@ public class ComtorStandAlone extends Doclet {
 		String options[][] = rootDoc.options();
 		boolean done = false;
 		
-		try {			
-			Vector<Properties> resultsVector = new Vector<Properties>(); 
+		try {
+			Vector<String> jsonReportVector = new Vector<String>();
+
+//			Vector<Properties> resultsVector = new Vector<Properties>(); 
 			Vector<DocletThread> threads = new Vector<DocletThread>();
 			Properties docletSet = Comtor.getDocletList();
 
@@ -72,11 +73,11 @@ public class ComtorStandAlone extends Doclet {
 					docThrd.start();
 					threads.add(docThrd);
 				} catch (ClassNotFoundException e) {
-					System.out.println("Class not found: " + e);
+					System.err.println("Class not found: " + e);
 				} catch (ExceptionInInitializerError e) {
-					System.out.println(e);
+					System.err.println(e);
 				} catch (LinkageError e) {
-					System.out.println(e);
+					System.err.println(e);
 				}
 			}
 
@@ -85,12 +86,13 @@ public class ComtorStandAlone extends Doclet {
 				DocletThread docThrd = threads.get(i);
 				docThrd.join();
 	
-				if (docThrd.getProperties() != null)
-					// Add the resulting property list to the vector
-					resultsVector.addElement(docThrd.getProperties());
+				if (docThrd.getJSONReport() != null)
+					// Fetch the JSON report for this analyzer
+					jsonReportVector.addElement(docThrd.getJSONReport());
 			}
 				
-			generateOutputFile(resultsVector);
+			TextReporter reporter = new TextReporter();
+			reporter.generateTextReportFile(jsonReportVector);
 		}
 
 		// Exceptions from above.  This should be less catch-all and integrated above better.
@@ -106,51 +108,24 @@ public class ComtorStandAlone extends Doclet {
 		return true;
 	}
 
-	private static void generateOutputFile(Vector<Properties> resultsVector) {
 	
-		// Set the path for the location of the report output file.
-		String path = Comtor.getCodeDir() + System.getProperty("file.separator") +
-			"comtorReport.txt";
-		try {
-
-			// Check to see the output file currently exists, if so, delete the old file to
-			// replace it with a new one. We should improve this to use a date/time stamp in
-			// the file name so that deletion is redundant.
-			File outputFile = new File(path);
-			if (outputFile.exists())
-				outputFile.delete();
-
-			// Create a new output report file, and prepare it for writing
-			PrintWriter outFilePW = new PrintWriter(new BufferedWriter(new FileWriter(path)));
-
-			// Write the header of the debug file
-			outFilePW.println("COMTOR Execution Report");
-			outFilePW.println((new java.util.Date()).toString());
-			outFilePW.println("==========================================");
-			
-			// For each vector element, each of which is a properties list from the reports created
- 			for (Properties results : resultsVector) {
-				// Fetch the keys, add them to an array, sort and then print results
-				Enumeration keyList = results.keys();
-				String keyArray[] = new String[results.size()];
-				int index = 0;
-				for (Enumeration e = keyList; e.hasMoreElements(); ) {
-					String key = (String) e.nextElement();
-					keyArray[index++] = key;
-				}
-				Arrays.sort(keyArray);
-				
-				for (String key : keyArray)
-					outFilePW.println(key + '\t' + results.getProperty(key));
-
-				outFilePW.println("------------------------------------------------------");
-			}
-			outFilePW.close();
-		}
-		catch (IOException e) {
-			System.out.println(e);
-			System.out.println("Path: " + path);
-		}
+	/**
+	 * Returns the current mode of operation
+	 *
+	 * @return the current mode of operation as an enum value
+	 */
+	public static Mode getMode() {
+		return currentMode;
+	}
+	
+	/**
+	 * Sets the current mode of operation
+	 * 
+	 * @param newMode a enum value of the current mode
+	 * @see org.comtor.analyzers.Mode
+	 */
+	public static void setMode(Mode newMode) {
+		currentMode = newMode;
 	}
 
 	/**
@@ -213,24 +188,14 @@ public class ComtorStandAlone extends Doclet {
 		public Properties getProperties() {
 			return list;
 		}
-	}
-	
-	/**
-	 * Returns the current mode of operation
-	 *
-	 * @return the current mode of operation as an enum value
-	 */
-	public static Mode getMode() {
-		return currentMode;
-	}
-	
-	/**
-	 * Sets the current mode of operation
-	 * 
-	 * @param newMode a enum value of the current mode
-	 * @see org.comtor.analyzers.Mode
-	 */
-	public static void setMode(Mode newMode) {
-		currentMode = newMode;
+
+		/**
+		 * Returns the analyzer's report as a JSON stirng
+		 *
+		 * @return the analyzer's analysis report
+		 */
+		public String getJSONReport() {
+			return doclet.getJSONReport();
+		}
 	}
 }
