@@ -29,8 +29,7 @@ import java.text.*;
  * uses the @control_flow tag
  *
  */
-public class ControlFlow implements ComtorDoclet
-{
+public class ControlFlow implements ComtorDoclet {
 	private Properties prop = new Properties();
 	private HashMap<String, Float> gradeBreakdown =
 		new HashMap<String, Float>();
@@ -516,5 +515,13 @@ public void setGradingBreakdown(String sectionName, float maxGrade)
         else 
             return ""; 
     }
-}
 
+	/**
+	 * Returns the string representation of this module's report (JSON format)
+	 *
+	 * @return a string value containing the JSON report
+	 */
+	public String getJSONReport() {
+		return null;
+	}
+}
