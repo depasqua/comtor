@@ -798,4 +798,13 @@ public class CheckForTags implements ComtorDoclet
 
 		return returnValue;
 	}
+
+	/**
+	 * Returns the string representation of this module's report (JSON format)
+	 *
+	 * @return a string value containing the JSON report
+	 */
+	public String getJSONReport() {
+		return null;
+	}
 }

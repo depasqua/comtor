@@ -33,8 +33,7 @@ import java.text.*;
  * @author Peter DePasquale
  * @link http://en.wikipedia.org/wiki/Flesch-Kincaid_readability_test
  */
- public class ReadingLevel implements ComtorDoclet
-{
+ public class ReadingLevel implements ComtorDoclet {
 	private Properties prop = new Properties();
 
 	// A counter for the classes, used in the properties list
@@ -60,7 +59,6 @@ import java.text.*;
 		// Extract the list of classes to analyze, and process them.
 		ClassDoc[] classes = rootDoc.classes();
 		for (ClassDoc classdoc : classes) {
-   			classID++;
 			prop.setProperty(fmt.format(classID), "Class: " + classdoc.qualifiedName());
 			String classComments = processClass(classdoc);
 			allComments += classComments;
@@ -80,6 +78,7 @@ import java.text.*;
 
 			prop.setProperty(fmt.format(classID+.004), "Flesch-Kincaid reading level score: " + 
 				reportFmt.format(result));
+   			classID++;
 		}
 
 		// Calculate the F-K score for all comments
@@ -279,5 +278,14 @@ import java.text.*;
 	 */
 	public String toString() {
 		return "Reading Level";
+	}
+
+	/**
+	 * Returns the string representation of this module's report (JSON format)
+	 *
+	 * @return a string value containing the JSON report
+	 */
+	public String getJSONReport() {
+		return null;
 	}
 }

@@ -212,4 +212,13 @@ public class BasicInfo implements ComtorDoclet {
 	public String toString() {
 		return "BasicInfo";
 	}
+
+	/**
+	 * Returns the string representation of this module's report (JSON format)
+	 *
+	 * @return a string value containing the JSON report
+	 */
+	public String getJSONReport() {
+		return null;
+	}
 }

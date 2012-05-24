@@ -8,8 +8,7 @@ import java.util.*;
 import java.text.*;
 import java.io.*;
 
-public class Interactions implements ComtorDoclet
-{
+public class Interactions implements ComtorDoclet {
   // Properties for the doclet run
   Properties prop = new Properties();
 
@@ -186,5 +185,14 @@ public class Interactions implements ComtorDoclet
   public void setConfigProperties(Properties props)
   {
     // Don't need them
+  }
+
+  /**
+   * Returns the string representation of this module's report (JSON format)
+   *
+   * @return a string value containing the JSON report
+   */
+  public String getJSONReport() {
+    return null;
   }
 }

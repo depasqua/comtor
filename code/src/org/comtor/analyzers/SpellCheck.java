@@ -51,7 +51,7 @@ public final class SpellCheck implements ComtorDoclet {
 	private HashSet<String> dictionary = new HashSet<String>();
 
 	// A counter for the classes, used in the properties list
-	private int classID = 0;
+	private int classID = -1;
 
 	// A formatter for the report
 	private DecimalFormat formatter = new DecimalFormat("##0000.000");
@@ -484,5 +484,14 @@ public final class SpellCheck implements ComtorDoclet {
 	 */
 	public String toString() {
 		return "SpellCheck";
+	}
+
+	/**
+	 * Returns the string representation of this module's report (JSON format)
+	 *
+	 * @return a string value containing the JSON report
+	 */
+	public String getJSONReport() {
+		return null;
 	}
 }

@@ -18,7 +18,6 @@
 *  59 Temple Place, Suite 330
 *  Boston, MA  02111-1307  USA
 *
-* $Id:$ PreAndPostCheck.java,v 1.0 2009/03/25 09:08:00 radanne Exp $
 **************************************************************************/
 
 package org.comtor.analyzers;
@@ -36,8 +35,7 @@ import java.text.*;
 *
 * @author Ruth Dannenfelser
 ***********************************************************************/
-public class PreAndPostCheck implements ComtorDoclet
-{
+public class PreAndPostCheck implements ComtorDoclet {
 	private Properties prop = new Properties();
  	private HashMap<String, Float> gradeBreakdown = new HashMap<String, Float>();
  	private HashMap<String, Integer> possibleScore = new HashMap<String, Integer>();
@@ -415,4 +413,13 @@ public class PreAndPostCheck implements ComtorDoclet
 	 {
 		return JavaExpressionTester.checkExpression(commentText);
 	 }
+
+	/**
+	 * Returns the string representation of this module's report (JSON format)
+	 *
+	 * @return a string value containing the JSON report
+	 */
+	public String getJSONReport() {
+		return null;
+	}
 }
