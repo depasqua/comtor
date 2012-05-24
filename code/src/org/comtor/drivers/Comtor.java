@@ -79,10 +79,6 @@ public class Comtor {
 		// Find packages in the specified dir and add them to the options vector.
 		System.out.println("Found the following packages:");
 		LinkedList<String> packageList = findPackages(codeDir);
-
-		// Add the list of packages to the options list being sent to Javadoc
-		for (String pkg : packageList)
-			jdocsoptions.add(pkg);
 		
 		// Add the -private option to the javadoc parameter list, ensuring that ALL classes
 		// and members are processed.
@@ -91,14 +87,20 @@ public class Comtor {
 		jdocsoptions.add("-sourcepath");
 		jdocsoptions.add(codeDir);
 
+		// Add the list of packages to the options list being sent to Javadoc
+		for (String pkg : packageList)
+			jdocsoptions.add(pkg);
+
 		// Process the options list for preparation in handing it to Javadoc
+		System.out.println("\njavadoc options: ");
+
 		String[] optionslist = new String[jdocsoptions.size()];
 		int index = 0;
-		System.out.println("\njavadoc options: ");
 		for (String option : jdocsoptions) {
 			optionslist[index] = jdocsoptions.elementAt(index);
-			System.out.println("\t" + optionslist[index++]);
+			System.out.print(" " + optionslist[index++]);
 		}
+		System.out.println();
 
 		// Execute the javadoc processor handing it a String name of the application (for error
 		// output), the name of the doclet to execute (our stand alone version of the master doclet
@@ -285,11 +287,10 @@ public class Comtor {
 	 */
 	private static void loadDocletList() {
 		try {
-			File docletListFile = new File (codeDir + System.getProperty("file.separator") +
-				"docletList.properties");
+			File docletListFile = new File ("docletList.properties");
 			if (docletListFile.exists()) {
 				docPropList.load(new FileInputStream(docletListFile));
-					
+
 			} else {
 				System.err.println("A 'docletList.properties' file must exist, providing the fully " +
 					"qualified class names of the doclets to execute.\nFor example, " +
