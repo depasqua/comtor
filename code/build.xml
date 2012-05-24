@@ -110,6 +110,7 @@
 				<exclude name="org/comtor/analyzers/GeneralResources/*.java"/>
 				<exclude name="org/comtor/analyzers/InteractionsResources/*.java"/>
 				<exclude name="org/comtor/incomplete/*.java"/>
+				<exclude name="org/json/*.java"/>
 			</fileset>
 		</jar>
 	</target>
