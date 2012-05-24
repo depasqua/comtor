@@ -29,8 +29,7 @@ import java.text.*;
  * @author Joe Brigandi
  * @author Peter DePasquale
  */
-public class PercentageMethods implements ComtorDoclet
-{
+public class PercentageMethods implements ComtorDoclet {
 	private Properties prop = new Properties();
 	private HashMap<String, Float> gradeBreakdown = new HashMap<String, Float>();
 	private int totalMethodsCommented = 0;
@@ -197,5 +196,14 @@ public class PercentageMethods implements ComtorDoclet
 	 */
 	public String toString() {
 		return "PercentageMethods";
+	}
+
+	/**
+	 * Returns the string representation of this module's report (JSON format)
+	 *
+	 * @return a string value containing the JSON report
+	 */
+	public String getJSONReport() {
+		return null;
 	}
 }
