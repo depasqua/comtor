@@ -29,6 +29,7 @@ import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import org.comtor.util.*;
 import org.comtor.drivers.*;
 import org.comtor.analyzers.*;
 
@@ -45,7 +46,6 @@ public class CloudUpload extends HttpServlet {
 	 * This implementation stores the ServletConfig object it receives from the servlet container
 	 * for later use. When overriding this form of the method, call super.init(config).
 	 * 
-
 	 * @param config the ServletConfig object that contains configutation information for this servlet
 	 * @throws ServletException if an exception occurs that interrupts the servlet's normal operation
 	 */
@@ -64,15 +64,16 @@ public class CloudUpload extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String emailAddress = "";
+		String requesterIPAddress = request.getRemoteAddr();
 		PrintWriter out = response.getWriter();
 		response.setContentType("text/html");
 
 		// Get Session ID
 		HttpSession session = request.getSession();
-		String session_id = session.getId();
+		String sessionID = session.getId();
 
 		// Create Directory Based on Unique Session ID
-		File session_fileDir = new File(destinationDir + java.io.File.separator + session_id);
+		File session_fileDir = new File(destinationDir + java.io.File.separator + sessionID);
 		session_fileDir.mkdir();
 
 		// Set the size threshold (1 MB), above which content will be stored on disk.
@@ -83,34 +84,47 @@ public class CloudUpload extends HttpServlet {
 		fileItemFactory.setRepository(tmpDir);
 		ServletFileUpload uploadHandler = new ServletFileUpload(fileItemFactory);
 		String pathToFile = new String();
+
 		try {
-			// Handle FORM Request from user upload
+			// Obtain the root path of the servlet, concatenate with destination location
+			pathToFile = getServletContext().getRealPath("/") + "files" +
+						java.io.File.separator + sessionID;
+			String docletFileName = pathToFile + java.io.File.separator + "docletList.properties";
+			BufferedWriter fwrite = new BufferedWriter(new FileWriter(new File(docletFileName)));
+			int docletNum = 1;
+
+			// Handle HTTP form request data
 			Iterator itr = uploadHandler.parseRequest(request).iterator();
 			while (itr.hasNext()) {
 				FileItem item = (FileItem) itr.next();
 
-				if (item.isFormField() && item.getFieldName().equals("email")) {
-					emailAddress = new String(item.get());
-				} 
+				if (item.isFormField()) {
+					if (item.getFieldName().equals("email"))
+						emailAddress = new String(item.get());
+
+					else if (item.getFieldName().equals("module"))
+						fwrite.write("doclet" + docletNum++ + " : " + item.getString() + "\n");
+				}
 				else {
-					// Obtain the root path of the servlet, concatenate with destination location
-					pathToFile = getServletContext().getRealPath("/") + "files" +
-						java.io.File.separator + session_id; 
-					
 					// Obtain the uploaded filename and write the file to the destination location
 					File file = new File(pathToFile + java.io.File.separator + item.getName());
 					item.write(file);
 					
-					// Unjar the uploaded jar file, then start the processing.
-					getContents(file, pathToFile);
-					ComtorStandAlone.setMode(Mode.CLOUD);
-					Comtor.start(pathToFile);
-				}  
+					// Unjar the uploaded jar file
+					getContents(file, pathToFile);				
+				}
 			}
-			// Show the report
+			// Close docletList.properties file
+			fwrite.close();
+
+			// Commence processing
+			ComtorStandAlone.setMode(Mode.CLOUD);
+			Comtor.start(pathToFile);
+
+			// Store the report, shorten the report URL, and email the report to the user
 			try {
 				File reportFile = new File(pathToFile + java.io.File.separator + "comtorReport.txt");
-				String reportURLString = AWSServices.storeReportS3(reportFile, session_id).toString();
+				String reportURLString = AWSServices.storeReportS3(reportFile, sessionID).toString();
 
 				// Rewrite protocol of URL for report to eliminate https (certificate warnings)
 				if (reportURLString.startsWith("https"))
@@ -122,13 +136,45 @@ public class CloudUpload extends HttpServlet {
 
 				String requestURL = request.getRequestURL().toString();
 				String home = requestURL.substring(0, requestURL.lastIndexOf("/"));
+
+				// Record cloud usage
+				GregorianCalendar now = new GregorianCalendar();
+				AWSServices.storeCloudUse(requesterIPAddress, sessionID, reportURLString,
+						emailAddress, now.getTime().toString());
 				
-				// Start of report
-				out.println("<html><head/><body>");
-				out.println("<a href=\"" + home + "\">Return to home</a>&nbsp;&nbsp;");
-				out.println("<a href=\"" + reportURLString + "\">Report URL</a><br/><hr/>");
-				out.println("</body></html>");
-				
+				// Set the analytics code
+				String gAnalytics = "		<script type=\"text/javascript\">\n";
+				gAnalytics += "		  var _gaq = _gaq || [];\n";
+				gAnalytics += "		  _gaq.push(['_setAccount', 'UA-1641868-7']);\n";
+				gAnalytics += "		  _gaq.push(['_trackPageview']);\n";
+				gAnalytics += "		  (function() {\n";
+				gAnalytics += "			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;\n";
+				gAnalytics += "			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\n";
+				gAnalytics += "			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);\n";
+				gAnalytics += "		  })();\n";
+				gAnalytics += "		</script>\n";
+
+				// Start of output returned
+				out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">");
+				out.println("<html>");
+				out.println("	<head>");
+				out.println("		<META HTTP-EQUIV=\"refresh\" CONTENT=\"5;URL=http://cloud.comtor.org\">");
+				out.println("		<title>/** COMTOR **/</title>");
+				out.println("		<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/login.css\" media=\"screen\"/>");
+				out.println(gAnalytics);
+				out.println("	</head>");
+
+				out.println("	<body>");
+				out.println("		<img style=\"margin-left: auto; margin-right: auto; display: block;\"" +
+					"src=\"imgs/comtorLogo.png\" width=\"320\" alt=\"COMTOR logo\"/>");
+				out.println("		<br/>");
+				out.println("<p style=\"width: 600px; margin-left: auto; margin-right: auto;\">");
+				out.println("Thank you for your submission. We will email you the results shortly. ");
+				out.println("Please be sure to add comtor@tcnj.edu to your address book to ensure ");
+				out.println("email delivery of the results.\n\nReturning to the main page in ");
+				out.println("5 seconds...</p>");
+				out.println("	</body>");
+				out.println("</html>");				
 			} catch (Exception ex) {
 				System.err.println(ex);
 			}
