@@ -17,10 +17,11 @@
  */
 package org.comtor.analyzers;
 
+import org.comtor.util.*;
 import org.comtor.drivers.*;
+import org.comtor.reporting.*;
 import com.sun.javadoc.*;
 import java.util.*;
-import java.text.*;
 
 /**
  * The CheckAuthor class is a tool to validate that each class contains an apprpriate
@@ -28,9 +29,12 @@ import java.text.*;
  *
  * @author Peter DePasquale
  */
-public class CheckAuthor implements ComtorDoclet
-{
-	private Properties prop = new Properties();
+public class CheckAuthor implements ComtorDoclet {
+	// JSON analysis report from this module's execution
+	ModuleReport report = report = new ModuleReport ("Check Author", "This module validates the presence of " +
+			"the @author tag in each class. Additionally, this module checks for non-blank @author tags (missing " +
+			"author name).");
+
 	private HashMap<String, Float> gradeBreakdown = new HashMap<String, Float>();
 
 	/**
@@ -52,59 +56,77 @@ public class CheckAuthor implements ComtorDoclet
 	 * @return Properties list containing the result set
 	 */
 	public Properties analyze(RootDoc rootDoc) {
-		// A counter for the classes, used in the properties list
-		int classID = 0;
-		DecimalFormat formatter = new DecimalFormat("##0000.000");	
-		Tag [] tags = new Tag[0];
-		float msgIndex = 0.0f;
+
+		// A counter for the various metrics and reporting variables
+		int numClasses = 0;
+		boolean classError = false;
+		int classesWithErrors = 0;
+
+		int foundTags = 0;
+		int missingAuthorTagCount = 0;
+		int emptyAuthorTagCount = 0;
 		
-		prop.setProperty("title", "Check Author");
-		prop.setProperty(formatter.format(-1), "Preamble notes go here.");
+		report.appendToAmble("preamble", "References to line numbers in this report are generally to " +
+			"the subsequent non-comment Java statement that follows the commment/comment block under analysis.");
 
 		// Capture the starting time, just prior to the start of the analysis
 		long startTime = new Date().getTime();
 
 		for (ClassDoc classdoc : rootDoc.classes()) {
-		        msgIndex = 0.001f;
-			// Format the ID number of this class, for the report
-			prop.setProperty(formatter.format(classID), 
-					 "Class: " + classdoc.qualifiedName());
-			tags = classdoc.tags("@author");
+			numClasses++;
+			classError = false;
+			report.addClass(classdoc.qualifiedName());
 
-			if (tags.length > 0)
-			{
+			// Obtain the array of @author tags for this class
+			Tag [] tags = classdoc.tags("@author");
+
+			if (tags.length > 0) {
 			    // Search for at least one occurence of the specified tag
 			    // that also contains non-blank corresponding text
-			    for (int index = 0; index < tags.length; index++)
-			    {
-				if (tags[index].text().equals(""))
-				{
-				    prop.setProperty(formatter.format(classID+msgIndex), 
-						     "empty @author tag found in class.");
-				    msgIndex += 0.001;
-				}
+			    for (int index = 0; index < tags.length; index++) {
+					if (tags[index].text().equals("")) {
+						report.appendClassMessage("An empty @author tag was found in the comment block " +
+							"preceeding line " + tags[index].position().line());
+						emptyAuthorTagCount++;
+						classError = true;
+					} else
+						report.appendClassMessage("@author tag found: " + tags[index].text());
 			    }
-			}else{
-			    //report no @author tags
-			    prop.setProperty(formatter.format(classID+msgIndex), 
-					     "no @author tags found in class.");
-			    msgIndex += 0.001;
+			    foundTags++;
+			} else {
+				// Report that no @author tags were found for this class
+				report.appendClassMessage("No @author tags found.");
+				classError = true;
+			    missingAuthorTagCount++;
 			}
-
-			classID++;
+			if (classError != false)
+				classesWithErrors++;
 		}
 		
 		// Capture the ending time, just after the termination of the analysis
 		long endTime = new Date().getTime();
 
-		prop.setProperty("metric1", "A total of " + classID + " class(es) were processed.");
-		prop.setProperty("score", "" + getGrade());
-		prop.setProperty("start time", Long.toString(startTime));
-		prop.setProperty("end time", Long.toString(endTime));
-		prop.setProperty("execution time", Long.toString(endTime - startTime));
+		// Add the report results / metrics
+		report.appendLongToObject("information", "classes processed", numClasses);
+		report.appendLongToObject("information", "classes with errors", classesWithErrors);
+		report.appendLongToObject("information", "tags found", foundTags);
+		report.appendLongToObject("information", "tags errors", emptyAuthorTagCount);
 
-		// Return the property list (report)
-		return prop;
+		report.addMetric(numClasses + " class(es) were processed.");
+		report.addMetric(missingAuthorTagCount + " class(es) are missing @author tags.");
+		report.addMetric(emptyAuthorTagCount +  " @author tags are empty (missing names following tag)");
+		String longURL = "http://chart.apis.google.com/chart?chs=650x350&cht=p&" +
+			"chco=FF0000|0000FF&chds=a&chd=t:" + (numClasses-classesWithErrors) + "," + classesWithErrors + 
+			"&chl=" + (numClasses-classesWithErrors) + "|" + classesWithErrors + 
+			"&chxs=0,000000,14&chxt=x&chdls=000000,14&chdl=%23+Classes+Without+Errors|%23+Classes+With+Errors" +
+			"&chtt=COMTOR+Check+Author Module:+Class+Error+Chart&chts=000000,18";
+		report.addChart("Class Error Chart", BitlyServices.shortenUrl(longURL));
+
+		report.addTimingString("start time", Long.toString(startTime));
+		report.addTimingString("end time", Long.toString(endTime));
+		report.addTimingString("execution time", Long.toString(endTime - startTime));
+
+		return null;
 	}
 
 	/*
@@ -152,5 +174,14 @@ public class CheckAuthor implements ComtorDoclet
 	 */
 	public String toString() {
 		return "CheckAuthor";
+	}
+
+	/**
+	 * Returns the string representation of this module's report (JSON format)
+	 *
+	 * @return a string value containing the JSON report
+	 */
+	public String getJSONReport() {
+		return report.toString();
 	}
 }
