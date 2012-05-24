@@ -60,4 +60,11 @@ public interface ComtorDoclet {
 	 * properties.
 	 */
 	public void setConfigProperties(Properties props);
+
+	/**
+	 * Returns the JSON formatted report for the current module.
+	 *
+	 * @return a string representation of the module report in JSON format.
+	 */
+	public String getJSONReport();
 }
