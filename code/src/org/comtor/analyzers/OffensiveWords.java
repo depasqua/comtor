@@ -18,6 +18,7 @@
 package org.comtor.analyzers;
 
 import com.sun.javadoc.*;
+import org.comtor.reporting.*;
 import java.util.*;
 import java.text.*;
 
@@ -27,20 +28,25 @@ import java.text.*;
  * @author Peter DePasquale
  */
 public final class OffensiveWords implements ComtorDoclet {
-	// The analysis report (property list) returned by this doclet
-	private Properties prop = new Properties();
+	// JSON analysis report from this module's execution
+	ModuleReport report = new ModuleReport ("Offensive Words", "This module identifies \"offensive\" English words " +
+		"used in comments at the class, method, and field level. Such usage is considered to be unprofessional.");
 
-	// A hash set that will hold the list of 'bad' (offensive) words found in comments
+	// Hash sets that hold the list of 'bad' (offensive) words found in comments and the unique words processed
 	private HashSet<String> badWordsList = new HashSet<String>();
+	private HashSet<String> uniqueWordList = new HashSet<String>();
 	
-	// A counter for the classes, used in the properties list
-	private int classID = 0;
-	
-	// Formatter for the report
-	private DecimalFormat formatter = new DecimalFormat("##0000.000");
+	// Counters for the packages, classes, and members
+	private int numPackages = 0;
+	private int numClasses = 0;
+	private int numConstructors = 0;
+	private int numMethods = 0;
+	private int numParameters = 0;
+	private int numFields = 0;
 	
 	// Counter for the number of offensive words
 	private int numBadWords = 0;
+	private int totalNumWords = 0;
 
 	/**
 	 * Examine each class and its methods. Calculate the length of each method's comments.
@@ -49,7 +55,6 @@ public final class OffensiveWords implements ComtorDoclet {
 	 * @return Properties list
 	 */
 	public Properties analyze(RootDoc rootDoc) {
-		prop.setProperty("title", "Offensive Words");
 
 		// Load the bad words list into a hashset
 		Util.loadDataList("badwords.txt", badWordsList, true, this.getClass().getName());
@@ -59,34 +64,47 @@ public final class OffensiveWords implements ComtorDoclet {
 
 		// Find bad words in the RootDoc's packages
 		for (PackageDoc packageDoc : rootDoc.specifiedPackages()) {
-			prop.setProperty(formatter.format(classID), "Package: " + packageDoc.name());
-			parseComment(packageDoc.commentText(), 0.000f);
-			classID++;
+			numPackages++;
+			report.addItem(ReportItem.PACKAGE, packageDoc.name());
+			parseComment(packageDoc.commentText(), packageDoc.position());
 		}
 		
 		// Parse the comments for each class found in the root doc
 		for (ClassDoc classMember : rootDoc.classes()) {
-			prop.setProperty(formatter.format(classID), "Class: " + classMember.qualifiedName());
+			numClasses++;
+			report.addItem(ReportItem.CLASS, classMember.qualifiedName());
 			parseClass(classMember);
-			classID++;
 			
-			// Parse the comments for any/all inner classes of any class
-			for (ClassDoc innerClass : classMember.innerClasses()) {
-				prop.setProperty(formatter.format(classID), "Class: " + classMember.qualifiedName());
-				parseClass(innerClass);
-				classID++;
-			}
+			// Note: There is no need to process the inner classes, they are provided
+			// via the .classes() call above.
 		}
 
 		// Capture the ending time, just after the termination of the analysis
 		long endTime = new Date().getTime();
 
-		prop.setProperty("score", "" + getGrade());
-		prop.setProperty("start time", Long.toString(startTime));
-		prop.setProperty("end time", Long.toString(endTime));
-		prop.setProperty("execution time", Long.toString(endTime - startTime));
-		prop.setProperty("metric1", "Number of offensive words found: " + numBadWords);
-		return prop;
+		report.appendLongToObject("information", "packages processed", numPackages);
+		report.appendLongToObject("information", "classes processed", numClasses);
+		report.appendLongToObject("information", "constructors processed", numConstructors);
+		report.appendLongToObject("information", "methods processed", numMethods);
+		report.appendLongToObject("information", "parameters processed", numParameters);
+		report.appendLongToObject("information", "fields processed", numFields);
+		report.appendLongToObject("information", "total number of words processed", totalNumWords);
+		report.addMetric(numPackages + " package(s) were processed.");
+		report.addMetric(numClasses + " class(es) were processed.");
+		report.addMetric(numConstructors + " constructor(s) were processed.");
+		report.addMetric(numMethods + " method(s) were processed.");
+		report.addMetric(numParameters + " parameter(s) were processed.");
+		report.addMetric(numFields + " field(s) were processed.");
+		report.addMetric(totalNumWords + " words were processed (including duplicates).");
+		report.addMetric(uniqueWordList.size() + " unique words were processed (excludes duplicates).");
+		report.addMetric(numBadWords + " 'offensive' words were identified (including duplicates).");
+		report.appendToAmble("preamble", "The @return tag is currently not processed.");
+
+		report.addTimingString("start time", Long.toString(startTime));
+		report.addTimingString("end time", Long.toString(endTime));
+		report.addTimingString("execution time", Long.toString(endTime - startTime));
+
+		return null;
 	}
 	
 	/**
@@ -95,56 +113,49 @@ public final class OffensiveWords implements ComtorDoclet {
 	 * @pararm classMember a reference to the class (as a ClassDoc object) to parse
 	 */
 	private void parseClass(ClassDoc classMember) {
-		float memberNum = 0.000f;
-		parseComment(classMember.commentText(), memberNum);
+		parseComment(classMember.commentText(), classMember.position());
 		
 		// Parse the comment for each constructor
-		for (ExecutableMemberDoc memberDoc : classMember.constructors()) {
-			memberNum += 0.001f;
-			prop.setProperty(formatter.format(classID+memberNum), "\tConstructor: " + memberDoc.qualifiedName());
-			parseComment(memberDoc.commentText(), memberNum);
+		for (ConstructorDoc memberDoc : classMember.constructors()) {
+			// Do not process synthetic (compiler-produced) constructors
+			if (memberDoc.position() != null) {
+				report.addItem(ReportItem.CONSTRUCTOR, memberDoc.name() + memberDoc.flatSignature());
+				parseComment(memberDoc.commentText(), memberDoc.position());
+				numConstructors++;
 
-			// Parse the parameter comments
-			for (ParamTag param : memberDoc.paramTags()) {
-				memberNum += 0.001f;
-				parseComment(param.parameterComment(), memberNum);
-			}
-			
-			// Parse the parameter comments
-			for (ParamTag param : memberDoc.typeParamTags()) {
-				memberNum += 0.001f;
-				parseComment(param.parameterComment(), memberNum);
-			}
-			
-			// Parse the throws comments
-			for (ThrowsTag tag : memberDoc.throwsTags()) {
-				memberNum += 0.001f;
-				parseComment(tag.exceptionComment(), memberNum);
-			}
+				// Parse the parameter's comments (@param tag)
+				for (ParamTag param : memberDoc.paramTags()) {
+					report.addItem(ReportItem.PARAMETER, param.parameterName());
+					parseComment(param.parameterComment(), param.position());
+					numParameters++;
+				}
+
+				// Parse the throws comments (@throws tag)
+				for (ThrowsTag tag : memberDoc.throwsTags()) {
+					report.addItem(ReportItem.THROWS, tag.exceptionName());
+					parseComment(tag.exceptionComment(), tag.position());
+				}
+			} else
+				System.err.println("null position found: " + memberDoc.name() + memberDoc.flatSignature());
 		}
 		
 		// Parse the comment for each method
 		for (ExecutableMemberDoc memberDoc : classMember.methods()) {
-			memberNum += 0.001f;
-			prop.setProperty(formatter.format(classID+memberNum), "\tMethod: " + memberDoc.qualifiedName());
-			parseComment(memberDoc.commentText(), memberNum);
+			report.addItem(ReportItem.METHOD, memberDoc.name() + memberDoc.flatSignature());
+			parseComment(memberDoc.commentText(), memberDoc.position());
+			numMethods++;
 			
-			// Parse the parameter comments
+			// Parse the parameter's comments (@param tag)
 			for (ParamTag param : memberDoc.paramTags()) {
-//				memberNum += 0.001f;
-				parseComment(param.parameterComment(), memberNum);
+				report.addItem(ReportItem.PARAMETER, param.parameterName());
+				parseComment(param.parameterComment(), param.position());
+				numParameters++;
 			}
 			
-			// Parse the parameter comments
-			for (ParamTag param : memberDoc.typeParamTags()) {
-//				memberNum += 0.001f;
-				parseComment(param.parameterComment(), memberNum);
-			}
-			
-			// Parse the throws comments
+			// Parse the throws comments (@throws tag)
 			for (ThrowsTag tag : memberDoc.throwsTags()) {
-//				memberNum += 0.001f;
-				parseComment(tag.exceptionComment(), memberNum);
+				report.addItem(ReportItem.THROWS, tag.exceptionName());
+				parseComment(tag.exceptionComment(), tag.position());
 			}
 			
 			// Needs to also fetch @return tag and extract comment (not trivial, see API)
@@ -152,16 +163,16 @@ public final class OffensiveWords implements ComtorDoclet {
 		
 		// Parse the comment for each field
 		for (FieldDoc field : classMember.fields()) {
-			memberNum += 0.001f;
-			prop.setProperty(formatter.format(classID+memberNum), "\tField: " + field.qualifiedName());
-			parseComment(field.commentText(), memberNum);
+			report.addItem(ReportItem.FIELD, field.name());
+			parseComment(field.commentText(), field.position());
+			numFields++;
 		}
 		
 		// Parse the comment for each enum
 		for (FieldDoc field : classMember.enumConstants()) {
-			memberNum += 0.001f;
-			prop.setProperty(formatter.format(classID+memberNum), "\tEnum: " + field.qualifiedName());
-			parseComment(field.commentText(), memberNum);
+			report.addItem(ReportItem.FIELD, field.name());
+			parseComment(field.commentText(), field.position());
+			numFields++;
 		}
 	}
 
@@ -171,22 +182,20 @@ public final class OffensiveWords implements ComtorDoclet {
 	 *
 	 * @param comment The comment string which we wish to parse
 	 */
-	private void parseComment(String comment, float memberID) {
-		String fmtID = formatter.format(((float) classID) + memberID);
-		DecimalFormat shortFormatter = new DecimalFormat("000");
-		int itemID = 0;
-
+	private void parseComment(String comment, SourcePosition position) {
 		// Replace parenthesis, brackets, dashes, and periods with spaces
 		comment = comment.replaceAll("[\\p{Punct}&&[^']]"," ");
 
 		// Create Scanner to process the comment string
 		Scanner scan = new Scanner(comment);
-   		while (scan.hasNext()) {
+		while (scan.hasNext()) {
+			totalNumWords++;
 			String word = scan.next().toLowerCase();
+			uniqueWordList.add(word);
 			if (badWordsList.contains(word)) {
-				String wordID = fmtID + '.' + shortFormatter.format(itemID++);
 				numBadWords++;
-				prop.setProperty(wordID, word);
+				report.appendMessage(ReportItem.LASTITEM, "'" + word + "' considered an offensive word " +
+					"on/near line " + position.line());
 			}
 		}
 	}			
@@ -242,5 +251,14 @@ public final class OffensiveWords implements ComtorDoclet {
 	 */
 	public String toString() {
 		return "BadWords";
+	}
+
+	/**
+	 * Returns the string representation of this module's report (JSON format)
+	 *
+	 * @return a string value containing the JSON report
+	 */
+	public String getJSONReport() {
+		return report.toString();
 	}
 }
