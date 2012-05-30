@@ -222,7 +222,7 @@ public class TextReporter {
 
 			if (classnameKeys.length > 0) {
 				Arrays.sort(classnameKeys);
-				result = "Class Analysis: " + newLine;
+				result = "Analysis: " + newLine;
 
 				// For each class...
 				for (String name : classnameKeys) {
@@ -233,7 +233,7 @@ public class TextReporter {
 					// Output the issues found in the class comment section
 					JSONArray issuesArray = classObj.getJSONArray("issues");
 					if (issuesArray.length() > 0) {
-						result += "\t\tClass comment issues:" + newLine;
+						result += "\t\tClass analysis:" + newLine;
 						for (int index = 0; index < issuesArray.length(); index++)
 							result += "\t\t\t" + issuesArray.getString(index) + newLine;
 						result += newLine;
@@ -250,8 +250,10 @@ public class TextReporter {
 							JSONObject constructorObj = constructors.getJSONObject(constructorName);
 						 	issuesArray = constructorObj.getJSONArray("issues");
 						 	if (issuesArray.length() > 0) {
-						 		if (!constructorHeaderPrinted)
-									result += "\t\tConstructor comment issues:" + newLine;
+						 		if (!constructorHeaderPrinted) {
+									result += "\t\tConstructor analysis:" + newLine;
+									constructorHeaderPrinted = true;
+								}
 
 								result += "\t\t\t" + constructorName + ": " + newLine;
 								for (int index = 0; index < issuesArray.length(); index++)
@@ -302,7 +304,7 @@ public class TextReporter {
 					String[] methodnameKeys = JSONObject.getNames(methodsObj);
 
 			 		if (containsIssues(methodsObj)) {
-						result += "\t\tMethod comment issues:" + newLine;
+						result += "\t\tMethod analysis:" + newLine;
 						classOutputCreated = true;
 					}
 
@@ -364,7 +366,7 @@ public class TextReporter {
 							issuesArray = classObj.getJSONObject("fields").getJSONObject(fieldname).getJSONArray("issues");
 							if (issuesArray.length() > 0) {
 								if (!fieldHeaderPrinted)
-									result += "\t\tField comment issues: " + newLine;
+									result += "\t\tField analysis: " + newLine;
 
 								result += "\t\t\t" + fieldname + ": " + newLine;
 								for (int index = 0; index < issuesArray.length(); index++)
