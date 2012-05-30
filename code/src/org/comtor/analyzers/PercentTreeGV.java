@@ -373,31 +373,27 @@ public class PercentTreeGV
      * open and available for writing. Caller assumes responsibility for
      * flushing and closing.
      */
-    private void writeDotFile(PrintWriter fout)
-	throws IOException
-    {
-	Enumeration edges = m_edges.elements();
-	Enumeration nodes = m_nodes.elements();
-	String edge;
-	GVNode node;
+    private void writeDotFile(PrintWriter fout) throws IOException {
+		Enumeration edges = m_edges.elements();
+		Enumeration nodes = m_nodes.elements();
+		String edge;
+		GVNode node;
 
-	//write nodes
-	while( nodes.hasMoreElements() )
-	{
-	    node = (GVNode)nodes.nextElement();
-	    if(node.commented)
-		fout.print("\""+node.name+"\""+" [ label=\"\",shape=\""+node.shape+"\",style=\"filled\",color=\"green\" ];\n");
-	    else
-		fout.print("\""+node.name+"\""+" [ label=\"\",shape=\""+node.shape+"\",style=\"filled\",color=\"grey\" ];\n");
-	}	
+		//write nodes
+		while( nodes.hasMoreElements() )
+		{
+		    node = (GVNode)nodes.nextElement();
+		    if(node.commented)
+			fout.print("\""+node.name+"\""+" [ label=\"\",shape=\""+node.shape+"\",style=\"filled\",color=\"green\" ];\n");
+		    else
+			fout.print("\""+node.name+"\""+" [ label=\"\",shape=\""+node.shape+"\",style=\"filled\",color=\"grey\" ];\n");
+		}	
 
-	//write edges
-	while( edges.hasMoreElements() )
-	{
-	    edge = (String)edges.nextElement();
-	    fout.print("\""+edge+"\""+" [ color=\"black\",arrowhead=\"dot\" ] ;\n");
-	}
-	return;
+		//write edges
+		while( edges.hasMoreElements() ) {
+		    edge = (String)edges.nextElement();
+		    fout.print("\""+edge+"\""+" [ color=\"black\",arrowhead=\"dot\" ] ;\n");
+		}
     }
 
 	/*
@@ -444,7 +440,7 @@ public class PercentTreeGV
      * @return the string name of this analyzer
      */
     public String toString() {
-	return "PercentTreeGV uses graphviz format to record the density of comments in a codebase.";
+		return "PercentTreeGV";
     }
 
     /**
@@ -460,11 +456,18 @@ public class PercentTreeGV
      */
     private class GVNode
     {
-	public static final String DEFAULT_ROOT_NODE_NAME = "centre";
-	public String name = null;
-	public boolean commented = false;
-	public String shape = "box";
+		public static final String DEFAULT_ROOT_NODE_NAME = "centre";
+		public String name = null;
+		public boolean commented = false;
+		public String shape = "box";
     }
 
-
+  /**
+   * Returns the string representation of this module's report (JSON format)
+   *
+   * @return a string value containing the JSON report
+   */
+  public String getJSONReport() {
+    return null;
+  }
 }
