@@ -21,7 +21,7 @@ import org.json.*;
 
 /** 
  * This class represents a COMTOR module's report. Essentially it wraps the structure of the report
- * and aids in buildling the JSON structure that will contain the report.
+ * and aids in building the JSON structure that will contain the report.
  *
  * @author Peter DePasquale
  */
@@ -211,9 +211,6 @@ public class ModuleReport {
 
 					case CLASS:
 						obj = report.getJSONObject("results").getJSONObject("classes");
-						if (obj.has(name)) {
-							System.err.println("Duplicate found: class " + name);
-						}
 						obj.put(name, subobject);
 						subobject.put("issues", new JSONArray());
 						subobject.put("constructors", new JSONObject());
@@ -268,7 +265,7 @@ public class ModuleReport {
 				}
 
 			} catch (JSONException je) {
-				System.err.println("foo: " + je);
+				System.err.println(je);
 			}
 		}
 	}
@@ -291,7 +288,7 @@ public class ModuleReport {
 						currentClass.getJSONArray("issues").put(msg);
 			
 					} catch (JSONException je) {
-						System.err.println("here 1: " + je);
+						System.err.println(je);
 					}
 				break;
 
@@ -301,7 +298,7 @@ public class ModuleReport {
 						currentMethod.getJSONArray("issues").put(msg);
 			
 					} catch (JSONException je) {
-						System.err.println("here 2: " + je);
+						System.err.println(je);
 					}
 					break;
 
@@ -314,7 +311,7 @@ public class ModuleReport {
 						currentField.getJSONArray("issues").put(msg);
 			
 					} catch (JSONException je) {
-						System.err.println("here 3: " + je);
+						System.err.println(je);
 					}
 					break;
 
