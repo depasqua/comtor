@@ -27,8 +27,13 @@ import org.json.*;
  */
 public class ModuleReport {
 	private JSONObject report = new JSONObject();
-	private JSONArray currentClass = null;
 	private JSONArray currentPackage = null;
+	private JSONObject currentClass = null;
+	private JSONObject currentMethod = null;
+	private JSONObject currentField = null;
+	private JSONArray currentThrows = null;
+	private JSONArray currentParameter = null;
+	private ReportItem lastItem = null;
 
 	/**
 	 * This constructor creates the basic framework of a JSON-based report for COMTOR. A number of the
@@ -49,9 +54,11 @@ public class ModuleReport {
 			notes.put("preamble", new JSONArray());
 			notes.put("postamble", new JSONArray());
 
+			JSONObject classes = new JSONObject();
+
 			JSONObject results = new JSONObject();
 			results.put("notes", notes);
-			results.put("classes", new JSONObject());
+			results.put("classes", classes);
 			results.put("packages", new JSONObject());
 			results.put("metrics", new JSONArray());
 			results.put("timing", new JSONObject());
@@ -180,68 +187,145 @@ public class ModuleReport {
 	}
 
 	/**
-	 * Adds a new class array to the current report in the "classes" section. Once added,
-	 * a reference is set (currentClass) to the current class we're reporting on. This is
-	 * used by the module to pass in "report strings" (messages) regarding analysis of the
-	 * current class.
+	 * Adds a new report item array to the current report. Once added, a reference is set
+	 * to the current item that we are reporting on. This is used by the module to pass in
+	 * "report strings" (messages) regarding analysis of the current item.
 	 *
+	 * @param itemType a enum type desiganting where the item will be added
 	 * @param classname the String name of the new class
 	 */
-	public void addClass(String classname) {
+	public void addItem(ReportItem itemType, String name) {
 		if (report != null) {
 			try {
-				JSONObject obj = report.getJSONObject("results").getJSONObject("classes");
+				JSONObject obj = null;
 				JSONArray subarray = new JSONArray();
-				obj.put(classname, subarray);
-				currentClass = subarray;
+				JSONObject subobject = new JSONObject();
+
+				switch (itemType) {
+					case PACKAGE:
+						obj = report.getJSONObject("results").getJSONObject("packages");
+						obj.put(name, subarray);
+						currentPackage = subarray;
+						lastItem = ReportItem.PACKAGE;
+						break;
+
+					case CLASS:
+						obj = report.getJSONObject("results").getJSONObject("classes");
+						if (obj.has(name)) {
+							System.err.println("Duplicate found: class " + name);
+						}
+						obj.put(name, subobject);
+						subobject.put("issues", new JSONArray());
+						subobject.put("constructors", new JSONObject());
+						subobject.put("methods", new JSONObject());
+						subobject.put("fields", new JSONObject());
+						currentClass = subobject;
+						lastItem = ReportItem.CLASS;
+						break;
+
+					case CONSTRUCTOR:
+						obj = currentClass.getJSONObject("constructors");
+						obj.put(name, subobject);
+						subobject.put("issues", new JSONArray());
+						subobject.put("parameters", new JSONObject());
+						subobject.put("throws", new JSONObject());
+						currentMethod = subobject;
+						lastItem = ReportItem.CONSTRUCTOR;
+						break;
+
+					case METHOD:
+						obj = currentClass.getJSONObject("methods");
+						obj.put(name, subobject);
+						subobject.put("issues", new JSONArray());
+						subobject.put("parameters", new JSONObject());
+						subobject.put("throws", new JSONObject());
+						subobject.put("returns", new JSONObject());
+						currentMethod = subobject;
+						lastItem = ReportItem.METHOD;
+						break;
+
+					case PARAMETER:
+						obj = currentMethod.getJSONObject("parameters");
+						obj.put(name, subarray);
+						currentParameter = subarray;
+						lastItem = ReportItem.PARAMETER;
+						break;
+
+					case FIELD:
+						obj = currentClass.getJSONObject("fields");
+						obj.put(name, subobject);
+						subobject.put("issues", new JSONArray());
+						currentField = subobject;
+						lastItem = ReportItem.FIELD;
+						break;
+
+					case THROWS:
+						obj = currentMethod.getJSONObject("throws");
+						obj.put(name, subarray);
+						currentThrows = subarray;
+						lastItem = ReportItem.THROWS;
+						break;
+				}
 
 			} catch (JSONException je) {
-				System.err.println(je);
+				System.err.println("foo: " + je);
 			}
 		}
 	}
 
 	/**
-	 * Adds a new package array to the current report in the "package" section. Once added,
-	 * a reference is set (currentPackage) to the current package we're reporting on. This is
-	 * used by the module to pass in "report strings" (messages) regarding analysis of the
-	 * current package.
+	 * Appends the String message to the specified report item's object
 	 *
-	 * @param packagename the String name of the new package
+	 * @param itemType a enum type desiganting where the item will be appended
+	 * @param msg the message to append in the report.
 	 */
-	public void addPackage(String packagename) {
+	public void appendMessage(ReportItem itemType, String msg) {
 		if (report != null) {
-			try {
-				JSONObject obj = report.getJSONObject("results").getJSONObject("packages");
-				JSONArray subarray = new JSONArray();
-				obj.put(packagename, subarray);
-				currentPackage = subarray;
+			switch (itemType) {
+				case PACKAGE:
+					currentPackage.put(msg);
+					break;
 
-			} catch (JSONException je) {
-				System.err.println(je);
+				case CLASS:
+					try {
+						currentClass.getJSONArray("issues").put(msg);
+			
+					} catch (JSONException je) {
+						System.err.println("here 1: " + je);
+					}
+				break;
+
+				case CONSTRUCTOR:
+				case METHOD:
+					try {
+						currentMethod.getJSONArray("issues").put(msg);
+			
+					} catch (JSONException je) {
+						System.err.println("here 2: " + je);
+					}
+					break;
+
+				case PARAMETER:
+					currentParameter.put(msg);
+					break;
+
+				case FIELD:
+					try {
+						currentField.getJSONArray("issues").put(msg);
+			
+					} catch (JSONException je) {
+						System.err.println("here 3: " + je);
+					}
+					break;
+
+				case THROWS:
+					currentThrows.put(msg);
+					break;
+
+				case LASTITEM:
+					appendMessage(lastItem, msg);
+					break;
 			}
-		}
-	}
-
-	/**
-	 * Appends the String message to the current class's report object
-	 *
-	 * @param msg the message to append to the current class object in the report.
-	 */
-	public void appendClassMessage(String msg) {
-		if (report != null) {
-			currentClass.put(msg);
-		}
-	}
-
-	/**
-	 * Appends the String message to the current packages's report object
-	 *
-	 * @param msg the message to append to the current package object in the report.
-	 */
-	public void appendPacakageMessage(String msg) {
-		if (report != null) {
-			currentPackage.put(msg);
 		}
 	}
 
