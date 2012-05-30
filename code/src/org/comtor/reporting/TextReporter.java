@@ -47,17 +47,21 @@ public class TextReporter {
 			// Create a new output report file, and prepare it for writing
 			PrintWriter outFilePW = new PrintWriter(new BufferedWriter(new FileWriter(path)));
 
+			// For debugging, create a JSON Output file
+			PrintWriter jsonFile = new PrintWriter(new BufferedWriter(new FileWriter("jsonOut.txt")));
+
 			// Write the header of the debug file
-			outFilePW.println("COMTOR Execution Report");
-			outFilePW.println((new java.util.Date()).toString());
+			outFilePW.println("COMTOR Execution Report - " + (new java.util.Date()).toString());
 
 			// Iterate through the Vector of JSON report strings and print them to the report file
- 			for (String results : jsonReports) {
+			Iterator iter = jsonReports.iterator();
+ 			while (iter.hasNext()) {
+ 				String results = (String) iter.next();
+				outFilePW.print("==========================================");
 				outFilePW.println("==========================================");
  
  				currentReport = new JSONObject(results);
  				outFilePW.println(getInfoBlock());
- 				
  				String preamble = getAmbleBlock("preamble");
  				if (preamble != null)
  					outFilePW.println(preamble);
@@ -73,12 +77,17 @@ public class TextReporter {
  					outFilePW.println(postamble);
 
  				outFilePW.println(removeLastNewline(getExecutionBlock()));
-				outFilePW.println("==========================================");
-				outFilePW.println(results);
+
+ 				if (!iter.hasNext()) {
+					outFilePW.print("==========================================");
+					outFilePW.println("=========================================="); 					
+ 				}
+
+				jsonFile.println(results);
  			}
 
-			outFilePW.println("==========================================");
 			outFilePW.close();
+			jsonFile.close();
 		}
 		catch (IOException e) {
 			System.out.println(e);
@@ -89,13 +98,16 @@ public class TextReporter {
 	}
 
 	/**
+	 * Removes the extra last line, if present, from an output string. Used to pretty up the
+	 * JSON-based report output.
 	 *
-	 *
-	 *
+	 * @param input A string of output from the JSON report. The last newline character will be
+	 * removed from this input line.
+	 * @return A new string output line with the last newline character removed.
 	 */
 	private String removeLastNewline(String input) {
 		if (input.charAt(input.length()-1) == System.getProperty("line.separator").charAt(0))
-			return input.substring(0, input.length()-2);
+			return input.substring(0, input.length()-1);
 		else
 			return input;
 	}
@@ -202,24 +214,232 @@ public class TextReporter {
 	public String getClassesBlock() {
 		String newLine = System.getProperty("line.separator");
 		String result = null;
+		boolean classOutputCreated = false;
+
 		try {
 			JSONObject classes = currentReport.getJSONObject("results").getJSONObject("classes");
-			String[] keys = JSONObject.getNames(classes);
+			String[] classnameKeys = JSONObject.getNames(classes);
 
-			if (keys.length > 0) {
-				Arrays.sort(keys);
+			if (classnameKeys.length > 0) {
+				Arrays.sort(classnameKeys);
 				result = "Class Analysis: " + newLine;
-				for (String name : keys) {
+
+				// For each class...
+				for (String name : classnameKeys) {
+					classOutputCreated = false;
+					JSONObject classObj = classes.getJSONObject(name);
 					result += "\t" + name + ":" + newLine;
-					JSONArray classArray = classes.getJSONArray(name);
-					for (int index = 0; index < classArray.length(); index++)
-						result += "\t\t" + classArray.getString(index) + newLine;
-					result += newLine;
+
+					// Output the issues found in the class comment section
+					JSONArray issuesArray = classObj.getJSONArray("issues");
+					if (issuesArray.length() > 0) {
+						result += "\t\tClass comment issues:" + newLine;
+						for (int index = 0; index < issuesArray.length(); index++)
+							result += "\t\t\t" + issuesArray.getString(index) + newLine;
+						result += newLine;
+						classOutputCreated = true;
+					}
+
+					// Output the issues found in the constructors' comment section
+					JSONObject constructors = classObj.getJSONObject("constructors");
+					String[] constructorNameKeys = JSONObject.getNames(constructors);
+					boolean constructorHeaderPrinted = false;
+					if (constructorNameKeys != null && constructorNameKeys.length > 0) {
+						// For each constructor...
+						for (String constructorName : constructorNameKeys) {
+							JSONObject constructorObj = constructors.getJSONObject(constructorName);
+						 	issuesArray = constructorObj.getJSONArray("issues");
+						 	if (issuesArray.length() > 0) {
+						 		if (!constructorHeaderPrinted)
+									result += "\t\tConstructor comment issues:" + newLine;
+
+								result += "\t\t\t" + constructorName + ": " + newLine;
+								for (int index = 0; index < issuesArray.length(); index++)
+									result += "\t\t\t\t" + issuesArray.getString(index) + newLine;
+
+								result += newLine;
+								classOutputCreated = true;
+							}
+
+							// Deal with parameter issues...
+							JSONObject paramObj = constructorObj.getJSONObject("parameters");
+							String[] paramNames = JSONObject.getNames(paramObj);
+							if (paramNames != null && paramNames.length > 0) {
+								// For each parameter...
+								for (String paramName : paramNames) {
+									JSONArray paramIssuesArray = paramObj.getJSONArray(paramName);
+									if (paramIssuesArray.length() > 0) {
+										result += "\t\t\t\t" + paramName + " (parameter): " + newLine;
+										for (int index = 0; index < paramIssuesArray.length(); index++)
+											result += "\t\t\t\t\t" + paramIssuesArray.getString(index) + newLine;
+										result += newLine;
+										classOutputCreated = true;
+									}
+								}
+							}
+
+							// Deal with throws issues...
+							JSONObject throwsObj = constructorObj.getJSONObject("throws");
+							String[] throwsNames = JSONObject.getNames(throwsObj);
+							if (throwsNames != null && throwsNames.length > 0) {
+								// For each throws...
+								for (String throwsName : throwsNames) {
+									JSONArray throwsIssuesArray = throwsObj.getJSONArray(throwsName);
+									if (throwsIssuesArray.length() > 0) {
+										result += "\t\t\t\t" + throwsName + " (throws): " + newLine;
+										for (int index = 0; index < throwsIssuesArray.length(); index++)
+											result += "\t\t\t\t\t" + throwsIssuesArray.getString(index) + newLine;
+										result += newLine;
+										classOutputCreated = true;
+									}
+								}
+							}
+						}
+					}
+
+					// Output the issues found in the methods' comment section
+					JSONObject methodsObj = classObj.getJSONObject("methods");
+					String[] methodnameKeys = JSONObject.getNames(methodsObj);
+
+			 		if (containsIssues(methodsObj)) {
+						result += "\t\tMethod comment issues:" + newLine;
+						classOutputCreated = true;
+					}
+
+					if (methodnameKeys != null && methodnameKeys.length > 0) {
+						// For each method...
+						for (String methodname : methodnameKeys) {
+							JSONObject method = methodsObj.getJSONObject(methodname);
+							// Deal with method issues...
+						 	JSONArray methodIssuesArray = method.getJSONArray("issues");
+						 	if (methodIssuesArray.length() > 0) {
+								result += "\t\t\t" + methodname + ": " + newLine;
+								for (int index = 0; index < methodIssuesArray.length(); index++)
+									result += "\t\t\t\t" + methodIssuesArray.getString(index) + newLine;
+
+								result += newLine;
+							}
+
+							// Deal with parameter issues...
+							JSONObject paramObj = method.getJSONObject("parameters");
+							String[] paramNames = JSONObject.getNames(paramObj);
+							if (paramNames != null && paramNames.length > 0) {
+								// For each parameter...
+								for (String paramName : paramNames) {
+									JSONArray paramIssuesArray = paramObj.getJSONArray(paramName);
+									if (paramIssuesArray.length() > 0) {
+										result += "\t\t\t\t" + paramName + " (parameter): " + newLine;
+										for (int index = 0; index < paramIssuesArray.length(); index++)
+											result += "\t\t\t\t\t" + paramIssuesArray.getString(index) + newLine;
+										result += newLine;
+									}
+								}
+							}
+
+							// Deal with throws issues...
+							JSONObject throwsObj = method.getJSONObject("throws");
+							String[] throwsNames = JSONObject.getNames(throwsObj);
+							if (throwsNames != null && throwsNames.length > 0) {
+								// For each throws...
+								for (String throwsName : throwsNames) {
+									JSONArray throwsIssuesArray = throwsObj.getJSONArray(throwsName);
+									if (throwsIssuesArray.length() > 0) {
+										result += "\t\t\t\t" + throwsName + " (throws): " + newLine;
+										for (int index = 0; index < throwsIssuesArray.length(); index++)
+											result += "\t\t\t\t\t" + throwsIssuesArray.getString(index) + newLine;
+										result += newLine;
+									}
+								}
+							}
+						}
+					}
+
+					// Output the issues found in the class fields' comment section(s)
+					JSONObject issues = classObj.getJSONObject("fields");
+					String[] fieldnameKeys = JSONObject.getNames(issues);
+					boolean fieldHeaderPrinted = false;
+					if (fieldnameKeys != null && fieldnameKeys.length > 0) {
+						// For each field
+						for (String fieldname : fieldnameKeys) {
+							issuesArray = classObj.getJSONObject("fields").getJSONObject(fieldname).getJSONArray("issues");
+							if (issuesArray.length() > 0) {
+								if (!fieldHeaderPrinted)
+									result += "\t\tField comment issues: " + newLine;
+
+								result += "\t\t\t" + fieldname + ": " + newLine;
+								for (int index = 0; index < issuesArray.length(); index++)
+									result += "\t\t\t\t" + issuesArray.getString(index) + newLine;
+
+								result += newLine;
+								classOutputCreated = true;
+							}
+						}
+					}
+
+					// If no output was created, print appropriate string message.
+					if (classOutputCreated == false)
+						result += "\t\tNo issues identified." + newLine + newLine;
 				}
 			}
 		} catch (JSONException je) {
 			System.err.println(je);
 		}
+		return result;
+	}
+
+	/**
+	 * Checks to determine if the specified methods block of JSON data contains any "issues" to
+	 * output. Issues here can be from the analysis of the method's comments, the method's parameters'
+	 * comments, and the method's throws' comments. Returns a true valie if there are issues to
+	 * print. This method is used to pretty up the text-based output so that we only print
+	 * method names/header lines if/when a method contains output that needs to be rendered.
+	 *
+	 * @param methods A JSONObject that contains the embodyment of a group of methods.
+	 * @return a true value if any of the methods contained in the block (or its subordinate data
+	 * contains analysis "issues" such that the methods need to be processed for output rendering.
+	 */
+	private boolean containsIssues(JSONObject methods) {
+		boolean result = false;
+
+		String[] methodNames = JSONObject.getNames(methods);
+		if (methodNames != null && methodNames.length > 0) {
+			// For each method...
+			for (String methodname : methodNames) {
+				try {
+					JSONObject method = methods.getJSONObject(methodname);
+					JSONArray issuesArray = method.getJSONArray("issues");
+					if (issuesArray.length() > 0)
+						result = true;
+					else {
+						JSONObject paramObj = method.getJSONObject("parameters");
+						String[] paramNames = JSONObject.getNames(paramObj);
+						if (paramNames != null && paramNames.length > 0) {
+							// For each param...
+							for (String paramname : paramNames) {
+								JSONArray paramIssuesArray = paramObj.getJSONArray(paramname);
+								if (paramIssuesArray.length() > 0)
+									result = true;
+								else {
+									JSONObject throwsObj = method.getJSONObject("throws");
+									String[] throwsNames = JSONObject.getNames(throwsObj);
+									if (throwsNames != null && throwsNames.length > 0) {
+										// For each throws...
+										for (String throwsname : throwsNames) {
+											JSONArray throwsIssuesArray = throwsObj.getJSONArray(throwsname);
+											if (throwsIssuesArray.length() > 0)
+												result = true;
+										}
+									}
+								}
+							}
+						}
+					}
+				} catch (JSONException je) {
+					System.err.println("here 5: " + je);
+				}
+			}
+		}
+
 		return result;
 	}
 
