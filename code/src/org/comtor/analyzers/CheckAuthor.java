@@ -75,7 +75,7 @@ public class CheckAuthor implements ComtorDoclet {
 		for (ClassDoc classdoc : rootDoc.classes()) {
 			numClasses++;
 			classError = false;
-			report.addClass(classdoc.qualifiedName());
+			report.addItem(ReportItem.CLASS, classdoc.qualifiedName());
 
 			// Obtain the array of @author tags for this class
 			Tag [] tags = classdoc.tags("@author");
@@ -85,17 +85,17 @@ public class CheckAuthor implements ComtorDoclet {
 			    // that also contains non-blank corresponding text
 			    for (int index = 0; index < tags.length; index++) {
 					if (tags[index].text().equals("")) {
-						report.appendClassMessage("An empty @author tag was found in the comment block " +
+						report.appendMessage(ReportItem.CLASS, "An empty @author tag was found in the comment block " +
 							"preceeding line " + tags[index].position().line());
 						emptyAuthorTagCount++;
 						classError = true;
 					} else
-						report.appendClassMessage("@author tag found: " + tags[index].text());
+						report.appendMessage(ReportItem.CLASS, "@author tag found: " + tags[index].text());
 			    }
 			    foundTags++;
 			} else {
 				// Report that no @author tags were found for this class
-				report.appendClassMessage("No @author tags found.");
+				report.appendMessage(ReportItem.CLASS, "No @author tags found.");
 				classError = true;
 			    missingAuthorTagCount++;
 			}
