@@ -28,7 +28,8 @@ import java.text.*;
 /**
  * The SpellCheck class is a tool to check spelling in comments. It is capable of determining
  * if a word is misspelled or a Java class name. Incorrect spellings for the same word are only
- * counted once.
+ * counted once. The dictionary word list comes from the public domain Yet Another Word List (YAWL)
+ * available at: http://gtoal.com/wordgames/yawl
  *
  * @author James Sant'Angelo
  * @author Peter DePasquale
