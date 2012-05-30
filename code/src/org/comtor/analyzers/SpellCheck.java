@@ -18,6 +18,7 @@
 package org.comtor.analyzers;
 
 import org.comtor.drivers.*;
+import org.comtor.reporting.*;
 import com.sun.javadoc.*;
 import java.io.*;
 import java.net.*;
@@ -33,12 +34,13 @@ import java.text.*;
  * @author Peter DePasquale
  */
 public final class SpellCheck implements ComtorDoclet {
-	// The analysis report (property list) returned by this doclet
-	private Properties prop = new Properties();
 	private float maxScore = 5;
 	private long totalWordCount = 0;
 	private long duplicateWord = 0;
 	
+	// Counters for the classes
+	private int numClasses = 0;
+
 	// Correctly spelled words (goodWords), incorrectly spelled words (badWords), user-defined
 	// valid words (validWords) [from the www interface], and user-defined symbols (userSymbols)
 	// [from the source code]
@@ -50,12 +52,13 @@ public final class SpellCheck implements ComtorDoclet {
 	// Dictionary of English words, Java class names, and HTML tags
 	private HashSet<String> dictionary = new HashSet<String>();
 
-	// A counter for the classes, used in the properties list
-	private int classID = -1;
+	// JSON analysis report from this module's execution
+	ModuleReport report = new ModuleReport ("Spell Check", "This module looks to compare words in comments against " +
+		"an English dictionary. The analysis includes the list of known Java API classes (JDK), HTML tags and attributes, " +
+		"Java keywords, and user-defined symbols from the submitted code (class names, method names, field names, etc.) " +
+		"COMTOR uses JavaDoc and JavaDoc does not provide access to local variables within methods and blocks. Thus, the " +
+		"word list is not exhaustive.");
 
-	// A formatter for the report
-	private DecimalFormat formatter = new DecimalFormat("##0000.000");
-	
 	/**
 	 * Performs pre-analysis initialization tasks. For example, loading the various dictionaries
 	 * and lists
@@ -205,9 +208,8 @@ public final class SpellCheck implements ComtorDoclet {
 	 * @return Properties list containing the result set
 	 */
 	public Properties analyze (RootDoc rootDoc) {
-		prop.setProperty("title", "Spell Checker");
-		prop.setProperty(formatter.format(-1), "The following word(s) is/are misspelled. Note " +
-			"that Javadoc tags (e.g. @param, @return, etc.) are not considered as comments.");
+		// prop.setProperty(formatter.format(-1), "The following word(s) is/are misspelled. Note " +
+		// 	"that Javadoc tags (e.g. @param, @return, etc.) are not considered as comments.");
 		
 		// Initialize the required tables
 		init(rootDoc);
@@ -217,31 +219,32 @@ public final class SpellCheck implements ComtorDoclet {
 
 		// Obtain and process the comments for each class
 		for (ClassDoc classDoc : rootDoc.classes()) {
-   			classID++;
+   			numClasses++;
    			processClass(classDoc);
-			prop.setProperty(formatter.format(classID), "Class: " + classDoc.qualifiedName());
    		}
 
 		// Capture the ending time, just after the termination of the analysis
 		long endTime = new Date().getTime();
 
 		// Set the score for this analysis and return the property list (report)
-		prop.setProperty("score", "" + getGrade());
-		prop.setProperty("metric1", "A total of " + classID + " class(es) were processed.");
-		prop.setProperty("metric2", "There were " + goodWords.size() + " correctly spelled words. " +
-			"Duplicate words were counted once.");
-		prop.setProperty("metric3", "There were " + badWords.size() + " incorrectly spelled words. " +
-			"Duplicate words were counted once.");
-		prop.setProperty("metric4", "There were " + duplicateWord + " duplicate words (spelled " +
-			"correctly or incorrectly).");
-		float percent = ((float) badWords.size() / totalWordCount);
-		String percentFormat = NumberFormat.getPercentInstance().format(percent); 
-		prop.setProperty("metric5", percentFormat + " of the words in the comments were misspelled.");
-		prop.setProperty("metric6", "There were a total of " + totalWordCount + " words analyzed.");
-		prop.setProperty("start time", Long.toString(startTime));
-		prop.setProperty("end time", Long.toString(endTime));
-		prop.setProperty("execution time", Long.toString(endTime - startTime));
-		return prop;
+		// prop.setProperty("score", "" + getGrade());
+		String percentFormat = NumberFormat.getPercentInstance().format(((float) badWords.size() / totalWordCount)); 
+		report.addMetric(percentFormat + " of the words in the comments were misspelled.");
+		report.addMetric(totalWordCount + " words analyzed.");
+		report.addMetric(numClasses + " class(es) were processed.");
+		report.addMetric(goodWords.size() + " correctly spelled words.");
+		report.addMetric(badWords.size() + " incorrectly spelled words.");
+		report.addMetric(duplicateWord + " duplicate words (spelled correctly or incorrectly).");
+
+		report.appendLongToObject("information", "classes processed", numClasses);
+
+		report.appendToAmble("preamble", "The @return tag is currently not processed.");
+
+		report.addTimingString("start time", Long.toString(startTime));
+		report.addTimingString("end time", Long.toString(endTime));
+		report.addTimingString("execution time", Long.toString(endTime - startTime));
+
+		return null;
 	}
 
 	/**
@@ -252,78 +255,52 @@ public final class SpellCheck implements ComtorDoclet {
 	 * @param classID The value of the classID counter, used to generate the reporting entry
 	 */
 	private void processClass (ClassDoc classDoc) {
-		float memberNum = 0.000f;
-		boolean misspell = false;
+		report.addItem(ReportItem.CLASS, classDoc.qualifiedName());
 
 		// Process the class' comments
-		boolean misspellingFound = parseComment(classID, memberNum, classDoc.commentText(),
-			"Class comments");
-		if (misspellingFound)
-			misspell = true;
+		boolean misspellingFound = parseComment(classDoc.commentText(), classDoc.position());
 		
 		// Process all of the class's tag comments
-		for (Tag tagComment : classDoc.tags()) {
-			memberNum += 0.001f;
-			misspellingFound = parseComment(classID, memberNum, tagComment.text(),
-				"Class tag comments (tag: " +  tagComment.name() + ")");
-			if (misspellingFound)
-				misspell = true;
-		}
+		// for (Tag tagComment : classDoc.tags()) {
+		// 	misspellingFound = parseComment(tagComment.text(), tagComment.position());
+		// }
 
 		// Process each constructor in the class
 		for (ConstructorDoc constructor : classDoc.constructors()) {
+			report.addItem(ReportItem.CONSTRUCTOR, constructor.qualifiedName());
+
 			// Obtain the method's comments and process
-			memberNum += 0.001f;
-			misspellingFound = parseComment(classID, memberNum, constructor.commentText(),
-				"Constructor comments " + '[' + constructor.name() + '(' +
-				Util.getParamTypeList(constructor) + ")]");
-			if (misspellingFound)
-				misspell = true;
+			misspellingFound = parseComment(constructor.commentText(), constructor.position());
 
 			// Obtain the comments for method's tags (param, returns, etc.) and process each
-			for (Tag tagComment : constructor.tags()) {
-				memberNum += 0.001f;
-				misspellingFound = parseComment(classID, memberNum, tagComment.text(),
-					"Constructor tag comments " + '[' + constructor.name() + '(' +
-					Util.getParamTypeList(constructor) + ")], tag: " + tagComment.name() + ")");
-				if (misspellingFound)
-					misspell = true;
-			}
-		}
-		
-		// Process all of the class' fields and the field's comments as well
-		for (FieldDoc classField : classDoc.fields()) {
-			memberNum += 0.001f;
-			misspellingFound = parseComment(classID, memberNum, classField.commentText(),
-				"Field / instance variable comments (field: " + classField.name() + ")");
-			if (misspellingFound)
-				misspell = true;
+			// for (Tag tagComment : constructor.tags()) {
+			// 	misspellingFound = parseComment(tagComment.text(), tagComment.position());
+			// }
 		}
 		
 		// Process each method in the class
 		for (MethodDoc method : classDoc.methods()) {
+			report.addItem(ReportItem.METHOD, method.qualifiedName());
+
 			// Obtain the method's comments and process
-			memberNum += 0.001f;
-			misspellingFound = parseComment(classID, memberNum, method.commentText(),
-				"Method comments [" + method.name() + '(' + Util.getParamTypeList(method) + ")]");
-			if (misspellingFound)
-				misspell = true;
+			misspellingFound = parseComment(method.commentText(), method.position());
 
-			// Obtain the comments for method's tags (param, returns, etc.) and process each
-			for (Tag tagComment : method.tags()) {
-				memberNum += 0.001f;
-				misspellingFound = parseComment(classID, memberNum, tagComment.text(),
-					"Method tag comments [" + method.name() + '(' + Util.getParamTypeList(method) + 
-					")], tag: " + tagComment.name() + ")");
-				if (misspellingFound)
-					misspell = true;
+			// Parse the parameter's comments (@param tag)
+			for (ParamTag param : method.paramTags()) {
+				report.addItem(ReportItem.PARAMETER, param.parameterName());
+				misspellingFound = parseComment(param.parameterComment(), param.position());
 			}
-		}
+			
+			// Obtain the comments for method's tags (param, returns, etc.) and process each
+			// for (Tag tagComment : method.tags()) {
+			// 	misspellingFound = parseComment(tagComment.text(), tagComment.position());
+			// }
+		}	
 
-		if (!misspellingFound) {
-			memberNum += 0.001f;
-			prop.setProperty(formatter.format((float) classID + memberNum), "No misspellings " +
-				"were found in this class.");
+		// Process all of the class' fields and the field's comments as well
+		for (FieldDoc classField : classDoc.fields()) {
+			report.addItem(ReportItem.FIELD, classField.qualifiedName());
+			misspellingFound = parseComment(classField.commentText(), classField.position());
 		}
 		
 		// Inner classes don't need to be processed. They are listed as part of the package-level
@@ -341,17 +318,12 @@ public final class SpellCheck implements ComtorDoclet {
 	 * @param memberID The value of the memberID counter, used to generate the reporting entry
 	 * @return returns a true value if there was a misspelled word found.
 	 */
-	private boolean parseComment(int classID, float memberID, String commentString, String label) {
+	private boolean parseComment(String comment, SourcePosition position) {
 		boolean result = false;
-		String fmtID = formatter.format(((float) classID) + memberID);
-		DecimalFormat shortFormatter = new DecimalFormat("000");
-		int itemID = 0;
-		String wordID = fmtID + '.' + shortFormatter.format(itemID++);
-		prop.setProperty(wordID, label);
 
 		// Replace all punctuation with spaces and then use a Scanner to process the "words"
 		// in the comment string
-		Scanner scan = new Scanner(commentString.replaceAll("[\\p{Punct}&&[^']]", " "));
+		Scanner scan = new Scanner(comment.replaceAll("[\\p{Punct}&&[^']]", " "));
 		
    		while (scan.hasNext()) {
 			String word = scan.next();
@@ -370,18 +342,13 @@ public final class SpellCheck implements ComtorDoclet {
 				}
 				// Conclude that the "word" is misspelled and place it in the correct list
 				catch (NumberFormatException e) {
-					wordID = fmtID + '.' + shortFormatter.format(itemID++);
-					prop.setProperty(wordID, word);
+					report.appendMessage(ReportItem.LASTITEM, "'" + word + "' considered a misspelled word " +
+						"on/near line " + position.line());
 					result = true;
 					if (!badWords.add(word))
 						duplicateWord++;
 				}
 			}
-		}
-		if (itemID == 1) {
-			// No "misspelled" words were found in this member, thus remove this member from
-			// the report
-			prop.remove(fmtID + '.' + shortFormatter.format(itemID-1));
 		}
 		return result;
 	}
@@ -428,11 +395,11 @@ public final class SpellCheck implements ComtorDoclet {
 	}
 
 	/**
-	* Sets the grading breakdown for the doclet.
-	*
-	* @param section Name of the section to set the max grade for
-	* @param maxGrade Maximum grade for the section
-	*/
+	 * Sets the grading breakdown for the doclet.
+	 *
+	 * @param section Name of the section to set the max grade for
+	 * @param maxGrade Maximum grade for the section
+	 */
 	public void setGradingBreakdown(String section, float maxGrade) {
 		if (section.equals("Spelling"))
 			maxScore = maxGrade;
@@ -492,6 +459,6 @@ public final class SpellCheck implements ComtorDoclet {
 	 * @return a string value containing the JSON report
 	 */
 	public String getJSONReport() {
-		return null;
+		return report.toString();
 	}
 }
