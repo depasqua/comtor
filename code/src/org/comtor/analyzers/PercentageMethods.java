@@ -18,6 +18,7 @@
 package org.comtor.analyzers;
 
 import org.comtor.drivers.*;
+import org.comtor.reporting.*;
 import com.sun.javadoc.*;
 import java.util.*;
 import java.text.*;
@@ -30,10 +31,18 @@ import java.text.*;
  * @author Peter DePasquale
  */
 public class PercentageMethods implements ComtorDoclet {
-	private Properties prop = new Properties();
 	private HashMap<String, Float> gradeBreakdown = new HashMap<String, Float>();
-	private int totalMethodsCommented = 0;
-	private int totalNumMethods = 0;
+
+	// Counters for the classes, constructors, methods, etc. used in the report
+	private int numClasses = 0;
+	private int numMethods = 0;
+	private int numConstructors = 0;
+	private int numCommentedMethods = 0;
+	private int numCommentedConstructors = 0;
+
+	// JSON analysis report from this module's execution
+	private ModuleReport report = report = new ModuleReport ("Percentage Methods", "This module calculates the " + 
+		"percentage of methods that have associated comments. ");
 
 	/**
 	 * Constructor for this doclet. By default, it sets the total number of possible "points" to 5.
@@ -55,93 +64,99 @@ public class PercentageMethods implements ComtorDoclet {
 	 * @return Properties list containing the result set
 	 */
 	public Properties analyze(RootDoc rootDoc) {
-		// A counter for the classes, used in the properties list
-		int classID = 0;
-		DecimalFormat formatter = new DecimalFormat("##0000.000");
 			
-		prop.setProperty("title", "Percentage Methods");
-		prop.setProperty(formatter.format(-1), "Note that if a class contains no user-defined " +
-			"constructors, the compiler includes a no-argument, uncommented default constructor. " +
-			"Javadoc, and thus COMTOR, has no way to eliminate this constructor from this " +
-			"analysis.");
+		report.appendToAmble("preamble", "If a class contains no user-defined constructors, the compiler includes " +
+			"a no-argument, uncommented default (nullary) constructor. Javadoc, and thus COMTOR, has no way to " +
+			"identify this type of constructor during analysis.");
 
 		// Capture the starting time, just prior to the start of the analysis
 		long startTime = new Date().getTime();
 
 		for (ClassDoc classdoc : rootDoc.classes()) {
-			int methodsCommented = 0;
-			int numMethods = 0;
-			double percentCommented = 0.0;
-			double propID = classID;
+			int localNumMethods = 0;
+			int localNumConstructors = 0;
+			int localNumCommentedMethods = 0;
+			int localNumCommentedConstructors = 0;
 			
-			// Format the ID number of this class, for the report
-			prop.setProperty(formatter.format(classID), "Class: " + classdoc.qualifiedName());
+			report.addItem(ReportItem.CLASS, classdoc.qualifiedName());
+			numClasses++;
 
 			// Count the number of commented constructors
 			ExecutableMemberDoc[] members = classdoc.constructors();
-			numMethods += members.length;
-			for (ExecutableMemberDoc docs : members)
+			numConstructors += members.length;
+			localNumConstructors = members.length;
+			for (ExecutableMemberDoc docs : members) {
+				report.addItem(ReportItem.CONSTRUCTOR, docs.name() + docs.flatSignature());
 				if (docs.getRawCommentText().length() > 0)
-					methodsCommented++;
-				else {
-					propID += 0.001;
-					prop.setProperty(formatter.format(propID)+".000", "Constructor " + 
-						docs.qualifiedName() + '(' + Util.getParamTypeList(docs) + 
-						") is not commented. (See note above.)");
-				}
+					localNumCommentedConstructors++;
+				else
+					report.appendMessage(ReportItem.LASTITEM, docs.name() + docs.flatSignature() +
+						" is not commented at/near line " + docs.position().line() + ". (See note.)");
+			}
 				
 			// Count the number of commented methods
 			members = classdoc.methods();
 			numMethods += members.length;
-			for (ExecutableMemberDoc docs : members)
+			localNumMethods = members.length;
+			for (ExecutableMemberDoc docs : members) {
+				report.addItem(ReportItem.METHOD, docs.name() + docs.flatSignature());
 				if (docs.getRawCommentText().length() > 0)
-					methodsCommented++;
-				else {
-					propID += 0.001;
-					prop.setProperty(formatter.format(propID)+".000", "Method " +
-						docs.qualifiedName() + '(' + Util.getParamTypeList(docs) +
-						") is not commented.");
-				}
+					localNumCommentedMethods++;
+				else
+					report.appendMessage(ReportItem.LASTITEM, docs.name() + docs.flatSignature() +
+						" is not commented at/near line " + docs.position().line() + ". (See note.)");
+			}
 			
-			propID += 0.001;
 			// Generate the report results
-			if  (numMethods != 0) {
+			if (numMethods + numConstructors != 0) {
 				// Update the running totals for the data observed in this class
-				totalMethodsCommented += methodsCommented;
-				totalNumMethods += numMethods;
+				numCommentedMethods += localNumCommentedMethods;
+				numCommentedConstructors += localNumCommentedConstructors;
 				
-				// Calculate the percentage of commented methods.
-				percentCommented = ((double) methodsCommented) / numMethods;
-
 				// Store percentCommented in the property list
-				prop.setProperty(formatter.format(propID)+".000", methodsCommented + " of the " + 
-					numMethods + " constructors / methods (" + Math.round(percentCommented * 100) + 
-					"%) in " + classdoc.qualifiedName() + " are commented.");
+
+				if (localNumMethods > 0)
+					report.appendMessage(ReportItem.CLASS, localNumCommentedMethods + " of the " + localNumMethods + 
+						" methods (" + Math.round(((double) localNumCommentedMethods) / localNumMethods * 100) + 
+						"%) are commented.");
+
+				if (localNumConstructors > 0)
+					report.appendMessage(ReportItem.CLASS, localNumCommentedConstructors + " of the " + localNumConstructors + 
+						" constructors (" + Math.round(((double) localNumCommentedConstructors) / localNumConstructors * 100) + 
+						"%) are commented.");
 			}
-			else {
-				// No methods / constructors present.
-				prop.setProperty(formatter.format(propID), classdoc.qualifiedName() + 
-					" has no methods or constructors.");
-			}
-			classID++;
 		}
-		double totalPercent = (((double) totalMethodsCommented) / totalNumMethods);
-		NumberFormat percentFormatter = NumberFormat.getPercentInstance();
+
+		double totalPercentMethods = (((double) numCommentedMethods) / numMethods);
+		double totalPercentConstructors = (((double) numCommentedConstructors) / numConstructors);
 		
 		// Capture the ending time, just after the termination of the analysis
 		long endTime = new Date().getTime();
 
-		prop.setProperty("metric1", "A total of " + classID + " class(es) were processed.");
-		prop.setProperty("metric2", "A total of " + totalMethodsCommented + " of the " + 
-			totalNumMethods + " methods (" + percentFormatter.format(totalPercent) + ") " +
-			"present were commented.");
-		prop.setProperty("score", "" + getGrade());
-		prop.setProperty("start time", Long.toString(startTime));
-		prop.setProperty("end time", Long.toString(endTime));
-		prop.setProperty("execution time", Long.toString(endTime - startTime));
+		report.appendLongToObject("information", "classes processed", numClasses);
+		report.appendLongToObject("information", "constructors processed", numConstructors);
+		report.appendLongToObject("information", "constructors commented", numCommentedConstructors);
+		report.appendLongToObject("information", "methods processed", numMethods);
+		report.appendLongToObject("information", "methods commented", numCommentedMethods);
+		report.addMetric(numClasses + " class(es) were processed.");
+		
+		report.addMetric(numMethods + " method(s) were processed.");
+		report.addMetric(numCommentedMethods + " method(s) were commented.");
+		report.addMetric(Math.round(((double) numCommentedMethods) / numMethods * 100) +
+			"% method(s) were commented across all classes.");
 
-		// Return the property list (report)
-		return prop;
+		report.addMetric(numConstructors + " constructors(s) were processed.");
+		report.addMetric(numCommentedConstructors + " constructors(s) were commented.");
+		report.addMetric(Math.round(((double) numCommentedConstructors) / numConstructors * 100) +
+			"% constructors(s) were commented across all classes.");
+
+		// prop.setProperty("score", "" + getGrade());
+
+		report.addTimingString("start time", Long.toString(startTime));
+		report.addTimingString("end time", Long.toString(endTime));
+		report.addTimingString("execution time", Long.toString(endTime - startTime));
+
+		return null;
 	}
 
 	/*
@@ -162,10 +177,10 @@ public class PercentageMethods implements ComtorDoclet {
 	public float getGrade() {
 		float percent = 0;
 		
-		if (totalNumMethods == 0)
+		if (numMethods == 0)
 			percent = 1.0f;
 		else
-			percent = ((float) totalMethodsCommented) / totalNumMethods;
+			percent = ((float) numCommentedMethods) / numMethods;
 			
 		return percent * gradeBreakdown.get("TotalPoints");
 	}
@@ -204,6 +219,6 @@ public class PercentageMethods implements ComtorDoclet {
 	 * @return a string value containing the JSON report
 	 */
 	public String getJSONReport() {
-		return null;
+		return report.toString();
 	}
 }
