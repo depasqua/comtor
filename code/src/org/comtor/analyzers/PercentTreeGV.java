@@ -97,7 +97,6 @@ public class PercentTreeGV
 	ClassDoc [] classes = null;
 	
 	prop.setProperty("title", "Percent Tree (Density) via GraphViz output");
-	prop.setProperty(formatter.format(-1), "Preamble notes go here.");
 	
 	// Capture the starting time, just prior to the start of the analysis
 	long startTime = new Date().getTime();
@@ -218,14 +217,14 @@ public class PercentTreeGV
 				 ioex1.getMessage());
 		//bail on output
 		outputFail = true;
-	    }
-	    
+	    }	    
 	}
 	
 	// Capture the ending time, just after the termination of the analysis
 	long endTime = new Date().getTime();
 	
 	prop.setProperty("output filename", f.getAbsolutePath());
+	prop.setProperty("to generate an image, run this command: ", "twopi -Tpdf -ograph.pdf comments.dot");
 	prop.setProperty("metric1", "A total of " + classID + " class(es) were processed.");
 	prop.setProperty("score", "" + getGrade());
 	prop.setProperty("start time", Long.toString(startTime));
@@ -373,27 +372,31 @@ public class PercentTreeGV
      * open and available for writing. Caller assumes responsibility for
      * flushing and closing.
      */
-    private void writeDotFile(PrintWriter fout) throws IOException {
-		Enumeration edges = m_edges.elements();
-		Enumeration nodes = m_nodes.elements();
-		String edge;
-		GVNode node;
+    private void writeDotFile(PrintWriter fout)
+	throws IOException
+    {
+	Enumeration edges = m_edges.elements();
+	Enumeration nodes = m_nodes.elements();
+	String edge;
+	GVNode node;
 
-		//write nodes
-		while( nodes.hasMoreElements() )
-		{
-		    node = (GVNode)nodes.nextElement();
-		    if(node.commented)
-			fout.print("\""+node.name+"\""+" [ label=\"\",shape=\""+node.shape+"\",style=\"filled\",color=\"green\" ];\n");
-		    else
-			fout.print("\""+node.name+"\""+" [ label=\"\",shape=\""+node.shape+"\",style=\"filled\",color=\"grey\" ];\n");
-		}	
+	//write nodes
+	while( nodes.hasMoreElements() )
+	{
+	    node = (GVNode)nodes.nextElement();
+	    if(node.commented)
+		fout.print("\""+node.name+"\""+" [ label=\"\",shape=\""+node.shape+"\",style=\"filled\",color=\"green\" ];\n");
+	    else
+		fout.print("\""+node.name+"\""+" [ label=\"\",shape=\""+node.shape+"\",style=\"filled\",color=\"grey\" ];\n");
+	}	
 
-		//write edges
-		while( edges.hasMoreElements() ) {
-		    edge = (String)edges.nextElement();
-		    fout.print("\""+edge+"\""+" [ color=\"black\",arrowhead=\"dot\" ] ;\n");
-		}
+	//write edges
+	while( edges.hasMoreElements() )
+	{
+	    edge = (String)edges.nextElement();
+	    fout.print("\""+edge+"\""+" [ color=\"black\",arrowhead=\"dot\" ] ;\n");
+	}
+	return;
     }
 
 	/*
@@ -440,7 +443,16 @@ public class PercentTreeGV
      * @return the string name of this analyzer
      */
     public String toString() {
-		return "PercentTreeGV";
+	return "PercentTreeGV";
+    }
+
+    /**
+     * Returns the string representation of this module's report (JSON format)
+     *
+     * @return a string value containing the JSON report
+     */
+    public String getJSONReport() {
+	return null;
     }
 
     /**
@@ -453,21 +465,16 @@ public class PercentTreeGV
      * whose toString creates the GV program, or has facilities for
      * gradually constructing a .dot file via a programmatic interface
      * (i.e., hiearchy of objects) to an edgemap or adjacency matrix.
+     *
+     * @author Michael E. Locasto
      */
     private class GVNode
     {
-		public static final String DEFAULT_ROOT_NODE_NAME = "centre";
-		public String name = null;
-		public boolean commented = false;
-		public String shape = "box";
+	public static final String DEFAULT_ROOT_NODE_NAME = "centre";
+	public String name = null;
+	public boolean commented = false;
+	public String shape = "box";
     }
 
-  /**
-   * Returns the string representation of this module's report (JSON format)
-   *
-   * @return a string value containing the JSON report
-   */
-  public String getJSONReport() {
-    return null;
-  }
+
 }
