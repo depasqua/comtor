@@ -61,7 +61,7 @@ public class AWSServices {
 			request.withDestination(dest);
 
             String msgText = "<img style=\"margin-left: auto; margin-right: auto; display: block;\" " +
-					"src=\"http://dev.comtor.org:8080/comtor/imgs/comtorLogo.png\" width=\"320\" " +
+					"src=\"http://www.comtor.org/website/images/comtor/comtorLogo.png\" width=\"160\" " +
 					"alt=\"COMTOR logo\"/>";
 			msgText += "Thank you for your submission to the COMTOR system. Your report is "; 
 			msgText += "now available for access/download at the following URL: " + url + ". ";
@@ -77,11 +77,11 @@ public class AWSServices {
 
         } catch (AmazonClientException e) {
             e.printStackTrace();
-            System.out.println("Caught a AmazonClientException, which means that there was a "
+            System.err.println("Caught a AmazonClientException, which means that there was a "
                     + "problem sending your message to Amazon's E-mail Service check the "
                     + "stack trace for more information.");
         } catch (IOException ieo) {
-        	System.out.println(ieo);
+        	System.err.println(ieo);
         }
 	}
 
