@@ -42,7 +42,7 @@ public class Comtor {
 	public static void main (String [] args) {
 		// Validate the argument list and print the options listing if validation fails.
 		if (!checkArgs(args)) {
-			System.out.println(optionsListing());
+			System.err.println(optionsListing());
 			System.exit(1);
 		} else {
 			// Process the arguments
@@ -65,11 +65,12 @@ public class Comtor {
 
 		if (dirpath.equals("."))
 			dirpath = System.getProperty("user.dir");
+
 		codeDir = dirpath;
 	
 		// Loads the list of doclets to execute from the config file in the from which
 		// execution is originating
-		loadDocletList();
+		loadDocletList(dirpath);
 		
 		// Find non-packaged code in the specified dir and add them to the options vector
 		String[] fileList = findFiles(dirpath);
@@ -77,7 +78,7 @@ public class Comtor {
 			jdocsoptions.add(file);
 	
 		// Find packages in the specified dir and add them to the options vector.
-		System.out.println("Found the following packages:");
+		System.err.println("Found the following packages:");
 		LinkedList<String> packageList = findPackages(codeDir);
 		
 		// Add the -private option to the javadoc parameter list, ensuring that ALL classes
@@ -92,22 +93,22 @@ public class Comtor {
 			jdocsoptions.add(pkg);
 
 		// Process the options list for preparation in handing it to Javadoc
-		System.out.println("\njavadoc options: ");
+		System.err.println("\njavadoc options: ");
 
 		String[] optionslist = new String[jdocsoptions.size()];
 		int index = 0;
 		for (String option : jdocsoptions) {
 			optionslist[index] = jdocsoptions.elementAt(index);
-			System.out.print(" " + optionslist[index++]);
+			System.err.print(" " + optionslist[index++]);
 		}
-		System.out.println();
+		System.err.println();
 
 		// Execute the javadoc processor handing it a String name of the application (for error
 		// output), the name of the doclet to execute (our stand alone version of the master doclet
 		// that does attempt to database its results), and an array of arguments.
 		com.sun.tools.javadoc.Main.execute("COMTOR", "org.comtor.drivers.ComtorStandAlone", optionslist);
 		
-		System.out.println("Execution complete.");
+		System.err.println("Execution complete.");
 	}
 	
 	/**
@@ -151,7 +152,7 @@ public class Comtor {
 			if (containsJavaFiles(candidate)) {
 				item = item.replaceAll(fileSep, ".");
 				packageListing.add(item);
-				System.out.println("\t" + item);
+				System.err.println("\t" + item);
 			}
 		}	
 
@@ -285,17 +286,17 @@ public class Comtor {
 	 * Attempts to load the doclet list (to execute specified doclets) through a Java properties
 	 * file
 	 */
-	private static void loadDocletList() {
+	private static void loadDocletList(String location) {
 		try {
-			File docletListFile = new File ("docletList.properties");
+			File docletListFile = new File (location, "docletList.properties");
+			System.err.println("Attempting to load docletList.properties file from : " + location);
 			if (docletListFile.exists()) {
 				docPropList.load(new FileInputStream(docletListFile));
 
 			} else {
 				System.err.println("A 'docletList.properties' file must exist, providing the fully " +
-					"qualified class names of the doclets to execute.\nFor example, " +
-					"comtor.analyzers.SpellCheck");
-				System.err.println("This file must be in Java properties format. For example: ");
+					"qualified class names of the doclets to execute as a Javadoc list of name value " +
+					"pairs for the doclet[x] name.\nFor example: ");
 				System.err.println("\tdoclet1 : org.comtor.analyzers.SpellCheck");
 				System.err.println("\tdoclet2 : org.comtor.analyzers.ReadingLevel");
 				System.exit(1);
