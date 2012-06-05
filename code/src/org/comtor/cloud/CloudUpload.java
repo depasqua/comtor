@@ -91,7 +91,14 @@ public class CloudUpload extends HttpServlet {
 						java.io.File.separator + sessionID;
 			String docletFileName = pathToFile + java.io.File.separator + "docletList.properties";
 			BufferedWriter fwrite = new BufferedWriter(new FileWriter(new File(docletFileName)));
-			int docletNum = 1;
+			fwrite.write("doclet1 : org.comtor.analyzers.SpellCheck");
+			fwrite.newLine();
+			fwrite.write("doclet2 : org.comtor.analyzers.OffensiveWords");
+			fwrite.newLine();
+			fwrite.write("doclet3 : org.comtor.analyzers.CheckAuthor");
+			fwrite.newLine();
+			fwrite.write("doclet4 : org.comtor.analyzers.PercentageMethods");
+			fwrite.newLine();
 
 			// Handle HTTP form request data
 			Iterator itr = uploadHandler.parseRequest(request).iterator();
@@ -101,11 +108,7 @@ public class CloudUpload extends HttpServlet {
 				if (item.isFormField()) {
 					if (item.getFieldName().equals("email"))
 						emailAddress = new String(item.get());
-
-					else if (item.getFieldName().equals("module"))
-						fwrite.write("doclet" + docletNum++ + " : " + item.getString() + "\n");
-				}
-				else {
+				} else {
 					// Obtain the uploaded filename and write the file to the destination location
 					File file = new File(pathToFile + java.io.File.separator + item.getName());
 					item.write(file);
@@ -155,26 +158,54 @@ public class CloudUpload extends HttpServlet {
 				gAnalytics += "		</script>\n";
 
 				// Start of output returned
-				out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">");
-				out.println("<html>");
-				out.println("	<head>");
-				out.println("		<META HTTP-EQUIV=\"refresh\" CONTENT=\"5;URL=http://cloud.comtor.org\">");
-				out.println("		<title>/** COMTOR **/</title>");
-				out.println("		<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/login.css\" media=\"screen\"/>");
-				out.println(gAnalytics);
-				out.println("	</head>");
+				out.println("<!DOCTYPE html>");
+				out.println("<html lang=\"en\">");
+				out.println("\t<head>");
 
-				out.println("	<body>");
-				out.println("		<img style=\"margin-left: auto; margin-right: auto; display: block;\"" +
-					"src=\"imgs/comtorLogo.png\" width=\"320\" alt=\"COMTOR logo\"/>");
-				out.println("		<br/>");
-				out.println("<p style=\"width: 600px; margin-left: auto; margin-right: auto;\">");
-				out.println("Thank you for your submission. We will email you the results shortly. ");
-				out.println("Please be sure to add comtor@tcnj.edu to your address book to ensure ");
-				out.println("email delivery of the results.\n\nReturning to the main page in ");
-				out.println("5 seconds...</p>");
-				out.println("	</body>");
-				out.println("</html>");				
+				String contextBase = "http://" + request.getServerName();
+				String contextPath = request.getContextPath();
+
+				if (request.getServerPort() != 80)
+					contextBase += ":" + request.getServerPort();
+
+				if (contextPath.equals(""))
+					contextBase += "/";
+				else
+					contextBase += contextPath;
+
+				out.println("\t\t<meta http-equiv=\"refresh\" content=\"5;URL=" + contextBase + "\">");
+				out.println("\t\t<title>/** COMTOR **/</title>");
+				out.println("\t\t<link rel=\"stylesheet\" href=\"stylesheets/app.css\"/>");
+				out.println("\t\t<link rel=\"stylesheet\" href=\"stylesheets/foundation.css\"/>");
+				out.println("\t\t<link rel=\"stylesheet\" href=\"stylesheets/ie.css\"/>");
+				out.println(gAnalytics);
+
+				out.println("\t\t<script type=\"text/javascript\" src=\"scripts/jquery.min.js\"></script>");
+				out.println("\t\t<script type=\"text/javascript\" src=\"scripts/app.js\"></script>");
+				out.println("\t\t<script type=\"text/javascript\" src=\"scripts/foundation.js\"></script>");
+				out.println("\t\t<script type=\"text/javascript\" src=\"scripts/modernizr.foundation.js\"></script>");
+				out.println("\t\t<script type=\"text/javascript\" src=\"scripts/validate.min.js\"></script>");
+				out.println("\t</head>");
+				out.println("\t\t<body>");
+				out.println("\t\t\t<div class=\"container\">");
+				out.println("\t\t\t\t<div class=\"row\" style=\"margin-top: 30px; margin-bottom:15px;\">");
+				out.println("\t\t\t\t\t<div class=\"six columns centered\">");
+				out.println("\t\t\t\t\t\t<div style=\"text-align: center\">");
+				out.println("\t\t\t\t\t\t\t<img src=\"images/comtor/comtorLogo.png\" alt=\"COMTOR logo\"/>");
+				out.println("\t\t\t\t\t\t</div>");
+				out.println("\t\t\t\t\t</div>");
+				out.println("\t\t\t\t</div>");
+				out.println("\t\t\t<div class=\"row\">");
+				out.println("\t\t\t\t<div class=\"eight columns centered\">");
+				out.println("\t\t\t\t\t<p>Thank you for your submission to the COMTOR system. We will email you the ");
+				out.println("\t\t\t\t\t\tresults shortly. Please be sure to add comtor@tcnj.edu to your address book ");
+				out.println("\t\t\t\t\t\tto ensure email delivery of the results.</p>");
+				out.println("\t\t\t\t\t<p>Returning to the main page in  5 seconds...</p>");
+				out.println("\t\t\t\t</div>");
+				out.println("\t\t\t</div>");
+				out.println("\t\t</div>");
+				out.println("\t</body>");
+				out.println("</html>");
 			} catch (Exception ex) {
 				System.err.println(ex);
 			}
@@ -227,7 +258,7 @@ public class CloudUpload extends HttpServlet {
 					}
 			}
 		} catch (Exception ex) {
-			System.err.println("Error encountered while unjarring");
+			System.err.println("Error encountered while unjarring.");
 		}
 	}
 }

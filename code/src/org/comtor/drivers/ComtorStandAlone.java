@@ -54,7 +54,6 @@ public class ComtorStandAlone extends Doclet {
 		try {
 			Vector<String> jsonReportVector = new Vector<String>();
 
-//			Vector<Properties> resultsVector = new Vector<Properties>(); 
 			Vector<DocletThread> threads = new Vector<DocletThread>();
 			Properties docletSet = Comtor.getDocletList();
 
@@ -90,7 +89,7 @@ public class ComtorStandAlone extends Doclet {
 					// Fetch the JSON report for this analyzer
 					jsonReportVector.addElement(docThrd.getJSONReport());
 			}
-				
+
 			TextReporter reporter = new TextReporter();
 			reporter.generateTextReportFile(jsonReportVector);
 		}
@@ -107,7 +106,6 @@ public class ComtorStandAlone extends Doclet {
 		}
 		return true;
 	}
-
 	
 	/**
 	 * Returns the current mode of operation

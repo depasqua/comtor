@@ -1,19 +1,12 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 	<head>
-		<title>/** COMTOR **/</title>
-		<link rel="stylesheet" type="text/css" href="styles/style.css" media="screen"/>
-		<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
-		<script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
-
-		<script>
-		  $(document).ready(function() {
-			$("#uploadForm").validate();
-		  });
-		</script>
+		<title>COMTOR - The Java Source Code Comment Mentoring System (Cloud Version)</title>
+		<link rel="stylesheet" href="stylesheets/app.css">
+		<link rel="stylesheet" href="stylesheets/foundation.css">
+		<link rel="stylesheet" href="stylesheets/ie.css">
 
 		<script type="text/javascript">
-		
 		  var _gaq = _gaq || [];
 		  _gaq.push(['_setAccount', 'UA-1641868-7']);
 		  _gaq.push(['_trackPageview']);
@@ -23,56 +16,89 @@
 			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 		  })();
-		
 		</script>
 
+		<script type="text/javascript" src="scripts/jquery.min.js"></script>
+		<script type="text/javascript" src="scripts/app.js"></script>
+		<script type="text/javascript" src="scripts/foundation.js"></script>
+		<script type="text/javascript" src="scripts/modernizr.foundation.js"></script>
+		<script type="text/javascript" src="scripts/validate.min.js"></script>
 	</head>
 
 	<body>
-		<img class="comtorLogo" width="320" src="imgs/comtorLogo.png" alt="COMTOR logo"/>
-		<br/>
-
-		<div class="tagline">Upload your Java source code in a .jar file and we'll analyze the comments!
+	<div class="container">
+		<div class="row" style="margin-top: 30px; margin-bottom:15px;">
+			<div class="six columns centered">
+				<div style="text-align: center">
+					<img src="images/comtor/comtorLogo.png" alt="COMTOR logo"/>
+					<p style="font-size: small; font-weight: bold">Upload your Java source code in a .jar file and we'll analyze the<br/>comments and email you the results!</p>
+				</div>
+			</div>
 		</div>
-		
-		<form action="upload" id="uploadForm" enctype="multipart/form-data" method="POST">
-			<div style="margin-top:2px; float: left; width: 250px;">
-				<label for="email">E-mail:</label><br/>
-				<input type="text" name="email" class="required email"><br/>
-				<label style="margin-top: 10px;">File:</label><br/>
-				<input type="file" name="jarfile" class="required"/><br/>
-			</div>
-			<div style="margin-top: 2px; float: right; width: 350px;">
-				<fieldset>
-					<legend>Select analysis modules to execute</legend>
-					<label for="mod_spellcheck" style="margin-bottom: 10px;">
-						<input class="required" type="checkbox"	id="mod_spellcheck" name="module"
-							minlength="1" value="org.comtor.analyzers.SpellCheck"/>Spelling checker
-					</label><br/>
-					
-					<label for="mod_offensive" style="margin-bottom: 10px;">
-						<input class="required" type="checkbox" id="mod_offensive" name="module"
-							value="org.comtor.analyzers.OffensiveWords"/>Offensive word checker
-					</label><br/>
-					
-					<label for="mod_percent" style="margin-bottom: 10px;">
-						<input class="required" type="checkbox" id="mod_percent" name="module"
-							value="org.comtor.analyzers.PercentageMethods"/>% of methods commented
-					</label><br/>
-					
-					<label for="module" class="error">Please select at least one!</label>
-					</fieldset>
-				<br/>
-			</div>
-			<div style="text-align:center; clear: both; width: 600px;">
-				<input type="Submit" id="check" class="submit" value="Analyze!"/><br/>
+
+		<form class="nice" action="upload" id="uploadForm" enctype="multipart/form-data" method="POST">
+			<div class="row">
+				<div class="four columns centered">
+
+						<label for="email">E-mail:</label>
+						<input type="text" name="email" class="medium input-text" placeholder="you@somewhere.com"
+							style="margin-bottom: 25px;"/>
+	
+						<label for="jarfile">Java .jar file: (containing source code files)</label>
+						<input type="file" name="jarfile" style="margin-bottom: 25px;"/>
+
+					<div style="text-align: center; margin-bottom: 25px;">
+						<a href="javascript:submitForm()" class="nice radius medium blue button">Analyze</a>
+					</div>
+				</div>
 			</div>
 		</form>
 
-		<br/>
-		<div class="footer">
-			Learn more about the <a href="http://www.comtor.org">
-			COMTOR project</a> today.<br/>See our <a href="faq.html">FAQ</a>!
+		<div class="row">
+			<div class="six columns centered">
+				<div style="text-align: center;">
+					Learn more about the <a href="http://www.comtor.org">COMTOR project</a> today.<br/>
+					See our <a href="faq.html">FAQ</a>!
+				</div>
+			</div>
 		</div>
+
+		<div id="errorModal" class="reveal-modal">
+			<h2>Uh no...</h2>
+			<p class="lead">Your submission has some issues:</p>
+			<span id="errorList"></span>
+			<a class="close-reveal-modal">&#215;</a>
+		</div>
+
+	</div>
+
+	<script type="text/javascript" >
+		function submitForm() {
+			if (document.forms["uploadForm"].onsubmit())
+				document.forms["uploadForm"].submit();
+		}
+	</script>
+
+	<script type="text/javascript" >
+		var validator = new FormValidator('uploadForm', [{
+		    name: 'email',
+		    display: 'email',    
+		    rules: 'required|valid_email'
+		}, {
+			name: 'jarfile',
+			display: 'file upload',
+			rules: 'required'
+		}], function(errors, event) {
+		    if (errors.length > 0) {
+				var errorString = '';
+
+        		for (var i = 0, errorLength = errors.length; i < errorLength; i++)
+            		errorString += '* ' + errors[i].message + '<br/>';
+				
+				document.getElementById("errorList").innerHTML = errorString;
+				$('#errorModal').reveal();
+			}
+		});
+		</script>
+
 	</body>
-</html>

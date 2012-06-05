@@ -20,6 +20,7 @@ package org.comtor.reporting;
 import java.io.*;
 import java.text.*;
 import java.util.*;
+import org.comtor.drivers.*;
 import org.json.*;
 
 public class TextReporter {
@@ -40,15 +41,17 @@ public class TextReporter {
 			// Check to see the output file currently exists, if so, delete the old file to
 			// replace it with a new one. We should improve this to use a date/time stamp in
 			// the file name so that deletion is redundant.
-			File outputFile = new File(path);
+			File outputFile = new File(Comtor.getCodeDir(), path);
 			if (outputFile.exists())
 				outputFile.delete();
 
 			// Create a new output report file, and prepare it for writing
-			PrintWriter outFilePW = new PrintWriter(new BufferedWriter(new FileWriter(path)));
+			PrintWriter outFilePW = new PrintWriter(new BufferedWriter(new FileWriter(
+				new File(Comtor.getCodeDir(), path))));
 
 			// For debugging, create a JSON Output file
-			PrintWriter jsonFile = new PrintWriter(new BufferedWriter(new FileWriter("jsonOut.txt")));
+			PrintWriter jsonFile = new PrintWriter(new BufferedWriter(new FileWriter(
+				new File(Comtor.getCodeDir(), "jsonOut.txt"))));
 
 			// Write the header of the debug file
 			outFilePW.println("COMTOR Execution Report - " + (new java.util.Date()).toString());
@@ -443,55 +446,5 @@ public class TextReporter {
 		}
 
 		return result;
-	}
-
-	/**
-	 * Accepts a Vector of properties (analysis report) and writes it to a file. Each Vector location
-	 * contains the Properties list of a report for one analysis module.
-	 *
-	 * @param resultsVector The Vector of Properties objects which contains the report for each
-	 * analysis module.
-	 */
-	private static void generateOutputFile(Vector<Properties> resultsVector) {
-	
-		// Set the path for the location of the report output file.
-		String path = "comtorReport.txt";
-		try {
-
-			// Check to see the output file currently exists, if so, delete the old file to
-			// replace it with a new one. We should improve this to use a date/time stamp in
-			// the file name so that deletion is redundant.
-			File outputFile = new File(path);
-			if (outputFile.exists())
-				outputFile.delete();
-
-			// Create a new output report file, and prepare it for writing
-			PrintWriter outFilePW = new PrintWriter(new BufferedWriter(new FileWriter(path)));
-
-			// Write the header of the debug file
-			outFilePW.println("COMTOR Execution Report");
-			outFilePW.println((new java.util.Date()).toString());
-			outFilePW.println("==========================================");
-			
-			// For each vector element, each of which is a properties list from the reports created
- 			for (Properties results : resultsVector) {
-				// Fetch the keys, add them to an array, sort and then print results
-				Enumeration keyList = results.keys();
-				String keyArray[] = new String[results.size()];
-				int index = 0;
-				for (Enumeration e = keyList; e.hasMoreElements(); ) {
-					String key = (String) e.nextElement();
-					keyArray[index++] = key;
-				}
-				Arrays.sort(keyArray);
- 				for (String key : keyArray)
- 					outFilePW.println(key + '\t' + results.getProperty(key));
-				outFilePW.println("------------------------------------------------------");
-			}
-			outFilePW.close();
-		}
-		catch (IOException e) {
-			System.out.println(e);
-		}
 	}
 }
