@@ -139,7 +139,7 @@ public class AuthorMap
 			missingAuthorTagCount++;
 			//don't output lonely classes? or collapse them somehow?
 			//m_gvproxy.addNode(classname, "ellipse", "gray");
-			m_gvproxy.addNode(classname, "ellipse", "white");
+			//m_gvproxy.addNode(classname, "ellipse", "white");
 		    }
 		    if (classError != false)
 			classesWithErrors++;
