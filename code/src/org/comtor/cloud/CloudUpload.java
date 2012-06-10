@@ -178,7 +178,7 @@ public class CloudUpload extends HttpServlet {
 				out.println("\t\t<script type=\"text/javascript\" src=\"scripts/validate.min.js\"></script>");
 				out.println("\t</head>");
 
-				// Read the analytics code for inclusion
+				// Read the upload acknowledgement code for inclusion
 				RequestDispatcher uploadDispatcher = request.getRequestDispatcher("/fragments/uploadAcknowledge.html");
 				uploadDispatcher.include(request, response);
 
