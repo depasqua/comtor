@@ -145,18 +145,6 @@ public class CloudUpload extends HttpServlet {
 				AWSServices.storeCloudUse(requesterIPAddress, sessionID, reportURLString,
 						emailAddress, now.getTime().toString());
 				
-				// Set the analytics code
-				String gAnalytics = "		<script type=\"text/javascript\">\n";
-				gAnalytics += "		  var _gaq = _gaq || [];\n";
-				gAnalytics += "		  _gaq.push(['_setAccount', 'UA-1641868-7']);\n";
-				gAnalytics += "		  _gaq.push(['_trackPageview']);\n";
-				gAnalytics += "		  (function() {\n";
-				gAnalytics += "			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;\n";
-				gAnalytics += "			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\n";
-				gAnalytics += "			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);\n";
-				gAnalytics += "		  })();\n";
-				gAnalytics += "		</script>\n";
-
 				// Start of output returned
 				out.println("<!DOCTYPE html>");
 				out.println("<html lang=\"en\">");
@@ -178,7 +166,10 @@ public class CloudUpload extends HttpServlet {
 				out.println("\t\t<link rel=\"stylesheet\" href=\"stylesheets/app.css\"/>");
 				out.println("\t\t<link rel=\"stylesheet\" href=\"stylesheets/foundation.css\"/>");
 				out.println("\t\t<link rel=\"stylesheet\" href=\"stylesheets/ie.css\"/>");
-				out.println(gAnalytics);
+
+				// Read the analytics code for inclusion
+				RequestDispatcher analyticsDispatcher = request.getRequestDispatcher("/fragments/googleAnalytics.js");
+				analyticsDispatcher.include(request, response);
 
 				out.println("\t\t<script type=\"text/javascript\" src=\"scripts/jquery.min.js\"></script>");
 				out.println("\t\t<script type=\"text/javascript\" src=\"scripts/app.js\"></script>");
@@ -186,25 +177,11 @@ public class CloudUpload extends HttpServlet {
 				out.println("\t\t<script type=\"text/javascript\" src=\"scripts/modernizr.foundation.js\"></script>");
 				out.println("\t\t<script type=\"text/javascript\" src=\"scripts/validate.min.js\"></script>");
 				out.println("\t</head>");
-				out.println("\t\t<body>");
-				out.println("\t\t\t<div class=\"container\">");
-				out.println("\t\t\t\t<div class=\"row\" style=\"margin-top: 30px; margin-bottom:15px;\">");
-				out.println("\t\t\t\t\t<div class=\"six columns centered\">");
-				out.println("\t\t\t\t\t\t<div style=\"text-align: center\">");
-				out.println("\t\t\t\t\t\t\t<img src=\"images/comtor/comtorLogo.png\" alt=\"COMTOR logo\"/>");
-				out.println("\t\t\t\t\t\t</div>");
-				out.println("\t\t\t\t\t</div>");
-				out.println("\t\t\t\t</div>");
-				out.println("\t\t\t<div class=\"row\">");
-				out.println("\t\t\t\t<div class=\"eight columns centered\">");
-				out.println("\t\t\t\t\t<p>Thank you for your submission to the COMTOR system. We will email you the ");
-				out.println("\t\t\t\t\t\tresults shortly. Please be sure to add comtor@tcnj.edu to your address book ");
-				out.println("\t\t\t\t\t\tto ensure email delivery of the results.</p>");
-				out.println("\t\t\t\t\t<p>Returning to the main page in  5 seconds...</p>");
-				out.println("\t\t\t\t</div>");
-				out.println("\t\t\t</div>");
-				out.println("\t\t</div>");
-				out.println("\t</body>");
+
+				// Read the analytics code for inclusion
+				RequestDispatcher uploadDispatcher = request.getRequestDispatcher("/fragments/uploadAcknowledge.html");
+				uploadDispatcher.include(request, response);
+
 				out.println("</html>");
 			} catch (Exception ex) {
 				System.err.println(ex);
