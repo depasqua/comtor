@@ -40,16 +40,14 @@ import java.io.IOException;
  * Currently, this demonstration class (i.e., FileClient) creates a
  * code store that simply provides an in-memory Java Hashtable.
  *
- * You shouldn't use this for anything - it is a proof of concept.
+ * You shouldn't use this for anything - it is a proof of concept. It
+ * also serves as a code example for writing other clients.
  *
  * @author Michael E. Locasto
  */
 public class FileClient
     extends CodeStoreClient
 {
-    private ICodeStore m_store = null;
-    private CodeStoreConf m_conf = new CodeStoreConf();
-    private String m_conffile = "";
     private String m_filename = "";
     private BufferedReader m_fin = null;
 
@@ -59,12 +57,15 @@ public class FileClient
      */
     public FileClient(String [] args)
     {
-	m_conffile = args[0];
-	try{
-	    kickoff();
-	}catch(Exception e){
-	    e.printStackTrace();
+	boolean configured = false;
+	
+	configured = executeConfig(args[0]);
+	if(!configured)
+	{
+	    System.err.println("[FileClient]: configuration failed...aborting");
+	    return;
 	}
+	kickoff(); // call internal service routine
     }
 
     /**
@@ -92,6 +93,11 @@ public class FileClient
      * Iterate over pieces.
      * Create CodeChunk for each piece.
      * Store each CodeChunk into m_store.
+     * Close file handle when done.
+     *
+     * @assumption: m_store is configured and operational
+     * @assumption: m_fin is setup and open
+     * @assumption: we bear responsibility for closing m_fin
      */
     private void doStorage()
     {
@@ -105,68 +111,41 @@ public class FileClient
 	    tmp = new CodeChunk();
 	    tmp.setType(CodeChunk.CCHUNK_RAW_TEXT_TYPE);
 	    tmp.setText(line);
-	    tmp.setName(""+lineNum);
+	    tmp.setName(""+lineNum); //need a key, so line number serves in a pinch
 	    m_store.store(tmp);
 	    line = getAnotherLine();
 	    lineNum++;
 	}
+
+	try
+        { 
+	    m_fin.close();
+	}catch(IOException ioex){
+	    System.err.println("[FileClient]: error in doStorage() closing input file: "
+			       +ioex.getMessage());
+	}
+
 	return;
     }
 
     /**
-     * Open the configuration file.
-     * Load configuration file into m_conf
-     * Create appropriate ICodeStore type.
-     * Open the indicated file.
-     * Read in and parse the file.
-     * Store code chunks into the code store.
+     * Open the target (source) file.
+     * Read in and parse the file (by calling doStorage()).
+     * Store code chunks into the code store (via doStorage()).
+     * Close the store.
      */
     private void kickoff()
-	throws NullPointerException
     {
-	String codestoreclass = "";
-	Class clazz = null;
-	File f = null;
-	File conf = null;
-	FileInputStream fin = null;
-
 	try
 	{
-	    fin = new FileInputStream(m_conffile);
-	    m_conf.m_specific.loadFromXML(fin);
-
-	    m_filename = m_conf.m_specific.getProperty("crowd.conf.src.file");
+	    m_filename = m_conf.m_specific.getProperty(ConfigKeys.SINGLE_SRC_FILE_TARGET);
 	    System.out.println("[FileClient]: examining file: "+m_filename);
-	    f = new File(m_filename);
-	    m_fin = new BufferedReader(new FileReader(f));
+	    m_fin = new BufferedReader(new FileReader(m_filename));
 
 	}catch(IOException ioex){
 	    System.err.println("[FileClient]: error in kickoff(): "+ioex.getMessage());
 	    return;
 	}
-
-	try
-	{
-	    codestoreclass = m_conf.m_specific.getProperty("crowd.conf.codestore.type");
-	    System.out.println("[FileClient]: storing to store type: "+codestoreclass);
-
-	    clazz = Class.forName(codestoreclass);
-	    m_store = (ICodeStore)clazz.newInstance();
-	}catch(IllegalAccessException iaex){
-	    System.err.println("[FileClient]: kickoff(): access denied to code store class file: "
-			       +iaex.getMessage());
-	    return;
-	}catch(InstantiationException iex){
-	    System.err.println("[FileClient]: kickoff(): failed to instantiate code store object: "
-			       +iex.getMessage());
-	    return;
-	}catch(ClassNotFoundException cnfex){
-	    System.err.println("[FileClient]: kickoff(): failed to find code store class definition: "
-			       +cnfex.getMessage());
-	    return;
-	}
-
-	m_store.initStore(m_conf);
 
 	if(null!=m_store && m_store.isStoreInitialized())
 	{
@@ -179,22 +158,13 @@ public class FileClient
 	System.out.println("[FileClient]: number of code entries in code store: "
 			   +m_store.count());
 
-	try
-        { 
-	    fin.close();
-	    m_fin.close();
-	}catch(IOException ioex1){
-	    System.err.println("[FileClient]: error in kickoff() closing input file: "
-			       +ioex1.getMessage());
-	}
-
 	m_store.closeStore();
 
 	return;
     }
 
     /**
-     * java org.comtor.cloud.crowd.FileClient &lt;configfile&gt; [filename]
+     * java org.comtor.cloud.crowd.FileClient &lt;configfile&gt;
      */
     public static void main(String [] args)
     {

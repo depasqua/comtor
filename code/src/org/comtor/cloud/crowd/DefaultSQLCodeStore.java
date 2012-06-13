@@ -23,8 +23,9 @@ package org.comtor.cloud.crowd;
 import java.util.ArrayList;
 
 /**
- * The <code>DefaultSQLCodeStore</code> object provides a backing store
- * that is most likely a relational database.
+ * The <code>DefaultSQLCodeStore</code> object provides a way of
+ * talking to a backing store that is most likely a relational
+ * database.
  *
  * @author Michael E. Locasto
  */
@@ -54,6 +55,19 @@ public class DefaultSQLCodeStore
 
     public void store(CodeChunk chunk)
     {
+	switch(chunk.getType())
+	{
+	case CodeChunk.CCHUNK_FIELD_TYPE:
+	    break;
+	case CodeChunk.CCHUNK_METHOD_TYPE:
+	    break;
+	default:
+	    System.err.println("["+this.getClass().getName()
+			       +"]: store(): unhandled type ("
+			       +chunk.getType()+")");
+	    break;
+	}
+
 	return;
     }
 

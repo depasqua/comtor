@@ -76,10 +76,17 @@ public final class CodeChunk
     public String getName(){ return m_name.toString(); }
     public String getText(){ return m_text.toString(); }
     public String getComment(){ return m_comment.toString(); }
+    public String getCodeType(){ return m_codetype; }
     public int getType(){ return m_type; }
 
+    public void setFilepath(String file){ m_filepath = file; }
+    public void setType(int t){ m_type = t; }
+    public void setStartLine(int s){ m_start = s; }
+    public void setEndLine(int e){ m_end = e; }
+
+    public void setCodeType(String ct){ m_codetype = ct; }
     public void setText(String t){ m_text = t; }
     public void setName(String n){ m_name = n; }
-    public void setType(int t){ m_type = t; }
+    public void setComment(String c){ m_comment = c.toString(); }
 
 }

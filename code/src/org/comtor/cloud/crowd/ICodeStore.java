@@ -102,7 +102,6 @@ public interface ICodeStore
      * @param chunk - a {@link CodeChunk} object representing the piece
      * of code to be stored in the backing store
      */
-    //public void storeChunk(CodeChunk chunk);
     public void store(CodeChunk chunk);
 
     /**

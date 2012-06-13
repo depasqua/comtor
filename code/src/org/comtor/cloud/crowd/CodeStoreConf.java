@@ -29,6 +29,9 @@ import java.util.Properties;
  * a Hashtable, an SQL database, a AWS simple cloud store, an AWS S3
  * bucket, etc.
  *
+ * @see ConfigKeys for more information on various "standard" keys used
+ * to identify built-in configuration options
+ *
  * @author Michael E. Locasto
  */
 public final class CodeStoreConf
