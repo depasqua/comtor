@@ -64,6 +64,13 @@ public interface ICodeStore
     public boolean isStoreInitialized();
 
     /**
+     * Return the number of code chunks in this code store.
+     *
+     * @returns an integer indicating the number of code chunks
+     */
+    public int count();
+
+    /**
      * Initialize this module; clients call this to make
      * sure that the CodeStore is ready for transporting
      * the data store service it should connect to.
@@ -81,6 +88,14 @@ public interface ICodeStore
      * forms of authentication and connection.
      */
     public boolean initStore(CodeStoreConf config);
+
+    /**
+     * Disconnect from backing store and shut down.
+     *
+     * @return a boolean value indicating whether or not the shutdown was
+     * successful
+     */
+    public boolean closeStore();
 
     /**
      * Push a piece of code to the data store

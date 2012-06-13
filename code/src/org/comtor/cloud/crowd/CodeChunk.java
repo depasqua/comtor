@@ -34,6 +34,7 @@ package org.comtor.cloud.crowd;
 public final class CodeChunk
 {
 
+    public static final int CCHUNK_RAW_TEXT_TYPE         = 1001;
     public static final int CCHUNK_METHOD_TYPE           = 1000;
     public static final int CCHUNK_CONSTRUCTOR_TYPE      = 2000;
     public static final int CCHUNK_CLASS_TYPE            = 4000;
@@ -75,5 +76,10 @@ public final class CodeChunk
     public String getName(){ return m_name.toString(); }
     public String getText(){ return m_text.toString(); }
     public String getComment(){ return m_comment.toString(); }
+    public int getType(){ return m_type; }
+
+    public void setText(String t){ m_text = t; }
+    public void setName(String n){ m_name = n; }
+    public void setType(int t){ m_type = t; }
 
 }

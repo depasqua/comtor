@@ -33,14 +33,20 @@ import java.util.Properties;
  */
 public final class CodeStoreConf
 {
-    private String m_username;
-    private String m_password;
-    private String m_connectionString; //likely a URI
-
     /** Code-store specific configuration parameters. 
      * For example, this might be an S3 bucket name.
      * (e.g., "COMTOR.crowdcom")
      */
-    private Properties m_specific;
+    public Properties m_specific;
+
+    /**
+     * Make sure we construct the properties object
+     * because clients of this class will want to refer
+     * to it directly.
+     */
+    public CodeStoreConf()
+    {
+	m_specific = new Properties();
+    }
 
 }

@@ -42,7 +42,17 @@ public class DefaultHTCodeStore
 	return true;
     }
 
+    public int count()
+    {
+	return m_table.size();
+    }
+
     public boolean initStore(CodeStoreConf config)
+    {
+	return true;
+    }
+
+    public boolean closeStore()
     {
 	return true;
     }

@@ -58,6 +58,16 @@ public class S3CodeStore
 	return m_isInitialized;
     }
 
+    public boolean closeStore()
+    {
+	return true;
+    }
+
+    public int count()
+    {
+	return 0;
+    }
+
     public void store(CodeChunk chunk)
     {
 	return;

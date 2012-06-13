@@ -42,6 +42,16 @@ public class DefaultSQLCodeStore
 	return false;
     }
 
+    public boolean closeStore()
+    {
+	return true;
+    }
+
+    public int count()
+    {
+	return 0;
+    }
+
     public void store(CodeChunk chunk)
     {
 	return;
