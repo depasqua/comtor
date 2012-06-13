@@ -124,6 +124,7 @@ public class AuthorMap
 				report.appendMessage(ReportItem.LASTITEM, 
 						     "@author tag found: " + tags[index].text());
 				author = tags[index].text();
+				//NB: these "replace" methods take a long (linear) time!
 				//TODO: also replace \n with \t or space
 				author = author.replace('\"', '\'');
 				author = author.replace('\n', '\t');
