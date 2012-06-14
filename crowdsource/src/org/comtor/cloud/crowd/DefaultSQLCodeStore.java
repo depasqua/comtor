@@ -21,11 +21,13 @@
 package org.comtor.cloud.crowd;
 
 import java.util.ArrayList;
+import java.sql.*;
 
 /**
  * The <code>DefaultSQLCodeStore</code> object provides a way of
  * talking to a backing store that is most likely a relational
- * database.
+ * database.  This class was developed against MySQL 5.5 inside an
+ * Amazon web services micro RDB host.
  *
  * @author Michael E. Locasto
  */
@@ -33,24 +35,89 @@ public class DefaultSQLCodeStore
     implements ICodeStore
 {
 
+    private boolean m_initialized = false;
+    private String m_driver = "";
+    private String m_user = "";
+    private String m_pass = "";
+    private String m_cxn = "";
+
+    /**
+     * Simply use one sql Connection object for now; no connection pooling.
+     */
+    private Connection m_conn = null;
+
     public boolean isStoreInitialized()
     {
-	return false;
+	return m_initialized;
     }
 
     public boolean initStore(CodeStoreConf config)
     {
-	return false;
+	boolean status = false;
+
+	m_driver = config.m_specific.getProperty(ConfigKeys.CONNECTION_DRIVER);
+	m_user = config.m_specific.getProperty(ConfigKeys.CONNECTION_USERNAME);
+	m_pass = config.m_specific.getProperty(ConfigKeys.CONNECTION_PASSWORD);
+	m_cxn = config.m_specific.getProperty(ConfigKeys.CONNECTION_STRING);
+
+	//check these parameters for sanity
+
+	//create database driver instance
+	try 
+	{
+            Class.forName(m_driver).newInstance();
+        } catch (Exception ex) {
+	    System.err.println("["+this.getClass().getName()
+			       +"] initStore(): failed to load JDBC driver ("
+			       +m_driver
+			       +") because: "
+			       +ex.getMessage());
+	    status = false;
+	    return status;
+        }
+
+	//create connection
+	try 
+	{
+	    m_conn = DriverManager.getConnection(m_cxn, m_user, m_pass);
+
+	    status = true;
+	} catch (SQLException sqlex) {
+	    status = false;
+	    // handle any errors
+	    System.err.println("SQLException: " + sqlex.getMessage());
+	    System.err.println("SQLState: " + sqlex.getSQLState());
+	    System.err.println("VendorError: " + sqlex.getErrorCode());
+	}
+
+	m_initialized = status;
+	return status;
     }
 
     public boolean closeStore()
     {
+	try{
+	    m_conn.close();
+	}catch(SQLException ex){
+	    System.err.println("["+this.getClass().getName()
+			       +"]: closeStore(): Problem closing SQL connection: "
+			       +ex.getMessage());
+	}
 	return true;
     }
 
+    /**
+     * Report how many code chunks the database is storing.
+     */
     public int count()
     {
-	return 0;
+	int c = 0;
+	
+	//issue a SELECT COUNT(*) FROM methods;
+	//issue a SELECT COUNT(*) FROM fields;
+	//sum the two results and report
+
+	return c;
     }
 
     public void store(CodeChunk chunk)

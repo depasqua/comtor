@@ -53,4 +53,6 @@ public final class ConfigKeys
 
     public static final String CONNECTION_PASSWORD = "crowd.conf.dst.connection.password";
 
+    public static final String CONNECTION_DRIVER = "crowd.conf.dst.connection.driver";
+
 }
