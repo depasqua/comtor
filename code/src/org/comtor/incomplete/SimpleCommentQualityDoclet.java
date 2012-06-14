@@ -20,7 +20,7 @@
  *
  * $Id: SimpleCommentQualityDoclet.java,v 1.1.1.1 2006/07/10 16:22:03 locasto2 Exp $
  **************************************************************************/
-package org.comtor.imcomplete;
+package org.comtor.incomplete;
 
 
 import com.sun.javadoc.*;
