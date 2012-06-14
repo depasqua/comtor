@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<project name="crowdsource" default="compile" basedir=".">
+	<description>Build file for the COMTOR crowd-source comments apps</description>
+
+	<!-- Define some basic properties. -->
+	<property name="src" location="src"/>
+	<property name="classes" location="classes"/>
+	<property name="thirdpartyjars" location="${basedir}/lib"/>
+	<property name="version" value="0.0.5"/>
+	
+	<!-- Build up a classpath file path for later use. -->
+	<condition property="toolsjar" value="${java.home}/../Classes/classes.jar"
+		else="${java.home}/../lib/tools.jar">
+		<and>
+			<os family="mac"/>
+			<os family="unix"/>
+		</and>
+	</condition>
+			
+	<path id="comtor.class.path">
+		<pathelement path="${classes}"/>
+		<fileset dir="${thirdpartyjars}">
+			<include name="*.jar"/>
+		</fileset>
+		<pathelement path="${toolsjar}"/>
+	</path>
+	
+	<!-- ================ -->
+	<!-- START OF TARGETS -->
+	<!-- ================ -->
+	
+	<!-- Initialization tasks (no description attribute, it's a minor task) -->
+	<target name="init">
+		<mkdir dir="${classes}"/>
+		<tstamp/>
+	</target>
+	
+	<!-- Compile the source files -->
+	<target name="compile" description="Compile the source" depends="init">
+		<javac srcdir="${src}" 
+		       destdir="${classes}" 
+		       compiler="javac1.6" 
+		       includeantruntime="false">
+		  <compilerarg value="-Xlint:unchecked"/>
+		  <classpath refid="comtor.class.path"/> 
+		</javac>
+	</target>
+	
+	<!-- Removes the class files, source backups, and debug output -->
+	<target name="clean" description="Clean source backups .class files">
+		<delete dir="${classes}"/>
+		
+		<delete>
+			<fileset dir="." casesensitive="yes">
+				<include name="**/*~ "/>
+				<include name=".DS_Store"/>
+			</fileset>
+		</delete>		
+	</target>
+	
+	<!-- Builds a jar file of the COMTOR source code (used for dogfooding) -->
+	<target name="distsrc" description="Builds a jar file of our source code.">
+		<jar destfile="crowd-src.jar">
+			<fileset dir="src">
+				<include name="**/*.java"/>
+			</fileset>
+		</jar>
+	</target>
+
+</project>
