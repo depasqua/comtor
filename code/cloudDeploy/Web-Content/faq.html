@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>COMTOR - The Java Source Code Comment Mentoring System (Cloud Version)</title>
+		<link rel="stylesheet" href="stylesheets/app.css">
+		<link rel="stylesheet" href="stylesheets/foundation.css">
+		<link rel="stylesheet" href="stylesheets/ie.css">
+
+		<script type="text/javascript">
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-1641868-7']);
+		  _gaq.push(['_trackPageview']);
+		
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+		</script>
+
+		<script type="text/javascript" src="scripts/jquery.min.js"></script>
+		<script type="text/javascript" src="scripts/app.js"></script>
+		<script type="text/javascript" src="scripts/foundation.js"></script>
+		<script type="text/javascript" src="scripts/modernizr.foundation.js"></script>
+
+	<body>
+	<div class="container">
+		<div class="row" style="margin-top: 30px; margin-bottom:15px;">
+			<div class="six columns centered">
+				<div style="text-align: center">
+					<img src="images/comtor/comtorLogo.png" alt="COMTOR logo"/>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="ten columns centered">
+
+				<h3>Frequently Asked Questions (FAQ)</h3>
+					<h5>Who is COMTOR for?</h5>
+						<p>COMTOR is provided as a free service in the hopes that it will benefit the
+							educational community. COMTOR is provided for non-commercial use. If your
+							requirements are beyond our intended use cases, please contact us regarding your
+							interests. The COMTOR service is monitored for its use and if necessary we will
+							curtail non-educational access and initiate a usage discussion.</p>
+
+
+					<h5>Who is COMTOR for?</h5>
+						<p>COMTOR is provided as a free service in the hopes that it will benefit the
+							educational community. COMTOR is provided for non-commercial use. If your
+							requirements are beyond our intended use cases, please contact us regarding your
+							interests. The COMTOR service is monitored for its use and if necessary we will
+							curtail non-educational access and initiate a usage discussion.</p>
+				
+					<h5>Who sponsors COMTOR?</h5>
+						<p>COMTOR's development has been funded by The College of New Jersey's (TCNJ)
+						Information Technology mini grants program, the 
+						<a href="http://cra-w.org/ArticleDetails/tabid/77/ArticleID/51/Collaborative-Research-Experience-for-Undergraduates-CREU.aspx">
+						CRA's CREU</a> program, and the <a href="http://nsf.gov/">
+						National Science Foundation</a>.</p>
+						
+					<h5>Where is COMTOR running?</h5>
+						<p>Our system for local research experimentation is hosted on the TCNJ campus.
+						This cloud-based version is running on <a href="http://aws.amazon.com">
+						Amazon Web Services</a>.</p>
+						
+					<h5>What information do you collect?</h5>
+						<p>When you use the COMTOR system (this cloud-based interface), we store:
+							<ul class="disc">
+							<li>your email address - so that we may later determine how many times you possibly
+							used our system</li>
+							<li>the date and time of your upload - so that we may later determine how
+							frequently you used our system</li>
+							<li>your IP address - so that we may later determine where in the world you
+							used our system</li>
+							<li>the URL of your report - so that we can debug your reports, if needed
+							analyze the system responsiveness, and anonymously aggregate our analysis</li>
+							</ul>
+						We do not store your source code. Don't believe us? You can see exactly 
+						<a href="http://comtor.git.sourceforge.net/git/gitweb.cgi?p=comtor/comtor;a=blob;f=code/src/org/comtor/cloud/AWSServices.java;hb=HEAD">
+						where we execute the call</a> to the Amazon SDB service to store our reports and
+						what we store. Really. Look for the method named <tt>storeCloudUse</tt>.
+						</p>
+						
+					<h5>Will you sell the data you collect?</h5>
+						<p>No.</p>
+						
+					<h5>Will you release the data you collect?</h5>
+						<p>We will only release the anonymized, aggregated usage statistics in our
+						research papers and to reports to our sponsors, like the National Science
+						Foundation.</p>
+						
+					<h5>Where can I find more information about this project?</h5>
+						<p>The formal home for the COMTOR project can be found at <a href="http://www.comtor.org">
+						www.comtor.org</a>.</p>
+						
+					<h5>I have questions. Whom should I email?</h5>
+						<p>You can reach the COMTOR Principal Investigator (PI) Pete DePasquale at 
+						<a href="mailto:comtor@tcnj.edu">comtor@tcnj.edu</a>. He can be found
+						<a href="https://plus.google.com/110191090053667832966">on Google+</a>.</p>
+
+					<h5>Who else is working on COMTOR?</h5>
+						<p>There are four principals involved in the project at this time: Pete DePasquale,
+						Dr. Miroslav Martinovic (CO-PI, Computer Science, TCNJ), Dr. Michael Locasto 
+						(consultant, Computer Science Department, University of Calgary), and Dr. Lisa
+						Kaczmarczyk (Independent Assessment Consultant). A bevy of TCNJ students have
+						additionally contributed to the overall COMTOR project.</p>
+						
+					<h5>This is cool. What else are you up to?</h5>
+						<p>We have plans for additional tools and capabilities. While we do talk
+						about some of our direction on our <a href="http://www.comtor.org">main web site 
+						and wiki</a>, we are not yet ready to announce anything else at this time.</p>
+						
+					<h5>I would like to get involved. How can I do so?</h5>
+						<p>Our faculty community is centering around our <a href="http://gplus.comtor.org">
+						Google Plus presence</a>. Developers can get involved by talking with the PI (see
+						above) and/or visiting our <a href="http://www.sourceforge.net/projects/comtor">
+						SourceForge.net presence</a>.</p>
+						
+					<h5>When was the FAQ last updated?</h5>
+						<p>This FAQ was last updated on June 1st, 2012.</p>
+						
+				</dl>
+			</div>
+		</div>
+	</div>
+	<p style="margin-left: 120px; margin-bottom: 50px;">Return to the <a href="index.html">home page</a>.</p>
+	</body>
+</html>
