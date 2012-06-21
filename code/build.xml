@@ -8,7 +8,6 @@
 	<taskdef name="list"      classname="org.apache.catalina.ant.ListTask"/>
 	<taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask"/>
 	<taskdef name="resources" classname="org.apache.catalina.ant.ResourcesTask"/>
-	<taskdef name="roles"     classname="org.apache.catalina.ant.RolesTask"/>
 	<taskdef name="start"     classname="org.apache.catalina.ant.StartTask"/>
 	<taskdef name="stop"      classname="org.apache.catalina.ant.StopTask"/>
 	<taskdef name="undeploy"  classname="org.apache.catalina.ant.UndeployTask"/>	
@@ -46,10 +45,16 @@
 		<isset property="testing"/>
 	</condition>
 
-	<!-- Set the Tomcat deployment filename (to be ROOT application, war file must be ROOT.war) -->
+	<condition property="keyGenPath" value="/keyGenDev" else="/keyGen">
+		<isset property="testing"/>
+	</condition>
+
+	<!-- Set the Tomcat deployment filenames (to be ROOT application, war file must be ROOT.war) -->
 	<condition property="warfilename" value="comtor.war" else="ROOT.war">
 		<isset property="testing"/>
 	</condition>
+
+	<property name="keygenwarfilename" value="keygen.war"/>
 
 	<!-- ================ -->
 	<!-- START OF TARGETS -->
@@ -141,6 +146,14 @@
 		<delete dir="webdeploy/Web-Content/files"/>
 	</target>
 	
+	<target name="keygenwar" description="Builds the war file for the cloud key gen release.">
+		<war destfile="${keygenwarfilename}" needxmlfile="false">
+			<fileset dir="keyGenWebApp/Web-Content"/>
+		</war>
+	</target>
+	
+
+
 	<!-- Ensures the user has set the deployment credentials to provide to the servlet container -->
 	<target name="credentials.check">
 		<condition property="credentials.set">
@@ -172,5 +185,15 @@
 
 	<target name="warredeploy" if="credentials.set" depends="war, warundeploy, wardeploy" description="Performs and undeploy of the existing application and a new deployment of same."/>
 
+	<!--- Start of Key Gen Web App Commands -->
+	<target name="keygenwardeploy" if="credentials.set" depends="credentials.check, credentials.fail, keygenwar" description="Install web application">
+		<deploy url="${managerURL}" username="${username}" password="${password}" path="${keyGenPath}" war="file:${keygenwarfilename}"/>
+	</target>
+
+	<target name="keygenwarundeploy" if="credentials.set" depends="credentials.check, credentials.fail" description="Uninstall web application">
+		<undeploy url="${managerURL}" username="${username}" password="${password}" path="${keyGenPath}"/>
+	</target>
+
+	<target name="keygenwarredeploy" if="credentials.set" depends="keygenwar, keygenwarundeploy, keygenwardeploy" description="Performs and undeploy of the existing application and a new deployment of same."/>
 
 </project>
