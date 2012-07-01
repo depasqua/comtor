@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>COMTOR - Request API Key</title>
+
+		<link rel="stylesheet" href="stylesheets/app.css">
+		<link rel="stylesheet" href="stylesheets/foundation.css">
+		<link rel="stylesheet" href="stylesheets/ie.css">
+
+		<script type="text/javascript">
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-1641868-7']);
+		  _gaq.push(['_trackPageview']);
+		
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+		</script>
+
+		<script type="text/javascript" src="scripts/jquery.min.js"></script>
+		<script type="text/javascript" src="scripts/app.js"></script>
+		<script type="text/javascript" src="scripts/foundation.js"></script>
+		<script type="text/javascript" src="scripts/modernizr.foundation.js"></script>
+		<script type="text/javascript" src="scripts/validate.min.js"></script>
+	</head>
+
+	<body>
+	<div class="container">
+		<div class="row" style="margin-top: 30px; margin-bottom:15px;">
+			<div class="six columns centered">
+				<div style="text-align: center">
+					<img src="images/comtor/comtorLogo.png" alt="COMTOR logo"/>
+					<p style="font-size: small; font-weight: bold">Need a COMTOR API Key? Get one here!</p>
+				</div>
+			</div>
+		</div>
+
+		<form class="nice" action="keygen" id="apikeyform" enctype="multipart/form-data" method="GET">
+			<div class="row">
+				<div class="four columns centered">
+					<label for="email">E-mail:</label>
+					<input id="email" name="email" class="required input-text" placeholder="you@somewhere.com"
+						type="email" style="margin-bottom: 25px;"/>
+					<div style="text-align: center; margin-bottom: 25px;">
+						<a href="javascript:submitForm()" class="nice radius medium blue button">Request Key</a>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<div class="row">
+			<div class="six columns centered">
+				<div style="text-align: center;">
+					Learn more about the <a href="http://www.comtor.org">COMTOR project</a> today.<br/>
+					See our <a href="faq.html">FAQ</a>!
+				</div>
+			</div>
+		</div>
+
+		<div id="errorModal" class="reveal-modal">
+			<h2>Uh no...</h2>
+			<p class="lead">Your submission has some issues:</p>
+			<span id="errorList"></span>
+			<a class="close-reveal-modal">&#215;</a>
+		</div>
+
+		<script type="text/javascript" >
+			function submitForm() {
+				if (document.forms["apikeyform"].onsubmit())
+					document.forms["apikeyform"].submit();
+			}
+		</script>
+
+		<script type="text/javascript" >
+			var validator = new FormValidator('apikeyform', [{
+				name: 'email',
+				display: 'email',    
+				rules: 'required|valid_email'
+			}], function(errors, event) {
+				if (errors.length > 0) {
+					var errorString = '';
+
+					for (var i = 0, errorLength = errors.length; i < errorLength; i++)
+						errorString += '* ' + errors[i].message + '<br/>';
+					
+					document.getElementById("errorList").innerHTML = errorString;
+					$('#errorModal').reveal();
+				}
+			});
+		</script>
+
+	</body>
+</html>
