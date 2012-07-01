@@ -135,7 +135,7 @@ public class CloudUpload extends HttpServlet {
 				
 				// Shorten the url via Bitly and send email to user.
 				reportURLString = BitlyServices.shortenUrl(reportURLString);
-				AWSServices.sendReportEmail(emailAddress, reportURLString);
+				AWSServices.sendReportEmail(emailAddress, reportURLString, request);
 
 				String requestURL = request.getRequestURL().toString();
 				String home = requestURL.substring(0, requestURL.lastIndexOf("/"));

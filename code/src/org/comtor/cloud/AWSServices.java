@@ -24,6 +24,7 @@ import java.text.*;
 
 import javax.mail.*;
 import javax.mail.internet.*;
+import javax.servlet.http.*;
 
 import com.amazonaws.*;
 import com.amazonaws.services.s3.*;
@@ -45,23 +46,35 @@ public class AWSServices {
 	 *
 	 * @param toAddr the recipient's email address
 	 * @param url the url of the report's location
+	 * @param req the servlet handling the inbound HTTP request
 	 */
-	public static void sendReportEmail(String toAddr, String url) {
+	public static void sendReportEmail(String toAddr, String url, HttpServletRequest req) {
 		String comtorEmail = "comtor@tcnj.edu";
-        try {
+		try {
 			PropertiesCredentials credentials = new PropertiesCredentials(
 					new File("AwsCredentials.properties"));
 			AmazonSimpleEmailService ses = new AmazonSimpleEmailServiceClient(credentials);
 			
-            // Create a new Message
-            com.amazonaws.services.simpleemail.model.Message msg =
-            	new com.amazonaws.services.simpleemail.model.Message().withSubject(new Content("COMTOR Results"));
-            SendEmailRequest request = new SendEmailRequest().withSource(comtorEmail);
-            Destination dest = new Destination().withToAddresses(toAddr);
+			// Create a new Message
+			com.amazonaws.services.simpleemail.model.Message msg =
+				new com.amazonaws.services.simpleemail.model.Message().withSubject(new Content("COMTOR Results"));
+			SendEmailRequest request = new SendEmailRequest().withSource(comtorEmail);
+			Destination dest = new Destination().withToAddresses(toAddr);
 			request.withDestination(dest);
 
-            String msgText = "<img style=\"margin-left: auto; margin-right: auto; display: block;\" " +
-					"src=\"http://www.comtor.org/website/images/comtor/comtorLogo.png\" width=\"160\" " +
+			String contextBase = "http://" + req.getServerName();
+			String contextPath = req.getContextPath();
+
+			if (req.getServerPort() != 80)
+				contextBase += ":" + req.getServerPort();
+
+			if (contextPath.equals(""))
+				contextBase += "/";
+			else
+				contextBase += contextPath;
+
+			String msgText = "<img style=\"margin-left: auto; margin-right: auto; display: block;\" " +
+					"src=\"" + contextBase + "/images/comtor/comtorLogo.png\" width=\"160\" " +
 					"alt=\"COMTOR logo\"/>";
 			msgText += "Thank you for your submission to the COMTOR system. Your report is "; 
 			msgText += "now available for access/download at the following URL: " + url + ". ";
@@ -75,14 +88,14 @@ public class AWSServices {
 			request.setMessage(msg);
 			ses.sendEmail(request);
 
-        } catch (AmazonClientException e) {
-            e.printStackTrace();
-            System.err.println("Caught a AmazonClientException, which means that there was a "
-                    + "problem sending your message to Amazon's E-mail Service check the "
-                    + "stack trace for more information.");
-        } catch (IOException ieo) {
-        	System.err.println(ieo);
-        }
+		} catch (AmazonClientException e) {
+			e.printStackTrace();
+			System.err.println("Caught a AmazonClientException, which means that there was a "
+					+ "problem sending your message to Amazon's E-mail Service check the "
+					+ "stack trace for more information.");
+		} catch (IOException ieo) {
+			System.err.println(ieo);
+		}
 	}
 
 	/**
@@ -107,25 +120,25 @@ public class AWSServices {
 			s3.putObject(new PutObjectRequest(bucketName, key, report));
 			reportURL = s3.generatePresignedUrl(bucketName, key, expiring.getTime());
 
-        } catch (AmazonServiceException ase) {
-            System.out.println("Caught an AmazonServiceException, which means your request made it "
-                    + "to Amazon S3, but was rejected with an error response for some reason.");
-            System.out.println("Error Message:    " + ase.getMessage());
-            System.out.println("HTTP Status Code: " + ase.getStatusCode());
-            System.out.println("AWS Error Code:   " + ase.getErrorCode());
-            System.out.println("Error Type:       " + ase.getErrorType());
-            System.out.println("Request ID:       " + ase.getRequestId());
-        } catch (AmazonClientException ace) {
-            System.out.println("Caught an AmazonClientException, which means the client encountered "
-                    + "a serious internal problem while trying to communicate with S3, "
-                    + "such as not being able to access the network.");
-            System.out.println("Error Message: " + ace.getMessage());
-        } catch (IOException ieo) {
-        	System.out.println(ieo);
-        } catch (NullPointerException np) {
-        	System.out.println(np);
-        }
-    	return reportURL;
+		} catch (AmazonServiceException ase) {
+			System.out.println("Caught an AmazonServiceException, which means your request made it "
+					+ "to Amazon S3, but was rejected with an error response for some reason.");
+			System.out.println("Error Message:    " + ase.getMessage());
+			System.out.println("HTTP Status Code: " + ase.getStatusCode());
+			System.out.println("AWS Error Code:   " + ase.getErrorCode());
+			System.out.println("Error Type:       " + ase.getErrorType());
+			System.out.println("Request ID:       " + ase.getRequestId());
+		} catch (AmazonClientException ace) {
+			System.out.println("Caught an AmazonClientException, which means the client encountered "
+					+ "a serious internal problem while trying to communicate with S3, "
+					+ "such as not being able to access the network.");
+			System.out.println("Error Message: " + ace.getMessage());
+		} catch (IOException ieo) {
+			System.out.println(ieo);
+		} catch (NullPointerException np) {
+			System.out.println(np);
+		}
+		return reportURL;
 	}
 	
 	/**
@@ -140,35 +153,35 @@ public class AWSServices {
 	public static void storeCloudUse(String requestIP, String sessionID, String reportURL,
 			String emailAddr, String dateTime) {
 
-        try {
-	        AmazonSimpleDB sdb = new AmazonSimpleDBClient(new PropertiesCredentials(
+		try {
+			AmazonSimpleDB sdb = new AmazonSimpleDBClient(new PropertiesCredentials(
 					new File("AwsCredentials.properties")));
 
-            // Set the domain to use
-            String myDomain = "org.comtor.cloud.usage";
-	        List<ReplaceableItem> data = new ArrayList<ReplaceableItem>();
-	        data.add(new ReplaceableItem(dateTime).withAttributes(
-                new ReplaceableAttribute("IP Address", requestIP, true),
-                new ReplaceableAttribute("Session ID", sessionID, true),
-                new ReplaceableAttribute("Report URL", reportURL, true),
-                new ReplaceableAttribute("Email Address", emailAddr, true)));
-	        
-            sdb.batchPutAttributes(new BatchPutAttributesRequest(myDomain, data));
-        } catch (AmazonServiceException ase) {
-            System.out.println("Caught an AmazonServiceException, which means your request made it "
-                    + "to Amazon SimpleDB, but was rejected with an error response for some reason.");
-            System.out.println("Error Message:    " + ase.getMessage());
-            System.out.println("HTTP Status Code: " + ase.getStatusCode());
-            System.out.println("AWS Error Code:   " + ase.getErrorCode());
-            System.out.println("Error Type:       " + ase.getErrorType());
-            System.out.println("Request ID:       " + ase.getRequestId());
-        } catch (AmazonClientException ace) {
-            System.out.println("Caught an AmazonClientException, which means the client encountered "
-                    + "a serious internal problem while trying to communicate with SimpleDB, "
-                    + "such as not being able to access the network.");
-            System.out.println("Error Message: " + ace.getMessage());
-        } catch (IOException ieo) {
-        	System.out.println(ieo);
-        }
+			// Set the domain to use
+			String myDomain = "org.comtor.cloud.usage";
+			List<ReplaceableItem> data = new ArrayList<ReplaceableItem>();
+			data.add(new ReplaceableItem(dateTime).withAttributes(
+				new ReplaceableAttribute("IP Address", requestIP, true),
+				new ReplaceableAttribute("Session ID", sessionID, true),
+				new ReplaceableAttribute("Report URL", reportURL, true),
+				new ReplaceableAttribute("Email Address", emailAddr, true)));
+			
+			sdb.batchPutAttributes(new BatchPutAttributesRequest(myDomain, data));
+		} catch (AmazonServiceException ase) {
+			System.out.println("Caught an AmazonServiceException, which means your request made it "
+					+ "to Amazon SimpleDB, but was rejected with an error response for some reason.");
+			System.out.println("Error Message:    " + ase.getMessage());
+			System.out.println("HTTP Status Code: " + ase.getStatusCode());
+			System.out.println("AWS Error Code:   " + ase.getErrorCode());
+			System.out.println("Error Type:       " + ase.getErrorType());
+			System.out.println("Request ID:       " + ase.getRequestId());
+		} catch (AmazonClientException ace) {
+			System.out.println("Caught an AmazonClientException, which means the client encountered "
+					+ "a serious internal problem while trying to communicate with SimpleDB, "
+					+ "such as not being able to access the network.");
+			System.out.println("Error Message: " + ace.getMessage());
+		} catch (IOException ieo) {
+			System.out.println(ieo);
+		}
 	}
 }
