@@ -17,7 +17,6 @@
 	<property name="keygenBaseDir" location="keygen"/>
 	<property name="thirdpartyjars" location="comtor_data/code/"/>
 	<property name="version" value="2.0.1"/>
-	<property name="cloudhost" value="http://dev.comtor.org:8080"/>
 	<property name="managerURL" value="http://dev.comtor.org:8080/manager"/>
 	
 	<!-- Project-specific properties -->
@@ -75,14 +74,14 @@
 			</and>
 		</condition>
 
-		<condition property="deploymentPath" value="/keygenServDev">
+		<condition property="deploymentPath" value="/keygenDev">
 			<and>
 				<isset property="project"/>
 				<equals arg1="${project}" arg2="keygen"/>
 			</and>
 		</condition>
 
-		<condition property="deploymentPath" value="/keygenServ">
+		<condition property="deploymentPath" value="/keygen">
 			<and>
 				<isset property="release"/>
 				<isset property="project"/>
@@ -215,7 +214,15 @@
 	<target name="keygenWar" depends="compileKeyGen, setWarFileName" description="Builds the war file for the key gen release.">
 		<war destfile="${warfilename}" webxml="${keygenBaseDir}/WEB-INF/web.xml">
 			<fileset dir="${keygenBaseDir}/Web-Content"/>
-			<lib dir="${keygenBaseDir}/WEB-INF/lib" excludes="javax.jar"/>
+			<lib dir="${keygenBaseDir}/WEB-INF/lib">
+				<exclude name="javax.jar"/>
+				<exclude name="httpclient-4.2.jar"/>
+				<exclude name="httpcore-4.2.jar"/>
+				<exclude name="aws-java-sdk-1.3.10.jar"/>
+				<exclude name="commons-codec-1.6.jar"/>
+				<exclude name="commons-logging-1.1.1.jar"/>
+				<exclude name="jackson-mini-1.9.7.jar"/>
+			</lib>
 			<classes dir="${keygenBaseDir}/classes"/>
 		</war>
 	</target>
