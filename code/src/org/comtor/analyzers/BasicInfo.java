@@ -17,10 +17,9 @@
  */
 package org.comtor.analyzers;
 
-import org.comtor.drivers.*;
+import org.comtor.reporting.*;
 import com.sun.javadoc.*;
 import java.util.*;
-import java.text.*;
 
 /**
  * The BasicInfo analyzer provides basic information about what Javadoc finds. This module is used
@@ -31,21 +30,17 @@ import java.text.*;
  * @author Peter DePasquale
  */
 public class BasicInfo implements ComtorDoclet {
-	// A counter for the classes, used in the properties list
-	private int classID = 0;
-	
-	// Various counters
-	private int constructorCounter = 0;
-	private int methodCounter = 0;
-	private int fieldCounter = 0;
+	// JSON analysis report from this module's execution
+	private ModuleReport report = new ModuleReport ("Basic Info", "This module reports basic " +
+		"informational metrics.");
 
-	// The analysis report (property list) returned by this doclet
-	private Properties prop = new Properties();
+	// Counters for the packages, classes, and members
+	private int numConstructors = 0;
+	private int numMethods = 0;
+	private int numParameters = 0;
+	private int numFields = 0;
+	private HashMap<String, Integer> typeMap = new HashMap<String, Integer>();
 
-	// A formatter for the report
-	DecimalFormat formatter = new DecimalFormat("##0000.000");
-	float memberID = 0.000f;
-	
 	/**
 	 * The analyze method in each analysis module performs the analysis and
 	 * operates on the parsed source code (parsed by Javadoc program) as a 
@@ -53,34 +48,58 @@ public class BasicInfo implements ComtorDoclet {
 	 * the grading results and the report.
 	 */
 	public Properties analyze(RootDoc rootDoc) {
-		prop.setProperty("title", "Basic Info");
-		if (rootDoc == null)
-			return null;
+		int numPackages = 0;
+		int numClasses = 0;
 		
 		// Capture the starting time, just prior to the start of the analysis
 		long startTime = new Date().getTime();
 
-		// Iterate through the list of classes submitted to Javadoc
-		// Obtain and process the basic info about each class
-		for (ClassDoc classDoc : rootDoc.classes()) {
-   			classID++;
-			processClass(classDoc);
-   		}		
-	
+		// Fetch the list of packages
+		PackageDoc[] packages = rootDoc.specifiedPackages();
+		if (packages != null) {
+			numPackages = packages.length;
+			for (PackageDoc packageDoc : packages)
+				report.addItem(ReportItem.PACKAGE, packageDoc.name());
+		}
+
+		// Fetch the list of classes
+		ClassDoc[] classes = rootDoc.classes();
+		if (classes != null) {
+			numClasses = classes.length;
+
+			// Iterate through the list of classes submitted to Javadoc
+			// Obtain and process the basic info about each class
+			for (ClassDoc classDoc : classes) {
+				report.addItem(ReportItem.CLASS, classDoc.qualifiedName());
+				report.addLocation(ReportItem.CLASS, classDoc.position());
+				processClass(classDoc);
+			}
+		}
+
 		// Capture the ending time, just after the termination of the analysis
 		long endTime = new Date().getTime();
 
-		// Add the counters metrics to the report
-		prop.setProperty("metric1", "A total of " + classID + " class(es) were processed.");
-		prop.setProperty("metric2", "A total of " + constructorCounter + " constructor(s) were processed.");
-		prop.setProperty("metric3", "A total of " + methodCounter + " method(s) were processed.");
-		prop.setProperty("metric4", "A total of " + fieldCounter + " field(s) were processed.");
-		prop.setProperty("start time", Long.toString(startTime));
-		prop.setProperty("end time", Long.toString(endTime));
-		prop.setProperty("execution time", Long.toString(endTime - startTime));
-		
-		// Return the report
-		return prop;
+		report.appendLongToObject("information", "packages identified", numPackages);
+		report.appendLongToObject("information", "classes identified", numClasses);
+		report.appendLongToObject("information", "constructors identified", numConstructors);
+		report.appendLongToObject("information", "methods identified", numMethods);
+		report.appendLongToObject("information", "fields identified", numFields);
+		report.appendLongToObject("information", "parameters identified", numParameters);
+
+		report.addMetric(numPackages + " package(s) were identified.");
+		report.addMetric(numClasses + " class(es) were identified.");
+		report.addMetric(numConstructors + " constructor(s) were identified.");
+		report.addMetric(numMethods + " method(s) were identified.");
+		report.addMetric(numFields + " field(s) were identified.");
+		report.addMetric(numParameters + " parameter(s) were identified.");
+
+		report.addTimingString("start time", Long.toString(startTime));
+		report.addTimingString("end time", Long.toString(endTime));
+		report.addTimingString("execution time", Long.toString(endTime - startTime));
+
+		report.addMapToResults(typeMap);
+
+		return null;
 	}
 	
 	/**
@@ -89,81 +108,80 @@ public class BasicInfo implements ComtorDoclet {
 	 * @param classItem a reference to the class to analyze/process
 	 */
 	private void processClass(ClassDoc classItem) {		
-		prop.setProperty(formatter.format(classID), "Class: " + classItem.qualifiedName());
-		memberID = 0.000f;
-		
-		// List all constructors
-		for (ConstructorDoc constrs : classItem.constructors()) {
-			constructorCounter++;
-			memberID += 0.001f;
-			prop.setProperty(formatter.format(classID+memberID), "\tConstructor: " + constrs.name());
-			processExecutable(constrs);
+		// Fetch the list of constructors, methods, and fields
+		ConstructorDoc[] constructors = classItem.constructors();
+		numConstructors += constructors.length;
+		for (ConstructorDoc constr : constructors) {
+			if (!Util.isNullaryConstructor(constr)) {
+				report.addItem(ReportItem.CONSTRUCTOR, constr.name() + constr.flatSignature());
+				report.addLocation(ReportItem.CONSTRUCTOR, constr.position());
+				processExecutable(constr);
+			}
 		}
 		
-		// List all methods
-		for (MethodDoc method : classItem.methods()) {
-			methodCounter++;
-			memberID += 0.001f;
-			prop.setProperty(formatter.format(classID+memberID), "\tMethod: " + method.name());
-			processExecutable(method);
+		MethodDoc[] methods = classItem.methods();
+		numMethods += methods.length;
+		for (MethodDoc method : methods) {
+			if (method.position() != null) {
+				report.addItem(ReportItem.METHOD, method.name() + method.flatSignature());
+				report.addLocation(ReportItem.METHOD, method.position());
+				processExecutable(method);
+			}
 		}
 		
-		// List all fields
-		DecimalFormat smallFmt = new DecimalFormat(".000");
- 		for (FieldDoc field : classItem.fields()) {
- 			fieldCounter++;
-			memberID += 0.001f;
-			prop.setProperty(formatter.format(classID+memberID), "\tField: " + field.name());
-			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(.000f), "\t\ttype: " + field.type());
-			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(.001f), "\t\tmodifiers: " + field.modifiers());
- 		}
+		FieldDoc[] fields = classItem.fields();
+		numFields += fields.length;
+		for (FieldDoc field : fields) {
+			if (field.position() != null) {
+				report.addItem(ReportItem.FIELD, field.name());
+				report.addLocation(ReportItem.FIELD, field.position());
+				addToTypeMap(field.type().qualifiedTypeName());
+			}
+		}
 	}
-	
+
+
+	/**
+	 * Adds the specified type to the type map for histogram analysis.
+	 *
+	 * @param typeName the fully qualified name of the type to add to the map.
+	 */
+	private void addToTypeMap(String typeName) {
+		if (!typeMap.containsKey(typeName))
+			typeMap.put(typeName, 1);
+		else 
+			typeMap.put(typeName, ((Integer)typeMap.get(typeName)+1));	
+	}
+
+
 	/**
 	 * Processes methods and constructors
 	 *
 	 * @param member a reference to a method or class doc
 	 * @return a properties list for the analyzer report
 	 */
-	private Properties processExecutable(ExecutableMemberDoc member) {
-		DecimalFormat smallFmt = new DecimalFormat(".000");
-		float itemID = 0.000f;
-		prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\tmodifiers: " + member.modifiers());
+	private void processExecutable(ExecutableMemberDoc member) {
 
 		// Report on the exceptions declared to be thrown by this executable member
 		Type[] types = member.thrownExceptionTypes();
 		if (types.length > 0) {
-			itemID += 0.001f;
-			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\tthrows: ");
-			for (int index = 0; index < types.length; index++) {
-				itemID += 0.001f;
-				prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\t\t" + 
-					types[index].qualifiedTypeName());
-			}
-		} else {
-			itemID += 0.001f;
-			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\tthrows: none");
+			for (Type type : types)
+				report.addItem(ReportItem.THROWS, type.qualifiedTypeName());
 		}
 
 		// Report on the formal parameters for this executable member		
 		Parameter[] params = member.parameters();
+		numParameters += params.length;
 		if (params.length > 0) {
-			itemID += 0.001f;
-			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\tparameters:");
-			for (int index = 0; index < params.length; index++) {
-				itemID += 0.001f;
-				prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\t\t" +
-					params[index].typeName() + '\t' + params[index].name());
-			}
-		} else {
-			itemID += 0.001f;
-			prop.setProperty(formatter.format(classID+memberID)+smallFmt.format(itemID), "\t\tparameters: none");
+			for (Parameter param : params)
+				report.addItem(ReportItem.PARAMETER, param.type().qualifiedTypeName());
 		}
 
-		// Report on the return type for this executable member
-		// TO BE COMPLETED
-		
-		return null;
+		//Report on the return type for this executable member
+		if (member.isMethod()) {
+			Type returnType = ((MethodDoc) member).returnType();
+			report.addItem(ReportItem.RETURNS, returnType.qualifiedTypeName());
+		}
 	}
 	
 	/*
@@ -219,6 +237,6 @@ public class BasicInfo implements ComtorDoclet {
 	 * @return a string value containing the JSON report
 	 */
 	public String getJSONReport() {
-		return null;
+		return report.toString();
 	}
 }
