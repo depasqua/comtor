@@ -17,7 +17,9 @@
  */
 package org.comtor.reporting;
 
+import java.util.*;
 import org.json.*;
+import com.sun.javadoc.SourcePosition;
 
 /** 
  * This class represents a COMTOR module's report. Essentially it wraps the structure of the report
@@ -216,6 +218,7 @@ public class ModuleReport {
 						subobject.put("constructors", new JSONObject());
 						subobject.put("methods", new JSONObject());
 						subobject.put("fields", new JSONObject());
+						subobject.put("location" , new JSONObject());
 						currentClass = subobject;
 						lastItem = ReportItem.CLASS;
 						break;
@@ -226,6 +229,7 @@ public class ModuleReport {
 						subobject.put("issues", new JSONArray());
 						subobject.put("parameters", new JSONObject());
 						subobject.put("throws", new JSONObject());
+						subobject.put("location" , new JSONObject());
 						currentMethod = subobject;
 						lastItem = ReportItem.CONSTRUCTOR;
 						break;
@@ -237,6 +241,7 @@ public class ModuleReport {
 						subobject.put("parameters", new JSONObject());
 						subobject.put("throws", new JSONObject());
 						subobject.put("returns", new JSONObject());
+						subobject.put("location" , new JSONObject());
 						currentMethod = subobject;
 						lastItem = ReportItem.METHOD;
 						break;
@@ -252,6 +257,7 @@ public class ModuleReport {
 						obj = currentClass.getJSONObject("fields");
 						obj.put(name, subobject);
 						subobject.put("issues", new JSONArray());
+						subobject.put("location" , new JSONObject());
 						currentField = subobject;
 						lastItem = ReportItem.FIELD;
 						break;
@@ -262,6 +268,12 @@ public class ModuleReport {
 						currentThrows = subarray;
 						lastItem = ReportItem.THROWS;
 						break;
+
+					case RETURNS:
+						obj = currentMethod.getJSONObject("returns");
+						obj.put(name, subobject);
+						lastItem = ReportItem.RETURNS;
+						break;
 				}
 
 			} catch (JSONException je) {
@@ -269,6 +281,63 @@ public class ModuleReport {
 			}
 		}
 	}
+
+	/**
+	 * Adds the speficied source location (line number) to the specified report item. There
+	 * is only support for certain types of report items (e.g. it makes no sense to report positions
+	 * for packages, throws clauses, or parameters at this time).
+	 *
+	 * @param itemType the type of object we are reporting on 
+	 * @param pos the position object where the specified item is located
+	 */
+	public void addLocation(ReportItem itemType, SourcePosition pos) {
+		if (report != null) {
+			try {
+				switch (itemType) {
+					case PACKAGE:
+					case THROWS:
+					case PARAMETER:
+						break;
+
+					case CLASS:
+						currentClass.put("location", Integer.toString(pos.line()));
+						break;
+
+					case CONSTRUCTOR:
+					case METHOD:
+						currentMethod.put("location", Integer.toString(pos.line()));
+						break;
+
+					case FIELD:
+						currentField.put("location", Integer.toString(pos.line()));
+						break;
+				}
+			} catch (JSONException je) {
+				System.err.println(je);
+			}
+		}
+	}
+
+
+	/**
+	 * Adds the specified map (generally a hash map of string/integer entities) to the
+	 * current report. This is used to create histograms of data (such as class fields), but
+	 * can bve generalized for other use as well. This needs to be generalized for support for
+	 * multiple histograms in a report by creating a map or histogram entry in the results 
+	 * section of the report, and then inserting named maps under that section.
+	 *
+	 * @param map the HashMap of String/Integer (name/count) entries to add to the report.
+	 */
+	public void addMapToResults(HashMap<String, Integer> map) {
+		if (report != null) {
+			try {
+				report.getJSONObject("results").put("typeHistogram", map);
+			} catch (JSONException je) {
+				System.err.println(je);
+			}
+		}
+	}
+
 
 	/**
 	 * Appends the String message to the specified report item's object
