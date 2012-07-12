@@ -22,5 +22,5 @@ package org.comtor.reporting;
  * reporting our findings in the analysis module.
  */
 public enum ReportItem {
-	CLASS, PACKAGE, CONSTRUCTOR, METHOD, FIELD, PARAMETER, LASTITEM, THROWS
+	CLASS, PACKAGE, CONSTRUCTOR, METHOD, FIELD, PARAMETER, LASTITEM, THROWS, RETURNS
 }
