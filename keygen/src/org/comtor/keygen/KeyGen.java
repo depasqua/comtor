@@ -24,6 +24,9 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import net.tanesha.recaptcha.ReCaptchaImpl;
+import net.tanesha.recaptcha.ReCaptchaResponse;
+
 /**
  * This Java Servlet handles the API key creation request. The Servlet hashes the user-
  * entered e-mail address to create an API key and places key and user attributes into
@@ -51,23 +54,36 @@ public class KeyGen extends HttpServlet {
 		String apikey = AWSServices.md5(email); 			// Hashed E-mail to create key
 		String ipAddress = request.getRemoteAddr(); 		// User's IP Address
 		String hostname = request.getRemoteHost(); 			// User's host name
-		
-		// Put user in DynamoDB
-		boolean putUser = AWSServices.putKey(apikey, email, ipAddress, hostname);
-		
-		// Determine successful or unsuccessful display to user
-		if (putUser) {
-			// Better notification and email announcement needed here...
-			AWSServices.sendKeyEmail(email, apikey, request);
-			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/keyGenerated.jsp?email=" +
-				email + "&apikey=" + apikey);
-			dispatcher.forward(request, response);
 
+		// Check the recaptcha
+		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+		reCaptcha.setPrivateKey("6LdGhdMSAAAAAC-weLKOjQk_WczD_1gLcmpwJZv1");
+
+		String challenge = request.getParameter("recaptcha_challenge_field");
+		String uresponse = request.getParameter("recaptcha_response_field");
+		ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(ipAddress, challenge, uresponse);
+
+		if (reCaptchaResponse.isValid()) {
+			// Put user in DynamoDB
+			boolean putUser = AWSServices.putKey(apikey, email, ipAddress, hostname);
+			
+			// Determine db insertion successful / unsuccessful and display to user
+			if (putUser) {
+				// Better notification and email announcement needed here...
+				AWSServices.sendKeyEmail(email, apikey, request);
+				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/keyGenerated.jsp?email=" +
+					email + "&apikey=" + apikey);
+				dispatcher.forward(request, response);
+
+			} else {
+				// Resend email with API key and forward 
+				AWSServices.resendKeyEmail(email, apikey, request);
+				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/duplicateEmail.jsp?email=" +
+					email);
+				dispatcher.forward(request, response);
+			}
 		} else {
-			// Resend email with API key and forward 
-			AWSServices.resendKeyEmail(email, apikey, request);
-			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/duplicateEmail.jsp?email=" +
-				email);
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/badRecaptcha.jsp");
 			dispatcher.forward(request, response);
 		}
 

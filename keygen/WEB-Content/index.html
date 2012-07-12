@@ -24,6 +24,12 @@
 		<script type="text/javascript" src="scripts/foundation.js"></script>
 		<script type="text/javascript" src="scripts/modernizr.foundation.js"></script>
 		<script type="text/javascript" src="scripts/validate.min.js"></script>
+
+		<script type="text/javascript">
+			var RecaptchaOptions = {
+				theme : 'clean'
+			};
+		</script>
 	</head>
 
 	<body>
@@ -39,11 +45,36 @@
 
 		<form class="nice" action="keygen" id="apikeyform" enctype="multipart/form-data" method="GET">
 			<div class="row">
-				<div class="four columns centered">
-					<label for="email">E-mail:</label>
+				<div class="four columns centered" style="margin-left: auto; margin-right: auto;">
+					<label for="email" style="margin-left: 25px;">E-mail:</label>
 					<input id="email" name="email" class="required input-text" placeholder="you@somewhere.com"
-						type="email" style="margin-bottom: 25px;"/>
-					<div style="text-align: center; margin-bottom: 25px;">
+						style="margin-left: auto; margin-right: auto; margin-bottom: 25px;" type="email"/>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="six columns centered">
+					<p style="text-align:center; margin-bottom: 0px; font-size: small;">Please verify that you are a human:</p>
+					<div align="center">
+						<script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k=6LdGhdMSAAAAAA8869ncyDfuRaf_sDy72v7IFGJ3">
+						</script>
+					</div>
+					<noscript>
+						<div style="margin-left: auto; margin-right: auto;">
+							<iframe src="http://www.google.com/recaptcha/api/noscript?k=6LdGhdMSAAAAAA8869ncyDfuRaf_sDy72v7IFGJ3"
+							height="300" width="500" frameborder="0"></iframe><br>
+							<textarea name="recaptcha_challenge_field" rows="3" cols="40">
+							</textarea>
+							<input type="hidden" name="recaptcha_response_field"
+								value="manual_challenge">
+						</div>
+					</noscript>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="four columns centered">
+					<div style="text-align: center; margin-top: 25px; margin-bottom: 25px;">
 						<a href="javascript:submitForm()" class="nice radius medium blue button">Request Key</a>
 					</div>
 				</div>
