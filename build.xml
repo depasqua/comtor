@@ -63,6 +63,9 @@
 			<and>
 				<isset property="project"/>
 				<equals arg1="${project}" arg2="cloud"/>
+				<not>
+					<isset property="release"/>
+				</not>
 			</and>
 		</condition>
 
@@ -78,6 +81,9 @@
 			<and>
 				<isset property="project"/>
 				<equals arg1="${project}" arg2="keygen"/>
+				<not>
+					<isset property="release"/>
+				</not>
 			</and>
 		</condition>
 
