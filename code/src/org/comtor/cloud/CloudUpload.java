@@ -99,6 +99,10 @@ public class CloudUpload extends HttpServlet {
 			fwrite.newLine();
 			fwrite.write("doclet4 : org.comtor.analyzers.PercentageMethods");
 			fwrite.newLine();
+			fwrite.write("doclet5 : org.comtor.analyzers.CommentAverageRatio");
+			fwrite.newLine();
+			fwrite.write("doclet6 : org.comtor.analyzers.BasicInfo");
+			fwrite.newLine();
 
 			// Handle HTTP form request data
 			Iterator itr = uploadHandler.parseRequest(request).iterator();
