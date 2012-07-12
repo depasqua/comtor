@@ -71,6 +71,10 @@ public class TextReporter {
 
  				outFilePW.println(removeLastNewline(getClassesBlock()));
 
+ 				String typeHistogram = getTypeHistogram();
+ 				if (typeHistogram != null)
+ 					outFilePW.println(typeHistogram);
+
  				String chartblock = getChartBlock();
  				if (chartblock != null)
  					outFilePW.println(chartblock);
@@ -109,10 +113,16 @@ public class TextReporter {
 	 * @return A new string output line with the last newline character removed.
 	 */
 	private String removeLastNewline(String input) {
-		if (input.charAt(input.length()-1) == System.getProperty("line.separator").charAt(0))
-			return input.substring(0, input.length()-1);
-		else
-			return input;
+		String result = null;
+
+		if (input == null)
+			result = "";
+		else if (input.charAt(input.length()-1) == System.getProperty("line.separator").charAt(0))
+			result = input.substring(0, input.length()-1);
+			else
+				result = input;
+
+		return result;
 	}
 
 	/**
@@ -136,11 +146,35 @@ public class TextReporter {
 	}
 
 	/**
+	 *
+	 */
+	private String getTypeHistogram() {
+		String newLine = System.getProperty("line.separator");
+		String result = null;
+		try {
+			JSONObject histoObj = currentReport.getJSONObject("results").getJSONObject("typeHistogram");
+			if (histoObj != null) {
+				result = "Field Type Histogram: " + newLine;
+				Iterator iter = histoObj.keys();
+				while (iter.hasNext()) {
+					String key = (String) iter.next();
+					result += "\t" + key + ": " + histoObj.getInt(key) + newLine;
+				}
+			}
+
+		} catch (JSONException je) {
+			System.err.println(je);
+		}
+		return result;
+	}
+
+
+	/**
 	 * Returns a text formatted block of information for any charts created by this module
 	 * 
 	 * @return A String representation of the charting report
 	 */
-	public String getChartBlock() {
+	private String getChartBlock() {
 		String newLine = System.getProperty("line.separator");
 		String result = null;
 		try {
@@ -167,7 +201,7 @@ public class TextReporter {
 	 *
 	 * @retuns A String representation of the extuction timing/metrics information
 	 */
-	public String getExecutionBlock() {
+	private String getExecutionBlock() {
 		String newLine = System.getProperty("line.separator");
 		String result = null;
 		try {
@@ -191,7 +225,7 @@ public class TextReporter {
 	 * @param blockType A String containing the note type to return (generally "preamble" or "postamble")
 	 * @return the String representation
 	 */
-	public String getAmbleBlock(String blockType) {
+	private String getAmbleBlock(String blockType) {
 		String newLine = System.getProperty("line.separator");
 		String result = null;
 		try {
@@ -214,16 +248,19 @@ public class TextReporter {
 	 *
 	 * @return the String representation
 	 */
-	public String getClassesBlock() {
+	private String getClassesBlock() {
 		String newLine = System.getProperty("line.separator");
 		String result = null;
 		boolean classOutputCreated = false;
 
 		try {
 			JSONObject classes = currentReport.getJSONObject("results").getJSONObject("classes");
-			String[] classnameKeys = JSONObject.getNames(classes);
+			String[] classnameKeys = null;
 
-			if (classnameKeys.length > 0) {
+			if (classes != null)
+				classnameKeys = JSONObject.getNames(classes);
+
+			if (classnameKeys != null && classnameKeys.length > 0) {
 				Arrays.sort(classnameKeys);
 				result = "Analysis: " + newLine;
 
@@ -386,6 +423,7 @@ public class TextReporter {
 						result += "\t\tNo issues identified." + newLine + newLine;
 				}
 			}
+
 		} catch (JSONException je) {
 			System.err.println(je);
 		}
