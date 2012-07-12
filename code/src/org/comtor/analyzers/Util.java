@@ -172,4 +172,25 @@ public class Util {
 		return paramList;
 	}
 
+	/**
+	 * Tests a constructor to determine if it is a compiler-generated nullary constructor.
+	 * This test is based on the fact that Javadoc apparently assigns the same line and column
+	 * number for the source position of the nullary constructor as it does for the 
+	 * constructor's enclosing class.
+	 *
+	 * @pararm constr The constructor to test
+	 * @return returns a true value if the constructor's line and column numbers match
+	 * the same for the enclosing class.
+	 */
+	public static boolean isNullaryConstructor(ConstructorDoc constr) {
+		int constrLine = constr.position().line();
+		int constrCol = constr.position().column();
+		int classLine = constr.containingClass().position().line();
+		int classCol = constr.containingClass().position().column();
+		boolean result = false;
+
+		if (constrLine == classLine && constrCol == classCol)
+			result = true;
+		return result;
+	}	
 }
