@@ -51,7 +51,8 @@ public class AWSServices {
 	private static String tableName = "org.comtor.apikeys";		// DynamoDB Table to be used
 	
 	/**
-	 * Initializer method to read the credentials for AWS
+	 * Initializer method to read the credentials for AWS and to set up the necessary query and database objects
+	 * prior to first use.
 	 */
 	public static void init() {
 		try {
@@ -71,7 +72,7 @@ public class AWSServices {
 
 	/**
 	 * Query DynamoDB Table specified in static String variable 'tableName'
-	 * Method returns boolean true or false if it finds more than one
+	 * This method returns boolean true or false if it finds more than one
 	 * result with the hash key value.
 	 * 
 	 * @param apiKey	The MD5'ed string of the user's email that is the hash key value for this particular table
@@ -79,13 +80,13 @@ public class AWSServices {
 	 * @return			Return TRUE if Key already exists, else return FALSE
 	 */
 	public static boolean query(String apiKey, String email) {
-		// Initialize Query Request object
+		// Initialize query request object
 		QueryRequest queryRequest = new QueryRequest();
 		
 		// Boolean to contain whether or not query returned results
 		boolean exists = false;
 		
-		// Give query request the tablename and apiKey to check against, and return the count of matching items
+		// Provide the query request the tablename and apiKey to check against, and return the count of matching items
 		queryRequest
 			.withTableName(tableName)
 			.withHashKeyValue(new AttributeValue().withS(apiKey))
