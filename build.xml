@@ -15,6 +15,7 @@
 	<!-- Define some basic properties. -->
 	<property name="cloudBaseDir" location="code"/>
 	<property name="keygenBaseDir" location="keygen"/>
+	<property name="apiservBaseDir" location="apiserv"/>
 	<property name="thirdpartyjars" location="comtor_data/code/"/>
 	<property name="version" value="2.0.1"/>
 	<property name="managerURL" value="http://dev.comtor.org:8080/manager"/>
@@ -24,6 +25,8 @@
 	<property name="cloudClasses" location="${cloudBaseDir}/classes"/>
 	<property name="keygenSrc" location="${keygenBaseDir}/src"/>
 	<property name="keygenClasses" location="${keygenBaseDir}/classes"/>
+	<property name="apiservSrc" location="${apiservBaseDir}/src"/>
+	<property name="apiservClasses" location="${apiservBaseDir}/classes"/>
 
 	<!-- Build up a classpath file path for later use. -->
 	<condition property="toolsjar" value="${java.home}/../Classes/classes.jar"
@@ -35,7 +38,6 @@
 	</condition>
 			
 	<path id="comtor.class.path">
-		<pathelement path="${classes}"/>
 		<fileset dir="${thirdpartyjars}">
 			<include name="*.jar"/>
 		</fileset>
@@ -46,6 +48,7 @@
 		<fileset dir="${keygenBaseDir}/WEB-INF/lib">
 			<include name="*.jar"/>
 		</fileset>
+		<pathelement path="${apiservClasses}"/>
 	</path>
 	
 	<!-- ================ -->
@@ -127,7 +130,7 @@
 	<!-- Compile the source files -->
 	<target name="compile" description="Compile the source code of the cloud app" depends="init">
 		<mkdir dir="${cloudClasses}"/>
-		<javac srcdir="${cloudSrc}" destdir="${cloudClasses}" compiler="javac1.6" includeantruntime="false"
+		<javac srcdir="${cloudSrc}" destdir="${cloudClasses}" includeantruntime="false"
 				excludes="org/comtor/incomplete/** org/comtor/examples/**">
 			<classpath refid="comtor.class.path"/> 
 		</javac>
@@ -140,10 +143,32 @@
 		</javac>
 	</target>
 	
+	<target name="compileAPIServ" description="Compiles the source code of the api server app" depends="init">
+		<!-- Emit the property to the ant console
+		<property name="myclasspath" refid="comtor.class.path"/>
+		<echo message="Classpath = ${myclasspath}"/>
+		-->
+		
+		<mkdir dir="${apiservClasses}"/>
+		<javac destdir="${apiservClasses}" includeantruntime="false" deprecation="on"
+				excludes="org/comtor/incomplete/** org/comtor/examples/**">
+				<src path="${apiservSrc}"/>
+			<src path="${cloudSrc}"/>
+			<classpath refid="comtor.class.path"/>
+		</javac>
+	</target>
+
+	<target name="runAPIServ" description="Runs the API server" depends="init">
+		<java classname="org.comtor.apiserv.APIServ" fork="true">
+			<classpath refid="comtor.class.path"/>
+		</java>
+	</target>
+	
 	<!-- Removes the class files, source backups, and debug output -->
 	<target name="clean" description="Clean source backups, old reports, and .class files">
 		<delete dir="${cloudClasses}"/>
 		<delete dir="${keygenClasses}"/>
+		<delete dir="${apiservClasses}"/>
 		
 		<delete>
 			<fileset dir="." casesensitive="yes">
