@@ -46,7 +46,7 @@ public class GenerateReport {
 	/**
 	 * Takes a vector full of property lists and generates a report.
 	 *
-	 * @param v is a Vector of property lists
+	 * @param resultsVector is a Vector of property lists
 	 */
 	public void generateReport(Vector<Properties> resultsVector) {
 		// Load the database properties from properties file
