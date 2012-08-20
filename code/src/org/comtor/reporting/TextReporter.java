@@ -146,21 +146,24 @@ public class TextReporter {
 	}
 
 	/**
+	 * Returns a string representation of the type histogram (if present) in the report, or a null otherwise.
 	 *
+	 * @return a string histrgram report or a null value
 	 */
 	private String getTypeHistogram() {
 		String newLine = System.getProperty("line.separator");
-		String result = null;
+		String result = "Field Type Histogram: " + newLine;
 		try {
-			JSONObject histoObj = currentReport.getJSONObject("results").getJSONObject("typeHistogram");
-			if (histoObj != null) {
-				result = "Field Type Histogram: " + newLine;
+			JSONObject resultsObj = currentReport.getJSONObject("results");
+			if (resultsObj.has("typeHistogram")) {
+				JSONObject histoObj = resultsObj.getJSONObject("typeHistogram");
 				Iterator iter = histoObj.keys();
 				while (iter.hasNext()) {
 					String key = (String) iter.next();
 					result += "\t" + key + ": " + histoObj.getInt(key) + newLine;
 				}
-			}
+			} else
+				return null;
 
 		} catch (JSONException je) {
 			System.err.println(je);
