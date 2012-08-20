@@ -78,9 +78,10 @@ public class Comtor {
 			jdocsoptions.add(file);
 	
 		// Find packages in the specified dir and add them to the options vector.
-		System.err.println("Found the following packages:");
+		System.err.print("Found the following packages: ");
 		LinkedList<String> packageList = findPackages(codeDir);
-		
+		System.err.println();
+
 		// Add the -private option to the javadoc parameter list, ensuring that ALL classes
 		// and members are processed.
 		jdocsoptions.add("-private");
@@ -93,7 +94,7 @@ public class Comtor {
 			jdocsoptions.add(pkg);
 
 		// Process the options list for preparation in handing it to Javadoc
-		System.err.println("\njavadoc options: ");
+		System.err.print("javadoc options: ");
 
 		String[] optionslist = new String[jdocsoptions.size()];
 		int index = 0;
@@ -107,7 +108,6 @@ public class Comtor {
 		// output), the name of the doclet to execute (our stand alone version of the master doclet
 		// that does attempt to database its results), and an array of arguments.
 		com.sun.tools.javadoc.Main.execute("COMTOR", "org.comtor.drivers.ComtorStandAlone", optionslist);
-		
 		System.err.println("Execution complete.");
 	}
 	
@@ -152,7 +152,7 @@ public class Comtor {
 			if (containsJavaFiles(candidate)) {
 				item = item.replaceAll(fileSep, ".");
 				packageListing.add(item);
-				System.err.println("\t" + item);
+				System.err.print(item + " ");
 			}
 		}	
 
@@ -223,13 +223,17 @@ public class Comtor {
 			System.exit(1);
 		}
 		
-		System.err.println("Unpackaged source files found in dir: " + dirpath + fileSeparator);
+		System.err.print("Unpackaged source files found in dir " + dirpath + fileSeparator + ": ");
+		boolean found = false;
 		for (String filename : fileListVector) {
 			String basename = filename.substring(filename.lastIndexOf(fileSeparator) + 1);
 			System.err.println("\t" + basename);
 		}
+		if (!found) 
+			System.err.println("none");
+		else
+			System.err.println();
 		
-		System.err.println();
 		return (String[]) fileListVector.toArray(new String[fileListVector.size()]);
 	}			
 
@@ -289,7 +293,6 @@ public class Comtor {
 	private static void loadDocletList(String location) {
 		try {
 			File docletListFile = new File (location, "docletList.properties");
-			System.err.println("Attempting to load docletList.properties file from : " + location);
 			if (docletListFile.exists()) {
 				docPropList.load(new FileInputStream(docletListFile));
 
