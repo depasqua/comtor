@@ -40,19 +40,15 @@ import com.amazonaws.auth.PropertiesCredentials;
 
 public class AWSServices {
 	/**
-	 * Sends the COMTOR report to the specified recipient. This method is called after
-	 * the report is stored to S3 (by storeReportS3), as it assumes the report has been
-	 * generated and stored.
+	 * Sends the provided email to the specified recipient.
 	 *
 	 * @param toAddr the recipient's email address
-	 * @param url the url of the report's location
-	 * @param req the servlet handling the inbound HTTP request
+	 * @param body the body of the email to be sent
 	 */
-	public static void sendReportEmail(String toAddr, String url, HttpServletRequest req) {
+	public static void sendEmail(String toAddr, String bodyStr) {
 		String comtorEmail = "comtor@tcnj.edu";
 		try {
-			PropertiesCredentials credentials = new PropertiesCredentials(
-					new File("AwsCredentials.properties"));
+			PropertiesCredentials credentials = new PropertiesCredentials(new File("AwsCredentials.properties"));
 			AmazonSimpleEmailService ses = new AmazonSimpleEmailServiceClient(credentials);
 			
 			// Create a new Message
@@ -62,28 +58,9 @@ public class AWSServices {
 			Destination dest = new Destination().withToAddresses(toAddr);
 			request.withDestination(dest);
 
-			String contextBase = "http://" + req.getServerName();
-			String contextPath = req.getContextPath();
-
-			if (req.getServerPort() != 80)
-				contextBase += ":" + req.getServerPort();
-
-			if (contextPath.equals(""))
-				contextBase += "/";
-			else
-				contextBase += contextPath;
-
-			String msgText = "<img style=\"margin-left: auto; margin-right: auto; display: block;\" " +
-					"src=\"" + contextBase + "/images/comtor/comtorLogo.png\" width=\"160\" " +
-					"alt=\"COMTOR logo\"/>";
-			msgText += "Thank you for your submission to the COMTOR system. Your report is "; 
-			msgText += "now available for access/download at the following URL: " + url + ". ";
-			msgText += "This link will remain active for a period of 5 days.\n\n";
-			msgText += "You can reach the COMTOR team at " + comtorEmail + ".";
-
-			Content htmlContent = new Content().withData(msgText);
-			Body body = new Body().withHtml(htmlContent);
-			msg.setBody(body);
+			Content htmlContent = new Content().withData(bodyStr);
+			Body msgBody = new Body().withHtml(htmlContent);
+			msg.setBody(msgBody);
 			
 			request.setMessage(msg);
 			ses.sendEmail(request);
@@ -102,14 +79,14 @@ public class AWSServices {
 	 * Stores the specified report on the S3 store.
 	 *
 	 * @param report A File reference to the report created by this execution of COMTOR
-	 * @param sessionID The session name/id of the currently executing session
+	 * @param prefix The prefix String to be used as part of the stored file name
 	 * @return The URL of the downloadable report file
 	 */
-	public static URL storeReportS3(File report, String sessionID) {
+	public static URL storeReportS3(File report, String prefix) {
 		URL reportURL = null;
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmssSSSZ");
-			String key = sessionID + '-' + formatter.format(new Date());
+			String key = prefix + '-' + formatter.format(new Date());
 			String bucketName = "org.comtor.reports";
 			GregorianCalendar expiring = new GregorianCalendar();
 			expiring.add(Calendar.DATE, 5);

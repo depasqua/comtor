@@ -118,7 +118,7 @@ public class CloudUpload extends HttpServlet {
 					item.write(file);
 					
 					// Unjar the uploaded jar file
-					getContents(file, pathToFile);				
+					extractJarFile(file, pathToFile);				
 				}
 			}
 			// Close docletList.properties file
@@ -139,10 +139,29 @@ public class CloudUpload extends HttpServlet {
 				
 				// Shorten the url via Bitly and send email to user.
 				reportURLString = BitlyServices.shortenUrl(reportURLString);
-				AWSServices.sendReportEmail(emailAddress, reportURLString, request);
 
-				String requestURL = request.getRequestURL().toString();
-				String home = requestURL.substring(0, requestURL.lastIndexOf("/"));
+				// Construct body of email message and send it
+				String contextBase = "http://" + request.getServerName();
+				String contextPath = request.getContextPath();
+				if (request.getServerPort() != 80)
+					contextBase += ":" + request.getServerPort();
+
+				if (contextPath.equals(""))
+					contextBase += "/";
+				else
+					contextBase += contextPath;
+
+				String msgText = "<img style=\"margin-left: auto; margin-right: auto; display: block;\" " +
+						"src=\"" + contextBase + "/images/comtor/comtorLogo.png\" width=\"160\" " +
+						"alt=\"COMTOR logo\"/>";
+				msgText += "Thank you for your submission to the COMTOR system. Your report is "; 
+				msgText += "now available for access/download at the following URL: " + reportURLString + ". ";
+				msgText += "This link will remain active for a period of 5 days.\n\n";
+				msgText += "You can reach the COMTOR team at comtor@tcnj.edu.";
+				AWSServices.sendEmail(emailAddress, msgText);
+
+//				String requestURL = request.getRequestURL().toString();
+//				String home = requestURL.substring(0, requestURL.lastIndexOf("/"));
 
 				// Record cloud usage
 				GregorianCalendar now = new GregorianCalendar();
@@ -153,17 +172,6 @@ public class CloudUpload extends HttpServlet {
 				out.println("<!DOCTYPE html>");
 				out.println("<html lang=\"en\">");
 				out.println("\t<head>");
-
-				String contextBase = "http://" + request.getServerName();
-				String contextPath = request.getContextPath();
-
-				if (request.getServerPort() != 80)
-					contextBase += ":" + request.getServerPort();
-
-				if (contextPath.equals(""))
-					contextBase += "/";
-				else
-					contextBase += contextPath;
 
 				out.println("\t\t<meta http-equiv=\"refresh\" content=\"5;URL=" + contextBase + "\">");
 				out.println("\t\t<title>/** COMTOR **/</title>");
@@ -213,7 +221,7 @@ public class CloudUpload extends HttpServlet {
 	 * @param path A String object representing the path into which the file is extracted.
 	 */
 	@SuppressWarnings("rawtypes")
-	private void getContents(File file, String path) {
+	public static void extractJarFile(File file, String path) {
 		try {
 			JarFile jar = new JarFile(file);
 			Enumeration jarEnum = jar.entries();
