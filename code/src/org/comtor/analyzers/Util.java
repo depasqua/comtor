@@ -46,11 +46,14 @@ public class Util {
 		// Attempt to load/fetch the most recent dictionary list.
 		Mode currentMode = ComtorStandAlone.getMode();
 		String localFileName = System.getProperty("user.dir") +
-					System.getProperty("file.separator") + fileName;
+			System.getProperty("file.separator") + fileName;
 		
 		if (currentMode == Mode.CLOUD)
-				localFileName = ServletSupport.getTempDir() + 
-					System.getProperty("file.separator") + fileName;
+			localFileName = ServletSupport.getTempDir() + 
+				System.getProperty("file.separator") + fileName;
+
+		if (currentMode == Mode.API)
+			localFileName = System.getProperty("java.io.tmpdir") + fileName;
 
 		String netFileName = "http://www.comtor.org/" + fileName;
 		Scanner netScanner = null;
@@ -82,6 +85,7 @@ public class Util {
 				localScanner = new Scanner(localFile);
 				localFileVersion = localScanner.nextLine();
 			}
+
 		} catch (IOException ioe) {
 			System.err.println(ioe);
 		}
