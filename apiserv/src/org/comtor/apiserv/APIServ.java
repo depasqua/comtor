@@ -13,9 +13,10 @@ import com.amazonaws.*;
 import com.amazonaws.auth.*;
 import com.amazonaws.services.s3.*;
 import com.amazonaws.services.s3.model.*;
-import com.amazonaws.services.simpleemail.*;
 import com.amazonaws.services.sqs.*;
 import com.amazonaws.services.sqs.model.*;
+import com.amazonaws.services.dynamodb.*;
+import com.amazonaws.services.dynamodb.model.*;
 
 /**
  * This class represents our API server for COMTOR. The server is a background process that sleeps and wakes
@@ -48,16 +49,19 @@ public class APIServ implements Runnable {
 	public void run () {
 		AmazonSQS sqs = null;
 		AmazonS3 s3 = null;
+		AmazonDynamoDBAsyncClient dynamo = null;
 
 		try {
 			// Read AWS credentials and create client objects
 			PropertiesCredentials awsCreds = new PropertiesCredentials(new File("AwsCredentials.properties"));
 			sqs = new AmazonSQSClient(awsCreds);
 			s3 = new AmazonS3Client(awsCreds);
+			dynamo = new AmazonDynamoDBAsyncClient(awsCreds);
 
 		} catch (FileNotFoundException fnfe) {
 			System.err.println("AWS credentials properties file not found. Terminating.");
 			return;
+
 		} catch (IOException ioe) {
 			System.err.println(ioe);
 			return;
@@ -85,7 +89,7 @@ public class APIServ implements Runnable {
 				String numMessages = resultMap.get("ApproximateNumberOfMessages");
 
 				if (numMessages == null || Integer.parseInt(numMessages) == 0) {
-					System.err.println("No messages found. Sleeping...");
+					System.err.println("No messages found; sleeping...");
 					// The queue is empty, sleep for 15 sec.
 					Thread.sleep(15000);
 
@@ -104,7 +108,9 @@ public class APIServ implements Runnable {
 						if (tempDir.isDirectory()) {
 							// Create a COMTOR subdirectory in which to process the request
 							SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmssSSSZ");
-							comtorTmpDir = new File(tempDir, apiKeyString + '-' + formatter.format(new Date()));
+							String dateTimeStr = formatter.format(new Date());
+							String sessionName = apiKeyString + '-' + dateTimeStr;
+							comtorTmpDir = new File(tempDir, sessionName);
 							if (!comtorTmpDir.exists())
 								comtorTmpDir.mkdir();
 
@@ -114,15 +120,12 @@ public class APIServ implements Runnable {
 							// Retrieve the uploaded jar file from S3, extract its contents, and commence processing
 							File localJar = copyJarFromS3(comtorTmpDir, msgProps, s3);
 							CloudUpload.extractJarFile(localJar, comtorTmpDir.toString());
-							ComtorStandAlone.setMode(Mode.CLOUD);
+							ComtorStandAlone.setMode(Mode.API);
 							Comtor.start(comtorTmpDir.toString());
 
-							// TODO
-							// Fix Badwords d/l (spell check too?)
-							// Database the API usage
-
-							// Place analysis report on S3 and delete
+							// Place analysis report on S3 for user and archive results
 							File reportFile = new File(comtorTmpDir, "comtorReport.txt");
+							archiveReport(sessionName, apiKeyString, dateTimeStr, reportFile, dynamo);							
 							String reportURLString = AWSServices.storeReportS3(reportFile, apiKeyString).toString();
 
 							// Rewrite protocol of URL for report to eliminate https (certificate warnings)
@@ -191,6 +194,43 @@ public class APIServ implements Runnable {
 					item.delete();
 			}
 			dir.delete();
+		}
+	}
+
+	/**
+	 * Archives the newly created COMTOR report file to the DynamoDB for future analysis.
+	 *
+	 * @param reportID The intended ID of this DB entry - this is a combination of the user's key and the date/time
+	 * @param apiKey The API key of the user executing the COMTOR request
+	 * @param dateTime The date/time stamp of the report's creation (execution of COMTOR)
+	 * @param reportFile A reference to a File object (the report file) so that the contents can be included
+	 * in the archival
+	 * @param s3 A reference to the S3 client to which the stored report file will be archived
+	 */
+	public void archiveReport(String reportID, String apiKey, String dateTime, File reportFile, AmazonDynamoDBAsyncClient db) {
+		if (reportFile.exists() && reportFile.isFile()) {
+			try {
+				// Create a map of items to store
+				Map<String, AttributeValue> archiveItem = new HashMap<String, AttributeValue>();
+				archiveItem.put("reportID", new AttributeValue(reportID));
+				archiveItem.put("apiKey", new AttributeValue(apiKey));
+				archiveItem.put("dateTime", new AttributeValue(dateTime));
+
+				BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(reportFile)));
+				String inputContents = "";
+				while (input.ready())
+					inputContents += input.readLine();
+
+				input.close();
+				archiveItem.put("reportFile", new AttributeValue(inputContents));
+
+				// Create AWS DynamoDB put item request with tablename and item created, put in DB
+				PutItemRequest putItemRequest = new PutItemRequest("org.comtor.apireports", archiveItem);
+				db.putItem(putItemRequest);
+
+			} catch (IOException ioe) {
+				System.err.println(ioe);
+			}
 		}
 	}
 
