@@ -21,7 +21,8 @@ package org.comtor.analyzers;
  * This class represents the various operational modes
  */
 public enum Mode {
-    CLI, /* command line */
-    CLOUD, /* cloud-based (Tomcat) */
-    WEB, /* web-based (experimentation mode */
+	CLI,	/* command line */
+	CLOUD,	/* cloud-based Tomcat servlet */
+	WEB,	/* web-based experimentation mode */
+	API		/* API server mode */
 }
