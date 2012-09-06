@@ -6,13 +6,13 @@
 	<link rel="stylesheet" type="text/css" href="css/tables.css" />
 	<link rel="stylesheet" type="text/css" href="css/layout.css" />
 	<link rel="stylesheet" type="text/css" media="print" href="css/print.css" />
-	<link rel="stylesheet" type="text/css" href="jQuery/css/custom-theme/jquery-ui-1.8.custom.css"  />
+	<link rel="stylesheet" type="text/css" href="jQuery/css/custom-theme/jquery-ui-1.8.18.custom.css"  />
 	<style type="text/css">@import "jQuery/timeentry/jquery.timeentry.css";</style> 
 
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
-	<script type="text/javascript" src="jQuery/js/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" src="jQuery/js/jquery-ui-1.8.custom.min.js"></script>
+	<script type="text/javascript" src="jQuery/js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="jQuery/js/jquery-ui-1.8.18.custom.min.js"></script>
 	<script type="text/javascript" src="jQuery/js/jquery.tinyscrollbar.min.js"></script>
 	<script type="text/javascript" src="jQuery/mousewheel/jquery.mousewheel.js"></script>
 	<script type="text/javascript" src="scripts/tooltip.js"></script>
