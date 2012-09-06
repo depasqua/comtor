@@ -28,7 +28,7 @@ if (isset($_GET['courseId']) && is_numeric($_GET['courseId']))
     if (($courseInfo = getCourseInfo($_GET['courseId'])) !== false)
     {
       // Determine professor name
-      if ($_SESSION['acctType'] != "professor")
+//      if ($_SESSION['acctType'] != "professor")
         $courseInfo['profName'] = getUserNameById($courseInfo['profId']);
 
       // Get each student in the course
