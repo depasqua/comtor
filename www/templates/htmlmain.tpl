@@ -56,7 +56,7 @@
 	{/if}
   
 	{if isset($smarty.session.username)}
-		<div class="username">{$smarty.session.username} <a href="logout.php">(Logout)</a></div>
+		<div class="username">{$smarty.session.username} (<a href="logout.php">Logout</a>)</div>
 	{/if}
   
 	{if $smarty.const.DEVELOPMENT|default:false}
@@ -186,7 +186,7 @@ function getCookie(name)
 
 <div class="footer">
 	<a href="about.php">About Comment Mentor</a><br/>
-	<small>Version 2.0.3 - 01/24/12 - Copyright &copy; {$currentYear} TCNJ</small>
+	<small>Version 2.0.4 - 09/10/12 - Copyright &copy; {$currentYear} TCNJ</small>
 	<div class="tcnj_logo">
 		<a href="http://www.tcnj.edu"><img src="img/tcnjLogo.png" height="35" alt="TCNJ Logo" border="0" /></a>
 	</div>
