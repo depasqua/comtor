@@ -5,20 +5,20 @@
 {if is_array($courses_all) && count($courses_all) > 0 }
 <table class="data">
 <tr>
-  <th>Professor</th>
+  <th>Semester</th>
   <th>Course Section</th>
   <th class="medium">Course Name</th>
-  <th>Semester</th>
+  <th>Professor</th>
   <th>Comments</th>
   <th>Actions</th>
 </tr>
 
 {foreach from=$courses_all item="c"}
-<tr>
-  <td>{$c.profName}</td>
+<tr style="border-bottom: thin solid black">
+  <td>{$c.semester}</td>
   <td>{$c.section}</td>
   <td>{$c.name}</td>
-  <td>{$c.semester}</td>
+  <td>{$c.profName}</td>
   <td class="large">{$c.comment}</td>
   {* Actions *}
   <td>
@@ -44,9 +44,10 @@
       <a href="courseDrop.php?courseId={$c.courseId}&amp;rand={$rand}" onclick="return verifyCourseAction('drop', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" >Drop</a> |
     {/if}
     {if in_array('enroll', $c.actions)}
-      <a href="courseEnroll.php?courseId={$c.courseId}&amp;rand={$rand}" onclick="return verifyCourseAction('enroll in', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" >Enroll</a> |
+      <a href="courseEnroll.php?courseId={$c.courseId}&amp;rand={$rand}" onclick="return verifyCourseAction('enroll in', '{$c.section}', '{$c.name}', '{$c.profName}', '{$c.semester}');" >Enroll</a>
     {/if}
-    <a href="course_email.php?courseId={$c.courseId}"><img src="img/icons/email.png" alt="EMail" /></a>
+<!--    <a href="course_email.php?courseId={$c.courseId}"><img src="img/icons/email.png" alt="EMail" /></a> -->
+
   </td>
 </tr>
 {/foreach}
