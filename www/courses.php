@@ -29,6 +29,8 @@ else if ($_GET['total'] > MAX_LIST_TOTAL)
 $statusHanding = array(null);
 if ($_SESSION['acctType'] == 'professor' || $_SESSION['acctType'] == 'admin')
   $statusHanding = array('enabled', 'disabled');
+else if($_SESSION['acctType'] == 'student')
+  $statusHanding = array('enabled');
 
 foreach ($statusHanding as $status)
 {
@@ -88,7 +90,8 @@ foreach ($statusHanding as $status)
           $actions[] = 'drop';
         }
         else
-          $actions[] = 'enroll';
+          if ($course['status']=='enabled')
+            $actions[] = 'enroll';
       }
 
       $course['actions'] = $actions;
