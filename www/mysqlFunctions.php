@@ -1428,7 +1428,7 @@ function courseDrop($userId, $courseId)
 * 'section', 'name', 'semester', and 'comment' for each course or false if
 * userId is invalid or no courses are found
 *******************************************************************************/
-function getCourses($userId = false, $lower = false, $total = false, $status = null)
+function getCourses($userId = false, $lower = false, $total = false, $status)
 {
   $rtn = array();
 
@@ -1588,9 +1588,9 @@ function sortCourses($a, $b)
     $rtn = 1;
 
   // Compare semester if needed
-  else if ($aSem['semester'] < $bSem['semester'])
+  else if ($aSem['season'] < $bSem['season'])
     $rtn = -1;
-  else if ($aSem['semester'] > $bSem['semester'])
+  else if ($aSem['season'] > $bSem['season'])
     $rtn = 1;
 
   // Compare course section if needed
