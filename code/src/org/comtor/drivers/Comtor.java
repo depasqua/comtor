@@ -302,6 +302,8 @@ public class Comtor {
 					"pairs for the doclet[x] name.\nFor example: ");
 				System.err.println("\tdoclet1 : org.comtor.analyzers.SpellCheck");
 				System.err.println("\tdoclet2 : org.comtor.analyzers.ReadingLevel");
+				System.err.println();
+				System.err.println("This file should be located at: " + location + File.separator + "docletList.properties");
 				System.exit(1);
 			}
 		} catch (IOException ioe) {
