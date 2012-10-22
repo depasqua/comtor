@@ -191,10 +191,29 @@ public class Util {
 		int constrCol = constr.position().column();
 		int classLine = constr.containingClass().position().line();
 		int classCol = constr.containingClass().position().column();
+		Parameter[] params = constr.parameters();
 		boolean result = false;
 
-		if (constrLine == classLine && constrCol == classCol)
+		if (constrLine == classLine && constrCol == classCol && params.length != 0)
 			result = true;
 		return result;
-	}	
+	}
+
+	/**
+	 * Wraps the specified string afer the length-th character at the first 
+	 * occurrence that is a space.
+	 *
+	 * @param strToWrap the string that will be wrapped
+	 * @param length the minimum number of characters per line that will appear
+	 * @return a new string wrapped at the first space character after length characters
+	 */
+	public static String stringWrapAfter(String strToWrap, int length) {
+		StringBuilder strBld = new StringBuilder(strToWrap);
+		int strIndex = 0;
+
+		while ((strIndex = strBld.indexOf(" ", strIndex + length)) != -1)
+			strBld.replace(strIndex, strIndex + 1, "\n");
+
+		return strBld.toString();
+	}
 }
