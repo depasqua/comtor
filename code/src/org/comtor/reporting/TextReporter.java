@@ -55,15 +55,31 @@ public class TextReporter {
 
 			// Write the header of the debug file
 			outFilePW.println("COMTOR Execution Report - " + (new java.util.Date()).toString());
+			outFilePW.println("===========================================");
+			outFilePW.println("| Execution Score Summary                 |");
+			outFilePW.println("===========================================");
+			outFilePW.println("| Module Name                  | Score    |");
+			outFilePW.println("-------------------------------------------");
 
-			// Iterate through the Vector of JSON report strings and print them to the report file
 			Iterator iter = jsonReports.iterator();
  			while (iter.hasNext()) {
  				String results = (String) iter.next();
+				currentReport = new JSONObject(results);
+ 				String moduleName = currentReport.getJSONObject("information").getString("name");
+ 				String moduleScore = currentReport.getJSONObject("results").getString("score");
+
+ 				outFilePW.format("| %1$-29s| %2$-9s|\n", moduleName, moduleScore);
+ 			}
+			outFilePW.println("===========================================\n");
+
+			// Iterate through the Vector of JSON report strings and print them to the report file
+			iter = jsonReports.iterator();
+ 			while (iter.hasNext()) {
+ 				String results = (String) iter.next();
 				outFilePW.print("==========================================");
-				outFilePW.println("==========================================");
+				outFilePW.println("=========================================="); 					
  
- 				currentReport = new JSONObject(results);
+				currentReport = new JSONObject(results);
  				outFilePW.println(getInfoBlock());
  				String preamble = getAmbleBlock("preamble");
  				if (preamble != null)
@@ -82,6 +98,10 @@ public class TextReporter {
  				String postamble = getAmbleBlock("postamble");
  				if (postamble != null)
  					outFilePW.println(postamble);
+
+ 				String scoreStr = getScoreBlock();
+ 				if (scoreStr != null)
+ 					outFilePW.println(scoreStr);
 
  				outFilePW.println(removeLastNewline(getExecutionBlock()));
 
@@ -136,7 +156,7 @@ public class TextReporter {
 		try {
 			JSONObject info = currentReport.getJSONObject("information");
 
-			result += "Analysis Module: " + info.getString("name").trim() + " - " + 
+			result += "Analysis Module: " + info.getString("name").trim() + newLine + 
 				info.getString("description") + newLine;
 
 		} catch (JSONException je) {
@@ -146,9 +166,30 @@ public class TextReporter {
 	}
 
 	/**
+	 * Returns a string representation of the final score (for the module), or a null if it is missing from the
+	 * report.
+	 *
+	 * @return a string reference to the score as a percentage.
+	 */
+	private String getScoreBlock() {
+		String newLine = System.getProperty("line.separator");
+		String result = null;
+
+		try {
+			JSONObject results = currentReport.getJSONObject("results");
+			result = "Overall module score: " + results.getString("score") + newLine;
+
+		} catch (JSONException je) {
+			System.err.println(je);
+		}
+
+		return result;
+	}
+
+	/**
 	 * Returns a string representation of the type histogram (if present) in the report, or a null otherwise.
 	 *
-	 * @return a string histrgram report or a null value
+	 * @return a string histogram report or a null value
 	 */
 	private String getTypeHistogram() {
 		String newLine = System.getProperty("line.separator");
@@ -276,7 +317,7 @@ public class TextReporter {
 					// Output the issues found in the class comment section
 					JSONArray issuesArray = classObj.getJSONArray("issues");
 					if (issuesArray.length() > 0) {
-						result += "\t\tClass analysis:" + newLine;
+						result += "\t\tClass comment analysis:" + newLine;
 						for (int index = 0; index < issuesArray.length(); index++)
 							result += "\t\t\t" + issuesArray.getString(index) + newLine;
 						result += newLine;
@@ -294,7 +335,7 @@ public class TextReporter {
 						 	issuesArray = constructorObj.getJSONArray("issues");
 						 	if (issuesArray.length() > 0) {
 						 		if (!constructorHeaderPrinted) {
-									result += "\t\tConstructor analysis:" + newLine;
+									result += "\t\tConstructor comment analysis:" + newLine;
 									constructorHeaderPrinted = true;
 								}
 
@@ -314,7 +355,7 @@ public class TextReporter {
 								for (String paramName : paramNames) {
 									JSONArray paramIssuesArray = paramObj.getJSONArray(paramName);
 									if (paramIssuesArray.length() > 0) {
-										result += "\t\t\t\t" + paramName + " (parameter): " + newLine;
+										result += "\t\t\t\t" + paramName + " (@param " + paramName + "): " + newLine;
 										for (int index = 0; index < paramIssuesArray.length(); index++)
 											result += "\t\t\t\t\t" + paramIssuesArray.getString(index) + newLine;
 										result += newLine;
@@ -331,7 +372,7 @@ public class TextReporter {
 								for (String throwsName : throwsNames) {
 									JSONArray throwsIssuesArray = throwsObj.getJSONArray(throwsName);
 									if (throwsIssuesArray.length() > 0) {
-										result += "\t\t\t\t" + throwsName + " (throws): " + newLine;
+										result += "\t\t\t\t" + throwsName + " (@throws " + throwsName + "): " + newLine;
 										for (int index = 0; index < throwsIssuesArray.length(); index++)
 											result += "\t\t\t\t\t" + throwsIssuesArray.getString(index) + newLine;
 										result += newLine;
@@ -347,22 +388,21 @@ public class TextReporter {
 					String[] methodnameKeys = JSONObject.getNames(methodsObj);
 
 			 		if (containsIssues(methodsObj)) {
-						result += "\t\tMethod analysis:" + newLine;
+						result += "\t\tMethod comment analysis:" + newLine;
 						classOutputCreated = true;
 					}
 
 					if (methodnameKeys != null && methodnameKeys.length > 0) {
 						// For each method...
 						for (String methodname : methodnameKeys) {
+							String buildResult = "";
 							JSONObject method = methodsObj.getJSONObject(methodname);
 							// Deal with method issues...
 						 	JSONArray methodIssuesArray = method.getJSONArray("issues");
 						 	if (methodIssuesArray.length() > 0) {
-								result += "\t\t\t" + methodname + ": " + newLine;
 								for (int index = 0; index < methodIssuesArray.length(); index++)
-									result += "\t\t\t\t" + methodIssuesArray.getString(index) + newLine;
-
-								result += newLine;
+									buildResult += "\t\t\t\t" + methodIssuesArray.getString(index) + newLine;
+								buildResult += newLine;
 							}
 
 							// Deal with parameter issues...
@@ -373,10 +413,10 @@ public class TextReporter {
 								for (String paramName : paramNames) {
 									JSONArray paramIssuesArray = paramObj.getJSONArray(paramName);
 									if (paramIssuesArray.length() > 0) {
-										result += "\t\t\t\t" + paramName + " (parameter): " + newLine;
+										buildResult += "\t\t\t\t" + paramName + " (@param " + paramName + "): " + newLine;
 										for (int index = 0; index < paramIssuesArray.length(); index++)
-											result += "\t\t\t\t\t" + paramIssuesArray.getString(index) + newLine;
-										result += newLine;
+											buildResult += "\t\t\t\t\t" + paramIssuesArray.getString(index) + newLine;
+										buildResult += newLine;
 									}
 								}
 							}
@@ -389,12 +429,29 @@ public class TextReporter {
 								for (String throwsName : throwsNames) {
 									JSONArray throwsIssuesArray = throwsObj.getJSONArray(throwsName);
 									if (throwsIssuesArray.length() > 0) {
-										result += "\t\t\t\t" + throwsName + " (throws): " + newLine;
+										buildResult += "\t\t\t\t" + throwsName + " (@throws " + throwsName + "): " + newLine;
 										for (int index = 0; index < throwsIssuesArray.length(); index++)
-											result += "\t\t\t\t\t" + throwsIssuesArray.getString(index) + newLine;
-										result += newLine;
+											buildResult += "\t\t\t\t\t" + throwsIssuesArray.getString(index) + newLine;
+										buildResult += newLine;
 									}
 								}
+							}
+
+							// Deal with returns issues...
+							JSONArray returnsArr = method.getJSONArray("returns");
+							if (returnsArr != null && returnsArr.length() > 0) {
+								buildResult += "\t\t\t\t(@return): " + newLine;
+								for (int index = 0; index < returnsArr.length(); index++)
+									if (!returnsArr.isNull(index)) {
+										buildResult += "\t\t\t\t\t" + returnsArr.getString(index) + newLine;
+									}
+								buildResult += newLine;
+							}
+
+							// Print method name only if there are results to print
+							if (!buildResult.equals("")) {
+								result += "\t\t\t" + methodname + ": " + newLine;
+								result += buildResult;
 							}
 						}
 					}
@@ -409,7 +466,7 @@ public class TextReporter {
 							issuesArray = classObj.getJSONObject("fields").getJSONObject(fieldname).getJSONArray("issues");
 							if (issuesArray.length() > 0) {
 								if (!fieldHeaderPrinted)
-									result += "\t\tField analysis: " + newLine;
+									result += "\t\tField comment analysis: " + newLine;
 
 								result += "\t\t\t" + fieldname + ": " + newLine;
 								for (int index = 0; index < issuesArray.length(); index++)
@@ -423,10 +480,9 @@ public class TextReporter {
 
 					// If no output was created, print appropriate string message.
 					if (classOutputCreated == false)
-						result += "\t\tNo issues identified." + newLine + newLine;
+						result += "\t\t" + classObj.getString("noProblemMessage") + newLine + newLine;
 				}
 			}
-
 		} catch (JSONException je) {
 			System.err.println(je);
 		}
@@ -436,9 +492,9 @@ public class TextReporter {
 	/**
 	 * Checks to determine if the specified methods block of JSON data contains any "issues" to
 	 * output. Issues here can be from the analysis of the method's comments, the method's parameters'
-	 * comments, and the method's throws' comments. Returns a true valie if there are issues to
-	 * print. This method is used to pretty up the text-based output so that we only print
-	 * method names/header lines if/when a method contains output that needs to be rendered.
+	 * comments, the method's throws' comments, or the method's return comments. Returns a true value
+	 * if there are issues to print. This method is used to pretty up the text-based output so that we
+	 * only print method names/header lines if/when a method contains output that needs to be rendered.
 	 *
 	 * @param methods A JSONObject that contains the embodyment of a group of methods.
 	 * @return a true value if any of the methods contained in the block (or its subordinate data
@@ -475,13 +531,17 @@ public class TextReporter {
 											if (throwsIssuesArray.length() > 0)
 												result = true;
 										}
+									} else {
+										JSONArray returnArr = method.getJSONArray("returns");
+										if (returnArr != null && returnArr.length() > 0)
+											result = true;
 									}
 								}
 							}
 						}
 					}
 				} catch (JSONException je) {
-					System.err.println("here 5: " + je);
+					System.err.println(je);
 				}
 			}
 		}
