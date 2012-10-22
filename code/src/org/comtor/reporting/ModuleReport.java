@@ -35,6 +35,7 @@ public class ModuleReport {
 	private JSONObject currentField = null;
 	private JSONArray currentThrows = null;
 	private JSONArray currentParameter = null;
+	private JSONArray currentReturns = null;
 	private ReportItem lastItem = null;
 
 	/**
@@ -113,6 +114,24 @@ public class ModuleReport {
 	}
 
 	/** 
+	 * Adds the specified string value as an overall score for the module.
+	 *
+	 * @param value the score as a string, usually passed in the form of a well-formatted percentage
+	 * (e.g. 75.55%)
+	 */
+	public void addScore(String value) {
+		if (report != null) {
+			try {
+				JSONObject obj = report.getJSONObject("results");
+				obj.put("score", value);
+
+			} catch (JSONException je) {
+				System.err.println(je);
+			}
+		}
+	}
+
+	/** 
 	 * Adds the specific metric string to the report's metric information block.
 	 * 
 	 * @parram msg the message String to be added to the metric information block of the report
@@ -144,6 +163,25 @@ public class ModuleReport {
 
 			} catch (JSONException je) {
 				System.err.println(je);
+			}
+		}
+	}
+
+	/**
+	 * Appends the specified string key/value pair to the specified object. This is 
+	 * generally used to tack on another key/value pair to the class for reporting purposes.
+	 *
+	 * @param obj the object receiving the new key/value object
+	 * @param key the key of the new object
+	 * @param value the value that corresponds to the key for the new object
+	 */
+	public void appendStringToClass (JSONObject obj, String key, String value) {
+		if (obj != null) {
+			try {
+				obj.put(key, value);
+			
+			} catch (JSONException je) {
+				System.err.println();
 			}
 		}
 	}
@@ -240,7 +278,7 @@ public class ModuleReport {
 						subobject.put("issues", new JSONArray());
 						subobject.put("parameters", new JSONObject());
 						subobject.put("throws", new JSONObject());
-						subobject.put("returns", new JSONObject());
+						subobject.put("returns", new JSONArray());
 						subobject.put("location" , new JSONObject());
 						currentMethod = subobject;
 						lastItem = ReportItem.METHOD;
@@ -270,8 +308,7 @@ public class ModuleReport {
 						break;
 
 					case RETURNS:
-						obj = currentMethod.getJSONObject("returns");
-						obj.put(name, subobject);
+						currentReturns = currentMethod.getJSONArray("returns");
 						lastItem = ReportItem.RETURNS;
 						break;
 				}
@@ -318,7 +355,6 @@ public class ModuleReport {
 		}
 	}
 
-
 	/**
 	 * Adds the specified map (generally a hash map of string/integer entities) to the
 	 * current report. This is used to create histograms of data (such as class fields), but
@@ -337,7 +373,6 @@ public class ModuleReport {
 			}
 		}
 	}
-
 
 	/**
 	 * Appends the String message to the specified report item's object
@@ -378,7 +413,7 @@ public class ModuleReport {
 				case FIELD:
 					try {
 						currentField.getJSONArray("issues").put(msg);
-			
+
 					} catch (JSONException je) {
 						System.err.println(je);
 					}
@@ -388,11 +423,24 @@ public class ModuleReport {
 					currentThrows.put(msg);
 					break;
 
+				case RETURNS:
+					currentReturns.put(msg);
+					break;
+
 				case LASTITEM:
 					appendMessage(lastItem, msg);
 					break;
 			}
 		}
+	}
+
+	/**
+	 * Returns the reference to the current class object.
+	 *
+	 * @return the refernece to the current class object.
+	 */
+	public JSONObject getCurrentClass() {
+		return currentClass;
 	}
 
 	/**
