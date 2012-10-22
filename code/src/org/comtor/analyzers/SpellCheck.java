@@ -19,7 +19,9 @@ package org.comtor.analyzers;
 
 import org.comtor.drivers.*;
 import org.comtor.reporting.*;
+
 import com.sun.javadoc.*;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -37,7 +39,8 @@ import java.text.*;
 public final class SpellCheck implements ComtorDoclet {
 	private float maxScore = 5;
 	private long totalWordCount = 0;
-	private long duplicateWord = 0;
+	private long duplicateGoodWords = 0;
+	private long duplicateBadWords = 0;
 	
 	// Counters for the classes
 	private int numClasses = 0;
@@ -54,11 +57,7 @@ public final class SpellCheck implements ComtorDoclet {
 	private HashSet<String> dictionary = new HashSet<String>();
 
 	// JSON analysis report from this module's execution
-	ModuleReport report = new ModuleReport ("Spell Check", "This module looks to compare words in comments against " +
-		"an English dictionary. The analysis includes the list of known Java API classes (JDK), HTML tags and attributes, " +
-		"Java keywords, and user-defined symbols from the submitted code (class names, method names, field names, etc.) " +
-		"COMTOR uses JavaDoc and JavaDoc does not provide access to local variables within methods and blocks. Thus, the " +
-		"word list is not exhaustive.");
+	ModuleReport report = null;
 
 	/**
 	 * Performs pre-analysis initialization tasks. For example, loading the various dictionaries
@@ -67,6 +66,13 @@ public final class SpellCheck implements ComtorDoclet {
 	 * @param rootDoc a reference to the top of the parse tree
 	 */
 	private void init (RootDoc rootDoc) {
+		String description = "This module compares words found in comments against an English word dictionary. " +
+			"The COMTOR word dictionary contains more than 97,000 entries. The analysis includes the list of known Java API classes " +
+			"(JDK), HTML tags and attributes, Java keywords, and user-defined symbols from the submitted code (class, method, " +
+			"constructor, field names). COMTOR uses JavaDoc, as such JavaDoc does not provide access to local variables " +
+			"within methods and blocks. Thus, the word list is not exhaustive.";
+		report = new ModuleReport ("Spell Check", Util.stringWrapAfter(description, 80));
+
 		// Load the dictionary and java class listing (both sets contain valid 'words')
 		String name = "comtor.analyzers.SpellCheck";
 		boolean downloadAttempt = Util.loadDataList("dictionary.txt", dictionary, true, 
@@ -180,7 +186,7 @@ public final class SpellCheck implements ComtorDoclet {
 		}
 		
 		// Add the superclass to the list
- 		ClassDoc superclass = classDoc.superclass();
+		ClassDoc superclass = classDoc.superclass();
 		if (superclass != null) {
 			userSymbols.add(superclass.name().toLowerCase());
 			userSymbols.add(superclass.qualifiedName().toLowerCase());
@@ -220,9 +226,9 @@ public final class SpellCheck implements ComtorDoclet {
 
 		// Obtain and process the comments for each class
 		for (ClassDoc classDoc : rootDoc.classes()) {
-   			numClasses++;
-   			processClass(classDoc);
-   		}
+			numClasses++;
+			processClass(classDoc);
+		}
 
 		// Capture the ending time, just after the termination of the analysis
 		long endTime = new Date().getTime();
@@ -233,13 +239,20 @@ public final class SpellCheck implements ComtorDoclet {
 		report.addMetric(percentFormat + " of the words in the comments were misspelled.");
 		report.addMetric(totalWordCount + " words analyzed.");
 		report.addMetric(numClasses + " class(es) were processed.");
-		report.addMetric(goodWords.size() + " correctly spelled words.");
-		report.addMetric(badWords.size() + " incorrectly spelled words.");
-		report.addMetric(duplicateWord + " duplicate words (spelled correctly or incorrectly).");
-
+		report.addMetric(goodWords.size() + " correctly spelled words (excludes duplicates)");
+		report.addMetric(badWords.size() + " incorrectly spelled words (excludes duplicates)");
+		report.addMetric(duplicateGoodWords + " duplicate good words");
+		report.addMetric(duplicateBadWords + " duplicate bad words");
 		report.appendLongToObject("information", "classes processed", numClasses);
+		report.appendToAmble("preamble", "Javadoc tags (@tag) from constructors and methods are not yet processed.");
 
-		report.appendToAmble("preamble", "The @return tag is currently not processed.");
+		report.appendToAmble("postamble", Util.stringWrapAfter(badWords.size() + " word(s) in your source code are considered spelled " +
+			"incorrectly due to the fact that they are listed in our dictionary. In order to create a greater level of professionalism " +
+			"in your source code, please consider editing these words. If you believe you have a false positive result, please email the "+
+			"COMTOR team at comtor@tcnj.edu and we consider your submission to the dictionary.", 80));
+
+		NumberFormat formatter = NumberFormat.getPercentInstance();
+		report.addScore(formatter.format(getGrade()));
 
 		report.addTimingString("start time", Long.toString(startTime));
 		report.addTimingString("end time", Long.toString(endTime));
@@ -259,53 +272,59 @@ public final class SpellCheck implements ComtorDoclet {
 		report.addItem(ReportItem.CLASS, classDoc.qualifiedName());
 
 		// Process the class' comments
-		boolean misspellingFound = parseComment(classDoc.commentText(), classDoc.position());
+		int numMisspellingsFound = 0;
+		numMisspellingsFound += parseComment(classDoc.commentText(), classDoc.position());
 		
 		// Process all of the class's tag comments
 		// for (Tag tagComment : classDoc.tags()) {
-		// 	misspellingFound = parseComment(tagComment.text(), tagComment.position());
+		// 	numMisspellingsFound = parseComment(tagComment.text(), tagComment.position());
 		// }
 
 		// Process each constructor in the class
 		for (ConstructorDoc constructor : classDoc.constructors()) {
-			report.addItem(ReportItem.CONSTRUCTOR, constructor.qualifiedName());
+			if (!Util.isNullaryConstructor(constructor)) {
+				report.addItem(ReportItem.CONSTRUCTOR, constructor.qualifiedName() + constructor.signature());
+				// Obtain the method's comments and process
+				numMisspellingsFound += parseComment(constructor.commentText(), constructor.position());
 
-			// Obtain the method's comments and process
-			misspellingFound = parseComment(constructor.commentText(), constructor.position());
-
-			// Obtain the comments for method's tags (param, returns, etc.) and process each
-			// for (Tag tagComment : constructor.tags()) {
-			// 	misspellingFound = parseComment(tagComment.text(), tagComment.position());
-			// }
+				// Obtain the comments for method's tags (param, returns, etc.) and process each
+				// for (Tag tagComment : constructor.tags()) {
+				// 	numMisspellingsFound = parseComment(tagComment.text(), tagComment.position());
+				// }
+			}
 		}
 		
 		// Process each method in the class
 		for (MethodDoc method : classDoc.methods()) {
-			report.addItem(ReportItem.METHOD, method.qualifiedName());
+			report.addItem(ReportItem.METHOD, method.qualifiedName() + method.signature());
 
 			// Obtain the method's comments and process
-			misspellingFound = parseComment(method.commentText(), method.position());
+			numMisspellingsFound += parseComment(method.commentText(), method.position());
 
 			// Parse the parameter's comments (@param tag)
 			for (ParamTag param : method.paramTags()) {
 				report.addItem(ReportItem.PARAMETER, param.parameterName());
-				misspellingFound = parseComment(param.parameterComment(), param.position());
+				numMisspellingsFound += parseComment(param.parameterComment(), param.position());
 			}
 			
 			// Obtain the comments for method's tags (param, returns, etc.) and process each
 			// for (Tag tagComment : method.tags()) {
-			// 	misspellingFound = parseComment(tagComment.text(), tagComment.position());
+			// 	numMisspellingsFound = parseComment(tagComment.text(), tagComment.position());
 			// }
 		}	
 
 		// Process all of the class' fields and the field's comments as well
 		for (FieldDoc classField : classDoc.fields()) {
 			report.addItem(ReportItem.FIELD, classField.qualifiedName());
-			misspellingFound = parseComment(classField.commentText(), classField.position());
+			numMisspellingsFound += parseComment(classField.commentText(), classField.position());
 		}
 		
-		// Inner classes don't need to be processed. They are listed as part of the package-level
+		// FYI: Inner classes don't need to be processed. They are listed as part of the package-level
 		// iteration of classes (in analyze())
+
+		report.appendStringToClass(report.getCurrentClass(), "numProblemsDetected", Integer.toString(numMisspellingsFound));
+		if (numMisspellingsFound == 0)
+			report.appendStringToClass(report.getCurrentClass(), "noProblemMessage", "No spelling errors were found in processing this class.");
 	}
 
 	/**
@@ -317,37 +336,37 @@ public final class SpellCheck implements ComtorDoclet {
 	 * @param commentString The comment string which we wish to parse
 	 * @param classID The value of the classID counter, used to generate the reporting entry
 	 * @param memberID The value of the memberID counter, used to generate the reporting entry
-	 * @return returns a true value if there was a misspelled word found.
+	 * @return returns an integer value of the number of misspelled words found.
 	 */
-	private boolean parseComment(String comment, SourcePosition position) {
-		boolean result = false;
+	private int parseComment(String comment, SourcePosition position) {
+		int result = 0;
 
 		// Replace all punctuation with spaces and then use a Scanner to process the "words"
 		// in the comment string
 		Scanner scan = new Scanner(comment.replaceAll("[\\p{Punct}&&[^']]", " "));
 		
-   		while (scan.hasNext()) {
+		while (scan.hasNext()) {
 			String word = scan.next();
 			totalWordCount++;
 			
 			// If the word is a valid word, add it to the list of correctly spelled words
 			if (validWord(word)) {
 				if (!goodWords.add(word))
-					duplicateWord++;
+					duplicateGoodWords++;
 			} else {
 				// Check to see if the "word" is a valid if a number
 				try	{
 					Integer.parseInt(word);
 					if (!goodWords.add(word))
-						duplicateWord++;
+						duplicateGoodWords++;
 				}
 				// Conclude that the "word" is misspelled and place it in the correct list
 				catch (NumberFormatException e) {
 					report.appendMessage(ReportItem.LASTITEM, "'" + word + "' considered a misspelled word " +
 						"on/near line " + position.line());
-					result = true;
+					result++;
 					if (!badWords.add(word))
-						duplicateWord++;
+						duplicateBadWords++;
 				}
 			}
 		}
@@ -413,11 +432,11 @@ public final class SpellCheck implements ComtorDoclet {
 	 * from comments to the total number of works in the comments.
 	 */
 	public float getGrade() {
-		if (goodWords.size() + badWords.size() == 0)
+		if (totalWordCount == 0)
 			return (float) 0.0;
 
-		float ratio = (float) goodWords.size() / (goodWords.size() + badWords.size());
-		return ratio * maxScore;
+		else
+			return (float) (totalWordCount - (badWords.size() + duplicateBadWords)) / totalWordCount;
 	}
 
 	/**

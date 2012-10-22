@@ -22,6 +22,7 @@ import org.comtor.drivers.*;
 import org.comtor.reporting.*;
 import com.sun.javadoc.*;
 import java.util.*;
+import java.text.*;
 
 /**
  * The CheckAuthor class is a tool to validate that each class contains an apprpriate
@@ -31,11 +32,13 @@ import java.util.*;
  */
 public class CheckAuthor implements ComtorDoclet {
 	// JSON analysis report from this module's execution
-	ModuleReport report = report = new ModuleReport ("Check Author", "This module validates the presence of " +
-			"the @author tag in each class. Additionally, this module checks for non-blank @author tags (missing " +
-			"author name).");
+	String description = "This module validates the presence of the @author tag in each class. " +
+		"Additionally, this module checks for non-blank @author tags (missing author name).";
+	ModuleReport report = new ModuleReport("Check Author", Util.stringWrapAfter(description, 80));
 
 	private HashMap<String, Float> gradeBreakdown = new HashMap<String, Float>();
+	private int numClasses = 0;
+	private int classesWithErrors = 0;
 
 	/**
 	 * Constructor for this doclet. By default, it sets the total number of possible "points" to 5.
@@ -45,7 +48,7 @@ public class CheckAuthor implements ComtorDoclet {
 	 */
 	public CheckAuthor() {
 		// Set default values for grade breakdown
-		gradeBreakdown.put("TotalPoints", new Float(5.0));
+		//gradeBreakdown.put("TotalPoints", new Float(5.0));
 	}
 
 	/**
@@ -58,13 +61,11 @@ public class CheckAuthor implements ComtorDoclet {
 	public Properties analyze(RootDoc rootDoc) {
 
 		// A counter for the various metrics and reporting variables
-		int numClasses = 0;
 		boolean classError = false;
-		int classesWithErrors = 0;
 
-		int foundTags = 0;
 		int missingAuthorTagCount = 0;
 		int emptyAuthorTagCount = 0;
+		int foundTags = 0;
 		
 		report.appendToAmble("preamble", "References to line numbers in this report are generally to " +
 			"the subsequent non-comment Java statement that follows the commment/comment block under analysis.");
@@ -113,14 +114,23 @@ public class CheckAuthor implements ComtorDoclet {
 		report.appendLongToObject("information", "tags errors", emptyAuthorTagCount);
 
 		report.addMetric(numClasses + " class(es) were processed.");
+		report.addMetric(classesWithErrors + " class(es) contained errors related to the use of the @author tag.");
 		report.addMetric(missingAuthorTagCount + " class(es) are missing @author tags.");
-		report.addMetric(emptyAuthorTagCount +  " @author tags are empty (missing names following tag)");
-		String longURL = "http://chart.apis.google.com/chart?chs=650x350&cht=p&" +
-			"chco=FF0000|0000FF&chds=a&chd=t:" + (numClasses-classesWithErrors) + "," + classesWithErrors + 
-			"&chl=" + (numClasses-classesWithErrors) + "|" + classesWithErrors + 
-			"&chxs=0,000000,14&chxt=x&chdls=000000,14&chdl=%23+Classes+Without+Errors|%23+Classes+With+Errors" +
-			"&chtt=COMTOR+Check+Author Module:+Class+Error+Chart&chts=000000,18";
-		report.addChart("Class Error Chart", BitlyServices.shortenUrl(longURL));
+		report.addMetric(emptyAuthorTagCount +  " @author tag(s) are empty (missing names following tag)");
+		report.addMetric(foundTags + " @author tag(s) were located with text following the tags.");
+
+		String postAmbleStr = "";
+		if (missingAuthorTagCount > 0)
+			postAmbleStr += missingAuthorTagCount + " @author tags are missing from class-level documentation. ";
+
+		if (emptyAuthorTagCount > 0)
+			postAmbleStr += emptyAuthorTagCount + " @author tag(s) are empty and have no author provided.";
+
+		if (postAmbleStr.length() > 0)
+			report.appendToAmble("postamble", Util.stringWrapAfter(postAmbleStr, 80));
+
+		NumberFormat formatter = NumberFormat.getPercentInstance();
+		report.addScore(formatter.format(getGrade()));
 
 		report.addTimingString("start time", Long.toString(startTime));
 		report.addTimingString("end time", Long.toString(endTime));
@@ -145,7 +155,7 @@ public class CheckAuthor implements ComtorDoclet {
 	 * @return the overall grade for the doclet, as a float
 	 */
 	public float getGrade() {
-		return 1.0f;
+		return (numClasses - classesWithErrors) / (float) numClasses;
 	}
 
 	/**
