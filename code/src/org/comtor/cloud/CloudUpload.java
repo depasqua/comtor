@@ -99,9 +99,7 @@ public class CloudUpload extends HttpServlet {
 			fwrite.newLine();
 			fwrite.write("doclet4 : org.comtor.analyzers.PercentageMethods");
 			fwrite.newLine();
-			fwrite.write("doclet5 : org.comtor.analyzers.CommentAverageRatio");
-			fwrite.newLine();
-			fwrite.write("doclet6 : org.comtor.analyzers.BasicInfo");
+			fwrite.write("doclet5 : org.comtor.analyzers.CommentAvgRatio");
 			fwrite.newLine();
 
 			// Handle HTTP form request data
@@ -143,6 +141,7 @@ public class CloudUpload extends HttpServlet {
 				// Construct body of email message and send it
 				String contextBase = "http://" + request.getServerName();
 				String contextPath = request.getContextPath();
+
 				if (request.getServerPort() != 80)
 					contextBase += ":" + request.getServerPort();
 
@@ -160,14 +159,12 @@ public class CloudUpload extends HttpServlet {
 				msgText += "You can reach the COMTOR team at comtor@tcnj.edu.";
 				AWSServices.sendEmail(emailAddress, msgText);
 
-//				String requestURL = request.getRequestURL().toString();
-//				String home = requestURL.substring(0, requestURL.lastIndexOf("/"));
+				// Record cloud usage, but not for the dev version.
+				if (!contextPath.equals("comtorDev/")) {
+					GregorianCalendar now = new GregorianCalendar();
+					AWSServices.storeCloudUse(requesterIPAddress, sessionID, reportURLString, emailAddress, now.getTime().toString());
+				}
 
-				// Record cloud usage
-				GregorianCalendar now = new GregorianCalendar();
-				AWSServices.storeCloudUse(requesterIPAddress, sessionID, reportURLString,
-						emailAddress, now.getTime().toString());
-				
 				// Start of output returned
 				out.println("<!DOCTYPE html>");
 				out.println("<html lang=\"en\">");
@@ -207,7 +204,8 @@ public class CloudUpload extends HttpServlet {
 
 	/**
 	 * Called by the server (via the service method) to allow a servlet to handle a GET request.
-	 * See {@link http://docs.oracle.com/javaee/6/api/javax/servlet/http/HttpServlet.html#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}
+	 * See {@link http://docs.oracle.com/javaee/6/api/javax/servlet/http/HttpServlet.html#doGet(
+	 *       javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}
 	 */
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 				throws ServletException, IOException {
@@ -229,25 +227,61 @@ public class CloudUpload extends HttpServlet {
 			while (jarEnum.hasMoreElements()) {
 				JarEntry entry = (JarEntry) jarEnum.nextElement();
 				String entryName = entry.getName();
-				File entryFile = new File(path, java.io.File.separator + entryName);
-				
-				// If the entry is a directory, create it, unless it's the META-INF
+
+				// If the entry is a directory, create it, unless it's the META-INF, source code files
+				// are handled below...
 				if (!entryName.startsWith("META-INF"))
-					if (entry.isDirectory())
+					if (entry.isDirectory()) {
+						File entryFile = new File(path, java.io.File.separator + entryName);
 						entryFile.mkdir();
-					else {
-						InputStream in = jar.getInputStream(entry); 
-						OutputStream output = new FileOutputStream(entryFile);
-	
-						while (in.available() > 0)
-							output.write(in.read());
-	
-						output.close();
-						in.close();
+
+					} else {
+						File entryFile = new File(path, java.io.File.separator + entryName);
+						if (entryName.endsWith(".java")) {
+							// Reconstruct the dir path, if present
+							// Some jar files may not include entries for directories in the contents,
+							// so we need to ensure that the leading path is reconstructed prior to
+							// file extraction.
+							Scanner pathScan = new Scanner(entryName);
+							pathScan.useDelimiter("/");
+							int tokenCount = 0;
+							while (pathScan.hasNext()) {
+								pathScan.next();
+								tokenCount++;
+							}
+							pathScan = new Scanner(entryName);
+							pathScan.useDelimiter("/");
+
+							// Make directories (nested) for all but the last token in the entryName.
+							File newDir = new File(path);
+							if (!newDir.exists()) {
+								newDir.mkdir();
+							}
+
+							String newPath = null;
+							for (int index=0; index < tokenCount-1; index++) {
+								newPath = newDir.getPath();
+								newDir = new File(newPath, java.io.File.separator + pathScan.next());
+								if (!newDir.exists()) {
+									newDir.mkdir();
+								}
+							}
+
+							// Write the extracted file to the filesystem
+							InputStream in = jar.getInputStream(entry); 
+							OutputStream output = new FileOutputStream(entryFile);
+		
+							while (in.available() > 0)
+								output.write(in.read());
+		
+							output.close();
+							in.close();
+						}
 					}
 			}
 		} catch (Exception ex) {
 			System.err.println("Error encountered while unjarring.");
+			System.err.println(ex);
 		}
 	}
 }
