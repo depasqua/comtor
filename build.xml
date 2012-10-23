@@ -16,9 +16,10 @@
 	<property name="cloudBaseDir" location="code"/>
 	<property name="keygenBaseDir" location="keygen"/>
 	<property name="apiservBaseDir" location="apiserv"/>
+	<property name="apiclientBaseDir" location="apiclient"/>
 	<property name="thirdpartyjars" location="comtor_data/code/"/>
-	<property name="version" value="2.0.1"/>
-	<property name="managerURL" value="http://dev.comtor.org:8080/manager"/>
+	<property name="version" value="2.1.0"/>
+	<property name="managerURL" value="http://cloud.comtor.org/manager/text"/>
 	
 	<!-- Project-specific properties -->
 	<property name="cloudSrc" location="${cloudBaseDir}/src"/>
@@ -27,6 +28,8 @@
 	<property name="keygenClasses" location="${keygenBaseDir}/classes"/>
 	<property name="apiservSrc" location="${apiservBaseDir}/src"/>
 	<property name="apiservClasses" location="${apiservBaseDir}/classes"/>
+	<property name="apiclientSrc" location="${apiclientBaseDir}/src"/>
+	<property name="apiclientClasses" location="${apiclientBaseDir}/classes"/>
 
 	<!-- Build up a classpath file path for later use. -->
 	<condition property="toolsjar" value="${java.home}/../Classes/classes.jar"
@@ -49,6 +52,7 @@
 			<include name="*.jar"/>
 		</fileset>
 		<pathelement path="${apiservClasses}"/>
+		<pathelement path="${apiclientClasses}"/>
 	</path>
 	
 	<!-- ================ -->
@@ -158,8 +162,24 @@
 		</javac>
 	</target>
 
+	<target name="compileAPIClient" description="Compiles the source code of the api client app" depends="init">
+		<mkdir dir="${apiclientClasses}"/>
+		<javac destdir="${apiclientClasses}" includeantruntime="false" deprecation="on"
+				excludes="org/comtor/incomplete/** org/comtor/examples/**">
+				<src path="${apiclientSrc}"/>
+			<src path="${cloudSrc}"/>
+			<classpath refid="comtor.class.path"/>
+		</javac>
+	</target>
+
 	<target name="runAPIServ" description="Runs the API server" depends="init">
 		<java classname="org.comtor.apiserv.APIServ" fork="true">
+			<classpath refid="comtor.class.path"/>
+		</java>
+	</target>
+	
+	<target name="runAPIClient" description="Runs the API client" depends="init">
+		<java classname="org.comtor.apiclient.APIClient" fork="true">
 			<classpath refid="comtor.class.path"/>
 		</java>
 	</target>
@@ -214,10 +234,29 @@
 		</jar>
 	</target>
 
+	<!-- Runs the command line version (stand alone) via jar file of COMTOR -->
+	<target name="runcli" depends="cli" description="Runs the CLI version of COMTOR via the jar file on the dir path provided.">
+		<input message="Input the directory (absolute or relative) path to the location of the testing code:" addproperty="dirpath"/>
+		<java jar="comtor.jar" fork="true">
+			<arg value="-dir"/>
+			<arg path="${dirpath}"/>
+		</java>
+
+		<delete>
+			<fileset dir=".">
+				<include name="badwords.txt"/>
+				<include name="dictionary.txt"/>
+				<include name="htmltags.txt"/>
+				<include name="javaKeywords.txt"/>
+				<include name="javaclasslist.txt"/>
+			</fileset>
+		</delete>
+	</target>
+
 	<!-- Builds a jar file of the COMTOR source code (used for dogfooding) -->
-	<target name="srcjar" description="Builds a jar file of the COMOTR source code.">
+	<target name="srcjar" description="Builds a jar file of the COMTOR source code.">
 		<jar destfile="comtorSrc.jar">
-			<fileset dir="src">
+			<fileset dir="${cloudSrc}">
 				<include name="**/*.java"/>
 				<exclude name="org/comtor/analyzers/GeneralResources/*.java"/>
 				<exclude name="org/comtor/analyzers/InteractionsResources/*.java"/>
@@ -230,7 +269,8 @@
 	<!-- Builds the war file for TOMCAT/cloud release -->
 	<target name="cloudWar" depends="compile, setWarFileName" description="Builds the war file for the cloud release.">
 		<mkdir dir="${cloudBaseDir}/cloudDeploy/www/files"/>
-		<concat destfile="${cloudBaseDir}/cloudDeploy/www/files/README">This directory will contain session directories.
+		<concat destfile="${cloudBaseDir}/cloudDeploy/www/files/README">
+			This directory will contain session directories.
 		</concat>
 		<war destfile="${warfilename}" webxml="${cloudBaseDir}/cloudDeploy/WEB-INF/web.xml">
 			<fileset dir="${cloudBaseDir}/cloudDeploy/www"/>
@@ -298,6 +338,7 @@
 
 	<!-- Ant-based deploy for servlet version -->
 	<!-- Requires the catalina-ant.jar file in the ant/lib directory locally. See 
+	     http://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html#Executing_Manager_Commands_With_Ant or, 
 	     http://tomcat.apache.org/tomcat-6.0-doc/manager-howto.html#Executing_Manager_Commands_With_Ant -->
 	<target name="cloudWarDeploy" if="project.set" depends="-project.check, cloudWar" description="Deploys the cloud web application.">
 		<antcall target="-warDeploy"/>
