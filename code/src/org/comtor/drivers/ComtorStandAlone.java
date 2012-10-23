@@ -17,11 +17,15 @@
  */
 package org.comtor.drivers;
 
-import org.comtor.analyzers.*;
 import com.sun.javadoc.*;
+
 import java.sql.*;
 import java.util.*;
+
+import org.apache.logging.log4j.*;
+
 import org.comtor.reporting.*;
+import org.comtor.analyzers.*;
 
 /**
  * The ComtorDriver class is a tool to run COMTOR doclets (analysis modules)
@@ -35,7 +39,8 @@ public class ComtorStandAlone extends Doclet {
 
 	// Stores the current operational mode
 	private static Mode currentMode = Mode.CLI;
-	
+	private static Logger logger = LogManager.getLogger("org.comtor.drivers.ComtorStandAlone");
+
 	/**
 	* Accepts a rootDoc object (the parsed Java code tree) and calls the 
 	* analysis modules in parallel.
@@ -44,13 +49,13 @@ public class ComtorStandAlone extends Doclet {
 	* @return	boolean true if a successful execution, false otherwise
 	*/
 	public static boolean start(RootDoc rootDoc) {
+		logger.entry();
 
 		// Look through options to get config file and assignmentId
 		int assignmentId = -1;
 		String configFile = null;
 		String options[][] = rootDoc.options();
 		boolean done = false;
-		
 		try {
 			Vector<String> jsonReportVector = new Vector<String>();
 
@@ -71,6 +76,7 @@ public class ComtorStandAlone extends Doclet {
 					docThrd.setAnalyzer(comtorDoclet);
 					docThrd.start();
 					threads.add(docThrd);
+					logger.trace("Adding thread for: " + docletName);
 				} catch (ClassNotFoundException e) {
 					System.err.println("Class not found: " + e);
 				} catch (ExceptionInInitializerError e) {
@@ -84,26 +90,20 @@ public class ComtorStandAlone extends Doclet {
 			for (int i = 0; i < threads.size(); i++) {
 				DocletThread docThrd = threads.get(i);
 				docThrd.join();
-	
+				logger.trace("Thread ended for: " + docThrd.toString());
 				if (docThrd.getJSONReport() != null)
 					// Fetch the JSON report for this analyzer
 					jsonReportVector.addElement(docThrd.getJSONReport());
 			}
-
 			TextReporter reporter = new TextReporter();
 			reporter.generateTextReportFile(jsonReportVector);
 		}
 
 		// Exceptions from above.  This should be less catch-all and integrated above better.
-		catch (InterruptedException e) {
-			System.out.println(e.toString());
-		} catch (InstantiationException ie) {
-			System.out.println(ie.toString());
-		} catch (IllegalAccessException iae) {
-			System.out.println(iae.toString());
-		} catch (Exception e) {
-			System.out.println(e.toString());
+		catch (Exception e) {
+			System.err.println(e.toString());
 		}
+		logger.exit();
 		return true;
 	}
 	
@@ -194,6 +194,10 @@ public class ComtorStandAlone extends Doclet {
 		 */
 		public String getJSONReport() {
 			return doclet.getJSONReport();
+		}
+
+		public String toString() {
+			return doclet.toString();
 		}
 	}
 }
