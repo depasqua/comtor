@@ -23,6 +23,9 @@ import com.sun.javadoc.*;
 import java.util.*;
 import java.text.*;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 /**
  * The PercentageMethods class is a tool to measure the percentage of methods in a class 
  * that are documented with a Javadoc header.
@@ -32,6 +35,8 @@ import java.text.*;
  */
 public class PercentageMethods implements ComtorDoclet {
 	private HashMap<String, Float> gradeBreakdown = new HashMap<String, Float>();
+	
+	private static Logger logger = LogManager.getLogger(SpellCheck.class.getName());
 
 	// Counters for the classes, constructors, methods, etc. used in the report
 	private int numClasses = 0;
@@ -63,6 +68,7 @@ public class PercentageMethods implements ComtorDoclet {
 	 * @return Properties list containing the result set
 	 */
 	public Properties analyze(RootDoc rootDoc) {
+		logger.entry();
 		String description = "This module calculates the percentage of methods that have associated comments. This " +
 		"calculation will include both methods and constructors. The reported score is the overall percentage of methods " +
 		"and constructors which are commented. The length and/or content of the comment is not considered.";
@@ -72,6 +78,7 @@ public class PercentageMethods implements ComtorDoclet {
 		long startTime = new Date().getTime();
 
 		for (ClassDoc classdoc : rootDoc.classes()) {
+			logger.trace("Processing class '" + classdoc.qualifiedName() + "'");
 			int localNumMethods = 0;
 			int localNumConstructors = 0;
 			int localNumCommentedMethods = 0;
@@ -172,6 +179,7 @@ public class PercentageMethods implements ComtorDoclet {
 		report.addTimingString("end time", Long.toString(endTime));
 		report.addTimingString("execution time", Long.toString(endTime - startTime));
 
+		logger.exit();
 		return null;
 	}
 

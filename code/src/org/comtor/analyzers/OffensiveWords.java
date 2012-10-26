@@ -22,12 +22,17 @@ import org.comtor.reporting.*;
 import java.util.*;
 import java.text.*;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 /**
  * The BadWords class is a tool to check for offensive words in comments.
  *
  * @author Peter DePasquale
  */
 public final class OffensiveWords implements ComtorDoclet {
+	private static Logger logger = LogManager.getLogger(OffensiveWords.class.getName());
+
 	// JSON analysis report from this module's execution
 	private ModuleReport report = null;
 
@@ -54,6 +59,7 @@ public final class OffensiveWords implements ComtorDoclet {
 	 * @return Properties list
 	 */
 	public Properties analyze(RootDoc rootDoc) {
+		logger.entry();
 		String description = "This module identifies \"offensive\" English words " +
 		"used in comments at the class, method, and field level. Usage of these types of words is considered to be unprofessional. " +
 		"The COMTOR dictionary list of offensive words contains over 1,300 words and word variants. If you have a suggestion for " +
@@ -74,10 +80,11 @@ public final class OffensiveWords implements ComtorDoclet {
 		}
 		
 		// Parse the comments for each class found in the root doc
-		for (ClassDoc classMember : rootDoc.classes()) {
+		for (ClassDoc classdoc : rootDoc.classes()) {
+			logger.trace("Processing class '" + classdoc.qualifiedName() + "'");
 			numClasses++;
-			report.addItem(ReportItem.CLASS, classMember.qualifiedName());
-			parseClass(classMember);
+			report.addItem(ReportItem.CLASS, classdoc.qualifiedName());
+			parseClass(classdoc);
 			
 			// Note: There is no need to process the inner classes, they are provided
 			// via the .classes() call above.
@@ -115,6 +122,7 @@ public final class OffensiveWords implements ComtorDoclet {
 		report.addTimingString("end time", Long.toString(endTime));
 		report.addTimingString("execution time", Long.toString(endTime - startTime));
 
+		logger.exit();
 		return null;
 	}
 	

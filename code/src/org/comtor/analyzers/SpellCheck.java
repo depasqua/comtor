@@ -22,6 +22,9 @@ import org.comtor.reporting.*;
 
 import com.sun.javadoc.*;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -42,6 +45,8 @@ public final class SpellCheck implements ComtorDoclet {
 	private long duplicateGoodWords = 0;
 	private long duplicateBadWords = 0;
 	
+	private static Logger logger = LogManager.getLogger(SpellCheck.class.getName());
+
 	// Counters for the classes
 	private int numClasses = 0;
 
@@ -66,6 +71,8 @@ public final class SpellCheck implements ComtorDoclet {
 	 * @param rootDoc a reference to the top of the parse tree
 	 */
 	private void init (RootDoc rootDoc) {
+		logger.entry();
+
 		String description = "This module compares words found in comments against an English word dictionary. " +
 			"The COMTOR word dictionary contains more than 97,000 entries. The analysis includes the list of known Java API classes " +
 			"(JDK), HTML tags and attributes, Java keywords, and user-defined symbols from the submitted code (class, method, " +
@@ -112,10 +119,12 @@ public final class SpellCheck implements ComtorDoclet {
 		
 		// Add classes to the user-symbol list
 		for (ClassDoc classDoc : rootDoc.classes()) {
+			logger.trace("Processing class '" + classDoc.qualifiedName() + "'");
 			userSymbols.add(classDoc.name().toLowerCase());
 			userSymbols.add(classDoc.qualifiedName().toLowerCase());
 			initAddClassMembers(classDoc);
 		}
+		logger.exit();
 	}
 	
 	/**
@@ -215,9 +224,8 @@ public final class SpellCheck implements ComtorDoclet {
 	 * @return Properties list containing the result set
 	 */
 	public Properties analyze (RootDoc rootDoc) {
-		// prop.setProperty(formatter.format(-1), "The following word(s) is/are misspelled. Note " +
-		// 	"that Javadoc tags (e.g. @param, @return, etc.) are not considered as comments.");
-		
+		logger.entry();
+
 		// Initialize the required tables
 		init(rootDoc);
 		
@@ -258,6 +266,7 @@ public final class SpellCheck implements ComtorDoclet {
 		report.addTimingString("end time", Long.toString(endTime));
 		report.addTimingString("execution time", Long.toString(endTime - startTime));
 
+		logger.exit();
 		return null;
 	}
 
@@ -269,6 +278,7 @@ public final class SpellCheck implements ComtorDoclet {
 	 * @param classID The value of the classID counter, used to generate the reporting entry
 	 */
 	private void processClass (ClassDoc classDoc) {
+		logger.trace("Processing class '" + classDoc.qualifiedName() + "'");
 		report.addItem(ReportItem.CLASS, classDoc.qualifiedName());
 
 		// Process the class' comments

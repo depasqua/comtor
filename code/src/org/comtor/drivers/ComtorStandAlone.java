@@ -22,7 +22,8 @@ import com.sun.javadoc.*;
 import java.sql.*;
 import java.util.*;
 
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import org.comtor.reporting.*;
 import org.comtor.analyzers.*;
@@ -39,7 +40,7 @@ public class ComtorStandAlone extends Doclet {
 
 	// Stores the current operational mode
 	private static Mode currentMode = Mode.CLI;
-	private static Logger logger = LogManager.getLogger("org.comtor.drivers.ComtorStandAlone");
+	private static Logger logger = LogManager.getLogger(ComtorStandAlone.class.getName());
 
 	/**
 	* Accepts a rootDoc object (the parsed Java code tree) and calls the 
@@ -95,14 +96,17 @@ public class ComtorStandAlone extends Doclet {
 					// Fetch the JSON report for this analyzer
 					jsonReportVector.addElement(docThrd.getJSONReport());
 			}
+			logger.trace("Commencing report creation.");
 			TextReporter reporter = new TextReporter();
 			reporter.generateTextReportFile(jsonReportVector);
+			logger.trace("Report created.");
 		}
 
 		// Exceptions from above.  This should be less catch-all and integrated above better.
 		catch (Exception e) {
 			System.err.println(e.toString());
 		}
+
 		logger.exit();
 		return true;
 	}

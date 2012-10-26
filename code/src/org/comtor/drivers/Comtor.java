@@ -20,6 +20,9 @@ package org.comtor.drivers;
 import java.io.*;
 import java.util.*;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 /**
  * This class contains a main method (wrapper) used to call the stand alone version of COMTOR. This 
  * version is used to check the processing and output of modules as they are developed (debugging),
@@ -32,6 +35,8 @@ public class Comtor {
 	private static HashMap<String,String> argsMap = new HashMap<String, String>();
 	private static Properties docPropList = new Properties();
 	private static String codeDir = "";
+
+	private static Logger logger = LogManager.getLogger(org.comtor.drivers.Comtor.class.getName());
 	
 	/**
 	 * Main method for the Comtor standalone program.
@@ -40,8 +45,9 @@ public class Comtor {
 	 * pass to Javadoc, as everything really starts there and calls our doclet.
 	 */
 	public static void main (String [] args) {
+		logger.entry();
 		// Validate the argument list and print the options listing if validation fails.
-		if (!checkArgs(args)) {
+		if (!checkArgs(args) || args.length == 0) {
 			System.err.println(optionsListing());
 			System.exit(1);
 		} else {
@@ -50,6 +56,7 @@ public class Comtor {
 				start(argsMap.get("dir"));
 			}
 		}
+		logger.trace("Execution complete.");
 	}
 	
 	/**
@@ -61,6 +68,7 @@ public class Comtor {
 	 * non-packaged source code.
 	 */
 	public static void start(String dirpath) {
+		logger.entry();
 		Vector<String> jdocsoptions = new Vector<String>();
 
 		if (dirpath.equals("."))
@@ -78,9 +86,8 @@ public class Comtor {
 			jdocsoptions.add(file);
 	
 		// Find packages in the specified dir and add them to the options vector.
-		System.err.print("Found the following packages: ");
+		logger.trace("Found the following packages: ");
 		LinkedList<String> packageList = findPackages(codeDir);
-		System.err.println();
 
 		// Add the -private option to the javadoc parameter list, ensuring that ALL classes
 		// and members are processed.
@@ -94,21 +101,20 @@ public class Comtor {
 			jdocsoptions.add(pkg);
 
 		// Process the options list for preparation in handing it to Javadoc
-		System.err.print("javadoc options: ");
+		logger.trace("javadoc options: ");
 
 		String[] optionslist = new String[jdocsoptions.size()];
 		int index = 0;
 		for (String option : jdocsoptions) {
 			optionslist[index] = jdocsoptions.elementAt(index);
-			System.err.print(" " + optionslist[index++]);
+			logger.trace(" " + optionslist[index++]);
 		}
-		System.err.println();
 
 		// Execute the javadoc processor handing it a String name of the application (for error
 		// output), the name of the doclet to execute (our stand alone version of the master doclet
 		// that does attempt to database its results), and an array of arguments.
 		com.sun.tools.javadoc.Main.execute("COMTOR", "org.comtor.drivers.ComtorStandAlone", optionslist);
-		System.err.println("Execution complete.");
+		logger.exit();
 	}
 	
 	/**
@@ -152,7 +158,7 @@ public class Comtor {
 			if (containsJavaFiles(candidate)) {
 				item = item.replaceAll(fileSep, ".");
 				packageListing.add(item);
-				System.err.print(item + " ");
+				logger.trace(item + " ");
 			}
 		}	
 

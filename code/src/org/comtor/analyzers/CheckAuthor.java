@@ -20,9 +20,14 @@ package org.comtor.analyzers;
 import org.comtor.util.*;
 import org.comtor.drivers.*;
 import org.comtor.reporting.*;
+
 import com.sun.javadoc.*;
+
 import java.util.*;
 import java.text.*;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * The CheckAuthor class is a tool to validate that each class contains an apprpriate
@@ -31,14 +36,11 @@ import java.text.*;
  * @author Peter DePasquale
  */
 public class CheckAuthor implements ComtorDoclet {
-	// JSON analysis report from this module's execution
-	String description = "This module validates the presence of the @author tag in each class. " +
-		"Additionally, this module checks for non-blank @author tags (missing author name).";
-	ModuleReport report = new ModuleReport("Check Author", Util.stringWrapAfter(description, 80));
-
+	private static Logger logger = LogManager.getLogger(CheckAuthor.class.getName());
 	private HashMap<String, Float> gradeBreakdown = new HashMap<String, Float>();
 	private int numClasses = 0;
 	private int classesWithErrors = 0;
+	private	ModuleReport report = null;
 
 	/**
 	 * Constructor for this doclet. By default, it sets the total number of possible "points" to 5.
@@ -59,6 +61,12 @@ public class CheckAuthor implements ComtorDoclet {
 	 * @return Properties list containing the result set
 	 */
 	public Properties analyze(RootDoc rootDoc) {
+		logger.entry();
+
+		// JSON analysis report from this module's execution
+		String description = "This module validates the presence of the @author tag in each class. " +
+			"Additionally, this module checks for non-blank @author tags (missing author name).";
+		report = new ModuleReport("Check Author", Util.stringWrapAfter(description, 80));
 
 		// A counter for the various metrics and reporting variables
 		boolean classError = false;
@@ -74,6 +82,7 @@ public class CheckAuthor implements ComtorDoclet {
 		long startTime = new Date().getTime();
 
 		for (ClassDoc classdoc : rootDoc.classes()) {
+			logger.trace("Processing class '" + classdoc.qualifiedName() + "'");
 			numClasses++;
 			classError = false;
 			report.addItem(ReportItem.CLASS, classdoc.qualifiedName());
@@ -136,6 +145,7 @@ public class CheckAuthor implements ComtorDoclet {
 		report.addTimingString("end time", Long.toString(endTime));
 		report.addTimingString("execution time", Long.toString(endTime - startTime));
 
+		logger.exit();
 		return null;
 	}
 
