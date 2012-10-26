@@ -231,6 +231,9 @@
 				<include name="**/*.class"/>
 				<exclude name="org/comtor/cloud/*.class"/>
 			</fileset>
+			<fileset dir=".">
+					<include name="log4j2.xml"/>
+			</fileset>
 		</jar>
 	</target>
 
