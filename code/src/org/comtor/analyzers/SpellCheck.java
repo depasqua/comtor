@@ -87,7 +87,8 @@ public final class SpellCheck implements ComtorDoclet {
 		Util.loadDataList("javaclasslist.txt", dictionary, downloadAttempt, this.getClass().getName());
 		Util.loadDataList("htmltags.txt", dictionary, downloadAttempt, this.getClass().getName());
 		Util.loadDataList("javaKeywords.txt", dictionary, downloadAttempt, this.getClass().getName());
-		
+		Util.loadDataList("usersubmitted.txt", dictionary, downloadAttempt, this.getClass().getName());
+
 		// Add all user-defined packages, classes, class variables, methods, and parameter names to
 		// a list of 'valid' words that may be referenced in a comment. Note that javaDoc does not
 		// provide access to local variables within methods and blocks. Thus the list is not
