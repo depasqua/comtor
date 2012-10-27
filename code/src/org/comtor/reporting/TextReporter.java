@@ -54,7 +54,10 @@ public class TextReporter {
 				new File(Comtor.getCodeDir(), "jsonOut.txt"))));
 
 			// Write the header of the debug file
-			outFilePW.println("COMTOR Execution Report - " + (new java.util.Date()).toString());
+			SimpleDateFormat formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+			formatter.setTimeZone(Calendar.getInstance().getTimeZone());
+
+			outFilePW.println("COMTOR Execution Report - " + formatter.format(new java.util.Date()));
 			outFilePW.println("===========================================");
 			outFilePW.println("| Execution Score Summary                 |");
 			outFilePW.println("===========================================");
