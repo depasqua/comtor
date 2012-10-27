@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="debug" verbose="true">
+<configuration>
 
 	<appenders>
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
 		</Console>
 
-		<File name="DriversFile" fileName="trace-drivers.txt" suppressExceptions="false" append="false">
+		<File name="drivers" fileName="trace-drivers.txt" suppressExceptions="false" append="false">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %C [%t] - %m%n"/>
+		</File>
+
+		<File name="analyzers" fileName="trace-analyzers.txt" suppressExceptions="false" append="false">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %C [%t] - %m%n"/>
 		</File>
 	</appenders>
@@ -16,8 +20,12 @@
 			<appender-ref ref="Console"/>
 		</root>
 
-		<logger name="org.comtor.drivers" level="trace">
-			<appender-ref ref="DriversFile"/>
+		<logger name="org.comtor.drivers" level="trace" additivity="false">
+			<appender-ref ref="drivers"/>
+		</logger>
+
+		<logger name="org.comtor.analyzers" level="trace" additivity="false">
+			<appender-ref ref="analyzers"/>
 		</logger>
 	</loggers>
 </configuration>
