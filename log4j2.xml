@@ -20,12 +20,13 @@
 			<appender-ref ref="Console"/>
 		</root>
 
-		<logger name="org.comtor.drivers" level="trace" additivity="false">
+		<logger name="org.comtor" level="trace" additivity="false">
 			<appender-ref ref="drivers"/>
 		</logger>
 
 		<logger name="org.comtor.analyzers" level="trace" additivity="false">
 			<appender-ref ref="analyzers"/>
 		</logger>
+
 	</loggers>
 </configuration>
