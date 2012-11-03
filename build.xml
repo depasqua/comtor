@@ -200,6 +200,7 @@
 				<include name="comtor.war"/>
 				<include name="ROOT.war"/>
 				<include name="keygen.war"/>
+				<include name="trace-*.txt"/>
 			</fileset>
 		</delete>		
 	</target>
@@ -252,6 +253,7 @@
 				<include name="htmltags.txt"/>
 				<include name="javaKeywords.txt"/>
 				<include name="javaclasslist.txt"/>
+				<include name="usersubmitted.txt"/>
 			</fileset>
 		</delete>
 	</target>
@@ -275,6 +277,7 @@
 		<concat destfile="${cloudBaseDir}/cloudDeploy/www/files/README">
 			This directory will contain session directories.
 		</concat>
+		<copy file="log4j2.xml" todir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib"/>
 		<war destfile="${warfilename}" webxml="${cloudBaseDir}/cloudDeploy/WEB-INF/web.xml">
 			<fileset dir="${cloudBaseDir}/cloudDeploy/www"/>
 			<fileset dir="${cloudBaseDir}/cloudDeploy/Web-Content"/>
@@ -282,6 +285,7 @@
 			<classes dir="${cloudBaseDir}/classes"/>
 		</war>
 		<delete dir="${cloudBaseDir}/cloudDeploy/www"/>
+		<delete dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib/log4j2.xml"/>
 	</target>
 	
 	<!-- Builds the war file for the TOMCAT/keygen release -->
