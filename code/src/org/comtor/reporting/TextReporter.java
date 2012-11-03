@@ -23,8 +23,12 @@ import java.util.*;
 import org.comtor.drivers.*;
 import org.json.*;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 public class TextReporter {
-	JSONObject currentReport;
+	private JSONObject currentReport;
+	private static Logger logger = LogManager.getLogger(TextReporter.class.getName());
 
 	/**
 	 * Creates the textual report file for this execution of COMTOR. The method takes the
@@ -34,6 +38,8 @@ public class TextReporter {
 	 * analysis report in JSON format.
 	 */
 	public void generateTextReportFile(Vector<String> jsonReports) {
+		logger.entry();
+
 		// Set the path for the location of the report output file.
 		String path = "comtorReport.txt";
 		try {
@@ -42,6 +48,7 @@ public class TextReporter {
 			// replace it with a new one. We should improve this to use a date/time stamp in
 			// the file name so that deletion is redundant.
 			File outputFile = new File(Comtor.getCodeDir(), path);
+			logger.trace("Attempting to create output report: " + outputFile);
 			if (outputFile.exists())
 				outputFile.delete();
 
@@ -83,6 +90,7 @@ public class TextReporter {
 				outFilePW.println("=========================================="); 					
  
 				currentReport = new JSONObject(results);
+				logger.trace("Creating report for module: " + getBlockName());
  				outFilePW.println(getInfoBlock());
  				String preamble = getAmbleBlock("preamble");
  				if (preamble != null)
@@ -121,10 +129,14 @@ public class TextReporter {
 		}
 		catch (IOException e) {
 			System.out.println(e);
+			logger.trace(e);
 
 		} catch (JSONException je) {
 			System.err.println(je);
+			logger.trace(je);
 		}
+
+		logger.exit();
 	}
 
 	/**
@@ -145,6 +157,22 @@ public class TextReporter {
 			else
 				result = input;
 
+		return result;
+	}
+
+	/**
+	 * Returns the name of the information blouc as plain text.
+	 *
+	 * @return the String name of the information block (module report name)
+	 **/
+	public String getBlockName() {
+		String result = "";
+		try {
+			result += currentReport.getJSONObject("information").getString("name").trim();
+
+		} catch (JSONException je) {
+			System.err.println(je);
+		}
 		return result;
 	}
 
