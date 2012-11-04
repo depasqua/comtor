@@ -127,8 +127,6 @@
 				<equals arg1="${project}" arg2="keygen"/>
 			</and>
 		</condition>
-
-		<echo>Warfile name set: ${warfilename}</echo>
 	</target>
 
 	<!-- Compile the source files -->
@@ -220,6 +218,7 @@
 	<!-- Builds the command line version (stand alone) jar file of COMTOR -->
 	<target name="cli" depends="compile" description="Builds a distributable .jar file for use as a stand-alone application">
 		<tstamp/>
+		<copy file="loggerconfig/log4j2.xml.cli" tofile="log4j2.xml" overwrite="true"/>
 		<jar destfile="comtor.jar">
 			<manifest>
 				<attribute name="Main-Class" value="org.comtor.drivers.Comtor"/>
@@ -236,6 +235,7 @@
 					<include name="log4j2.xml"/>
 			</fileset>
 		</jar>
+		<delete file="log4j2.xml"/>
 	</target>
 
 	<!-- Runs the command line version (stand alone) via jar file of COMTOR -->
@@ -274,20 +274,21 @@
 	<!-- Builds the war file for TOMCAT/cloud release -->
 	<target name="cloudWar" depends="compile, setWarFileName" description="Builds the war file for the cloud release.">
 		<mkdir dir="${cloudBaseDir}/cloudDeploy/www/files"/>
+		<copy file="loggerconfig/log4j2.xml.cloud" tofile="loggerconfig/log4j2.xml" overwrite="true"/>
 		<concat destfile="${cloudBaseDir}/cloudDeploy/www/files/README">
 			This directory will contain session directories.
 		</concat>
-		<copy file="log4j2.xml" todir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib"/>
 		<war destfile="${warfilename}" webxml="${cloudBaseDir}/cloudDeploy/WEB-INF/web.xml">
 			<fileset dir="${cloudBaseDir}/cloudDeploy/www"/>
 			<fileset dir="${cloudBaseDir}/cloudDeploy/Web-Content"/>
 			<lib dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib" excludes="javax.jar"/>
 			<classes dir="${cloudBaseDir}/classes"/>
+			<classes file="loggerconfig/log4j2.xml"/>
 		</war>
 		<delete dir="${cloudBaseDir}/cloudDeploy/www"/>
-		<delete dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib/log4j2.xml"/>
+		<delete file="loggerconfig/log4j2.xml"/>
 	</target>
-	
+
 	<!-- Builds the war file for the TOMCAT/keygen release -->
 	<target name="keygenWar" depends="compileKeyGen, setWarFileName" description="Builds the war file for the key gen release.">
 		<war destfile="${warfilename}" webxml="${keygenBaseDir}/WEB-INF/web.xml">
