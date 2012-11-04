@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="debug">
+	<properties>
+		<property name="driverLog">${sys:catalina.base}/logs/comtor-log-drivers.txt</property>
+		<property name="analyzersLog">${sys:catalina.base}/logs/comtor-log-analyzers.txt</property>
+	</properties>
+
+	<appenders>
+		<Console name="Console" target="SYSTEM_ERR">
+			<PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
+		</Console>
+
+		<File name="drivers" fileName="${driverLog}" suppressExceptions="false" append="false">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %C [%t] - %m%n"/>
+		</File>
+
+		<File name="analyzers" fileName="${analyzersLog}" suppressExceptions="false" append="false">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %C [%t] - %m%n"/>
+		</File>
+	</appenders>
+	
+	<loggers>
+		<root level="error">
+			<appender-ref ref="Console"/>
+		</root>
+
+		<logger name="org.comtor" level="trace" additivity="false">
+			<appender-ref ref="drivers"/>
+		</logger>
+
+		<logger name="org.comtor.analyzers" level="trace" additivity="false">
+			<appender-ref ref="analyzers"/>
+		</logger>
+
+	</loggers>
+</configuration>
