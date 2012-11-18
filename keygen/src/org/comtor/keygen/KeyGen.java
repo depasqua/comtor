@@ -20,6 +20,7 @@ package org.comtor.keygen;
 import org.comtor.keygen.cloud.*;
 
 import java.io.*;
+import java.util.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -51,7 +52,6 @@ public class KeyGen extends HttpServlet {
 		AWSServices.init();
 		
 		String email = request.getParameter("email"); 		// User E-mail
-		String apikey = AWSServices.md5(email); 			// Hashed E-mail to create key
 		String ipAddress = request.getRemoteAddr(); 		// User's IP Address
 		String hostname = request.getRemoteHost(); 			// User's host name
 
@@ -63,25 +63,26 @@ public class KeyGen extends HttpServlet {
 		String uresponse = request.getParameter("recaptcha_response_field");
 		ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(ipAddress, challenge, uresponse);
 
-		if (reCaptchaResponse.isValid()) {
-			// Put user in DynamoDB
-			boolean putUser = AWSServices.putKey(apikey, email, ipAddress, hostname);
-			
-			// Determine db insertion successful / unsuccessful and display to user
-			if (putUser) {
-				// Better notification and email announcement needed here...
+		if (reCaptchaResponse.isValid() && email != null) {
+			// Attempt to put user in DynamoDB
+			boolean success = AWSServices.addUser(email, ipAddress, hostname);
+			String apikey = AWSServices.getAPIKey(email);
+
+			// Determine success of db insertion
+			RequestDispatcher dispatcher = null;
+			if (success) {
+				// Send the user an email with the API key and forward to the response page.
 				AWSServices.sendKeyEmail(email, apikey, request);
-				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/keyGenerated.jsp?email=" +
-					email + "&apikey=" + apikey);
-				dispatcher.forward(request, response);
+				dispatcher = getServletContext().getRequestDispatcher("/keyGenerated.jsp?email=" + email + "&apikey=" + apikey);
 
 			} else {
-				// Resend email with API key and forward 
+				// Resend email with API key and forward to response page.
 				AWSServices.resendKeyEmail(email, apikey, request);
-				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/duplicateEmail.jsp?email=" +
-					email);
-				dispatcher.forward(request, response);
+				dispatcher = getServletContext().getRequestDispatcher("/duplicateEmail.jsp?email=" + email);
 			}
+
+			dispatcher.forward(request, response);
+
 		} else {
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/badRecaptcha.jsp");
 			dispatcher.forward(request, response);
@@ -101,5 +102,4 @@ public class KeyGen extends HttpServlet {
 		// Handle POST same as GET method
 		doGet(request, response);
 	}
-
 }

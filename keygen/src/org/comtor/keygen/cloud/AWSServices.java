@@ -20,9 +20,10 @@ package org.comtor.keygen.cloud;
 import java.io.*;
 import java.text.*;
 import java.util.*;
-import javax.mail.*;
 import java.security.*;
 import java.math.BigInteger;
+
+import javax.mail.*;
 import javax.mail.internet.*;
 import javax.servlet.http.*;
 
@@ -48,7 +49,8 @@ public class AWSServices {
 	private static PropertiesCredentials credentials = null;
 	private static AmazonDynamoDBAsyncClient dynamoDB = null;
 	private static AmazonSimpleEmailService ses = null; 
-	private static String tableName = "org.comtor.apikeys";		// DynamoDB Table to be used
+	private static String ownerTable = "org.comtor.keyOwners";
+	private static String keyTable = "org.comtor.keyDetails";
 	
 	/**
 	 * Initializer method to read the credentials for AWS and to set up the necessary query and database objects
@@ -71,125 +73,96 @@ public class AWSServices {
 	}
 
 	/**
-	 * Query DynamoDB Table specified in static String variable 'tableName'
-	 * This method returns boolean true or false if it finds more than one
-	 * result with the hash key value.
+	 * Queries the db to determine if the given email corresponds to an API key. The state of the key
+	 * active/inactive is not considered.
 	 * 
-	 * @param apiKey	The MD5'ed string of the user's email that is the hash key value for this particular table
-	 * @param email		The user's email that is requesting a key
-	 * @return			Return TRUE if Key already exists, else return FALSE
+	 * @param email The string value of the email we wish to query
+	 * @return The string value of the API key if it exists, null otherwise.
 	 */
-	public static boolean query(String apiKey, String email) {
-		// Initialize query request object
-		QueryRequest queryRequest = new QueryRequest();
-		
-		// Boolean to contain whether or not query returned results
-		boolean exists = false;
-		
-		// Provide the query request the tablename and apiKey to check against, and return the count of matching items
-		queryRequest
-			.withTableName(tableName)
-			.withHashKeyValue(new AttributeValue().withS(apiKey))
-			.setCount(true);
-		QueryResult result = dynamoDB.query(queryRequest);
-		
-		// There are matching items in table
-		if (result.getCount() > 0)
-			exists = true;
-		else
-			// There are not matching items in table
-			exists = false;
+	public static String getAPIKey(String email) {
+		String apiKey = null;
 
-		return exists;
+		// Initialize query request object
+		GetItemRequest getItemRequest = new GetItemRequest()
+			.withTableName(ownerTable)
+			.withKey(new com.amazonaws.services.dynamodb.model.Key(new AttributeValue().withS(email)))
+			.withAttributesToGet("apikey");
+
+		GetItemResult result = dynamoDB.getItem(getItemRequest);
+		if (result.getItem() != null) {
+			AttributeValue apiVal = result.getItem().get("apikey");
+			apiKey = apiVal.getS();
+		}
+		return apiKey;
 	}
 
 	/**
-	 * Create and put item in DynamoDB Table
+	 * Create and put user data item in DynamoDB table
 	 * 
-	 * @param apiKey	The MD5'ed string of the user's email that is the hash key value for this particular table
 	 * @param email		The user's email that is requesting a key
 	 * @param ipAddress	User's IP Address for metrics
 	 * @param hostname	User's ISP Host for metrics
-	 * 
 	 * @return			Return successful = TRUE if DynamoDB request is successful, else FALSE
 	 */
-	public static boolean putKey(String apiKey, String email, String ipAddress, String hostname) {
-		 // Boolean to contain whether or not put request was successful
+	public static boolean addUser(String email, String ipAddress, String hostname) {
 		 boolean successful = false;
 		 
-		 // If Query contains results (Query = True)
-		 if (query(apiKey, email))
-			 successful = false;
+		 // If database does not already contain the specified key for the email, insert a new one.
+		 if (getAPIKey(email) == null) {
+			String apiKey = generateSHAKey(email);
 
-		 // Else there is no matching email, therefore create key
-		 else {
-			// User item contains API Key (MD5), Email address, IP address, and host name
-			Map<String, AttributeValue> item = newItem(apiKey, email, ipAddress, hostname);
+			// User items contains API Key (MD5), Email address, IP address, and host name
+			Map<String, AttributeValue>[] items = createUserDataItems(apiKey, email, ipAddress, hostname);
 
-			// Create AWS DynamoDB put item request with tablename and item created, put in DB
-			PutItemRequest putItemRequest = new PutItemRequest(tableName, item);
+			// Place items in their respective databases
+			PutItemRequest putItemRequest = new PutItemRequest(ownerTable, items[0]);
 			dynamoDB.putItem(putItemRequest);
+
+			putItemRequest = new PutItemRequest(keyTable, items[1]);
+			dynamoDB.putItem(putItemRequest);		
 			successful = true;
 		 }
 		 return successful;	
 	}
 
 	/**
-	 * Create API User Object for storage in DynamoDB
+	 * Creates two user data items for storage in DynamoDB. The first is used to look up the presence of an
+	 * API key based on the email addres (email is the hash key). The second is used to look up the validity
+	 * of a key (apikey is the hash key). This unusual approach is taken so that we don't have to use the 
+	 * SCAN query approach in the db, and we can do a straight lookup in the respective tables. Thus, two
+	 * tables are employed to store a user's API key
 	 * 
 	 * @param apiKey The MD5'ed string of the user's email that is the hash key value for this particular table
 	 * @param email The user's email that is requesting a key
 	 * @param ipAddress User's IP Address for metrics
 	 * @param hostname User's ISP Host for metrics
-	 * @return Returns the created user data object
+	 * @return Returns the user data objects in an Map array
 	 */
-	private static Map<String, AttributeValue> newItem(String apikey, String email, String ipAddress, String hostname) {
+	private static Map<String, AttributeValue>[] createUserDataItems(String apikey,
+			String email, String ipAddress, String hostname) {
+
+		Map[] dataPair = new Map[2];
 		// Get date and time of put request
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Calendar cal = Calendar.getInstance();
-		String date = dateFormat.format(cal.getTime());
 		
 		// Create item with parameters listed above
 		Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
-		item.put("apikey", new AttributeValue(apikey));
+		dataPair[0] = item;
 		item.put("email", new AttributeValue(email));
-		item.put("date", new AttributeValue(date));
+		item.put("apikey", new AttributeValue(apikey));
+		AttributeValue dateAttr = new AttributeValue();
+		dateAttr.setN(Long.toString(cal.getTimeInMillis()));
+		item.put("date", dateAttr);
 		item.put("ip", new AttributeValue(ipAddress));
 		item.put("host", new AttributeValue(hostname));
 		
-		return item;
-	}
+		item = new HashMap<String, AttributeValue>();
+		item.put("apikey", new AttributeValue(apikey));
+		item.put("active", new AttributeValue(Boolean.toString(true)));
+		item.put("email", new AttributeValue(email));
+		dataPair[1] = item;
 
-	/**
-	 * Convert input to MD5
-	 * Currently used for e-mail to API key
-	 * 
-	 * @param input String to be MD5'ed
-	 * @return The MD5 result
-	 */
-	public static String md5(String input) {
-		// String to contain MD5 of input
-		String md5 = null;
-		
-		// If string is null then return null
-		if (input == null) return null;
-
-		try {
-			//Create MessageDigest object for MD5
-			MessageDigest digest = MessageDigest.getInstance("MD5");
-			
-			// Update input string in message digest
-			digest.update(input.getBytes(), 0, input.length());
-			
-			// Converts message digest value in base 16 (hex)
-			md5 = new BigInteger(1, digest.digest()).toString(16);
-		}
-
-		catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-
-		return md5;
+		return dataPair;
 	}
 
 	/**
@@ -295,5 +268,94 @@ public class AWSServices {
 					+ "problem sending your message to Amazon's E-mail Service check the "
 					+ "stack trace for more information.");
 		}
+	}
+
+	/**
+	 * Converts the specified string to an md5 hash of the string. Currently this is used to create
+	 * the user's API key.
+	 * 
+	 * @param input String to be MD5'ed
+	 * @return The MD5 result
+	 */
+	private static String generateMD5Key(String input) {
+		String md5Result = null;
+		
+		// If string is null then return null
+		if (input == null) return null;
+
+		try {
+			// Create MessageDigest object for MD5
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			
+			// Update input string in message digest
+			digest.update(input.getBytes(), 0, input.length());
+			
+			// Converts message digest value in base 16 (hex)
+			md5Result = new BigInteger(1, digest.digest()).toString(16);
+		}
+
+		catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+
+		return md5Result;
+	}
+
+	/**
+	 * Encode the spefified string value using SHA-256 and returns the encoding as a String.
+	 *
+	 * @param src The source string to encode
+	 * @return The source string encoded as a SHA-256 string.
+	 */
+	private static String generateSHAKey(String email) {
+		
+		// String buffer to deal with string byte data
+		StringBuffer strBuffer = new StringBuffer();
+		
+		try {
+			// Random long generator for seed
+			Random generator = new Random();
+			long random_seed = generator.nextLong();
+			
+			// Get encoder (used 256 to make length of key manageable. 512 seems a bit long for our purposes.
+			MessageDigest msgDigest = MessageDigest.getInstance("SHA-256");
+			
+			// Get bytes from email string and update digest with the email first, then add the seed.
+			msgDigest.update(email.getBytes());
+			msgDigest.update(getBytes(random_seed));
+			
+			// Get Byte array from encoded string
+			byte byteData[] = msgDigest.digest();
+			
+			// Iterate through string's bytes and append to the buffer we will return.
+			for (int i = 0; i < byteData.length; i++)
+				strBuffer.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+
+		} catch (NoSuchAlgorithmException nsae) {
+			nsae.printStackTrace();
+		}
+		
+		// Return the encoded buffer as a string
+		return strBuffer.toString();
+	}
+	
+	/**
+	 * Returns the corresponding array of bytes from the specified long value.
+	 *
+	 * @param val The Long wrapper object that contains the base value.
+	 * @return The array of bytes that represents the spefieid long value 'val'
+	 */
+	private static byte[] getBytes(Long val){
+		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+		DataOutputStream dataOutput = new DataOutputStream(byteArray);
+
+		try {
+			dataOutput.writeLong(val);
+
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+
+		return byteArray.toByteArray();
 	}
 }
