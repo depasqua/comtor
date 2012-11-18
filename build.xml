@@ -187,6 +187,7 @@
 		<delete dir="${cloudClasses}"/>
 		<delete dir="${keygenClasses}"/>
 		<delete dir="${apiservClasses}"/>
+		<delete dir="${apiclientClasses}"/>
 		
 		<delete>
 			<fileset dir="." casesensitive="yes">
