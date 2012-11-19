@@ -6,11 +6,11 @@
 		</Console>
 
 		<File name="drivers" fileName="comtorDriverLog.txt" suppressExceptions="false" append="false">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %C [%t] - %m%n"/>
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %C.%M [%t] - %msg%n"/>
 		</File>
 
 		<File name="analyzers" fileName="comtorAnalyzerLog.txt" suppressExceptions="false" append="false">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %C [%t] - %m%n"/>
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %C.%M [%t] - %msg%n"/>
 		</File>
 	</appenders>
 	
