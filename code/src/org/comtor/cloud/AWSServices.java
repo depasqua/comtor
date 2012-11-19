@@ -29,16 +29,20 @@ import javax.servlet.http.*;
 import com.amazonaws.*;
 import com.amazonaws.services.s3.*;
 import com.amazonaws.services.s3.model.*;
-
 import com.amazonaws.services.simpleemail.*;
 import com.amazonaws.services.simpleemail.model.*;
-
 import com.amazonaws.services.simpledb.*;
 import com.amazonaws.services.simpledb.model.*;
-
 import com.amazonaws.auth.PropertiesCredentials;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 public class AWSServices {
+	private static Logger logger = LogManager.getLogger(org.comtor.cloud.AWSServices.class.getName());
+
+	private static File awscreds = new File ("AwsCredentials.properties");
+
 	/**
 	 * Sends the provided email to the specified recipient.
 	 *
@@ -46,9 +50,10 @@ public class AWSServices {
 	 * @param body the body of the email to be sent
 	 */
 	public static void sendEmail(String toAddr, String bodyStr) {
+		logger.entry();
 		String comtorEmail = "comtor@tcnj.edu";
 		try {
-			PropertiesCredentials credentials = new PropertiesCredentials(new File("AwsCredentials.properties"));
+			PropertiesCredentials credentials = new PropertiesCredentials(awscreds);
 			AmazonSimpleEmailService ses = new AmazonSimpleEmailServiceClient(credentials);
 			
 			// Create a new Message
@@ -67,12 +72,14 @@ public class AWSServices {
 
 		} catch (AmazonClientException e) {
 			e.printStackTrace();
-			System.err.println("Caught a AmazonClientException, which means that there was a "
+			logger.error("Caught a AmazonClientException, which means that there was a "
 					+ "problem sending your message to Amazon's E-mail Service check the "
 					+ "stack trace for more information.");
+			
 		} catch (IOException ieo) {
-			System.err.println(ieo);
+			logger.error(ieo);
 		}
+		logger.exit();
 	}
 
 	/**
@@ -83,6 +90,7 @@ public class AWSServices {
 	 * @return The URL of the downloadable report file
 	 */
 	public static URL storeReportS3(File report, String prefix) {
+		logger.entry();
 		URL reportURL = null;
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmssSSSZ");
@@ -92,29 +100,32 @@ public class AWSServices {
 			expiring.add(Calendar.DATE, 5);
 
 			// Obtain AWS credentials
-			AmazonS3 s3 = new AmazonS3Client(new PropertiesCredentials(
-				new File("AwsCredentials.properties")));
+			AmazonS3 s3 = new AmazonS3Client(new PropertiesCredentials(awscreds));
 			s3.putObject(new PutObjectRequest(bucketName, key, report));
 			reportURL = s3.generatePresignedUrl(bucketName, key, expiring.getTime());
 
 		} catch (AmazonServiceException ase) {
-			System.out.println("Caught an AmazonServiceException, which means your request made it "
+			logger.error("Caught an AmazonServiceException, which means the request made it "
 					+ "to Amazon S3, but was rejected with an error response for some reason.");
-			System.out.println("Error Message:    " + ase.getMessage());
-			System.out.println("HTTP Status Code: " + ase.getStatusCode());
-			System.out.println("AWS Error Code:   " + ase.getErrorCode());
-			System.out.println("Error Type:       " + ase.getErrorType());
-			System.out.println("Request ID:       " + ase.getRequestId());
+			logger.error("Error Message:    " + ase.getMessage());
+			logger.error("HTTP Status Code: " + ase.getStatusCode());
+			logger.error("AWS Error Code:   " + ase.getErrorCode());
+			logger.error("Error Type:       " + ase.getErrorType());
+			logger.error("Request ID:       " + ase.getRequestId());
+
 		} catch (AmazonClientException ace) {
-			System.out.println("Caught an AmazonClientException, which means the client encountered "
+			logger.error("Caught an AmazonClientException, which means the client encountered "
 					+ "a serious internal problem while trying to communicate with S3, "
 					+ "such as not being able to access the network.");
-			System.out.println("Error Message: " + ace.getMessage());
+			logger.error("Error Message: " + ace.getMessage());
+
 		} catch (IOException ieo) {
-			System.out.println(ieo);
+			logger.error(ieo);
+
 		} catch (NullPointerException np) {
-			System.out.println(np);
+			logger.error(np);
 		}
+		logger.exit();
 		return reportURL;
 	}
 	
@@ -129,10 +140,9 @@ public class AWSServices {
 	 */
 	public static void storeCloudUse(String requestIP, String sessionID, String reportURL,
 			String emailAddr, String dateTime) {
-
+		logger.entry();
 		try {
-			AmazonSimpleDB sdb = new AmazonSimpleDBClient(new PropertiesCredentials(
-					new File("AwsCredentials.properties")));
+			AmazonSimpleDB sdb = new AmazonSimpleDBClient(new PropertiesCredentials(awscreds));
 
 			// Set the domain to use
 			String myDomain = "org.comtor.cloud.usage";
@@ -144,21 +154,25 @@ public class AWSServices {
 				new ReplaceableAttribute("Email Address", emailAddr, true)));
 			
 			sdb.batchPutAttributes(new BatchPutAttributesRequest(myDomain, data));
+
 		} catch (AmazonServiceException ase) {
-			System.out.println("Caught an AmazonServiceException, which means your request made it "
+			logger.error("Caught an AmazonServiceException, which means the request made it "
 					+ "to Amazon SimpleDB, but was rejected with an error response for some reason.");
-			System.out.println("Error Message:    " + ase.getMessage());
-			System.out.println("HTTP Status Code: " + ase.getStatusCode());
-			System.out.println("AWS Error Code:   " + ase.getErrorCode());
-			System.out.println("Error Type:       " + ase.getErrorType());
-			System.out.println("Request ID:       " + ase.getRequestId());
+			logger.error("Error Message:    " + ase.getMessage());
+			logger.error("HTTP Status Code: " + ase.getStatusCode());
+			logger.error("AWS Error Code:   " + ase.getErrorCode());
+			logger.error("Error Type:       " + ase.getErrorType());
+			logger.error("Request ID:       " + ase.getRequestId());
+
 		} catch (AmazonClientException ace) {
-			System.out.println("Caught an AmazonClientException, which means the client encountered "
+			logger.error("Caught an AmazonClientException, which means the client encountered "
 					+ "a serious internal problem while trying to communicate with SimpleDB, "
 					+ "such as not being able to access the network.");
-			System.out.println("Error Message: " + ace.getMessage());
+			logger.error("Error Message: " + ace.getMessage());
+
 		} catch (IOException ieo) {
-			System.out.println(ieo);
+			logger.error(ieo);
 		}
+		logger.exit();
 	}
 }
