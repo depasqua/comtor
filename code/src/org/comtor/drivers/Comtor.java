@@ -229,7 +229,7 @@ public class Comtor {
 			System.exit(1);
 		}
 		
-		System.err.print("Unpackaged source files found in dir " + dirpath + fileSeparator + ": ");
+		logger.trace("Unpackaged source files found in dir " + dirpath + fileSeparator + ": ");
 		boolean found = false;
 		for (String filename : fileListVector) {
 			String basename = filename.substring(filename.lastIndexOf(fileSeparator) + 1);
