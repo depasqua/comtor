@@ -229,14 +229,14 @@ public class Comtor {
 			System.exit(1);
 		}
 		
-		logger.trace("Unpackaged source files found in dir " + dirpath + fileSeparator + ": ");
-		boolean found = false;
+		String fileList = "";
 		for (String filename : fileListVector) {
 			String basename = filename.substring(filename.lastIndexOf(fileSeparator) + 1);
-			logger.error("\t" + basename);
+			fileList += "\t" + basename;
 		}
-		if (!found) 
-			logger.error("none");
+		if (fileList.equals("")) 
+			fileList += "none.";
+		logger.trace("Unpackaged source files found in dir " + dirpath + fileSeparator + ": " + fileList);
 		
 		return (String[]) fileListVector.toArray(new String[fileListVector.size()]);
 	}			
