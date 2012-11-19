@@ -145,7 +145,7 @@ public class Comtor {
 				dirsToProcess = addAllSubDirs(targetDir, dirsToProcess);
 			}
 		} catch (Exception e) {
-			System.err.println(e);
+			logger.error(e);
 		}
 
 		// Process the list of 'found' directories looking for additional directories
@@ -202,7 +202,7 @@ public class Comtor {
 					result = true;
 			}
 		} catch(Exception e) {
-			System.err.println(e);
+			logger.error(e);
 		}
 		return result;
 	}
@@ -225,7 +225,7 @@ public class Comtor {
 				for (String val : targetDir.list(new JavaFilter()))
 					fileListVector.add(dirpath + fileSeparator + val);
 		} catch(Exception e) {
-			System.err.println(e);
+			logger.error(e);
 			System.exit(1);
 		}
 		
@@ -233,12 +233,10 @@ public class Comtor {
 		boolean found = false;
 		for (String filename : fileListVector) {
 			String basename = filename.substring(filename.lastIndexOf(fileSeparator) + 1);
-			System.err.println("\t" + basename);
+			logger.error("\t" + basename);
 		}
 		if (!found) 
-			System.err.println("none");
-		else
-			System.err.println();
+			logger.error("none");
 		
 		return (String[]) fileListVector.toArray(new String[fileListVector.size()]);
 	}			
@@ -303,17 +301,16 @@ public class Comtor {
 				docPropList.load(new FileInputStream(docletListFile));
 
 			} else {
-				System.err.println("A 'docletList.properties' file must exist, providing the fully " +
+				logger.error("A 'docletList.properties' file must exist, providing the fully " +
 					"qualified class names of the doclets to execute as a Javadoc list of name value " +
 					"pairs for the doclet[x] name.\nFor example: ");
-				System.err.println("\tdoclet1 : org.comtor.analyzers.SpellCheck");
-				System.err.println("\tdoclet2 : org.comtor.analyzers.ReadingLevel");
-				System.err.println();
-				System.err.println("This file should be located at: " + location + File.separator + "docletList.properties");
+				logger.error("\tdoclet1 : org.comtor.analyzers.SpellCheck");
+				logger.error("\tdoclet2 : org.comtor.analyzers.ReadingLevel");
+				logger.error("This file should be located at: " + location + File.separator + "docletList.properties");
 				System.exit(1);
 			}
 		} catch (IOException ioe) {
-			System.err.println(ioe);
+			logger.error(ioe);
 			System.exit(1);
 		}
 	}
