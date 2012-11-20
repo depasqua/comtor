@@ -243,8 +243,12 @@ public final class SpellCheck implements ComtorDoclet {
 		long endTime = new Date().getTime();
 
 		// Set the score for this analysis and return the property list (report)
-		// prop.setProperty("score", "" + getGrade());
-		String percentFormat = NumberFormat.getPercentInstance().format(((float) badWords.size() / totalWordCount)); 
+		NumberFormat percentFormatter = NumberFormat.getPercentInstance();
+		String percentFormat;
+		if (totalWordCount != 0)
+			percentFormat = percentFormatter.format(((float) badWords.size() / totalWordCount));
+		else
+			percentFormat = "0%";
 		report.addMetric(percentFormat + " of the words in the comments were misspelled.");
 		report.addMetric(totalWordCount + " words analyzed.");
 		report.addMetric(numClasses + " class(es) were processed.");

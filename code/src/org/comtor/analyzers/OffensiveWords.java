@@ -256,7 +256,7 @@ public final class OffensiveWords implements ComtorDoclet {
 	 */
 	public float getGrade() {
 		if (totalNumWords == 0)
-			return 100.0f;
+			return 1.0f;
 		else
 			return (float) (totalNumWords - numBadWords) / totalNumWords;
 	}
