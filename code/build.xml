@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+
+<project name="comtorCloudClient" default="compile" basedir=".">
+	<description>Build file for the COMTOR Cloud client application</description>
+	<property name="cloudBaseDir" location="."/>
+	<property name="cloudSrc" location="${cloudBaseDir}/src"/>
+	<property name="cloudClasses" location="${cloudBaseDir}/classes"/>
+	<property name="warfilename" value="comtor.war"/>
+
+	<echo>Subproject: comtorCloudClient</echo>
+	<condition property="deploymentPath" value="/" else="/comtorDev">
+		<isset property="release"/>
+	</condition>
+
+	<condition property="warfilename" value="ROOT.war" else="comtor.war">
+		<isset property="release"/>
+	</condition>
+
+	<!-- Compiles the keygen application -->
+	<target name="compile" description="Compiles the source code of the cloud client app">
+		<mkdir dir="${cloudClasses}"/>
+		<javac srcdir="${cloudSrc}" destdir="${cloudClasses}" includeantruntime="false"
+			excludes="org/comtor/incomplete/** org/comtor/examples/**">
+			<classpath>
+				<path refid="comtor.class.path"/>
+				<fileset dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- Removes the class files, source backups, and debug output -->
+	<target name="clean" description="Clean source backups, old reports, and .class files">
+		<delete dir="${cloudClasses}"/>
+		
+		<delete>
+			<fileset dir="." casesensitive="yes">
+				<include name="**/*~ "/>
+				<include name=".DS_Store"/>
+				<include name="${warfilename}"/>
+			</fileset>
+		</delete>		
+	</target>
+
+	<!-- Builds the war file for TOMCAT/cloud release -->
+	<target name="createWar" depends="compile" description="Builds the war file for the cloud release.">
+		<mkdir dir="${cloudBaseDir}/cloudDeploy/www/files"/>
+		<copy file="../loggerconfig/log4j2.xml.cloud" tofile="../loggerconfig/log4j2.xml" overwrite="true"/>
+		<concat destfile="${cloudBaseDir}/cloudDeploy/www/files/README">
+			This directory will contain session directories.
+		</concat>
+		<war destfile="${warfilename}" webxml="${cloudBaseDir}/cloudDeploy/WEB-INF/web.xml">
+			<fileset dir="${cloudBaseDir}/cloudDeploy/www"/>
+			<fileset dir="${cloudBaseDir}/cloudDeploy/Web-Content"/>
+			<lib dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib" excludes="javax.jar"/>
+			<classes dir="${cloudBaseDir}/classes"/>
+			<classes file="../loggerconfig/log4j2.xml"/>
+		</war>
+		<delete dir="${cloudBaseDir}/cloudDeploy/www"/>
+		<delete file="../loggerconfig/log4j2.xml"/>
+	</target>
+
+	<!-- Deployment tasks -->
+ 	<target name="warDeploy" depends="createWar" description="Deploys the key generator web application">
+		<deploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}" war="file:code/${warfilename}"/>
+	</target>
+
+	<target name="warUndeploy" description="Undeploys the cloud web application.">
+		<undeploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}"/>
+	</target>
+
+	<target name="warRedeploy" description="Redeploys the cloud web application.">
+		<antcall target="warUndeploy"/>
+		<antcall target="warDeploy"/>
+	</target>
+
+</project>
