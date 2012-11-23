@@ -5,7 +5,7 @@
 	<property name="cloudBaseDir" location="."/>
 	<property name="cloudSrc" location="${cloudBaseDir}/src"/>
 	<property name="cloudClasses" location="${cloudBaseDir}/classes"/>
-	<property name="warfilename" value="comtor.war"/>
+	<property name="jarfilename" value="comtor.jar"/>
 
 	<echo>Subproject: comtorCloudClient</echo>
 	<condition property="deploymentPath" value="/" else="/comtorDev">
@@ -16,8 +16,8 @@
 		<isset property="release"/>
 	</condition>
 
-	<!-- Compiles the keygen application -->
-	<target name="compile" description="Compiles the source code of the cloud client app">
+	<!-- Compiles the sourec code of the COMTOR application (lamp, cloud, cli) -->
+	<target name="compile" description="Compiles the source code of the COMTOR app">
 		<mkdir dir="${cloudClasses}"/>
 		<javac srcdir="${cloudSrc}" destdir="${cloudClasses}" includeantruntime="false"
 			excludes="org/comtor/incomplete/** org/comtor/examples/**">
@@ -30,6 +30,29 @@
 		</javac>
 	</target>
 
+	<!-- Builds the command line version (stand alone) jar file of COMTOR -->
+	<target name="cli" depends="compile" description="Builds a distributable .jar file for use as a stand-alone application">
+		<tstamp/>
+		<copy file="../loggerconfig/log4j2.xml.cli" tofile="log4j2.xml" overwrite="true"/>
+		<jar destfile="${jarfilename}">
+			<manifest>
+				<attribute name="Main-Class" value="org.comtor.drivers.Comtor"/>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Implementation-Title" value="COMTOR CLI"/>
+				<attribute name="Implementation-Version" value="${version} ${TODAY}"/> 
+				<attribute name="Implementation-Vendor" value="The College of New Jersey"/>
+			</manifest>
+			<fileset dir="${cloudClasses}">
+				<include name="**/*.class"/>
+				<exclude name="org/comtor/cloud/*.class"/>
+			</fileset>
+			<fileset dir=".">
+				<include name="log4j2.xml"/>
+			</fileset>
+		</jar>
+		<delete file="log4j2.xml"/>
+	</target>
+
 	<!-- Removes the class files, source backups, and debug output -->
 	<target name="clean" description="Clean source backups, old reports, and .class files">
 		<delete dir="${cloudClasses}"/>
@@ -39,6 +62,7 @@
 				<include name="**/*~ "/>
 				<include name=".DS_Store"/>
 				<include name="${warfilename}"/>
+				<include name="${jarfilename}"/>
 			</fileset>
 		</delete>		
 	</target>

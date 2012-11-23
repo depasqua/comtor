@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="comtor" default="compile" basedir=".">
+<project name="comtor" default="cloudCompile" basedir=".">
 	<description>Build file for the COMTOR application(s)</description>
 
 	<!-- Configure the custom Ant tasks for the Manager application -->
@@ -12,28 +12,13 @@
 	<taskdef name="stop"      classname="org.apache.catalina.ant.StopTask"/>
 	<taskdef name="undeploy"  classname="org.apache.catalina.ant.UndeployTask"/>	
 
-	<!-- Define some basic properties. -->
-	<property name="cloudBaseDir" location="code"/>
-	<property name="keygenBaseDir" location="keygen"/>
-	<property name="apiservBaseDir" location="apiserv"/>
-	<property name="apiclientBaseDir" location="apiclient"/>
-	<property name="thirdpartyjars" location="comtor_data/code/"/>
-	<property name="version" value="2.1.0"/>
+	<!-- Define some basic properties -->
+	<property name="thirdpartyjars" location="lamp/comtor_data/code/"/>
+	<property name="version" value="2.1.5"/>
 	<property name="managerURL" value="http://cloud.comtor.org/manager/text"/>
 	
-	<!-- Project-specific properties -->
-	<property name="cloudSrc" location="${cloudBaseDir}/src"/>
-	<property name="cloudClasses" location="${cloudBaseDir}/classes"/>
-	<property name="keygenSrc" location="${keygenBaseDir}/src"/>
-	<property name="keygenClasses" location="${keygenBaseDir}/classes"/>
-	<property name="apiservSrc" location="${apiservBaseDir}/src"/>
-	<property name="apiservClasses" location="${apiservBaseDir}/classes"/>
-	<property name="apiclientSrc" location="${apiclientBaseDir}/src"/>
-	<property name="apiclientClasses" location="${apiclientBaseDir}/classes"/>
-
 	<!-- Build up a classpath file path for later use. -->
-	<condition property="toolsjar" value="${java.home}/../Classes/classes.jar"
-		else="${java.home}/../lib/tools.jar">
+	<condition property="toolsjar" value="${java.home}/../Classes/classes.jar" else="${java.home}/../lib/tools.jar">
 		<and>
 			<os family="mac"/>
 			<os family="unix"/>
@@ -45,14 +30,6 @@
 			<include name="*.jar"/>
 		</fileset>
 		<pathelement path="${toolsjar}"/>
-		<fileset dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib">
-			<include name="*.jar"/>
-		</fileset>
-		<fileset dir="${keygenBaseDir}/WEB-INF/lib">
-			<include name="*.jar"/>
-		</fileset>
-		<pathelement path="${apiservClasses}"/>
-		<pathelement path="${apiclientClasses}"/>
 	</path>
 	
 	<!-- ================ -->
@@ -64,128 +41,12 @@
 		<tstamp/>
 	</target>
 	
-	<!-- Determine correct Tomcat deployment path based type of deployment to create -->
-	<target name="-setDeploymentPath">
-		<condition property="deploymentPath" value="/comtorDev">
-			<and>
-				<isset property="project"/>
-				<equals arg1="${project}" arg2="cloud"/>
-				<not>
-					<isset property="release"/>
-				</not>
-			</and>
-		</condition>
-
-		<condition property="deploymentPath" value="/">
-			<and>
-				<isset property="release"/>
-				<isset property="project"/>
-				<equals arg1="${project}" arg2="cloud"/>
-			</and>
-		</condition>
-
-		<condition property="deploymentPath" value="/keygenDev">
-			<and>
-				<isset property="project"/>
-				<equals arg1="${project}" arg2="keygen"/>
-				<not>
-					<isset property="release"/>
-				</not>
-			</and>
-		</condition>
-
-		<condition property="deploymentPath" value="/keygen">
-			<and>
-				<isset property="release"/>
-				<isset property="project"/>
-				<equals arg1="${project}" arg2="keygen"/>
-			</and>
-		</condition>
-	</target>
-
-
-	<!-- Sets the warfile name based on the testing/release status and the project type -->
-	<target name="setWarFileName" depends="-project.check, -project.fail">
-		<condition property="warfilename" value="comtor.war">
-			<and>
-				<isset property="project"/>
-				<equals arg1="${project}" arg2="cloud"/>
-			</and>
-		</condition>
-
-		<condition property="warfilename" value="ROOT.war">
-			<and>
-				<isset property="release"/>
-				<isset property="project"/>
-				<equals arg1="${project}" arg2="cloud"/>
-			</and>
-		</condition>
-
-		<condition property="warfilename" value="keygen.war">
-			<and>
-				<isset property="project"/>
-				<equals arg1="${project}" arg2="keygen"/>
-			</and>
-		</condition>
-	</target>
-
-	<!-- Compile the source files -->
-	<target name="compile" description="Compile the source code of the cloud app" depends="init">
-		<mkdir dir="${cloudClasses}"/>
-		<javac srcdir="${cloudSrc}" destdir="${cloudClasses}" includeantruntime="false"
-				excludes="org/comtor/incomplete/** org/comtor/examples/**">
-			<classpath refid="comtor.class.path"/> 
-		</javac>
-	</target>
-
-	<target name="compileKeyGen" description="Compiles the source code of the keygen app" depends="init">
-		<mkdir dir="${keygenClasses}"/>
-		<javac srcdir="${keygenSrc}" destdir="${keygenClasses}" includeantruntime="false">
-			<classpath refid="comtor.class.path"/>
-		</javac>
-	</target>
-	
-	<target name="compileAPIServ" description="Compiles the source code of the api server app" depends="init">
-		<!-- Emit the property to the ant console
-		<property name="myclasspath" refid="comtor.class.path"/>
-		<echo message="Classpath = ${myclasspath}"/>
-		-->
-		
-		<mkdir dir="${apiservClasses}"/>
-		<javac destdir="${apiservClasses}" includeantruntime="false" deprecation="on"
-				excludes="org/comtor/incomplete/** org/comtor/examples/**">
-				<src path="${apiservSrc}"/>
-			<src path="${cloudSrc}"/>
-			<classpath refid="comtor.class.path"/>
-		</javac>
-	</target>
-
-	<target name="compileAPIClient" description="Compiles the source code of the api client app" depends="init">
-		<mkdir dir="${apiclientClasses}"/>
-		<javac destdir="${apiclientClasses}" includeantruntime="false" deprecation="on"
-				excludes="org/comtor/incomplete/** org/comtor/examples/**">
-				<src path="${apiclientSrc}"/>
-			<src path="${cloudSrc}"/>
-			<classpath refid="comtor.class.path"/>
-		</javac>
-	</target>
-
-	<target name="runAPIServ" description="Runs the API server" depends="init">
-		<java classname="org.comtor.apiserv.APIServ" fork="true">
-			<classpath refid="comtor.class.path"/>
-		</java>
-	</target>
-	
-	<target name="runAPIClient" description="Runs the API client" depends="init">
-		<java classname="org.comtor.apiclient.APIClient" fork="true">
-			<classpath refid="comtor.class.path"/>
-		</java>
-	</target>
-	
 	<!-- Removes the class files, source backups, and debug output -->
 	<target name="clean" description="Clean source backups, old reports, and .class files">
-		<delete dir="${cloudClasses}"/>
-		<delete dir="${keygenClasses}"/>
+		<ant dir="api/keygen" target="clean"/>
+		<ant dir="api/server" target="clean"/>
+		<ant dir="api/client" target="clean"/>
+		<ant dir="code" target="clean"/>
 		<delete dir="${apiservClasses}"/>
 		<delete dir="${apiclientClasses}"/>
 		
@@ -194,18 +55,14 @@
 				<include name="**/*~ "/>
 				<include name=".DS_Store"/>
 				<include name="comtorReport.txt"/>
-				<include name="comtor.jar"/>
 				<include name="comtorSrc.jar"/>
-				<include name="comtor.war"/>
-				<include name="ROOT.war"/>
-				<include name="keygen.war"/>
 				<include name="trace-*.txt"/>
 			</fileset>
 		</delete>		
 	</target>
 	
 	<!-- Creates comtor.jar and places it in the proper path for LAMP-stack deployment (used for experiments) -->
-	<target name="lamp" description="jars and deploys comtor.jar to proper directory" depends="compile">
+	<target name="lamp" description="jars and deploys comtor.jar to proper directory" depends="cloudCompile">
 		<jar destfile="${thirdpartyjars}/comtor.jar" basedir="${cloudClasses}">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}"/>
@@ -217,26 +74,8 @@
 	</target>
 	
 	<!-- Builds the command line version (stand alone) jar file of COMTOR -->
-	<target name="cli" depends="compile" description="Builds a distributable .jar file for use as a stand-alone application">
-		<tstamp/>
-		<copy file="loggerconfig/log4j2.xml.cli" tofile="log4j2.xml" overwrite="true"/>
-		<jar destfile="comtor.jar">
-			<manifest>
-				<attribute name="Main-Class" value="org.comtor.drivers.Comtor"/>
-				<attribute name="Built-By" value="${user.name}"/>
-				<attribute name="Implementation-Title" value="COMTOR CLI"/>
-				<attribute name="Implementation-Version" value="${version} ${TODAY}"/> 
-				<attribute name="Implementation-Vendor" value="The College of New Jersey"/>
-			</manifest>
-			<fileset dir="${cloudClasses}">
-				<include name="**/*.class"/>
-				<exclude name="org/comtor/cloud/*.class"/>
-			</fileset>
-			<fileset dir=".">
-					<include name="log4j2.xml"/>
-			</fileset>
-		</jar>
-		<delete file="log4j2.xml"/>
+	<target name="cli" description="Builds a distributable Jar file for use as a stand-alone application">
+		<ant dir="code" target="cli" inheritRefs="true"/>
 	</target>
 
 	<!-- Runs the command line version (stand alone) via jar file of COMTOR -->
@@ -272,42 +111,6 @@
 		</jar>
 	</target>
 	
-	<!-- Builds the war file for TOMCAT/cloud release -->
-	<target name="cloudWar" depends="compile, setWarFileName" description="Builds the war file for the cloud release.">
-		<mkdir dir="${cloudBaseDir}/cloudDeploy/www/files"/>
-		<copy file="loggerconfig/log4j2.xml.cloud" tofile="loggerconfig/log4j2.xml" overwrite="true"/>
-		<concat destfile="${cloudBaseDir}/cloudDeploy/www/files/README">
-			This directory will contain session directories.
-		</concat>
-		<war destfile="${warfilename}" webxml="${cloudBaseDir}/cloudDeploy/WEB-INF/web.xml">
-			<fileset dir="${cloudBaseDir}/cloudDeploy/www"/>
-			<fileset dir="${cloudBaseDir}/cloudDeploy/Web-Content"/>
-			<lib dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib" excludes="javax.jar"/>
-			<classes dir="${cloudBaseDir}/classes"/>
-			<classes file="loggerconfig/log4j2.xml"/>
-		</war>
-		<delete dir="${cloudBaseDir}/cloudDeploy/www"/>
-		<delete file="loggerconfig/log4j2.xml"/>
-	</target>
-
-	<!-- Builds the war file for the TOMCAT/keygen release -->
-	<target name="keygenWar" depends="compileKeyGen, setWarFileName" description="Builds the war file for the key gen release.">
-		<war destfile="${warfilename}" webxml="${keygenBaseDir}/WEB-INF/web.xml">
-			<fileset dir="${keygenBaseDir}/Web-Content"/>
-			<lib dir="${keygenBaseDir}/WEB-INF/lib">
-				<exclude name="javax.jar"/>
-				<exclude name="httpclient-4.2.jar"/>
-				<exclude name="httpcore-4.2.jar"/>
-				<exclude name="aws-java-sdk-1.3.10.jar"/>
-				<exclude name="commons-codec-1.6.jar"/>
-				<exclude name="commons-logging-1.1.1.jar"/>
-				<exclude name="jackson-mini-1.9.7.jar"/>
-			</lib>
-			<classes dir="${keygenBaseDir}/classes"/>
-		</war>
-	</target>
-
-
 	<!-- Ensures the user has set the deployment properties to provide to the servlet container -->
 	<target name="-credentials.check">
 		<condition property="credentials.set">
@@ -316,20 +119,9 @@
 				<isset property="password"/>
 			</and>
 		</condition>
+		<antcall target="-credentials.fail"/>
 	</target>
 	
-	<target name="-project.check">
-		<condition property="project.set">
-				<and>
-					<isset property="project"/>
-					<or>
-						<equals arg1="${project}" arg2="cloud"/>
-						<equals arg1="${project}" arg2="keygen"/>
-					</or>
-				</and>
-		</condition>
-	</target>
-
 	<!-- Stops the build and outputs a message if the deployment properties were not set by user -->
 	<target name="-credentials.fail" unless="credentials.set">
 		<fail>Please set the following properties:
@@ -338,51 +130,68 @@
 		</fail>
 	</target>
 
-	<target name="-project.fail" unless="project.set">
-		<fail>Please set the following property:
-	* the subproject type: (cloud | keygen): -Dproject=cloud
-		</fail>
+
+	<!-- CLOUD CLIENT -->
+	<target name="cloudCompile" description="Compile the source code of the cloud app" depends="init">
+		<ant dir="code" inheritRefs="true"/>
 	</target>
 
+	<target name="cloudWar" description="Builds the keygen war file">
+		<ant dir="code" target="createWar" inheritRefs="true"/>
+	</target>
 
 	<!-- Ant-based deploy for servlet version -->
 	<!-- Requires the catalina-ant.jar file in the ant/lib directory locally. See 
 	     http://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html#Executing_Manager_Commands_With_Ant or, 
 	     http://tomcat.apache.org/tomcat-6.0-doc/manager-howto.html#Executing_Manager_Commands_With_Ant -->
-	<target name="cloudWarDeploy" if="project.set" depends="-project.check, cloudWar" description="Deploys the cloud web application.">
-		<antcall target="-warDeploy"/>
+	<target name="cloudWarDeploy" depends="-credentials.check" description="Deploys the cloud web application.">
+		<ant dir="code" target="warDeploy" inheritRefs="true"/>
 	</target>
 
-	<target name="cloudWarRedeploy" if="project.set" depends="-project.check, cloudWar" description="Redeploys the cloud web application.">
-		<antcall target="-warRedeploy"/>
+	<target name="cloudWarUndeploy" depends="-credentials.check" description="Undeploys the cloud web application.">
+		<ant dir="code" target="warUndeploy" inheritRefs="true"/>
 	</target>
 
-	<target name="cloudWarUndeploy" if="project.set" depends="-project.check, -project.fail" description="Undeploys the cloud web application.">
-		<antcall target="-warUndeploy"/>
-	</target>
-
- 	<target name="keygenWarDeploy" if="project.set" depends="-project.check, -project.fail, keygenWar" description="Deploys the key generator web application">
-		<antcall target="-warDeploy"/>
-	</target>
-
-	<target name="keygenWarRedeploy" if="project.set" depends="-project.check, -project.fail, keygenWar" description="Redeploys the cloud web application.">
-		<antcall target="-warRedeploy"/>
-	</target>
-
-	<target name="keygenWarUndeploy" if="project.set" depends="-project.check, -project.fail" description="Undeploys the cloud web application.">
-		<antcall target="-warUndeploy"/>
+	<target name="cloudWarRedeploy" depends="-credentials.check" description="Redeploys the cloud web application.">
+		<ant dir="code" target="warRedeploy" inheritRefs="true"/>
 	</target>
 
 
-
-	<target name="-warDeploy" if="credentials.set" depends="-credentials.check, -credentials.fail, -setDeploymentPath">
-		<deploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}" war="file:${warfilename}"/>
+	<!-- KEYGEN -->
+	<target name="keygenCompile" description="Compiles the source code of the keygen app" depends="init">
+	 	<ant dir="api/keygen" inheritRefs="true"/>
+ 	</target>
+	
+	<target name="keygenWar" description="Builds the keygen war file">
+		<ant dir="api/keygen" target="createWar" inheritRefs="true"/>
 	</target>
 
-	<target name="-warUndeploy" if="credentials.set" depends="-credentials.check, -credentials.fail, -setDeploymentPath">
-		<undeploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}"/>
+	<target name="keygenWarDeploy" depends="-credentials.check" description="Deploys the keygen war file">
+		<ant dir="api/keygen" target="warDeploy" inheritRefs="true"/>
 	</target>
 
-	<target name="-warRedeploy" if="credentials.set" depends="-warUndeploy, -warDeploy"/>
+	<target name="keygenWarUndeploy" depends="-credentials.check" description="Undeploys the keygen war file">
+		<ant dir="api/keygen" target="warUndeploy" inheritRefs="true"/>
+	</target>
 
+	<target name="keygenWarRedeploy" depends="-credentials.check" description="Redeploys the keygen war file">
+		<ant dir="api/keygen" target="warRedeploy" inheritRefs="true"/>
+	</target>
+
+
+	<!-- API Server -->
+	<target name="compileAPIServer" description="Compiles the source code of the api server app" depends="init">
+		<ant dir="api/server" target="compile" inheritRefs="true"/>
+	</target>
+	
+
+	<!-- API Client -->
+	<target name="compileAPIClient" description="Compiles the source code of the api client app" depends="init">
+		<ant dir="api/client" target="compile" inheritRefs="true"/>
+	</target>
+
+	<target name="runAPIClient" description="Runs the API client">
+		<ant dir="api/client" target="runAPIClient" inheritRefs="true"/>
+	</target>
+	
 </project>
