@@ -1,0 +1,32 @@
+Release Notes for Comment Mentor
+````````````````````````````````
+
+See the file INSTALL_README for installation and removal instructions.
+
+If you are planning on doing development for COMTOR, see the tutorials
+in the /designdocs/tutorials directory. Additonally, for more information
+on how certain prepackaged doclets work, see the /designdocs/modules/ 
+directory.
+
+[Executive Summary]
+
+Comment Mentor is a tool for automatically assessing the quality of source
+code comments. It currently works on Javadoc-style comments for Java code.
+It is built with the Apache Ant tool and is known to work with the JDK 5.x.
+Comment Mentor measures a number of features of source code comments and
+rates the features of your code against standard code bases that have been
+evaluated by hand. A summary and detailed report of how your comments stack
+up against this test suite is generated.
+
+Comment Mentor includes a number of tools, including:
+
+ * CheckforTags		: checks for the presence of tags where/if required
+ * Interactions		: analyzes various interactions between classes and methods
+ * CommentAvgRatio   	: average comment length per class
+ * PercentMethods  	: percent of methods documented in a class
+ * SpellCheck		: checks for spelling errors
+ * ReadingLevel		: Determines various sentence metrics and computes
+ 				Flesch-Kincaid reading level.
+ * PreAndPostCheck     	: checks for the new @precondition and @postconditions tags
+ 
+Thanks, and enjoy using Comment Mentor.

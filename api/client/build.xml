@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+
+<project name="comtorAPIClient" default="compile" basedir=".">
+	<description>Build file for the COMTOR API client application</description>
+	<echo>Subproject: comtorAPIClient</echo>
+
+	<property name="apiclientBaseDir" location="."/>
+	<property name="apiclientSrc" location="${apiclientBaseDir}/src"/>
+	<property name="apiclientClasses" location="${apiclientBaseDir}/classes"/>
+	<property name="cloudBaseDir" location="../../code"/>
+
+	<!-- Removes the class files, source backups, and debug output -->
+	<target name="clean" description="Clean source backups and .class files">
+		<delete dir="${apiclientClasses}"/>
+		
+		<delete>
+			<fileset dir="." casesensitive="yes">
+				<include name="**/*~ "/>
+				<include name=".DS_Store"/>
+			</fileset>
+		</delete>		
+	</target>
+
+	<target name="compile" description="Compiles the source code of the api server app">
+		<!-- Emit the property to the ant console
+		<property name="myclasspath" refid="comtor.class.path"/>
+		<echo message="Classpath = ${myclasspath}"/>
+		-->
+		
+		<mkdir dir="${apiclientClasses}"/>
+		<javac destdir="${apiclientClasses}" includeantruntime="false" deprecation="on"
+				excludes="org/comtor/incomplete/** org/comtor/examples/**">
+				<src path="${apiclientSrc}"/>
+			<classpath>
+				<path refid="comtor.class.path"/>
+				<fileset dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="runAPIClient" description="Runs the API client" depends="compile">
+		<java classname="org.comtor.apiclient.APIClient" fork="true">
+			<classpath>
+				<path refid="comtor.class.path"/>
+				<path location="${apiclientClasses}"/>
+				<fileset dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</java>
+	</target>
+
+</project>
