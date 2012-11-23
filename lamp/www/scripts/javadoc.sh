@@ -32,8 +32,14 @@ if [ ! -s "source.txt" ]; then
   exit 3
 fi
 
+jarclasspath="."
+for name in `ls -1 *.jar`
+do
+  jarclasspath+=":"$name
+done
+
 # compile and list class files
-javac `find . | grep .*\.java$` > ../compileOut.txt 2>&1
+javac -cp $jarclasspath `find . | grep .*\.java$` > ../compileOut.txt 2>&1
 
 # obtain return value of javac
 compiled=$?
