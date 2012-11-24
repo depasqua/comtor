@@ -104,7 +104,8 @@
 			<fileset dir="." casesensitive="yes">
 				<include name="**/*~ "/>
 				<include name="**/.DS_Store"/>
-				<include name="${warfilename}"/>
+				<include name="ROOT.war"/>
+				<include name="comtor.war"/>
 				<include name="${jarfilename}"/>
 				<include name="comtorSrc.jar"/>
 				<include name="comtor*Log.txt"/>
