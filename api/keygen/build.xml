@@ -2,12 +2,14 @@
 
 <project name="comtorKeygen" default="compile" basedir=".">
 	<description>Build file for the COMTOR Keygen application</description>
+	<echo>Subproject: comtorKeygen</echo>
+
 	<property name="keygenBaseDir" location="."/>
 	<property name="keygenSrc" location="${keygenBaseDir}/src"/>
 	<property name="keygenClasses" location="${keygenBaseDir}/classes"/>
 	<property name="warfilename" value="keygen.war"/>
+	<defaultexcludes remove="**/.DS_Store"/>
 
-	<echo>Subproject: comtorKeygen</echo>
 	<condition property="deploymentPath" value="/keygen" else="/keygenDev">
 		<isset property="release"/>
 	</condition>
@@ -32,7 +34,7 @@
 		<delete>
 			<fileset dir="." casesensitive="yes">
 				<include name="**/*~ "/>
-				<include name=".DS_Store"/>
+				<include name="**/.DS_Store"/>
 				<include name="${warfilename}"/>
 			</fileset>
 		</delete>		

@@ -8,6 +8,7 @@
 	<property name="apiservSrc" location="${apiservBaseDir}/src"/>
 	<property name="apiservClasses" location="${apiservBaseDir}/classes"/>
 	<property name="cloudBaseDir" location="../../code"/>
+	<defaultexcludes remove="**/.DS_Store"/>
 
 	<target name="compile" description="Compiles the source code of the api server app">
 		<!-- Emit the property to the ant console
@@ -36,7 +37,7 @@
 		<delete>
 			<fileset dir="." casesensitive="yes">
 				<include name="**/*~ "/>
-				<include name=".DS_Store"/>
+				<include name="**/.DS_Store"/>
 			</fileset>
 		</delete>		
 	</target>

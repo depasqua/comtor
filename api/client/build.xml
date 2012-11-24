@@ -8,6 +8,7 @@
 	<property name="apiclientSrc" location="${apiclientBaseDir}/src"/>
 	<property name="apiclientClasses" location="${apiclientBaseDir}/classes"/>
 	<property name="cloudBaseDir" location="../../code"/>
+	<defaultexcludes remove="**/.DS_Store"/>
 
 	<!-- Removes the class files, source backups, and debug output -->
 	<target name="clean" description="Clean source backups and .class files">
@@ -16,7 +17,7 @@
 		<delete>
 			<fileset dir="." casesensitive="yes">
 				<include name="**/*~ "/>
-				<include name=".DS_Store"/>
+				<include name="**/.DS_Store"/>
 			</fileset>
 		</delete>		
 	</target>
