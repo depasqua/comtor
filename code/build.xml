@@ -152,7 +152,7 @@
 		<undeploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}"/>
 	</target>
 
-	<target name="warRedeploy" description="Redeploys the cloud web application.">
+	<target name="warRedeploy" depends="createWar" description="Redeploys the cloud web application.">
 		<antcall target="warUndeploy"/>
 		<antcall target="warDeploy"/>
 	</target>

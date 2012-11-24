@@ -2,6 +2,7 @@
 
 <project name="comtor" default="cloudCompile" basedir=".">
 	<description>Build file for the COMTOR application(s)</description>
+	<defaultexcludes remove="**/.DS_Store"/>
 
 	<!-- Configure the custom Ant tasks for the Manager application -->
 	<taskdef name="deploy"    classname="org.apache.catalina.ant.DeployTask"/>
@@ -47,68 +48,16 @@
 		<ant dir="api/server" target="clean"/>
 		<ant dir="api/client" target="clean"/>
 		<ant dir="code" target="clean"/>
-		<delete dir="${apiservClasses}"/>
-		<delete dir="${apiclientClasses}"/>
+		<ant dir="lamp" target="clean"/>
 		
 		<delete>
 			<fileset dir="." casesensitive="yes">
 				<include name="**/*~ "/>
-				<include name=".DS_Store"/>
+				<include name="**/.DS_Store"/>
 				<include name="comtorReport.txt"/>
-				<include name="comtorSrc.jar"/>
 				<include name="trace-*.txt"/>
 			</fileset>
 		</delete>		
-	</target>
-	
-	<!-- Creates comtor.jar and places it in the proper path for LAMP-stack deployment (used for experiments) -->
-	<target name="lamp" description="jars and deploys comtor.jar to proper directory" depends="cloudCompile">
-		<jar destfile="${thirdpartyjars}/comtor.jar" basedir="${cloudClasses}">
-			<manifest>
-				<attribute name="Built-By" value="${user.name}"/>
-				<attribute name="Implementation-Title" value="COMTOR WWW DEPLOY"/>
-				<attribute name="Implementation-Version" value="${version} ${TODAY}"/> 
-				<attribute name="Implementation-Vendor" value="The College of New Jersey"/>
-			</manifest>
-		</jar>		
-	</target>
-	
-	<!-- Builds the command line version (stand alone) jar file of COMTOR -->
-	<target name="cli" description="Builds a distributable Jar file for use as a stand-alone application">
-		<ant dir="code" target="cli" inheritRefs="true"/>
-	</target>
-
-	<!-- Runs the command line version (stand alone) via jar file of COMTOR -->
-	<target name="runcli" depends="cli" description="Runs the CLI version of COMTOR via the jar file on the dir path provided.">
-		<input message="Input the directory (absolute or relative) path to the location of the testing code:" addproperty="dirpath"/>
-		<java jar="comtor.jar" fork="true">
-			<arg value="-dir"/>
-			<arg path="${dirpath}"/>
-		</java>
-
-		<delete>
-			<fileset dir=".">
-				<include name="badwords.txt"/>
-				<include name="dictionary.txt"/>
-				<include name="htmltags.txt"/>
-				<include name="javaKeywords.txt"/>
-				<include name="javaclasslist.txt"/>
-				<include name="usersubmitted.txt"/>
-			</fileset>
-		</delete>
-	</target>
-
-	<!-- Builds a jar file of the COMTOR source code (used for dogfooding) -->
-	<target name="srcjar" description="Builds a jar file of the COMTOR source code.">
-		<jar destfile="comtorSrc.jar">
-			<fileset dir="${cloudSrc}">
-				<include name="**/*.java"/>
-				<exclude name="org/comtor/analyzers/GeneralResources/*.java"/>
-				<exclude name="org/comtor/analyzers/InteractionsResources/*.java"/>
-				<exclude name="org/comtor/incomplete/*.java"/>
-				<exclude name="org/json/*.java"/>
-			</fileset>
-		</jar>
 	</target>
 	
 	<!-- Ensures the user has set the deployment properties to provide to the servlet container -->
@@ -131,12 +80,32 @@
 	</target>
 
 
+	<!-- Original LAMP implementation -->
+	<target name="lamp" description="jars and deploys comtor.jar to proper directory" depends="cloudCompile">
+		<ant dir="lamp" target="compile" inheritRefs="true"/>
+	</target>
+	
+	<!-- Builds the command line version (stand alone) jar file of COMTOR -->
+	<target name="cli" description="Builds a distributable Jar file for use as a stand-alone application">
+		<ant dir="code" target="cli" inheritRefs="true"/>
+	</target>
+
+	<!-- Runs the command line version (stand alone) via jar file of COMTOR -->
+	<target name="runcli" description="Runs the CLI version of COMTOR via the jar file on the dir path provided.">
+		<ant dir="code" target="executeCli" inheritRefs="true"/>
+	</target>
+
+	<!-- Builds a jar file of the COMTOR source code (used for dogfooding) -->
+	<target name="srcjar" description="Builds a jar file of the COMTOR source code.">
+		<ant dir="code" target="srcjar" inheritRefs="true"/>
+	</target>
+	
 	<!-- CLOUD CLIENT -->
 	<target name="cloudCompile" description="Compile the source code of the cloud app" depends="init">
 		<ant dir="code" inheritRefs="true"/>
 	</target>
 
-	<target name="cloudWar" description="Builds the keygen war file">
+	<target name="cloudWar" description="Builds the keygen war file of the cloud app">
 		<ant dir="code" target="createWar" inheritRefs="true"/>
 	</target>
 
