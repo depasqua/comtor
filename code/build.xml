@@ -2,12 +2,14 @@
 
 <project name="comtorCloudClient" default="compile" basedir=".">
 	<description>Build file for the COMTOR Cloud client application</description>
+	<echo>Subproject: comtorCloudClient</echo>
+
 	<property name="cloudBaseDir" location="."/>
 	<property name="cloudSrc" location="${cloudBaseDir}/src"/>
 	<property name="cloudClasses" location="${cloudBaseDir}/classes"/>
 	<property name="jarfilename" value="comtor.jar"/>
+	<defaultexcludes remove="**/.DS_Store"/>
 
-	<echo>Subproject: comtorCloudClient</echo>
 	<condition property="deploymentPath" value="/" else="/comtorDev">
 		<isset property="release"/>
 	</condition>
@@ -53,6 +55,47 @@
 		<delete file="log4j2.xml"/>
 	</target>
 
+	<!-- Initiates execution of the CLI -->
+	<target name="executeCli" depends="-promptDir" if="dirPresent" description="Runs the CLI version of COMTOR.">
+		<java jar="comtor.jar" fork="true" resultproperty="execResult">
+			<arg value="-dir"/>
+			<arg path="${dirpath}"/>
+		</java>
+
+		<delete>
+			<fileset dir=".">
+				<include name="badwords.txt"/>
+				<include name="dictionary.txt"/>
+				<include name="htmltags.txt"/>
+				<include name="javaKeywords.txt"/>
+				<include name="javaclasslist.txt"/>
+				<include name="usersubmitted.txt"/>
+			</fileset>
+		</delete>
+
+		<condition property="runFail" value="true">
+			<equals arg1="${execResult}" arg2="1"/>
+		</condition>
+		<antcall target="-runCliOutput"/>
+	</target>
+
+	<!-- Prompts the user for the dir to process when executing the CLI version -->
+	<target name="-promptDir" depends="cli" description="Prompts the user for the dirpath to use as input.">
+		<input message="Input the directory (absolute or relative) path to the location of the testing code:" addproperty="dirpath"/>
+		<available property="dirPresent" type="dir" file="${dirpath}"/>
+		<antcall target="-runCliDirCheck"/>
+	</target>
+
+	<!-- Informs the user if the provided directory is not present -->
+	<target name="-runCliDirCheck" unless="${dirPresent}">
+		<echo>The specified directory: ${dirpath} does not exist.</echo>
+	</target>
+
+	<!-- Informs the user of the location of the results of execution of the CLI -->
+	<target name="-runCliOutput" unless="${runFail}">
+		<echo>The execution results are located in: ${dirpath}</echo>
+	</target>
+
 	<!-- Removes the class files, source backups, and debug output -->
 	<target name="clean" description="Clean source backups, old reports, and .class files">
 		<delete dir="${cloudClasses}"/>
@@ -60,11 +103,26 @@
 		<delete>
 			<fileset dir="." casesensitive="yes">
 				<include name="**/*~ "/>
-				<include name=".DS_Store"/>
+				<include name="**/.DS_Store"/>
 				<include name="${warfilename}"/>
 				<include name="${jarfilename}"/>
+				<include name="comtorSrc.jar"/>
+				<include name="comtor*Log.txt"/>
 			</fileset>
 		</delete>		
+	</target>
+
+	<!-- Builds a jar file of the COMTOR source code (used for dogfooding) -->
+	<target name="srcjar" description="Builds a jar file of the COMTOR source code.">
+		<jar destfile="../tests/comtorSrc.jar">
+			<fileset dir="${cloudSrc}">
+				<include name="**/*.java"/>
+				<exclude name="org/comtor/analyzers/GeneralResources/*.java"/>
+				<exclude name="org/comtor/analyzers/InteractionsResources/*.java"/>
+				<exclude name="org/comtor/incomplete/*.java"/>
+				<exclude name="org/json/*.java"/>
+			</fileset>
+		</jar>
 	</target>
 
 	<!-- Builds the war file for TOMCAT/cloud release -->
