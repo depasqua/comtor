@@ -1,0 +1,104 @@
+table.data
+{
+	
+  /*border: 1px solid #000f40;*/
+  border-collapse: collapse;
+  text-align: left;
+  table-layout: fixed;
+  margin-top: 5px;
+  width: 100%;
+  border-spacing:0px;
+}
+
+table.data th
+{
+  /*background-color: #0070c9;
+  border-width: 1px 1px 2px 1px;
+  border-style: solid;
+  border-color: #000f40;*/
+  padding: 4px 10px;
+  text-align: left;
+  font-size: 18px;
+  font-weight: normal;
+  color: #000F40;
+}
+table.data tr{
+	height: 40px;
+}
+
+tr.odd 
+{
+	background-color: #f3f3f3;
+	border: 1px solid #e4e4e4;
+	border-right:0px;
+	border-left:0px;
+}
+
+tr.even 
+{
+	background-color: #fefefe;
+}
+
+.selected
+{
+	background-color: #c5d9ec !important;
+	border: 1px solid #a1c2e1 !important;
+	border-right:0px !important;
+	border-left:0px !important;
+}
+
+table.data th.mini, table.data td.mini
+{
+  width: 40px;
+}
+
+table.data th.small, table.data td.small
+{
+	width:20%;
+	min-width: 180px !important;
+}
+
+table.data th.medium, table.data td.medium
+{
+	width:30%;
+ 	min-width: 270px !important;
+}
+
+table.data th.large, table.data td.large
+{
+	width: 50%;
+}
+
+
+table.data td
+{
+  /*border: 1px solid #e0e0e0;
+  background-color: #f0f0f0;*/
+  padding: 4px 10px;
+}
+
+table.data td.subheading
+{
+  /*border: 1px solid #e0e0e0;
+  background-color: #d8f0F0;*/
+  padding: 4px 10px;
+  text-align: left;
+}
+
+th.left, td.left
+{
+  text-align: left;
+}
+
+th.right, td.right
+{
+  text-align: right;
+}
+
+
+/* Table for Framing Only */
+table.frame
+{
+  border-collapse: collapse;
+  border: 0px;
+}

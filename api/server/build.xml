@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<project name="comtorAPIServer" default="compile" basedir=".">
+	<description>Build file for the COMTOR API Server application</description>
+	<echo>Subproject: comtorAPIServer</echo>
+
+	<property name="apiservBaseDir" location="."/>
+	<property name="apiservSrc" location="${apiservBaseDir}/src"/>
+	<property name="apiservClasses" location="${apiservBaseDir}/classes"/>
+	<property name="cloudBaseDir" location="../../code"/>
+	<defaultexcludes remove="**/.DS_Store"/>
+
+	<target name="compile" description="Compiles the source code of the api server app">
+		<!-- Emit the property to the ant console
+		<property name="myclasspath" refid="comtor.class.path"/>
+		<echo message="Classpath = ${myclasspath}"/>
+		-->
+		
+		<mkdir dir="${apiservClasses}"/>
+		<javac destdir="${apiservClasses}" includeantruntime="false" deprecation="on"
+				excludes="org/comtor/incomplete/** org/comtor/examples/**">
+				<src path="${apiservSrc}"/>
+			<src path="${cloudBaseDir}/src"/>
+			<classpath>
+				<path refid="comtor.class.path"/>
+				<fileset dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- Removes the class files, source backups, and debug output -->
+	<target name="clean" description="Clean source backups and .class files">
+		<delete dir="${apiservClasses}"/>
+		
+		<delete>
+			<fileset dir="." casesensitive="yes">
+				<include name="**/*~ "/>
+				<include name="**/.DS_Store"/>
+			</fileset>
+		</delete>		
+	</target>
+
+	<target name="runAPIServ" description="Runs the API server">
+		<java classname="org.comtor.apiserv.APIServ" fork="true">
+			<classpath refid="comtor.class.path"/>
+		</java>
+	</target>
+
+</project>

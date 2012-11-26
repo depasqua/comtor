@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<project name="comtorLAMPApplication" default="compile" basedir=".">
+	<description>Build file for the COMTOR LAMP application</description>
+	<echo>Subproject: comtorLAMPApplication</echo>
+	<defaultexcludes remove="**/.DS_Store"/>
+
+	<property name="cloudClasses" location="../code/classes"/>
+
+	<target name="compile" description="Jars and deploys comtor.jar to proper directory">
+		<jar destfile="${thirdpartyjars}/comtor.jar" basedir="${cloudClasses}">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Implementation-Title" value="COMTOR WWW DEPLOY"/>
+				<attribute name="Implementation-Version" value="${version} ${TODAY}"/> 
+				<attribute name="Implementation-Vendor" value="The College of New Jersey"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Removes the class files, source backups, and debug output -->
+	<target name="clean" description="Clean source backups, old reports, and .class files">
+		<delete dir="${cloudClasses}"/>
+
+		<delete>
+			<fileset dir="." casesensitive="yes">
+				<include name="**/*~ "/>
+				<include name="**/.DS_Store"/>
+			</fileset>
+			<fileset dir="${thirdpartyjars}">
+				<include name="comtor.jar"/>
+			</fileset>
+		</delete>		
+	</target>
+
+</project>

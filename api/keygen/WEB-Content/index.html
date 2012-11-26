@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>COMTOR - Request API Key</title>
+
+		<link rel="stylesheet" href="stylesheets/app.css">
+		<link rel="stylesheet" href="stylesheets/foundation.css">
+		<link rel="stylesheet" href="stylesheets/ie.css">
+
+		<script type="text/javascript">
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-1641868-7']);
+		  _gaq.push(['_trackPageview']);
+		
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+		</script>
+
+		<script type="text/javascript" src="scripts/jquery.min.js"></script>
+		<script type="text/javascript" src="scripts/app.js"></script>
+		<script type="text/javascript" src="scripts/foundation.js"></script>
+		<script type="text/javascript" src="scripts/modernizr.foundation.js"></script>
+		<script type="text/javascript" src="scripts/validate.min.js"></script>
+
+		<script type="text/javascript">
+			var RecaptchaOptions = {
+				theme : 'clean'
+			};
+		</script>
+	</head>
+
+	<body>
+	<div class="container">
+		<div class="row" style="margin-top: 30px; margin-bottom:15px;">
+			<div class="six columns centered">
+				<div style="text-align: center">
+					<img src="images/comtor/comtorLogo.png" alt="COMTOR logo"/>
+					<p style="font-size: small; font-weight: bold">Need a COMTOR API Key? Get one here!</p>
+				</div>
+			</div>
+		</div>
+
+		<form class="nice" action="keygen" id="apikeyform" enctype="multipart/form-data" method="GET">
+			<div class="row">
+				<div class="four columns centered" style="margin-left: auto; margin-right: auto;">
+					<label for="email" style="margin-left: 25px;">E-mail:</label>
+					<input id="email" name="email" class="required input-text" placeholder="you@somewhere.com"
+						style="margin-left: auto; margin-right: auto; margin-bottom: 25px;" type="email"/>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="six columns centered">
+					<p style="text-align:center; margin-bottom: 0px; font-size: small;">Please verify that you are a human:</p>
+					<div align="center">
+						<script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k=6LdGhdMSAAAAAA8869ncyDfuRaf_sDy72v7IFGJ3">
+						</script>
+					</div>
+					<noscript>
+						<div style="margin-left: auto; margin-right: auto;">
+							<iframe src="http://www.google.com/recaptcha/api/noscript?k=6LdGhdMSAAAAAA8869ncyDfuRaf_sDy72v7IFGJ3"
+							height="300" width="500" frameborder="0"></iframe><br>
+							<textarea name="recaptcha_challenge_field" rows="3" cols="40">
+							</textarea>
+							<input type="hidden" name="recaptcha_response_field"
+								value="manual_challenge">
+						</div>
+					</noscript>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="four columns centered">
+					<div style="text-align: center; margin-top: 25px; margin-bottom: 25px;">
+						<a href="javascript:submitForm()" class="nice radius medium blue button">Request Key</a>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<div class="row">
+			<div class="six columns centered">
+				<div style="text-align: center;">
+					Learn more about the <a href="http://www.comtor.org">COMTOR project</a> today.<br/>
+					See our <a href="faq.html">FAQ</a>!
+				</div>
+			</div>
+		</div>
+
+		<div id="errorModal" class="reveal-modal">
+			<h2>Uh no...</h2>
+			<p class="lead">Your submission has some issues:</p>
+			<span id="errorList"></span>
+			<a class="close-reveal-modal">&#215;</a>
+		</div>
+
+		<script type="text/javascript" >
+			function submitForm() {
+				if (document.forms["apikeyform"].onsubmit())
+					document.forms["apikeyform"].submit();
+			}
+		</script>
+
+		<script type="text/javascript" >
+			var validator = new FormValidator('apikeyform', [{
+				name: 'email',
+				display: 'email',    
+				rules: 'required|valid_email'
+			}], function(errors, event) {
+				if (errors.length > 0) {
+					var errorString = '';
+
+					for (var i = 0, errorLength = errors.length; i < errorLength; i++)
+						errorString += '* ' + errors[i].message + '<br/>';
+					
+					document.getElementById("errorList").innerHTML = errorString;
+					$('#errorModal').reveal();
+				}
+			});
+		</script>
+
+	</body>
+</html>
