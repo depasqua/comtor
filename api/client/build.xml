@@ -34,7 +34,7 @@
 				<src path="${apiclientSrc}"/>
 			<classpath>
 				<path refid="comtor.class.path"/>
-				<fileset dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib">
+				<fileset dir="./lib">
 					<include name="*.jar"/>
 				</fileset>
 			</classpath>
@@ -46,7 +46,7 @@
 			<classpath>
 				<path refid="comtor.class.path"/>
 				<path location="${apiclientClasses}"/>
-				<fileset dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib">
+				<fileset dir="./lib">
 					<include name="*.jar"/>
 				</fileset>
 			</classpath>
