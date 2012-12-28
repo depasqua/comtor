@@ -45,8 +45,9 @@
 	<!-- Removes the class files, source backups, and debug output -->
 	<target name="clean" description="Clean source backups, old reports, and .class files">
 		<ant dir="api/keygen" target="clean"/>
-		<ant dir="api/server" target="clean"/>
+		<ant dir="api/apiserv" target="clean"/>
 		<ant dir="api/client" target="clean"/>
+		<ant dir="api/authserv" target="clean"/>
 		<ant dir="code" target="clean"/>
 		<ant dir="lamp" target="clean"/>
 		
@@ -146,6 +147,30 @@
 	<target name="keygenWarRedeploy" depends="-credentials.check" description="Redeploys the keygen war file">
 		<ant dir="api/keygen" target="warRedeploy" inheritRefs="true"/>
 	</target>
+
+
+	<!-- API Auth Server -->
+	<target name="authServCompile" description="Compiles the source code of the api authserv app" depends="init">
+	 	<ant dir="api/authserv" target="compile" inheritRefs="true"/>
+ 	</target>
+	
+	<target name="authServWar" description="Builds the authserv war file">
+		<ant dir="api/authserv" target="createWar" inheritRefs="true"/>
+	</target>
+
+	<target name="authServWarDeploy" depends="-credentials.check" description="Deploys the authserv war file">
+		<ant dir="api/authserv" target="warDeploy" inheritRefs="true"/>
+	</target>
+
+	<target name="authServWarUndeploy" depends="-credentials.check" description="Undeploys the authserv war file">
+		<ant dir="api/authserv" target="warUndeploy" inheritRefs="true"/>
+	</target>
+
+	<target name="authServWarRedeploy" depends="-credentials.check" description="Redeploys the authserv war file">
+		<ant dir="api/authserv" target="warRedeploy" inheritRefs="true"/>
+	</target>
+
+
 
 
 	<!-- API Server -->
