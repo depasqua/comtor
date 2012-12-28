@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<project name="comtorAPIAuthServer" default="compile" basedir=".">
+	<description>Build file for the COMTOR API AUthentication Server application</description>
+	<echo>Subproject: comtorAPIAuthServer</echo>
+
+	<property name="apiauthservBaseDir" location="."/>
+	<property name="apiauthservSrc" location="${apiauthservBaseDir}/src"/>
+	<property name="apiauthservClasses" location="${apiauthservBaseDir}/classes"/>
+	<property name="warfilename" value="authserv.war"/>
+	<defaultexcludes remove="**/.DS_Store"/>
+
+	<condition property="deploymentPath" value="/authserv" else="/authservDev">
+		<isset property="release"/>
+	</condition>
+
+	<target name="compile" description="Compiles the source code of the api server app">
+		<!-- Emit the property to the ant console
+		<property name="myclasspath" refid="comtor.class.path"/>
+		<echo message="Classpath = ${myclasspath}"/>
+		-->
+		
+		<mkdir dir="${apiauthservClasses}"/>
+		<javac destdir="${apiauthservClasses}" includeantruntime="false" deprecation="on">
+				<src path="${apiauthservSrc}"/>
+			<classpath>
+				<path refid="comtor.class.path"/>
+				<fileset dir="${apiauthservBaseDir}/WEB-INF/lib">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- Removes the class files, source backups, and debug output -->
+	<target name="clean" description="Clean source backups and .class files">
+		<delete dir="${apiauthservClasses}"/>
+		
+		<delete>
+			<fileset dir="." casesensitive="yes">
+				<include name="**/*~ "/>
+				<include name="**/.DS_Store"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- Builds the war file for TOMCAT/cloud release -->
+	<target name="createWar" depends="compile" description="Builds the war file for the authserv release.">
+		<war destfile="${warfilename}" webxml="${apiauthservBaseDir}/WEB-INF/web.xml">
+			<fileset dir="${apiauthservBaseDir}/Web-Content"/>
+			<lib dir="${apiauthservBaseDir}/WEB-INF/lib" excludes="javax.jar"/>
+			<classes dir="${apiauthservClasses}"/>
+		</war>
+	</target>
+
+	<!-- Deployment tasks -->
+ 	<target name="warDeploy" depends="createWar" description="Deploys the web application">
+		<deploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}" war="file:api/authserv/${warfilename}"/>
+	</target>
+
+	<target name="warUndeploy" description="Undeploys the cloud web application.">
+		<undeploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}"/>
+	</target>
+
+	<target name="warRedeploy" depends="createWar" description="Redeploys the cloud web application.">
+		<antcall target="warUndeploy"/>
+		<antcall target="warDeploy"/>
+	</target>
+
+
+</project>
