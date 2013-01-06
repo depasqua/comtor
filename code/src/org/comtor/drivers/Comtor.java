@@ -27,7 +27,8 @@ import org.apache.logging.log4j.LogManager;
  * This class contains a main method (wrapper) used to call the stand alone version of COMTOR. This 
  * version is used to check the processing and output of modules as they are developed (debugging),
  * as well, it is the 'standalone' version of the application to be deployed for research and/or
- * to the cloud.
+ * to the cloud. The start method of this class is also called by the cloud and API versionf of COMTOR
+ * to commence processing of an input set.
  *
  * @author Peter DePasquale
  */
