@@ -227,6 +227,58 @@ public class ModuleReport {
 	}
 
 	/**
+	 *
+	 */
+	public void setFieldsAnalyzed(boolean value) {
+		try {
+			if (currentClass != null) {
+				currentClass.put("fields_analyzed", value);
+			}
+		} catch (JSONException je) {
+			System.err.println(je);
+		}
+	}
+
+	/**
+	 *
+	 */
+	public void setParamsAnalyzed(boolean value) {
+		try {
+			if (currentClass != null) {
+				currentClass.put("params_analyzed", value);
+			}
+		} catch (JSONException je) {
+			System.err.println(je);
+		}
+	}
+
+	/**
+	 *
+	 */
+	public void setThrowsAnalyzed(boolean value) {
+		try {
+			if (currentClass != null) {
+				currentClass.put("throws_analyzed", value);
+			}
+		} catch (JSONException je) {
+			System.err.println(je);
+		}
+	}
+
+	/**
+	 *
+	 */
+	public void setReturnsAnalyzed(boolean value) {
+		try {
+			if (currentClass != null) {
+				currentClass.put("returns_analyzed", value);
+			}
+		} catch (JSONException je) {
+			System.err.println(je);
+		}
+	}
+
+	/**
 	 * Adds a new report item array to the current report. Once added, a reference is set
 	 * to the current item that we are reporting on. This is used by the module to pass in
 	 * "report strings" (messages) regarding analysis of the current item.
@@ -257,6 +309,7 @@ public class ModuleReport {
 						subobject.put("methods", new JSONObject());
 						subobject.put("fields", new JSONObject());
 						subobject.put("location" , new JSONObject());
+						subobject.put("summary", new JSONArray());
 						currentClass = subobject;
 						lastItem = ReportItem.CLASS;
 						break;
@@ -264,10 +317,12 @@ public class ModuleReport {
 					case CONSTRUCTOR:
 						obj = currentClass.getJSONObject("constructors");
 						obj.put(name, subobject);
+						subobject.put("analyzed", new JSONObject());
 						subobject.put("issues", new JSONArray());
 						subobject.put("parameters", new JSONObject());
 						subobject.put("throws", new JSONObject());
 						subobject.put("location" , new JSONObject());
+						subobject.put("summary", new JSONArray());
 						currentMethod = subobject;
 						lastItem = ReportItem.CONSTRUCTOR;
 						break;
@@ -275,11 +330,13 @@ public class ModuleReport {
 					case METHOD:
 						obj = currentClass.getJSONObject("methods");
 						obj.put(name, subobject);
+						subobject.put("analyzed", new JSONObject());
 						subobject.put("issues", new JSONArray());
 						subobject.put("parameters", new JSONObject());
 						subobject.put("throws", new JSONObject());
 						subobject.put("returns", new JSONArray());
-						subobject.put("location" , new JSONObject());
+						subobject.put("location", new JSONObject());
+						subobject.put("summary", new JSONArray());
 						currentMethod = subobject;
 						lastItem = ReportItem.METHOD;
 						break;
@@ -296,6 +353,7 @@ public class ModuleReport {
 						obj.put(name, subobject);
 						subobject.put("issues", new JSONArray());
 						subobject.put("location" , new JSONObject());
+						subobject.put("summary", new JSONArray());
 						currentField = subobject;
 						lastItem = ReportItem.FIELD;
 						break;
@@ -395,6 +453,15 @@ public class ModuleReport {
 						System.err.println(je);
 					}
 				break;
+
+				case CLASS_SUMMARY:
+					try {
+						currentClass.getJSONArray("summary").put(msg);
+
+					} catch (JSONException je) {
+						System.err.println(je);
+					}
+					break;
 
 				case CONSTRUCTOR:
 				case METHOD:

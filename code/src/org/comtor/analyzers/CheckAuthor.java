@@ -43,17 +43,6 @@ public class CheckAuthor implements ComtorDoclet {
 	private	ModuleReport report = null;
 
 	/**
-	 * Constructor for this doclet. By default, it sets the total number of possible "points" to 5.
-	 * This values is used when "scoring" student submissions in the web-based client. The "points"
-	 * value can be modified via the web interface which in turn calls the setGradingBreakdown
-	 * method.
-	 */
-	public CheckAuthor() {
-		// Set default values for grade breakdown
-		//gradeBreakdown.put("TotalPoints", new Float(5.0));
-	}
-
-	/**
 	 * Examine each class, and determines if an '@author' tag is
 	 * present for the class.
 	 *
@@ -65,7 +54,7 @@ public class CheckAuthor implements ComtorDoclet {
 
 		// JSON analysis report from this module's execution
 		String description = "This module validates the presence of the @author tag in each class. " +
-			"Additionally, this module checks for non-blank @author tags (missing author name).";
+			"Additionally, this module checks for non-blank @author tags (missing names following the tag).";
 		report = new ModuleReport("Check Author", Util.stringWrapAfter(description, 80));
 
 		// A counter for the various metrics and reporting variables
@@ -75,8 +64,12 @@ public class CheckAuthor implements ComtorDoclet {
 		int emptyAuthorTagCount = 0;
 		int foundTags = 0;
 		
-		report.appendToAmble("preamble", "References to line numbers in this report are generally to " +
-			"the subsequent non-comment Java statement that follows the commment/comment block under analysis.");
+		report.appendToAmble("preamble", "The @author tag is widely used to show who has contributed source code to a class.");
+		report.appendToAmble("preamble", "Multiple @author tags are permitted in the class-block of comments.");
+		report.appendToAmble("preamble", "References to line numbers in this report are generally to the subsequent non-comment " +
+			"Java statement that follows the commment/comment block under analysis.");
+		report.appendToAmble("preamble", "The score in this module is calculated by determining the percentage of classes processed " +
+			"that contain no errors (contain @author tags with strings following the tag).");
 
 		// Capture the starting time, just prior to the start of the analysis
 		long startTime = new Date().getTime();
@@ -96,21 +89,28 @@ public class CheckAuthor implements ComtorDoclet {
 			    for (int index = 0; index < tags.length; index++) {
 					if (tags[index].text().equals("")) {
 						report.appendMessage(ReportItem.CLASS, "An empty @author tag was found in the comment block " +
-							"preceeding line " + tags[index].position().line());
+							"preceeding line " + tags[index].position().line() + ".");
 						emptyAuthorTagCount++;
 						classError = true;
-					} else
-						report.appendMessage(ReportItem.CLASS, "@author tag found: " + tags[index].text());
+					} else {
+						report.appendMessage(ReportItem.CLASS_SUMMARY, "@author tag found: " + tags[index].text());
+						report.appendStringToClass(report.getCurrentClass(), "noProblemMessage", "1 or more @author tags were found.");
+					}
 			    }
 			    foundTags++;
 			} else {
 				// Report that no @author tags were found for this class
-				report.appendMessage(ReportItem.CLASS, "No @author tags found.");
+				report.appendMessage(ReportItem.CLASS, "No @author tags were found.");
 				classError = true;
 			    missingAuthorTagCount++;
 			}
 			if (classError != false)
 				classesWithErrors++;
+
+			report.setFieldsAnalyzed(false);
+			report.setParamsAnalyzed(false);
+			report.setThrowsAnalyzed(false);
+			report.setReturnsAnalyzed(false);
 		}
 		
 		// Capture the ending time, just after the termination of the analysis
@@ -128,15 +128,15 @@ public class CheckAuthor implements ComtorDoclet {
 		report.addMetric(emptyAuthorTagCount +  " @author tag(s) are empty (missing names following tag)");
 		report.addMetric(foundTags + " @author tag(s) were located with text following the tags.");
 
-		String postAmbleStr = "";
 		if (missingAuthorTagCount > 0)
-			postAmbleStr += missingAuthorTagCount + " @author tags are missing from class-level documentation. ";
+			report.appendToAmble("postamble", Util.stringWrapAfter(missingAuthorTagCount + " @author tag(s) are missing from class-level documentation.", 80));
 
 		if (emptyAuthorTagCount > 0)
-			postAmbleStr += emptyAuthorTagCount + " @author tag(s) are empty and have no author provided.";
+			report.appendToAmble("postamble", Util.stringWrapAfter(emptyAuthorTagCount + " @author tag(s) are empty and have no author specified.", 80));
 
-		if (postAmbleStr.length() > 0)
-			report.appendToAmble("postamble", Util.stringWrapAfter(postAmbleStr, 80));
+		if (emptyAuthorTagCount + missingAuthorTagCount > 0)
+			report.appendToAmble("postamble", Util.stringWrapAfter("Consider adding @author tags to the comment block proceeding each class header. If you " +
+				"are receiving false results, please be sure you are using the Javadoc commenting style (i.e. /**  **/).", 80));
 
 		NumberFormat formatter = NumberFormat.getPercentInstance();
 		report.addScore(formatter.format(getGrade()));

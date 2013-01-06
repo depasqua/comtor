@@ -22,15 +22,17 @@ import com.sun.javadoc.*;
 import java.sql.*;
 import java.util.*;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-
 import org.comtor.reporting.*;
 import org.comtor.analyzers.*;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 /**
- * The ComtorDriver class is a tool to run COMTOR doclets (analysis modules)
- * and to pass a vector of property lists to the COMTOR report generator.
+ * The ComtorStandAlone class is a tool to run COMTOR doclets (analysis modules)
+ * and to pass a vector of property lists to the COMTOR report generator. This class is 
+ * used by the Comtor class once execution has started.  Essentially, it is this class that
+ * is inserted into Javadoc as a Doclet to supercede the Javadoc output functionality.
  *
  * @author Joe Brigandi
  * @author Stephen Sigwart
@@ -78,12 +80,15 @@ public class ComtorStandAlone extends Doclet {
 					docThrd.start();
 					threads.add(docThrd);
 					logger.trace("Adding thread for: " + docletName);
+
 				} catch (ClassNotFoundException e) {
-					System.err.println("Class not found: " + e);
-				} catch (ExceptionInInitializerError e) {
-					System.err.println(e);
-				} catch (LinkageError e) {
-					System.err.println(e);
+					logger.error("Class not found: " + e);
+
+				} catch (ExceptionInInitializerError eiie) {
+					logger.error(eiie);
+
+				} catch (LinkageError le) {
+					logger.error(le);
 				}
 			}
 
@@ -96,15 +101,19 @@ public class ComtorStandAlone extends Doclet {
 					// Fetch the JSON report for this analyzer
 					jsonReportVector.addElement(docThrd.getJSONReport());
 			}
-			logger.trace("Commencing report creation.");
-			TextReporter reporter = new TextReporter();
-			reporter.generateTextReportFile(jsonReportVector);
-			logger.trace("Report created.");
+
+			logger.trace("Commencing text report creation.");
+			(new TextReporter()).generateReportFile(jsonReportVector);
+			logger.trace("Text report created.");
+
+			logger.trace("Commencing HTML report creation.");
+			(new HTMLReporter()).generateReportFile(jsonReportVector);
+			logger.trace("HTML report created.");
 		}
 
-		// Exceptions from above.  This should be less catch-all and integrated above better.
 		catch (Exception e) {
-			System.err.println(e.toString());
+			// Exceptions from above.  This should be less catch-all and integrated above better.
+			logger.error(e.toString());
 		}
 
 		logger.exit();
@@ -168,14 +177,14 @@ public class ComtorStandAlone extends Doclet {
 		/**
 		 * Sets the doclet that will process the root document
 		 *
-		 * @param doclet Doclet that will process the root document
+		 * @param doclet The doclet (analysis module) that will process the root document.
 		 */
 		public void setAnalyzer(ComtorDoclet doclet) {
 			this.doclet = doclet;
 		}
 
 		 /**
-		 * Runs the doclet on the root document
+		 * Runs the doclet on provided root document.
 		 */
 		public void run() {
 			// Call the analyze method to perform the analysis
@@ -185,7 +194,7 @@ public class ComtorStandAlone extends Doclet {
 		/**
 		 * Returns the list of properties.
 		 *
-		 * @return Property list created by doclet
+		 * @return Returns the property list created by doclet
 		 */
 		public Properties getProperties() {
 			return list;
@@ -200,6 +209,11 @@ public class ComtorStandAlone extends Doclet {
 			return doclet.getJSONReport();
 		}
 
+		/** 
+		 * Returns the string representation of this analyzer modules' name.
+		 *
+		 * @return the string name of the analyzer
+		 */
 		public String toString() {
 			return doclet.toString();
 		}

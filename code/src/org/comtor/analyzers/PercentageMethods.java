@@ -69,10 +69,14 @@ public class PercentageMethods implements ComtorDoclet {
 	 */
 	public Properties analyze(RootDoc rootDoc) {
 		logger.entry();
-		String description = "This module calculates the percentage of methods that have associated comments. This " +
-		"calculation will include both methods and constructors. The reported score is the overall percentage of methods " +
-		"and constructors which are commented. The length and/or content of the comment is not considered.";
+		String description = "This module calculates the percentage of constructors and method that have associated comments. " +
+		"The reported score is the overall percentage of methods and constructors which are commented. The length and/or content " +
+		"of the comment is not considered. Other types of comments (class-level, field-level) are not considered in this analysis.";
 		report = new ModuleReport ("Percentage Methods", Util.stringWrapAfter(description, 80));
+		report.appendToAmble("preamble", "References to line numbers in this report are generally to " +
+			"the subsequent non-comment Java statement that follows the commment/comment block under analysis.");
+		report.appendToAmble("preamble", "The score in this module is calculated by determining the overall percentage of commented methods " +
+			"and constructors across all methods and constructors identified.");
 
 		// Capture the starting time, just prior to the start of the analysis
 		long startTime = new Date().getTime();
@@ -105,14 +109,13 @@ public class PercentageMethods implements ComtorDoclet {
 			ExecutableMemberDoc [] members = classdoc.methods();
 			numMethods += members.length;
 			localNumMethods = members.length;
-			for (ExecutableMemberDoc docs : members) {
-				if (docs.getRawCommentText().length() > 0)
+			for (ExecutableMemberDoc method : members) {
+				report.addItem(ReportItem.METHOD, method.qualifiedName() + method.signature());
+				if (method.getRawCommentText().length() > 0)
 					localNumCommentedMethods++;
-				else {
-					report.addItem(ReportItem.METHOD, docs.qualifiedName() + docs.signature());
-					report.appendMessage(ReportItem.LASTITEM, docs.qualifiedName() + docs.signature() +
-						" is not commented at/near line " + docs.position().line() + ".");
-				}
+				else
+					report.appendMessage(ReportItem.LASTITEM, method.qualifiedName() + method.signature() +
+						" is not commented at/near line " + method.position().line() + ".");
 			}
 			
 			// Generate the report results
@@ -120,17 +123,18 @@ public class PercentageMethods implements ComtorDoclet {
 				// Update the running totals for the data observed in this class
 				numCommentedMethods += localNumCommentedMethods;
 				numCommentedConstructors += localNumCommentedConstructors;
-				
-				if (localNumConstructors > 0)
-					report.appendMessage(ReportItem.CLASS, localNumCommentedConstructors + " of the " + localNumConstructors + 
-						" constructors (" + Math.round(((double) localNumCommentedConstructors) / localNumConstructors * 100) + 
-						"%) are commented.");
+				ReportItem destination;
+
+				destination = (localNumConstructors > 0 && localNumConstructors != localNumCommentedConstructors)?ReportItem.CLASS:ReportItem.CLASS_SUMMARY;
+				report.appendMessage(destination, localNumCommentedConstructors + " of the " + localNumConstructors + 
+					" constructors (" + Math.round(((double) localNumCommentedConstructors) / localNumConstructors * 100) + 
+					"%) are commented.");
 
 				// Store percentCommented in the report
-				if (localNumMethods > 0)
-					report.appendMessage(ReportItem.CLASS, localNumCommentedMethods + " of the " + localNumMethods + 
-						" methods (" + Math.round(((double) localNumCommentedMethods) / localNumMethods * 100) + 
-						"%) are commented.");
+				destination = (localNumMethods > 0 && localNumMethods != localNumCommentedMethods)?ReportItem.CLASS:ReportItem.CLASS_SUMMARY;
+				report.appendMessage(destination, localNumCommentedMethods + " of the " + localNumMethods + 
+					" methods (" + Math.round(((double) localNumCommentedMethods) / localNumMethods * 100) + 
+					"%) are commented.");
 			}
 
 			int numProblemsThisClass = (localNumMethods - localNumCommentedMethods) + (localNumConstructors - localNumCommentedConstructors);
@@ -138,6 +142,11 @@ public class PercentageMethods implements ComtorDoclet {
 			if (numProblemsThisClass == 0)
 				report.appendStringToClass(report.getCurrentClass(), "noProblemMessage", "No uncommented constructors or methods " +
 					"were found in processing this class.");
+
+			report.setFieldsAnalyzed(false);
+			report.setParamsAnalyzed(false);
+			report.setThrowsAnalyzed(false);
+			report.setReturnsAnalyzed(false);
 		}
 
 		double totalPercentMethods = (((double) numCommentedMethods) / numMethods);
@@ -165,12 +174,9 @@ public class PercentageMethods implements ComtorDoclet {
 
 		int numMissing = (numMethods - numCommentedMethods) + (numConstructors - numCommentedConstructors);
 		if (numMissing > 0)
-			report.appendToAmble("postamble", Util.stringWrapAfter(numMissing + " location(s) in your source code are missing " +
-				"comments. Consider commenting all constructors and methods to reduce this amount. Additionally, if you are receving false " +
-				"results, please be sure you are using the Javadoc commenting style.", 80));
-
-		report.appendToAmble("preamble", Util.stringWrapAfter("In this module's report, commented constructors and methods are not " +
-			"shown. Only uncommented constructors or methods are listed, when identified during analysis.", 80));
+			report.appendToAmble("postamble", Util.stringWrapAfter(numMissing + " location(s) (which are methods or constructors) in your source code are missing " +
+				"Javadoc comments. Consider commenting all of your constructors and methods to reduce this amount. Additionally, if you are receiving false " +
+				"results, please be sure you are using the Javadoc commenting style (i.e. /**  **/).", 80));
 
 		NumberFormat formatter = NumberFormat.getPercentInstance();
 		report.addScore(formatter.format(getGrade()));

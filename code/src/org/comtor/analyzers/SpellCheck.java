@@ -257,7 +257,9 @@ public final class SpellCheck implements ComtorDoclet {
 		report.addMetric(duplicateGoodWords + " duplicate good words");
 		report.addMetric(duplicateBadWords + " duplicate bad words");
 		report.appendLongToObject("information", "classes processed", numClasses);
-		report.appendToAmble("preamble", "Javadoc tags (@tag) from constructors and methods are not yet processed.");
+		report.appendToAmble("preamble", "Constructor and method tags which are not @param, @return, or @throws are not currently processed.");
+		report.appendToAmble("preamble", "The score in this module is calculated by determining the overall percentage of correctly " +
+			"spelled words from all comments ");
 
 		report.appendToAmble("postamble", Util.stringWrapAfter(badWords.size() + " word(s) in your source code are considered spelled " +
 			"incorrectly due to the fact that they are listed in our dictionary. In order to create a greater level of professionalism " +
@@ -302,10 +304,17 @@ public final class SpellCheck implements ComtorDoclet {
 				// Obtain the method's comments and process
 				numMisspellingsFound += parseComment(constructor.commentText(), constructor.position());
 
-				// Obtain the comments for method's tags (param, returns, etc.) and process each
-				// for (Tag tagComment : constructor.tags()) {
-				// 	numMisspellingsFound = parseComment(tagComment.text(), tagComment.position());
-				// }
+				// Parse the parameter's comments (@param tag)
+				for (ParamTag param : constructor.paramTags()) {
+					report.addItem(ReportItem.PARAMETER, param.parameterName());
+					numMisspellingsFound += parseComment(param.parameterComment(), param.position());
+				}
+
+				// Parse the throws comments (@throws tag)
+				for (ThrowsTag tag : constructor.throwsTags()) {
+					report.addItem(ReportItem.THROWS, tag.exceptionName());
+					numMisspellingsFound += parseComment(tag.exceptionComment(), tag.position());
+				}
 			}
 		}
 		
@@ -321,11 +330,18 @@ public final class SpellCheck implements ComtorDoclet {
 				report.addItem(ReportItem.PARAMETER, param.parameterName());
 				numMisspellingsFound += parseComment(param.parameterComment(), param.position());
 			}
-			
-			// Obtain the comments for method's tags (param, returns, etc.) and process each
-			// for (Tag tagComment : method.tags()) {
-			// 	numMisspellingsFound = parseComment(tagComment.text(), tagComment.position());
-			// }
+
+			// Parse the throws comments (@throws tag)
+			for (ThrowsTag tag : method.throwsTags()) {
+				report.addItem(ReportItem.THROWS, tag.exceptionName());
+				numMisspellingsFound += parseComment(tag.exceptionComment(), tag.position());
+			}
+
+			// Parse the @return tag, if any
+			for (Tag tag : method.tags("@return")) {
+				report.addItem(ReportItem.RETURNS, "returnsXXX");
+				numMisspellingsFound += parseComment(tag.text(), tag.position());
+			}
 		}	
 
 		// Process all of the class' fields and the field's comments as well
@@ -340,6 +356,11 @@ public final class SpellCheck implements ComtorDoclet {
 		report.appendStringToClass(report.getCurrentClass(), "numProblemsDetected", Integer.toString(numMisspellingsFound));
 		if (numMisspellingsFound == 0)
 			report.appendStringToClass(report.getCurrentClass(), "noProblemMessage", "No spelling errors were found in processing this class.");
+
+		report.setFieldsAnalyzed(true);
+		report.setParamsAnalyzed(true);
+		report.setThrowsAnalyzed(true);
+		report.setReturnsAnalyzed(true);
 	}
 
 	/**
@@ -378,7 +399,7 @@ public final class SpellCheck implements ComtorDoclet {
 				// Conclude that the "word" is misspelled and place it in the correct list
 				catch (NumberFormatException e) {
 					report.appendMessage(ReportItem.LASTITEM, "'" + word + "' considered a misspelled word " +
-						"on/near line " + position.line());
+						"on/near line " + position.line() + ".");
 					result++;
 					if (!badWords.add(word))
 						duplicateBadWords++;
@@ -443,12 +464,11 @@ public final class SpellCheck implements ComtorDoclet {
 	/**
 	 * Returns the grade for the doclet.
 	 *
-	 * @return a float value representing the ratio of correctly spelt words
-	 * from comments to the total number of works in the comments.
+	 * @return a float value representing the overall percentage of correctly spelled words from all comments.
 	 */
 	public float getGrade() {
 		if (totalWordCount == 0)
-			return (float) 0.0;
+			return (float) 1.0;
 
 		else
 			return (float) (totalWordCount - (badWords.size() + duplicateBadWords)) / totalWordCount;

@@ -88,6 +88,11 @@ public final class OffensiveWords implements ComtorDoclet {
 			
 			// Note: There is no need to process the inner classes, they are provided
 			// via the .classes() call above.
+
+			report.setFieldsAnalyzed(true);
+			report.setParamsAnalyzed(true);
+			report.setThrowsAnalyzed(true);
+			report.setReturnsAnalyzed(true);
 		}
 
 		// Capture the ending time, just after the termination of the analysis
@@ -109,7 +114,9 @@ public final class OffensiveWords implements ComtorDoclet {
 		report.addMetric(totalNumWords + " words were processed (including duplicates).");
 		report.addMetric(uniqueWordList.size() + " unique words were processed (excludes duplicates).");
 		report.addMetric(numBadWords + " 'offensive' words were identified (including duplicates).");
-		report.appendToAmble("preamble", "Method tags which are not @param, @return, or @throws are not currently processed.");
+		report.appendToAmble("preamble", "Constructor and method tags which are not @param, @return, or @throws are not currently processed.");
+		report.appendToAmble("preamble", "The score in this module is calculated by determining the overall percentage of non-offensive " +
+			"words from all comments.");
 
 		report.appendToAmble("postamble", Util.stringWrapAfter(numBadWords + " word(s) in your source code are considered offensive " +
 			"due to the fact that they are listed in our 'offensive word list'. In order to create a greater level of professionalism " +
@@ -231,7 +238,7 @@ public final class OffensiveWords implements ComtorDoclet {
 				numBadWords++;
 				numProblems++;
 				report.appendMessage(ReportItem.LASTITEM, "'" + word + "' considered an offensive word " +
-					"on/near line " + position.line());
+					"on/near line " + position.line() + ".");
 			}
 		}
 
@@ -251,8 +258,7 @@ public final class OffensiveWords implements ComtorDoclet {
 	/**
 	 * Returns the grade for the doclet.
 	 *
-	 * @return a float value representing the ratio of correctly spelt words
-	 * from comments to the total number of works in the comments.
+	 * @return a float value representing the overall percentage of non-offensive words from all comments.
 	 */
 	public float getGrade() {
 		if (totalNumWords == 0)
