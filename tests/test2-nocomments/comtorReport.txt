@@ -1,10 +1,10 @@
-COMTOR Execution Report - Fri, 23 Nov 2012 21:10:49 -0500
+COMTOR Execution Report - Sun, 6 Jan 2013 10:01:41 -0700
 ===========================================
 | Execution Score Summary                 |
 ===========================================
 | Module Name                  | Score    |
 -------------------------------------------
-| Spell Check                  | 0%       |
+| Spell Check                  | 100%     |
 | Percentage Methods           | 0%       |
 | Check Author                 | 0%       |
 | Offensive Words              | 100%     |
@@ -20,7 +20,8 @@ names). COMTOR uses JavaDoc, as such JavaDoc does not provide access to local va
 within methods and blocks. Thus, the word list is not exhaustive.
 
 Notes:
-	Javadoc tags (@tag) from constructors and methods are not yet processed.
+	Constructor and method tags which are not @param, @return, or @throws are not currently processed.
+	The score in this module is calculated by determining the overall percentage of correctly spelled words from all comments 
 
 Analysis: 
 	noComments.Test:
@@ -39,9 +40,9 @@ in your source code, please consider editing these words. If you believe you hav
 a false positive result, please email the COMTOR team at comtor@tcnj.edu and we
 consider your submission to the dictionary.
 
-Overall module score: 0%
+Overall module score: 100%
 
-Execution time: 3(ms)
+Execution time: 4(ms)
 
 Execution metrics: 
 	0% of the words in the comments were misspelled.
@@ -53,14 +54,14 @@ Execution metrics:
 	0 duplicate bad words
 ====================================================================================
 Analysis Module: Percentage Methods
-This module calculates the percentage of methods that have associated comments. This
-calculation will include both methods and constructors. The reported score is the
-overall percentage of methods and constructors which are commented. The length and/or
-content of the comment is not considered.
+This module calculates the percentage of constructors and method that have associated
+comments. The reported score is the overall percentage of methods and constructors
+which are commented. The length and/or content of the comment is not considered.
+Other types of comments (class-level, field-level) are not considered in this analysis.
 
 Notes:
-	In this module's report, commented constructors and methods are not shown. Only uncommented
-constructors or methods are listed, when identified during analysis.
+	References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis.
+	The score in this module is calculated by determining the overall percentage of commented methods and constructors across all methods and constructors identified.
 
 Analysis: 
 	noComments.Test:
@@ -113,13 +114,14 @@ Analysis:
 				noComments.Test3.main(java.lang.String[]) is not commented at/near line 24.
 
 Notes:
-	10 location(s) in your source code are missing comments. Consider commenting all
-constructors and methods to reduce this amount. Additionally, if you are receving
-false results, please be sure you are using the Javadoc commenting style.
+	10 location(s) (which are methods or constructors) in your source code are missing
+Javadoc comments. Consider commenting all of your constructors and methods to reduce
+this amount. Additionally, if you are receiving false results, please be sure you
+are using the Javadoc commenting style (i.e. /**  **/).
 
 Overall module score: 0%
 
-Execution time: 4(ms)
+Execution time: 5(ms)
 
 Execution metrics: 
 	3 class(es) were processed.
@@ -132,26 +134,32 @@ Execution metrics:
 ====================================================================================
 Analysis Module: Check Author
 This module validates the presence of the @author tag in each class. Additionally,
-this module checks for non-blank @author tags (missing author name).
+this module checks for non-blank @author tags (missing names following the tag).
 
 Notes:
+	The @author tag is widely used to show who has contributed source code to a class.
+	Multiple @author tags are permitted in the class-block of comments.
 	References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis.
+	The score in this module is calculated by determining the percentage of classes processed that contain no errors (contain @author tags with strings following the tag).
 
 Analysis: 
 	noComments.Test:
 		Class comment analysis:
-			No @author tags found.
+			No @author tags were found.
 
 	noComments.Test2:
 		Class comment analysis:
-			No @author tags found.
+			No @author tags were found.
 
 	noComments.Test3:
 		Class comment analysis:
-			No @author tags found.
+			No @author tags were found.
 
 Notes:
-	3 @author tags are missing from class-level documentation. 
+	3 @author tag(s) are missing from class-level documentation.
+	Consider adding @author tags to the comment block proceeding each class header. If
+you are receiving false results, please be sure you are using the Javadoc commenting
+style (i.e. /**  **/).
 
 Overall module score: 0%
 
@@ -172,7 +180,8 @@ variants. If you have a suggestion for a word that should be added to the dictio
 please email the COMTOR team at comtor@tcnj.edu.
 
 Notes:
-	Method tags which are not @param, @return, or @throws are not currently processed.
+	Constructor and method tags which are not @param, @return, or @throws are not currently processed.
+	The score in this module is calculated by determining the overall percentage of non-offensive words from all comments.
 
 Analysis: 
 	noComments.Test:
@@ -191,7 +200,7 @@ in your source code, please consider editing these words.
 
 Overall module score: 100%
 
-Execution time: 4(ms)
+Execution time: 5(ms)
 
 Execution metrics: 
 	1 package(s) were processed.

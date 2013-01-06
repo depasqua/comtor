@@ -7,18 +7,24 @@
    "results": {
       "classes": {
          "noComments.Test": {
+            "returns_analyzed": true,
+            "summary": [],
             "methods": {
                "noComments.Test.returnTrue()": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "returns": [],
                   "parameters": {}
                },
                "noComments.Test.main(java.lang.String[])": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "returns": [],
                   "parameters": {}
                }
@@ -26,56 +32,78 @@
             "noProblemMessage": "No spelling errors were found in processing this class.",
             "location": {},
             "issues": [],
+            "fields_analyzed": true,
+            "throws_analyzed": true,
+            "params_analyzed": true,
             "numProblemsDetected": "0",
             "constructors": {
                "noComments.Test(int, int)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "parameters": {}
                },
                "noComments.Test(int)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "parameters": {}
                }
             },
             "fields": {"noComments.Test.foo": {
+               "summary": [],
                "location": {},
                "issues": []
             }}
          },
          "noComments.Test2": {
+            "returns_analyzed": true,
+            "summary": [],
             "methods": {},
             "noProblemMessage": "No spelling errors were found in processing this class.",
             "location": {},
             "issues": [],
+            "fields_analyzed": true,
+            "throws_analyzed": true,
+            "params_analyzed": true,
             "numProblemsDetected": "0",
             "constructors": {"noComments.Test2()": {
+               "summary": [],
                "location": {},
                "throws": {},
                "issues": [],
+               "analyzed": {},
                "parameters": {}
             }},
             "fields": {"noComments.Test2.foo": {
+               "summary": [],
                "location": {},
                "issues": []
             }}
          },
          "noComments.Test3": {
+            "returns_analyzed": true,
+            "summary": [],
             "methods": {
                "noComments.Test3.returnTrue()": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "returns": [],
                   "parameters": {}
                },
                "noComments.Test3.main(java.lang.String[])": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "returns": [],
                   "parameters": {}
                }
@@ -83,37 +111,49 @@
             "noProblemMessage": "No spelling errors were found in processing this class.",
             "location": {},
             "issues": [],
+            "fields_analyzed": true,
+            "throws_analyzed": true,
+            "params_analyzed": true,
             "numProblemsDetected": "0",
             "constructors": {
                "noComments.Test3(java.lang.String)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "parameters": {}
                },
                "noComments.Test3(int)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "parameters": {}
                },
                "noComments.Test3(boolean)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "parameters": {}
                }
             },
             "fields": {
                "noComments.Test3.field1": {
+                  "summary": [],
                   "location": {},
                   "issues": []
                },
                "noComments.Test3.field3": {
+                  "summary": [],
                   "location": {},
                   "issues": []
                },
                "noComments.Test3.field2": {
+                  "summary": [],
                   "location": {},
                   "issues": []
                }
@@ -131,15 +171,18 @@
          "0 duplicate good words",
          "0 duplicate bad words"
       ],
-      "score": "0%",
+      "score": "100%",
       "timing": {
-         "execution time": "3",
-         "start time": "1353723049969",
-         "end time": "1353723049972"
+         "execution time": "4",
+         "start time": "1357491701224",
+         "end time": "1357491701228"
       },
       "notes": {
          "postamble": ["0 word(s) in your source code are considered spelled incorrectly due to the fact\nthat they are listed in our dictionary. In order to create a greater level of professionalism\nin your source code, please consider editing these words. If you believe you have\na false positive result, please email the COMTOR team at comtor@tcnj.edu and we\nconsider your submission to the dictionary."],
-         "preamble": ["Javadoc tags (@tag) from constructors and methods are not yet processed."]
+         "preamble": [
+            "Constructor and method tags which are not @param, @return, or @throws are not currently processed.",
+            "The score in this module is calculated by determining the overall percentage of correctly spelled words from all comments "
+         ]
       }
    }
 }
@@ -147,7 +190,7 @@
    "information": {
       "constructors processed": 6,
       "classes processed": 3,
-      "description": "This module calculates the percentage of methods that have associated comments. This\ncalculation will include both methods and constructors. The reported score is the\noverall percentage of methods and constructors which are commented. The length and/or\ncontent of the comment is not considered.",
+      "description": "This module calculates the percentage of constructors and method that have associated\ncomments. The reported score is the overall percentage of methods and constructors\nwhich are commented. The length and/or content of the comment is not considered.\nOther types of comments (class-level, field-level) are not considered in this analysis.",
       "name": "Percentage Methods",
       "constructors commented": 0,
       "methods processed": 4,
@@ -156,18 +199,24 @@
    "results": {
       "classes": {
          "noComments.Test": {
+            "returns_analyzed": false,
+            "summary": [],
             "methods": {
                "noComments.Test.returnTrue()": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": ["noComments.Test.returnTrue() is not commented at/near line 20."],
+                  "analyzed": {},
                   "returns": [],
                   "parameters": {}
                },
                "noComments.Test.main(java.lang.String[])": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": ["noComments.Test.main(java.lang.String[]) is not commented at/near line 14."],
+                  "analyzed": {},
                   "returns": [],
                   "parameters": {}
                }
@@ -177,49 +226,69 @@
                "0 of the 2 constructors (0%) are commented.",
                "0 of the 2 methods (0%) are commented."
             ],
+            "fields_analyzed": false,
+            "throws_analyzed": false,
+            "params_analyzed": false,
             "numProblemsDetected": "4",
             "constructors": {
                "noComments.Test(int, int)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": ["noComments.Test(int, int) is not commented at/near line 11."],
+                  "analyzed": {},
                   "parameters": {}
                },
                "noComments.Test(int)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": ["noComments.Test(int) is not commented at/near line 8."],
+                  "analyzed": {},
                   "parameters": {}
                }
             },
             "fields": {}
          },
          "noComments.Test2": {
+            "returns_analyzed": false,
+            "summary": ["0 of the 0 methods (0%) are commented."],
             "methods": {},
             "location": {},
             "issues": ["0 of the 1 constructors (0%) are commented."],
+            "fields_analyzed": false,
+            "throws_analyzed": false,
+            "params_analyzed": false,
             "numProblemsDetected": "1",
             "constructors": {"noComments.Test2()": {
+               "summary": [],
                "location": {},
                "throws": {},
                "issues": ["noComments.Test2() is not commented at/near line 5."],
+               "analyzed": {},
                "parameters": {}
             }},
             "fields": {}
          },
          "noComments.Test3": {
+            "returns_analyzed": false,
+            "summary": [],
             "methods": {
                "noComments.Test3.returnTrue()": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": ["noComments.Test3.returnTrue() is not commented at/near line 28."],
+                  "analyzed": {},
                   "returns": [],
                   "parameters": {}
                },
                "noComments.Test3.main(java.lang.String[])": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": ["noComments.Test3.main(java.lang.String[]) is not commented at/near line 24."],
+                  "analyzed": {},
                   "returns": [],
                   "parameters": {}
                }
@@ -229,24 +298,33 @@
                "0 of the 3 constructors (0%) are commented.",
                "0 of the 2 methods (0%) are commented."
             ],
+            "fields_analyzed": false,
+            "throws_analyzed": false,
+            "params_analyzed": false,
             "numProblemsDetected": "5",
             "constructors": {
                "noComments.Test3(java.lang.String)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": ["noComments.Test3(java.lang.String) is not commented at/near line 20."],
+                  "analyzed": {},
                   "parameters": {}
                },
                "noComments.Test3(int)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": ["noComments.Test3(int) is not commented at/near line 12."],
+                  "analyzed": {},
                   "parameters": {}
                },
                "noComments.Test3(boolean)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": ["noComments.Test3(boolean) is not commented at/near line 16."],
+                  "analyzed": {},
                   "parameters": {}
                }
             },
@@ -266,20 +344,23 @@
       ],
       "score": "0%",
       "timing": {
-         "execution time": "4",
-         "start time": "1353723047749",
-         "end time": "1353723047753"
+         "execution time": "5",
+         "start time": "1357491696053",
+         "end time": "1357491696058"
       },
       "notes": {
-         "postamble": ["10 location(s) in your source code are missing comments. Consider commenting all\nconstructors and methods to reduce this amount. Additionally, if you are receving\nfalse results, please be sure you are using the Javadoc commenting style."],
-         "preamble": ["In this module's report, commented constructors and methods are not shown. Only uncommented\nconstructors or methods are listed, when identified during analysis."]
+         "postamble": ["10 location(s) (which are methods or constructors) in your source code are missing\nJavadoc comments. Consider commenting all of your constructors and methods to reduce\nthis amount. Additionally, if you are receiving false results, please be sure you\nare using the Javadoc commenting style (i.e. /**  **/)."],
+         "preamble": [
+            "References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis.",
+            "The score in this module is calculated by determining the overall percentage of commented methods and constructors across all methods and constructors identified."
+         ]
       }
    }
 }
 {
    "information": {
       "classes processed": 3,
-      "description": "This module validates the presence of the @author tag in each class. Additionally,\nthis module checks for non-blank @author tags (missing author name).",
+      "description": "This module validates the presence of the @author tag in each class. Additionally,\nthis module checks for non-blank @author tags (missing names following the tag).",
       "name": "Check Author",
       "classes with errors": 3,
       "tags errors": 0,
@@ -288,23 +369,38 @@
    "results": {
       "classes": {
          "noComments.Test": {
+            "returns_analyzed": false,
+            "summary": [],
             "methods": {},
             "location": {},
-            "issues": ["No @author tags found."],
+            "issues": ["No @author tags were found."],
+            "fields_analyzed": false,
+            "throws_analyzed": false,
+            "params_analyzed": false,
             "constructors": {},
             "fields": {}
          },
          "noComments.Test2": {
+            "returns_analyzed": false,
+            "summary": [],
             "methods": {},
             "location": {},
-            "issues": ["No @author tags found."],
+            "issues": ["No @author tags were found."],
+            "fields_analyzed": false,
+            "throws_analyzed": false,
+            "params_analyzed": false,
             "constructors": {},
             "fields": {}
          },
          "noComments.Test3": {
+            "returns_analyzed": false,
+            "summary": [],
             "methods": {},
             "location": {},
-            "issues": ["No @author tags found."],
+            "issues": ["No @author tags were found."],
+            "fields_analyzed": false,
+            "throws_analyzed": false,
+            "params_analyzed": false,
             "constructors": {},
             "fields": {}
          }
@@ -321,12 +417,20 @@
       "score": "0%",
       "timing": {
          "execution time": "1",
-         "start time": "1353723047757",
-         "end time": "1353723047758"
+         "start time": "1357491696079",
+         "end time": "1357491696080"
       },
       "notes": {
-         "postamble": ["3 @author tags are missing from class-level documentation. "],
-         "preamble": ["References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis."]
+         "postamble": [
+            "3 @author tag(s) are missing from class-level documentation.",
+            "Consider adding @author tags to the comment block proceeding each class header. If\nyou are receiving false results, please be sure you are using the Javadoc commenting\nstyle (i.e. /**  **/)."
+         ],
+         "preamble": [
+            "The @author tag is widely used to show who has contributed source code to a class.",
+            "Multiple @author tags are permitted in the class-block of comments.",
+            "References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis.",
+            "The score in this module is calculated by determining the percentage of classes processed that contain no errors (contain @author tags with strings following the tag)."
+         ]
       }
    }
 }
@@ -345,18 +449,24 @@
    "results": {
       "classes": {
          "noComments.Test": {
+            "returns_analyzed": true,
+            "summary": [],
             "methods": {
                "noComments.Test.returnTrue()": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "returns": [],
                   "parameters": {}
                },
                "noComments.Test.main(java.lang.String[])": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "returns": [],
                   "parameters": {}
                }
@@ -364,56 +474,78 @@
             "noProblemMessage": "No offensive words were found in processing this class.",
             "location": {},
             "issues": [],
+            "fields_analyzed": true,
+            "throws_analyzed": true,
+            "params_analyzed": true,
             "numProblemsDetected": "0",
             "constructors": {
                "noComments.Test(int, int)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "parameters": {}
                },
                "noComments.Test(int)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "parameters": {}
                }
             },
             "fields": {"noComments.Test.foo": {
+               "summary": [],
                "location": {},
                "issues": []
             }}
          },
          "noComments.Test2": {
+            "returns_analyzed": true,
+            "summary": [],
             "methods": {},
             "noProblemMessage": "No offensive words were found in processing this class.",
             "location": {},
             "issues": [],
+            "fields_analyzed": true,
+            "throws_analyzed": true,
+            "params_analyzed": true,
             "numProblemsDetected": "0",
             "constructors": {"noComments.Test2()": {
+               "summary": [],
                "location": {},
                "throws": {},
                "issues": [],
+               "analyzed": {},
                "parameters": {}
             }},
             "fields": {"noComments.Test2.foo": {
+               "summary": [],
                "location": {},
                "issues": []
             }}
          },
          "noComments.Test3": {
+            "returns_analyzed": true,
+            "summary": [],
             "methods": {
                "noComments.Test3.returnTrue()": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "returns": [],
                   "parameters": {}
                },
                "noComments.Test3.main(java.lang.String[])": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "returns": [],
                   "parameters": {}
                }
@@ -421,37 +553,49 @@
             "noProblemMessage": "No offensive words were found in processing this class.",
             "location": {},
             "issues": [],
+            "fields_analyzed": true,
+            "throws_analyzed": true,
+            "params_analyzed": true,
             "numProblemsDetected": "0",
             "constructors": {
                "noComments.Test3(java.lang.String)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "parameters": {}
                },
                "noComments.Test3(int)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "parameters": {}
                },
                "noComments.Test3(boolean)": {
+                  "summary": [],
                   "location": {},
                   "throws": {},
                   "issues": [],
+                  "analyzed": {},
                   "parameters": {}
                }
             },
             "fields": {
                "noComments.Test3.field1": {
+                  "summary": [],
                   "location": {},
                   "issues": []
                },
                "noComments.Test3.field3": {
+                  "summary": [],
                   "location": {},
                   "issues": []
                },
                "noComments.Test3.field2": {
+                  "summary": [],
                   "location": {},
                   "issues": []
                }
@@ -473,13 +617,16 @@
       ],
       "score": "100%",
       "timing": {
-         "execution time": "4",
-         "start time": "1353723048004",
-         "end time": "1353723048008"
+         "execution time": "5",
+         "start time": "1357491696538",
+         "end time": "1357491696543"
       },
       "notes": {
          "postamble": ["0 word(s) in your source code are considered offensive due to the fact that they\nare listed in our 'offensive word list'. In order to create a greater level of professionalism\nin your source code, please consider editing these words."],
-         "preamble": ["Method tags which are not @param, @return, or @throws are not currently processed."]
+         "preamble": [
+            "Constructor and method tags which are not @param, @return, or @throws are not currently processed.",
+            "The score in this module is calculated by determining the overall percentage of non-offensive words from all comments."
+         ]
       }
    }
 }

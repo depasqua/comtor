@@ -1,159 +1,49 @@
-COMTOR Execution Report - Fri, 23 Nov 2012 22:40:26 -0500
+COMTOR Execution Report - Sun, 6 Jan 2013 10:01:54 -0700
 ===========================================
 | Execution Score Summary                 |
 ===========================================
 | Module Name                  | Score    |
 -------------------------------------------
-| Spell Check                  | 86%      |
-| Percentage Methods           | 70%      |
 | Check Author                 | 33%      |
-| Offensive Words              | 77%      |
+| Offensive Words              | 85%      |
+| Percentage Methods           | 82%      |
+| Spell Check                  | 85%      |
 ===========================================
 
 ====================================================================================
-Analysis Module: Spell Check
-This module compares words found in comments against an English word dictionary.
-The COMTOR word dictionary contains more than 97,000 entries. The analysis includes
-the list of known Java API classes (JDK), HTML tags and attributes, Java keywords,
-and user-defined symbols from the submitted code (class, method, constructor, field
-names). COMTOR uses JavaDoc, as such JavaDoc does not provide access to local variables
-within methods and blocks. Thus, the word list is not exhaustive.
-
-Notes:
-	Javadoc tags (@tag) from constructors and methods are not yet processed.
-
-Analysis: 
-	offensiveTest.Test:
-		Class comment analysis:
-			'xxx' considered a misspelled word on/near line 8
-			'COMTOR' considered a misspelled word on/near line 8
-
-		Constructor comment analysis:
-			offensiveTest.Test(int): 
-				'Multi' considered a misspelled word on/near line 16
-				'aboutz' considered a misspelled word on/near line 16
-
-			offensiveTest.Test(int, int): 
-				'missingz' considered a misspelled word on/near line 25
-				'HHH' considered a misspelled word on/near line 25
-				'MMM' considered a misspelled word on/near line 25
-
-		Method comment analysis:
-			offensiveTest.Test.returnTrue(): 
-				'methodz' considered a misspelled word on/near line 43
-
-		Field comment analysis: 
-			offensiveTest.Test.foo: 
-				'agout' considered a misspelled word on/near line 10
-
-	offensiveTest.Test2:
-		No spelling errors were found in processing this class.
-
-	offensiveTest.Test3:
-		No spelling errors were found in processing this class.
-
-Notes:
-	9 word(s) in your source code are considered spelled incorrectly due to the fact
-that they are listed in our dictionary. In order to create a greater level of professionalism
-in your source code, please consider editing these words. If you believe you have
-a false positive result, please email the COMTOR team at comtor@tcnj.edu and we
-consider your submission to the dictionary.
-
-Overall module score: 86%
-
-Execution time: 5(ms)
-
-Execution metrics: 
-	14% of the words in the comments were misspelled.
-	66 words analyzed.
-	3 class(es) were processed.
-	28 correctly spelled words (excludes duplicates)
-	9 incorrectly spelled words (excludes duplicates)
-	29 duplicate good words
-	0 duplicate bad words
-====================================================================================
-Analysis Module: Percentage Methods
-This module calculates the percentage of methods that have associated comments. This
-calculation will include both methods and constructors. The reported score is the
-overall percentage of methods and constructors which are commented. The length and/or
-content of the comment is not considered.
-
-Notes:
-	In this module's report, commented constructors and methods are not shown. Only uncommented
-constructors or methods are listed, when identified during analysis.
-
-Analysis: 
-	offensiveTest.Test:
-		Class comment analysis:
-			2 of the 2 constructors (100%) are commented.
-			2 of the 2 methods (100%) are commented.
-
-	offensiveTest.Test2:
-		Class comment analysis:
-			0 of the 1 constructors (0%) are commented.
-
-		Constructor comment analysis:
-			offensiveTest.Test2(): 
-				offensiveTest.Test2() is not commented at/near line 12.
-
-	offensiveTest.Test3:
-		Class comment analysis:
-			1 of the 3 constructors (33%) are commented.
-			2 of the 2 methods (100%) are commented.
-
-		Constructor comment analysis:
-			offensiveTest.Test3(boolean): 
-				offensiveTest.Test3(boolean) is not commented at/near line 28.
-
-			offensiveTest.Test3(java.lang.String): 
-				offensiveTest.Test3(java.lang.String) is not commented at/near line 32.
-
-Notes:
-	3 location(s) in your source code are missing comments. Consider commenting all constructors
-and methods to reduce this amount. Additionally, if you are receving false results,
-please be sure you are using the Javadoc commenting style.
-
-Overall module score: 70%
-
-Execution time: 3(ms)
-
-Execution metrics: 
-	3 class(es) were processed.
-	4 method(s) were processed.
-	4 method(s) were commented.
-	100% method(s) were commented across all classes.
-	6 constructors(s) were processed.
-	3 constructors(s) were commented.
-	50% constructors(s) were commented across all classes.
-====================================================================================
 Analysis Module: Check Author
 This module validates the presence of the @author tag in each class. Additionally,
-this module checks for non-blank @author tags (missing author name).
+this module checks for non-blank @author tags (missing names following the tag).
 
 Notes:
+	The @author tag is widely used to show who has contributed source code to a class.
+	Multiple @author tags are permitted in the class-block of comments.
 	References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis.
+	The score in this module is calculated by determining the percentage of classes processed that contain no errors (contain @author tags with strings following the tag).
 
 Analysis: 
 	offensiveTest.Test:
 		Class comment analysis:
-			No @author tags found.
+			No @author tags were found.
 
 	offensiveTest.Test2:
 		Class comment analysis:
-			An empty @author tag was found in the comment block preceeding line 12
-			An empty @author tag was found in the comment block preceeding line 12
+			An empty @author tag was found in the comment block preceeding line 12.
+			An empty @author tag was found in the comment block preceeding line 12.
 
 	offensiveTest.Test3:
-		Class comment analysis:
-			@author tag found: Peter DePasquale
+		1 or more @author tags were found.
 
 Notes:
-	1 @author tags are missing from class-level documentation. 2 @author tag(s) are empty
-and have no author provided.
+	1 @author tag(s) are missing from class-level documentation.
+	2 @author tag(s) are empty and have no author specified.
+	Consider adding @author tags to the comment block proceeding each class header. If
+you are receiving false results, please be sure you are using the Javadoc commenting
+style (i.e. /**  **/).
 
 Overall module score: 33%
 
-Execution time: 1(ms)
+Execution time: 4(ms)
 
 Execution metrics: 
 	3 class(es) were processed.
@@ -170,88 +60,230 @@ variants. If you have a suggestion for a word that should be added to the dictio
 please email the COMTOR team at comtor@tcnj.edu.
 
 Notes:
-	Method tags which are not @param, @return, or @throws are not currently processed.
+	Constructor and method tags which are not @param, @return, or @throws are not currently processed.
+	The score in this module is calculated by determining the overall percentage of non-offensive words from all comments.
 
 Analysis: 
 	offensiveTest.Test:
 		Class comment analysis:
-			'xxx' considered an offensive word on/near line 8
+			'xxx' considered an offensive word on/near line 8.
 
 		Constructor comment analysis:
 			offensiveTest.Test(int, int): 
-				'fuck' considered an offensive word on/near line 25
+				'fuck' considered an offensive word on/near line 25.
 
 				two (@param two): 
-					'fuck' considered an offensive word on/near line 25
+					'fuck' considered an offensive word on/near line 25.
 
 				three (@param three): 
-					'dick' considered an offensive word on/near line 25
+					'dick' considered an offensive word on/near line 25.
 
 				NullPointerException (@throws NullPointerException): 
-					'shit' considered an offensive word on/near line 25
+					'shit' considered an offensive word on/near line 25.
 
 		Method comment analysis:
 			offensiveTest.Test.main(java.lang.String[]): 
-				'fuck' considered an offensive word on/near line 32
+				'fuck' considered an offensive word on/near line 32.
 
 				args (@param args): 
-					'ass' considered an offensive word on/near line 32
+					'ass' considered an offensive word on/near line 32.
 
 				NullPointerException (@throws NullPointerException): 
-					'dick' considered an offensive word on/near line 32
+					'dick' considered an offensive word on/near line 32.
 
 			offensiveTest.Test.returnTrue(): 
 				(@return): 
-					'bullshit' considered an offensive word on/near line 43
+					'bullshit' considered an offensive word on/near line 43.
 
 	offensiveTest.Test2:
 		No offensive words were found in processing this class.
 
 	offensiveTest.Test3:
 		Class comment analysis:
-			'shit' considered an offensive word on/near line 11
+			'shit' considered an offensive word on/near line 11.
 
 		Constructor comment analysis:
 			offensiveTest.Test3(int): 
-				'fuck' considered an offensive word on/near line 24
+				'fuck' considered an offensive word on/near line 24.
 
 				foo (@param foo): 
-					'shit' considered an offensive word on/near line 24
+					'shit' considered an offensive word on/near line 24.
 
 		Method comment analysis:
 			offensiveTest.Test3.returnTrue(): 
 				(@return): 
-					'fuck' considered an offensive word on/near line 48
-					'shit' considered an offensive word on/near line 48
+					'fuck' considered an offensive word on/near line 58.
+					'shit' considered an offensive word on/near line 58.
 
 			offensiveTest.Test3.main(java.lang.String[]): 
-				'ass' considered an offensive word on/near line 41
+				'ass' considered an offensive word on/near line 49.
 
 				args (@param args): 
-					'cock' considered an offensive word on/near line 41
+					'cock' considered an offensive word on/near line 49.
 
 		Field comment analysis: 
 			offensiveTest.Test3.field2: 
-				'fucking' considered an offensive word on/near line 17
-				'fuck' considered an offensive word on/near line 17
+				'fucking' considered an offensive word on/near line 17.
+				'fuck' considered an offensive word on/near line 17.
 
 Notes:
 	18 word(s) in your source code are considered offensive due to the fact that they
 are listed in our 'offensive word list'. In order to create a greater level of professionalism
 in your source code, please consider editing these words.
 
-Overall module score: 77%
+Overall module score: 85%
 
-Execution time: 8(ms)
+Execution time: 31(ms)
 
 Execution metrics: 
 	1 package(s) were processed.
 	3 class(es) were processed.
 	6 constructor(s) were processed.
-	4 method(s) were processed.
-	5 parameter(s) were processed.
+	5 method(s) were processed.
+	9 parameter(s) were processed.
 	5 field(s) were processed.
-	77 words were processed (including duplicates).
-	39 unique words were processed (excludes duplicates).
+	124 words were processed (including duplicates).
+	56 unique words were processed (excludes duplicates).
 	18 'offensive' words were identified (including duplicates).
+====================================================================================
+Analysis Module: Percentage Methods
+This module calculates the percentage of constructors and method that have associated
+comments. The reported score is the overall percentage of methods and constructors
+which are commented. The length and/or content of the comment is not considered.
+Other types of comments (class-level, field-level) are not considered in this analysis.
+
+Notes:
+	References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis.
+	The score in this module is calculated by determining the overall percentage of commented methods and constructors across all methods and constructors identified.
+
+Analysis: 
+	offensiveTest.Test:
+		No uncommented constructors or methods were found in processing this class.
+
+	offensiveTest.Test2:
+		Class comment analysis:
+			0 of the 1 constructors (0%) are commented.
+
+		Constructor comment analysis:
+			offensiveTest.Test2(): 
+				offensiveTest.Test2() is not commented at/near line 12.
+
+	offensiveTest.Test3:
+		Class comment analysis:
+			2 of the 3 constructors (67%) are commented.
+
+		Constructor comment analysis:
+			offensiveTest.Test3(java.lang.String): 
+				offensiveTest.Test3(java.lang.String) is not commented at/near line 40.
+
+Notes:
+	2 location(s) (which are methods or constructors) in your source code are missing
+Javadoc comments. Consider commenting all of your constructors and methods to reduce
+this amount. Additionally, if you are receiving false results, please be sure you
+are using the Javadoc commenting style (i.e. /**  **/).
+
+Overall module score: 82%
+
+Execution time: 3(ms)
+
+Execution metrics: 
+	3 class(es) were processed.
+	5 method(s) were processed.
+	5 method(s) were commented.
+	100% method(s) were commented across all classes.
+	6 constructors(s) were processed.
+	4 constructors(s) were commented.
+	67% constructors(s) were commented across all classes.
+====================================================================================
+Analysis Module: Spell Check
+This module compares words found in comments against an English word dictionary.
+The COMTOR word dictionary contains more than 97,000 entries. The analysis includes
+the list of known Java API classes (JDK), HTML tags and attributes, Java keywords,
+and user-defined symbols from the submitted code (class, method, constructor, field
+names). COMTOR uses JavaDoc, as such JavaDoc does not provide access to local variables
+within methods and blocks. Thus, the word list is not exhaustive.
+
+Notes:
+	Constructor and method tags which are not @param, @return, or @throws are not currently processed.
+	The score in this module is calculated by determining the overall percentage of correctly spelled words from all comments 
+
+Analysis: 
+	offensiveTest.Test:
+		Class comment analysis:
+			'xxx' considered a misspelled word on/near line 8.
+			'COMTOR' considered a misspelled word on/near line 8.
+
+		Constructor comment analysis:
+			offensiveTest.Test(int): 
+				'Multi' considered a misspelled word on/near line 16.
+				'aboutz' considered a misspelled word on/near line 16.
+
+			offensiveTest.Test(int, int): 
+				'missingz' considered a misspelled word on/near line 25.
+				'HHH' considered a misspelled word on/near line 25.
+				'MMM' considered a misspelled word on/near line 25.
+
+		Method comment analysis:
+			offensiveTest.Test.returnTrue(): 
+				'methodz' considered a misspelled word on/near line 43.
+
+		Field comment analysis: 
+			offensiveTest.Test.foo: 
+				'agout' considered a misspelled word on/near line 10.
+
+	offensiveTest.Test2:
+		No spelling errors were found in processing this class.
+
+	offensiveTest.Test3:
+		Constructor comment analysis:
+			offensiveTest.Test3(boolean, int): 
+				'Mizspelling' considered a misspelled word on/near line 36.
+				'constructrror' considered a misspelled word on/near line 36.
+
+				foo (@param foo): 
+					'mizspeling' considered a misspelled word on/near line 36.
+
+				ArrayIndexOutOfBoundsException (@throws ArrayIndexOutOfBoundsException): 
+					'mizspelling' considered a misspelled word on/near line 36.
+
+				ClassCastException (@throws ClassCastException): 
+					'anotherz' considered a misspelled word on/near line 36.
+
+		Method comment analysis:
+			offensiveTest.Test3.returnTrue(int, int): 
+				alpha (@param alpha): 
+					'Mizspelled' considered a misspelled word on/near line 71.
+
+				beta (@param beta): 
+					'mizspelleded' considered a misspelled word on/near line 71.
+
+				ArrayIndexOutOfBoundsException (@throws ArrayIndexOutOfBoundsException): 
+					'mizspelling' considered a misspelled word on/near line 71.
+
+				ClassCastException (@throws ClassCastException): 
+					'anotherz' considered a misspelled word on/near line 71.
+
+			offensiveTest.Test3.returnTrue(): 
+				(@return): 
+					'thiz' considered a misspelled word on/near line 58.
+
+Notes:
+	17 word(s) in your source code are considered spelled incorrectly due to the fact
+that they are listed in our dictionary. In order to create a greater level of professionalism
+in your source code, please consider editing these words. If you believe you have
+a false positive result, please email the COMTOR team at comtor@tcnj.edu and we
+consider your submission to the dictionary.
+
+Overall module score: 85%
+
+Execution time: 7(ms)
+
+Execution metrics: 
+	14% of the words in the comments were misspelled.
+	124 words analyzed.
+	3 class(es) were processed.
+	42 correctly spelled words (excludes duplicates)
+	17 incorrectly spelled words (excludes duplicates)
+	63 duplicate good words
+	2 duplicate bad words
 ====================================================================================

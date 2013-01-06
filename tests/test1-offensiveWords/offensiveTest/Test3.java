@@ -25,7 +25,15 @@ public class Test3 {
 		;	
 	}
 	
-	public Test3 (boolean foo) throws ArrayIndexOutOfBoundsException {
+	/** 
+	 * Mizspelling in a constructrror
+	 *
+	 * @param foo mizspeling in a param
+	 * @param bar this spelling is fine.
+	 * @throws ArrayIndexOutOfBoundsException mizspelling in a throws
+	 * @throws ClassCastException anotherz misspelling in a throws
+	 */
+	public Test3 (boolean foo, int bar) throws ArrayIndexOutOfBoundsException, ClassCastException {
 		;	
 	}
 	
@@ -43,9 +51,24 @@ public class Test3 {
 	}
 	
 	/**
+	 * @throws ArrayIndexOutOfBoundsException no misspelling in a throws
+	 * @throws ClassCastException another non misspelling in a throws
 	* @return fuck thiz shit
 	*/
-	public boolean returnTrue() {
+	public boolean returnTrue() throws ArrayIndexOutOfBoundsException, ClassCastException  {
+		return true;
+	}
+
+	/** 
+	 * Some comment.
+	 *
+	 * @param alpha Mizspelled.
+	 * @param beta Also mizspelleded.
+	 * @throws ArrayIndexOutOfBoundsException mizspelling in a throws
+	 * @throws ClassCastException anotherz misspelling in a throws
+	 * @return nothing
+	 */
+	public boolean returnTrue (int alpha, int beta) throws ArrayIndexOutOfBoundsException, ClassCastException {
 		return true;
 	}
 }
