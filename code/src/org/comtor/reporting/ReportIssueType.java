@@ -1,6 +1,6 @@
 /**
  *  Comment Mentor: A Comment Quality Assessment Tool
- *  Copyright (C) 2011 The College of New Jersey
+ *  Copyright (C) 2012 The College of New Jersey
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 package org.comtor.reporting;
 
 /**
- * The ReportItem enumeration represents the possible report item on which we are
- * reporting our findings in the analysis module.
+ * The ReportIssueType enumeration represents the possible report issue type (general issue [error], or
+ * summary [non-error analysis statement]).
  */
-public enum ReportItem {
-	CLASS, CLASS_SUMMARY, PACKAGE, CONSTRUCTOR, CONSTRUCTOR_SUMMARY, METHOD, METHOD_SUMMARY, FIELD, FIELD_SUMMARY, PARAMETER, LASTITEM, THROWS, RETURNS
+public enum ReportIssueType {
+	ISSUE, SUMMARY;
 }

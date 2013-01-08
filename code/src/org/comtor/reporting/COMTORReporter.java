@@ -24,7 +24,12 @@ import java.util.*;
 import org.json.*;
 import org.comtor.drivers.*;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 public abstract class COMTORReporter {
+	private static Logger logger = LogManager.getLogger(COMTORReporter.class.getName());
+
 	protected JSONObject currentReport;
 	protected JSONObject currentClass;
 
@@ -39,7 +44,7 @@ public abstract class COMTORReporter {
 	 * @param jsonReports a Vector of String object that each contain a specific module's
 	 * analysis report in JSON format.
 	 */
-	abstract public void generateReportFile(Vector<String> jsonReports);
+	public abstract void generateReportFile(Vector<String> jsonReports);
 
 	/**
 	 * Returns a string array of the names of all of the classes contained in the current report.
@@ -58,7 +63,7 @@ public abstract class COMTORReporter {
 				classnameKeys = JSONObject.getNames(classes);
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return classnameKeys;
 	}
@@ -78,7 +83,7 @@ public abstract class COMTORReporter {
 				result = JSONObject.getNames(currentClass.getJSONObject("constructors"));
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -98,7 +103,7 @@ public abstract class COMTORReporter {
 				result = JSONObject.getNames(currentClass.getJSONObject("methods"));
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -118,7 +123,7 @@ public abstract class COMTORReporter {
 				result = JSONObject.getNames(currentClass.getJSONObject("fields"));
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 
 		return result;
@@ -134,8 +139,9 @@ public abstract class COMTORReporter {
 			try {
 				JSONObject classesBlock = currentReport.getJSONObject("results").getJSONObject("classes");
 				currentClass =classesBlock.getJSONObject(classname);
+
 			} catch (JSONException je) {
-				System.err.println(je);
+				logger.error(je);
 			}
 		}
 	}
@@ -337,50 +343,94 @@ public abstract class COMTORReporter {
 						result += "\t\t" + classObj.getString("noProblemMessage") + newLine + newLine;
 				}
 			}
+
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
 
 	/**
-	 * Returns the number of entries in the "issues" array contained in the current class block.
+	 * Returns the number of entries in the "issues" array contained in the specified report item type.
 	 *
-	 * @return the total number of issues present in the array.
+	 * @param itemType the type of item (class, constructor, method, field)
+	 * @param itemName the name of the item which contains the issues (required for fields, params, throws only)
+	 * @return the total number of issues present for the selected item.
 	 */
-	protected int getNumberOfClassIssues() {
+	protected int getNumberOfAnalysisIssues(ReportItem itemType, String itemName) {
 		int result = 0;
+		JSONObject targetObject = null;
+		JSONArray issuesArray = null;
 
 		try {
-			if (currentClass != null) {
-				JSONArray issuesArray = currentClass.getJSONArray("issues");
-				if (issuesArray != null)
-					result = issuesArray.length();
-			}
+			switch (itemType) {
+			case CLASS:
+				if (currentClass != null)
+					issuesArray = currentClass.getJSONArray("issues");
+				break;
 
+			case FIELD:
+				if (currentClass != null)
+					issuesArray = currentClass.getJSONObject("fields").getJSONObject(itemName).getJSONArray("issues");
+				break;
+
+			case CONSTRUCTOR:
+				if (currentClass != null)
+					issuesArray = currentClass.getJSONObject("constructors").getJSONObject(itemName).getJSONArray("issues");
+				break;
+
+			case METHOD:
+				if (currentClass != null) 
+					issuesArray = currentClass.getJSONObject("methods").getJSONObject(itemName).getJSONArray("issues");
+				break;
+			}
+			if (issuesArray != null)
+				result = issuesArray.length();
+	
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
 
 	/**
-	 * Returns the number of entries in the "summary" array contained in the current class block.
+	 * Returns the number of entries in the "summary" array contained in the specified report item type.
 	 *
+	 * @param itemType the type of item (class, constructor, method, parameter, field, throws)
+	 * @param itemName the name of the item which contains the issues (required for fields, params, throws only)
 	 * @return the total number of summary items present in the array.
 	 */
-	protected int getNumberOfClassSummaryItems() {
+	protected int getNumberOfSummaryItems(ReportItem itemType, String itemName) {
 		int result = 0;
+		JSONArray issuesArray = null;
 
 		try {
-			if (currentClass != null) {
-				JSONArray issuesArray = currentClass.getJSONArray("summary");
-				if (issuesArray != null)
-					result = issuesArray.length();
+			switch (itemType) {
+			case CLASS:
+				if (currentClass != null)
+					issuesArray = currentClass.getJSONArray("summary");
+				break;
+
+			case FIELD:
+				if (currentClass != null)
+					issuesArray = currentClass.getJSONObject("fields").getJSONObject(itemName).getJSONArray("summary");
+				break;
+
+			case CONSTRUCTOR:
+				if (currentClass != null)
+					issuesArray = currentClass.getJSONObject("constructors").getJSONObject(itemName).getJSONArray("summary");
+				break;
+
+			case METHOD:
+				if (currentClass != null)
+					issuesArray = currentClass.getJSONObject("methods").getJSONObject(itemName).getJSONArray("summary");
+				break;
 			}
+			if (issuesArray != null)
+				result = issuesArray.length();
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -398,7 +448,7 @@ public abstract class COMTORReporter {
 				result = currentClass.getBoolean("fields_analyzed");
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -416,7 +466,7 @@ public abstract class COMTORReporter {
 				result = currentClass.getBoolean("throws_analyzed");
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -434,7 +484,7 @@ public abstract class COMTORReporter {
 				result = currentClass.getBoolean("params_analyzed");
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -452,7 +502,7 @@ public abstract class COMTORReporter {
 				result = currentClass.getBoolean("returns_analyzed");
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -471,7 +521,7 @@ public abstract class COMTORReporter {
 			if (constructorsBlock != null) {
 				JSONObject constructorSought = constructorsBlock.getJSONObject(constructorName);
 
-				int length = constructorSought.getJSONArray("issues").length();
+				int length = constructorSought.getJSONArray("issues").length() + constructorSought.getJSONArray("summary").length();
 				result += (length == 0) ? 1 : length;
 
 				JSONObject throwsObj = constructorSought.getJSONObject("throws");
@@ -496,7 +546,7 @@ public abstract class COMTORReporter {
 			}
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -515,7 +565,7 @@ public abstract class COMTORReporter {
 			if (methodsBlock != null) {
 				JSONObject methodSought = methodsBlock.getJSONObject(methodName);
 
-				int length= methodSought.getJSONArray("issues").length();
+				int length= methodSought.getJSONArray("issues").length() + methodSought.getJSONArray("summary").length();
 				length = (length == 0) ? 1 : length;
 				result += length;				
 
@@ -542,11 +592,10 @@ public abstract class COMTORReporter {
 					length = (names.length > length) ? names.length : length;
 				}
 				result += (length == 0 && currentClass.getBoolean("params_analyzed")) ? 1 : length;
-
 			}
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -592,7 +641,7 @@ public abstract class COMTORReporter {
 			}
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -634,14 +683,13 @@ public abstract class COMTORReporter {
 							}
 						}
 					}
-
 					if (issuesArray != null)
 						result = issuesArray.length();
 				}
 			}
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -673,11 +721,10 @@ public abstract class COMTORReporter {
 					}
 				}
 			}
-
 			return result;
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -704,7 +751,7 @@ public abstract class COMTORReporter {
 			return result;
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -731,7 +778,7 @@ public abstract class COMTORReporter {
 			}
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -753,7 +800,7 @@ public abstract class COMTORReporter {
 			}
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -775,7 +822,7 @@ public abstract class COMTORReporter {
 			}
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -808,7 +855,7 @@ public abstract class COMTORReporter {
 			}
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -840,7 +887,7 @@ public abstract class COMTORReporter {
 				}
 			}
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -869,7 +916,7 @@ public abstract class COMTORReporter {
 				}
 			}
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -877,20 +924,46 @@ public abstract class COMTORReporter {
 	/**
 	 * Returns the string representation of a specific field-level comment issue as specified by the issue number.
 	 *
-	 * @param constructorName the specific field which contains the issue sought.
+	 * @param memberType the type of member containing the issue sought (field, method, constructor)
+	 * @param itemName the specific member name which contains the issue sought.
+	 * @param itemType the report item type sought (issue or summary)
 	 * @param issueNum the specific issue number to return.
 	 * @return a String representation of the field-comment issue.
 	 */
-	public String getFieldIssueByNum(String fieldName, int issueNum) {
+	public String getMemberIssueSummaryItemByNum(ReportItem memberType, String itemName, ReportIssueType itemType, int issueNum) {
 		String result = null;
 
 		try {
 			if (currentClass != null) {
-				JSONObject fieldsBlock = currentClass.getJSONObject("fields");
-				if (fieldsBlock != null) {
-					JSONObject fieldSought = fieldsBlock.getJSONObject(fieldName);
-					if (fieldSought != null) {
-						JSONArray issuesArray = fieldSought.getJSONArray("issues");
+				JSONObject memberBlock = null;
+				switch (memberType) {
+				case CONSTRUCTOR:
+					memberBlock = currentClass.getJSONObject("constructors");
+					break;
+
+				case METHOD:
+					memberBlock = currentClass.getJSONObject("methods");
+					break;
+
+				case FIELD:
+					memberBlock = currentClass.getJSONObject("fields");
+					break;
+				}
+
+				if (memberBlock != null) {
+					JSONObject itemSought = memberBlock.getJSONObject(itemName);
+					if (itemSought != null) {
+
+						JSONArray issuesArray = null;
+						switch (itemType) {
+							case ISSUE:
+								issuesArray = itemSought.getJSONArray("issues");
+								break;
+
+							case SUMMARY:
+								issuesArray = itemSought.getJSONArray("summary");
+								break;
+						}
 						if (issuesArray != null && issuesArray.length() > 0)
 							result = issuesArray.getString(issueNum);
 					}
@@ -898,7 +971,7 @@ public abstract class COMTORReporter {
 			}
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -955,7 +1028,7 @@ public abstract class COMTORReporter {
 						}
 					}
 				} catch (JSONException je) {
-					System.err.println(je);
+					logger.error(je);
 				}
 			}
 		}
@@ -982,7 +1055,7 @@ public abstract class COMTORReporter {
 				result += "\t" + metrics.get(index) + newLine;
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -1005,7 +1078,7 @@ public abstract class COMTORReporter {
 					result[index] = metrics.get(index).toString();
 
 			} catch (JSONException je) {
-				System.err.println(je);
+				logger.error(je);
 			}
 		return result;
 	}
@@ -1029,7 +1102,7 @@ public abstract class COMTORReporter {
 			}
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -1053,7 +1126,7 @@ public abstract class COMTORReporter {
 			}
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -1069,7 +1142,7 @@ public abstract class COMTORReporter {
 			result += currentReport.getJSONObject("information").getString("name").trim();
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -1087,7 +1160,7 @@ public abstract class COMTORReporter {
 			result = result.toLowerCase();
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -1103,7 +1176,7 @@ public abstract class COMTORReporter {
 			result += currentReport.getJSONObject("information").getString("description").trim();
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -1115,8 +1188,7 @@ public abstract class COMTORReporter {
 	 */
 	protected String getInfoBlock() {
 		String newLine = System.getProperty("line.separator");
-		String result = "Analysis Module: " + getReportName() + newLine + getReportDescription() + newLine;
-		return result;
+		return "Analysis Module: " + getReportName() + newLine + getReportDescription() + newLine;
 	}
 
 	/**
@@ -1134,7 +1206,7 @@ public abstract class COMTORReporter {
 			result = "Overall module score: " + results.getString("score") + newLine;
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 
 		return result;
@@ -1153,7 +1225,7 @@ public abstract class COMTORReporter {
 			result = currentReport.getJSONObject("results").getString("score");
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 
 		return result;
@@ -1180,7 +1252,7 @@ public abstract class COMTORReporter {
 				return null;
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}
@@ -1206,7 +1278,7 @@ public abstract class COMTORReporter {
 			}
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}

@@ -19,7 +19,11 @@ package org.comtor.reporting;
 
 import java.util.*;
 import org.json.*;
+
 import com.sun.javadoc.SourcePosition;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /** 
  * This class represents a COMTOR module's report. Essentially it wraps the structure of the report
@@ -38,6 +42,8 @@ public class ModuleReport {
 	private JSONArray currentReturns = null;
 	private ReportItem lastItem = null;
 
+	private static Logger logger = LogManager.getLogger(ModuleReport.class.getName());
+
 	/**
 	 * This constructor creates the basic framework of a JSON-based report for COMTOR. A number of the
 	 * internal structural aspects of the report are created here, so this constructor should always be 
@@ -47,6 +53,7 @@ public class ModuleReport {
 	 * @param moduleDescription a String object that provides a description of the module's analysis
 	 */
 	public ModuleReport (String moduleName, String moduleDescription) {
+
 		// Create the information nested object and add it to the report object
 		try {
 			JSONObject info = new JSONObject();
@@ -71,7 +78,7 @@ public class ModuleReport {
 			report.put("results", results);
 
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 	}
 
@@ -90,7 +97,7 @@ public class ModuleReport {
 				obj.put(newchart);
 
 			} catch (JSONException je) {
-				System.err.println(je);
+				logger.error(je);
 			}
 		}
 	}
@@ -108,7 +115,7 @@ public class ModuleReport {
 				obj.put(key, value);
 
 			} catch (JSONException je) {
-				System.err.println(je);
+				logger.error(je);
 			}
 		}
 	}
@@ -126,7 +133,7 @@ public class ModuleReport {
 				obj.put("score", value);
 
 			} catch (JSONException je) {
-				System.err.println(je);
+				logger.error(je);
 			}
 		}
 	}
@@ -143,7 +150,7 @@ public class ModuleReport {
 				array.put(msg);
 
 			} catch (JSONException je) {
-				System.err.println(je);
+				logger.error(je);
 			}
 		}
 	}
@@ -162,7 +169,7 @@ public class ModuleReport {
 				array.put(msg);
 
 			} catch (JSONException je) {
-				System.err.println(je);
+				logger.error(je);
 			}
 		}
 	}
@@ -201,7 +208,7 @@ public class ModuleReport {
 				obj.put(key, value);
 
 			} catch (JSONException je) {
-				System.err.println(je);
+				logger.error(je);
 			}
 		}
 	}
@@ -221,7 +228,7 @@ public class ModuleReport {
 				obj.put(key, value);
 
 			} catch (JSONException je) {
-				System.err.println(je);
+				logger.error(je);
 			}
 		}
 	}
@@ -235,7 +242,7 @@ public class ModuleReport {
 				currentClass.put("fields_analyzed", value);
 			}
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 	}
 
@@ -248,7 +255,7 @@ public class ModuleReport {
 				currentClass.put("params_analyzed", value);
 			}
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 	}
 
@@ -261,7 +268,7 @@ public class ModuleReport {
 				currentClass.put("throws_analyzed", value);
 			}
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 	}
 
@@ -274,7 +281,7 @@ public class ModuleReport {
 				currentClass.put("returns_analyzed", value);
 			}
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 	}
 
@@ -304,10 +311,10 @@ public class ModuleReport {
 					case CLASS:
 						obj = report.getJSONObject("results").getJSONObject("classes");
 						obj.put(name, subobject);
-						subobject.put("issues", new JSONArray());
 						subobject.put("constructors", new JSONObject());
 						subobject.put("methods", new JSONObject());
 						subobject.put("fields", new JSONObject());
+						subobject.put("issues", new JSONArray());
 						subobject.put("location" , new JSONObject());
 						subobject.put("summary", new JSONArray());
 						currentClass = subobject;
@@ -318,11 +325,11 @@ public class ModuleReport {
 						obj = currentClass.getJSONObject("constructors");
 						obj.put(name, subobject);
 						subobject.put("analyzed", new JSONObject());
-						subobject.put("issues", new JSONArray());
 						subobject.put("parameters", new JSONObject());
 						subobject.put("throws", new JSONObject());
-						subobject.put("location" , new JSONObject());
+						subobject.put("issues", new JSONArray());
 						subobject.put("summary", new JSONArray());
+						subobject.put("location" , new JSONObject());
 						currentMethod = subobject;
 						lastItem = ReportItem.CONSTRUCTOR;
 						break;
@@ -331,12 +338,12 @@ public class ModuleReport {
 						obj = currentClass.getJSONObject("methods");
 						obj.put(name, subobject);
 						subobject.put("analyzed", new JSONObject());
-						subobject.put("issues", new JSONArray());
 						subobject.put("parameters", new JSONObject());
 						subobject.put("throws", new JSONObject());
 						subobject.put("returns", new JSONArray());
-						subobject.put("location", new JSONObject());
+						subobject.put("issues", new JSONArray());
 						subobject.put("summary", new JSONArray());
+						subobject.put("location", new JSONObject());
 						currentMethod = subobject;
 						lastItem = ReportItem.METHOD;
 						break;
@@ -352,8 +359,8 @@ public class ModuleReport {
 						obj = currentClass.getJSONObject("fields");
 						obj.put(name, subobject);
 						subobject.put("issues", new JSONArray());
-						subobject.put("location" , new JSONObject());
 						subobject.put("summary", new JSONArray());
+						subobject.put("location" , new JSONObject());
 						currentField = subobject;
 						lastItem = ReportItem.FIELD;
 						break;
@@ -372,7 +379,7 @@ public class ModuleReport {
 				}
 
 			} catch (JSONException je) {
-				System.err.println(je);
+				logger.error(je);
 			}
 		}
 	}
@@ -408,7 +415,7 @@ public class ModuleReport {
 						break;
 				}
 			} catch (JSONException je) {
-				System.err.println(je);
+				logger.error(je);
 			}
 		}
 	}
@@ -427,7 +434,7 @@ public class ModuleReport {
 			try {
 				report.getJSONObject("results").put("typeHistogram", map);
 			} catch (JSONException je) {
-				System.err.println(je);
+				logger.error(je);
 			}
 		}
 	}
@@ -435,68 +442,62 @@ public class ModuleReport {
 	/**
 	 * Appends the String message to the specified report item's object
 	 *
-	 * @param itemType a enum type desiganting where the item will be appended
+	 * @param itemType an enum type desiganting where the item will be appended
 	 * @param msg the message to append in the report.
 	 */
 	public void appendMessage(ReportItem itemType, String msg) {
 		if (report != null) {
-			switch (itemType) {
-				case PACKAGE:
-					currentPackage.put(msg);
-					break;
+			try {
+				switch (itemType) {
+					case PACKAGE:
+						currentPackage.put(msg);
+						break;
 
-				case CLASS:
-					try {
+					case CLASS:
 						currentClass.getJSONArray("issues").put(msg);
-			
-					} catch (JSONException je) {
-						System.err.println(je);
-					}
-				break;
+						break;
 
-				case CLASS_SUMMARY:
-					try {
-						currentClass.getJSONArray("summary").put(msg);
+					case CLASS_SUMMARY:
+							currentClass.getJSONArray("summary").put(msg);
+							break;
 
-					} catch (JSONException je) {
-						System.err.println(je);
-					}
-					break;
+					case CONSTRUCTOR:
+					case METHOD:
+							currentMethod.getJSONArray("issues").put(msg);
+							break;
 
-				case CONSTRUCTOR:
-				case METHOD:
-					try {
-						currentMethod.getJSONArray("issues").put(msg);
-			
-					} catch (JSONException je) {
-						System.err.println(je);
-					}
-					break;
+					case CONSTRUCTOR_SUMMARY:
+					case METHOD_SUMMARY:
+							currentMethod.getJSONArray("summary").put(msg);
+							break;
 
-				case PARAMETER:
-					currentParameter.put(msg);
-					break;
+					case PARAMETER:
+						currentParameter.put(msg);
+						break;
 
-				case FIELD:
-					try {
+					case FIELD:
 						currentField.getJSONArray("issues").put(msg);
+						break;
 
-					} catch (JSONException je) {
-						System.err.println(je);
-					}
-					break;
+					case FIELD_SUMMARY:
+						currentField.getJSONArray("summary").put(msg);
+						break;
 
-				case THROWS:
-					currentThrows.put(msg);
-					break;
+					case THROWS:
+						currentThrows.put(msg);
+						break;
 
-				case RETURNS:
-					currentReturns.put(msg);
-					break;
+					case RETURNS:
+						currentReturns.put(msg);
+						break;
 
-				case LASTITEM:
-					appendMessage(lastItem, msg);
-					break;
+					case LASTITEM:
+						appendMessage(lastItem, msg);
+						break;
+				}
+
+			} catch (JSONException je) {
+				logger.error(je);
 			}
 		}
 	}
@@ -521,7 +522,7 @@ public class ModuleReport {
 		try {
 			result = report.toString(3);
 		} catch (JSONException je) {
-			System.err.println(je);
+			logger.error(je);
 		}
 		return result;
 	}

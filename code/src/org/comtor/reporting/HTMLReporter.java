@@ -55,16 +55,15 @@ public class HTMLReporter extends COMTORReporter {
 
 			outFilePW.println("<!DOCTYPE html>");
 			outFilePW.println("<html>");
-			outFilePW.print("	<head>\n		<title>COMTOR Execution Report - ");
-			outFilePW.println(formatter.format(new java.util.Date()) + "</title>");
+			outFilePW.println("	<head>\n		<title>COMTOR Execution Report - " + formatter.format(new java.util.Date()) + "</title>");
 			outFilePW.println("<style type=\"text/css\">");
 			outFilePW.println("	.toppad { margin-top: 20px; }");
 			outFilePW.println("	.cuddle { margin-bottom: 0px; }");
-			outFilePW.println("	td.ok { background-color: #DFF0D8; }");
-			outFilePW.println("	td.problem { background-color: #F2DEDE; }");
-			outFilePW.println("	tt { font-size: 9pt; font-weight: bold; }");
+			outFilePW.println("	.code { font-family: \"Lucida Console\", Monaco, monospace; font-size: 9pt; font-weight: bold; }");
 			outFilePW.println("	.hidden { display: none; }");
  			outFilePW.println("	.unhidden { display: block; }");
+			outFilePW.println("	td.ok { background-color: #DFF0D8; }");
+			outFilePW.println("	td.problem { background-color: #F2DEDE; }");
 			outFilePW.println("</style>");
 			outFilePW.println();
 			outFilePW.println("<script type=\"text/javascript\">");
@@ -113,19 +112,19 @@ public class HTMLReporter extends COMTORReporter {
 			outFilePW.println("	<body>");
 			outFilePW.println("		<div class=\"container\">");
 			outFilePW.println("		<div class=\"row toppad\">");
-			outFilePW.println("			<div class=\"span8\"><h1><a name=\"top\"></a>COMTOR Execution Report</h1>");
+			outFilePW.println("			<div class=\"span8\" id=\"top\"><h1>COMTOR Execution Report</h1>");
 			outFilePW.println("				<p class=\"muted\">Report created: " + formatter.format(new java.util.Date()) + "</p>");
 			outFilePW.println("			</div>");
-			outFilePW.print("			<div class=\"span2 offset2\"><img src=\"http://www.comtor.org/website/images/comtor/comtorLogo.png\" classs=\"pull-right\" ");
+			outFilePW.print("			<div class=\"span2 offset2\"><img src=\"http://www.comtor.org/website/images/comtor/comtorLogo.png\" class=\"pull-right\" ");
 			outFilePW.println("alt=\"COMTOR logo\"/></div>");
 			outFilePW.println("		</div>");
 
 			logger.trace("Creating table of summary results.");
 			outFilePW.println("			<table class=\"table table-bordered table-condensed\">");
-			outFilePW.println("				<caption>Table 1 - Execution Score Summary - (rows in beige contain scores &lt;= 70%, ");
+			outFilePW.print("				<caption>Table 1 - Execution Score Summary - (rows in beige contain scores &lt;= 70%, ");
 			outFilePW.println("rows in red contain scores &lt;= 50%)</caption>");
 			outFilePW.println("				<tbody>");
-			outFilePW.println("					<tr><td><strong>Module Name</strong></td><td><strong>Action</strong></td><td><strong>Score</strong></td></tr>");
+			outFilePW.println("					<tr><td><strong>Module Name</strong></td><td><strong>Action</strong></td><td><strong>Score</strong></td></tr>\n");
 
 			Iterator iter = jsonReports.iterator();
 			while (iter.hasNext()) {
@@ -133,11 +132,15 @@ public class HTMLReporter extends COMTORReporter {
 				currentReport = new JSONObject(results);
 				String moduleName = currentReport.getJSONObject("information").getString("name");
 				String moduleScore = currentReport.getJSONObject("results").getString("score");
+
+				logger.trace("Iterating through report: " + moduleName);
 				String cellClass = "";
-				if (Integer.parseInt(moduleScore.substring(0, moduleScore.length()-1)) <= 70)
-					cellClass = " class=\"warning\"";
-				if (Integer.parseInt(moduleScore.substring(0, moduleScore.length()-1)) <= 50)
-					cellClass = " class=\"error\"";
+				if (!moduleScore.contains(".")) {
+					if (Integer.parseInt(moduleScore.substring(0, moduleScore.length()-1)) <= 70)
+						cellClass = " class=\"warning\"";
+					if (Integer.parseInt(moduleScore.substring(0, moduleScore.length()-1)) <= 50)
+						cellClass = " class=\"error\"";
+				}
 
 				outFilePW.print("					<tr");
 				if (!cellClass.equals(""))
@@ -145,7 +148,7 @@ public class HTMLReporter extends COMTORReporter {
 				outFilePW.print("><td><a href=\"#" + getReportNameAsAnchor() + "\">" + moduleName + "</a></td>");
 				outFilePW.print("<td><a href=\"javascript:unhideReport('" + getReportNameAsAnchor() + "Report');\" id=\"" + getReportNameAsAnchor());
 				outFilePW.print("ReportButton\" class=\"btn btn-mini btn-primary\">Hide report</a></td>");
-				outFilePW.println("<td>" + moduleScore + "</td></tr>");
+				outFilePW.println("<td>" + moduleScore + "</td></tr>\n");
 			}
 
 			outFilePW.println("				</tbody>");
@@ -159,45 +162,49 @@ public class HTMLReporter extends COMTORReporter {
 				logger.trace("Creating report for module: " + getReportName());
 
 				String reportName = getReportNameAsAnchor();
-				outFilePW.println("<p style=\"clear: both;\"/>");
-				outFilePW.println("<h3 class=\"cuddle\" style=\"display: inline; float: left;\"><a name=\"" + reportName + "\"></a>" + getReportName());
-				// outFilePW.println("	<a href=\"javascript:unhideReport('" + reportName + "Report');\" id=\"" + reportName + "ReportButton\" class=\"btn btn-mini btn-primary\" style=\"margin-left: 25px;\">Hide report</a>");
-				outFilePW.println("	<a href=\"javascript:unhideContent('" + reportName + "Content');\" id=\"" + reportName + "ContentButton\" class=\"btn btn-mini btn-primary\">Display pre-/post-analysis content</a>");
-				outFilePW.println("</h3>");
+				outFilePW.println("			<p style=\"clear: both;\"></p>");
+				outFilePW.println("			<h3 class=\"cuddle\" style=\"display: inline; float: left;\" id=\"" + reportName + "\">" + getReportName());
+				outFilePW.println("				<a href=\"javascript:unhideContent('" + reportName + "Content');\" id=\"" + reportName + "ContentButton\" class=\"btn btn-mini btn-primary\">Display pre-/post-analysis content</a>");
+				outFilePW.println("			</h3>");
 
-				outFilePW.println("<div class=\"unhidden\" id=\"" + getReportNameAsAnchor() + "Report\" style=\"clear:both; padding-left: 25px\">");
- 				outFilePW.println("	<div class=\"hidden\" id=\"" + getReportNameAsAnchor() + "ContentPre\">");
+				outFilePW.println("			<div class=\"unhidden\" id=\"" + getReportNameAsAnchor() + "Report\" style=\"clear:both; padding-left: 25px\">");
+ 				outFilePW.println("				<div class=\"hidden\" id=\"" + getReportNameAsAnchor() + "ContentPre\">");
+
+				logger.trace("Creating description output.");
  				String descr = getReportDescription();
 				if (descr != null)
-					outFilePW.println("	<p>" + descr + "</p>");
+					outFilePW.println("					<p>" + descr + "</p>\n");
 
+				logger.trace("Creating preamble output.");
 				String[] amble = getAmbleHTML("preamble");
 				if (amble != null && amble.length != 0) {
-					outFilePW.println("	<h4 class=\"toppad\">Pre-Report Notes</h4>");
-					outFilePW.println("<ul class=\"unstyled\">");
+					outFilePW.println("					<h4 class=\"toppad\">Pre-Report Notes</h4>");
+					outFilePW.println("					<ul class=\"unstyled\">");
 					for (int index = 0; index < amble.length; index++) {
-						outFilePW.println("<li>" + amble[index] + "</li>");
+						outFilePW.println("						<li>" + amble[index] + "</li>");
 					}
-					outFilePW.println("</ul>");
+					outFilePW.println("					</ul>\n");
 				}
 
+				logger.trace("Creating score output.");
 				String scoreStr = getScoreHTML();
 				if (scoreStr != null) {
-					outFilePW.println("<h4 class=\"toppad\">Score</h4>");
-					outFilePW.println("<p>Your score for this analysis module is: " + scoreStr + ".</p>");
+					outFilePW.println("					<h4 class=\"toppad\">Score</h4>");
+					outFilePW.println("					<p>Your score for this analysis module is: " + scoreStr + ".</p>");
 				}
 
-				outFilePW.println("	</div>");
+				outFilePW.println("				</div>\n");
 
-				outFilePW.println("<h4 class=\"toppad\">Analysis</h4>");
+				logger.trace("Creating analysis output.");
+				outFilePW.println("				<h4 class=\"toppad\">Analysis</h4>");
 				String [] classesList = getClassNames();
 				if (classesList != null && classesList.length > 0) {
 					Arrays.sort(classesList);
-					outFilePW.println("			<table class=\"table table-bordered table-condensed\">");
-					outFilePW.println("				<thead>");
-					outFilePW.println("					<tr><th>Entity name</th><th>Comment level</th><th>Analysis</th></tr>");
-					outFilePW.println("				</thead>");
-					outFilePW.println("				<tbody>");
+					outFilePW.println("				<table class=\"table table-bordered table-condensed\">");
+					outFilePW.println("					<thead>");
+					outFilePW.println("						<tr><th>Entity name</th><th>Comment level</th><th>Analysis</th></tr>");
+					outFilePW.println("					</thead>\n");
+					outFilePW.println("					<tbody>");
 					for (int index = 0; index < classesList.length; index++) {
 						String classname = classesList[index];
 						String spanner = "";
@@ -205,35 +212,34 @@ public class HTMLReporter extends COMTORReporter {
 
 						// Output the class-level results
 						logger.trace("Outputting the class-level results: " + classname);
-						int numClassIssues = getNumberOfClassIssues();
-						int numClassSummaryItems = getNumberOfClassSummaryItems();
+						int numClassIssues = getNumberOfAnalysisIssues(ReportItem.CLASS, null);
+						int numClassSummaryItems = getNumberOfSummaryItems(ReportItem.CLASS, null);
 						int spanIssues = numClassIssues + numClassSummaryItems;
 						if (spanIssues != 0)
 							spanner = " rowspan=\"" + spanIssues + "\"";
 						else
 							spanner = "";
-						outFilePW.println("					<tr><td" + spanner + "><tt>" + classname + "</tt></td>");
-						outFilePW.println("						<td" + spanner + ">class</td>");
+						outFilePW.println("						<tr><td" + spanner + "><span class=\"code\">" + classname + "</span></td><td" + spanner + ">class</td>");
 						if (numClassIssues != 0) {
 							for (int issueNum = 0; issueNum < numClassIssues; issueNum++) {
 								if (issueNum != 0)
-									outFilePW.println("					<tr>");
-
-								outFilePW.println("						<td class=\"problem\"><i class=\"icon-remove\"></i> " + getClassIssueByNum(issueNum) + "</td></tr>\n");
+									outFilePW.print("						<tr>");
+								else
+									outFilePW.print("							");
+								outFilePW.println("<td class=\"problem\"><i class=\"icon-remove\"></i> " + getClassIssueByNum(issueNum) + "</td></tr>\n");
 							}
 						}
 
 						if (numClassSummaryItems != 0) {
 							for (int issueNum = 0; issueNum < numClassSummaryItems; issueNum++) {
-								if (issueNum != 0)
-									outFilePW.println("					<tr>");
-
-								outFilePW.println("						<td class=\"ok\"><i class=\"icon-ok\"></i> " + getClassSummaryItemByNumber(issueNum) + "</td></tr>\n");
+								if (issueNum != 0 || (issueNum == 0 && numClassIssues > 0))
+									outFilePW.println("						<tr>");
+								outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> " + getClassSummaryItemByNumber(issueNum) + "</td></tr>\n");
 							}
 						}
 
 						if (numClassIssues == 0 && numClassSummaryItems == 0)
-							outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>");
+							outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>\n");
 
 						// Output the constructor-level results
 						String [] constructorsList = getConstructorNames();
@@ -241,30 +247,55 @@ public class HTMLReporter extends COMTORReporter {
 							Arrays.sort(constructorsList);
 							for (int constrNum = 0; constrNum < constructorsList.length; constrNum++) {
 								String constructorName = constructorsList[constrNum];
-								int totalNumIssues = getTotalNumberOfConstructorIssues(constructorName);
-								spanner = (totalNumIssues != 0) ? " rowspan=\"" + totalNumIssues + "\"" : "";
-								outFilePW.println("					<tr><td" + spanner + "><tt>" + constructorName + "</tt></td>");
 
 								// Constructor issues
-								int numIssues = getNumberOfConstructorIssues(constructorName, "issues");
-								spanner = (numIssues != 0) ? " rowspan=\"" + numIssues + "\"" : "";
-								outFilePW.println("						<td" + spanner + ">constructor</td>");
-								if (numIssues != 0)
-									for (int issueNum = 0; issueNum < numIssues; issueNum++) {
-										if (issueNum != 0)
-											outFilePW.println("			<tr>");
-										outFilePW.println("				<td class=\"problem\"><i class=\"icon-remove\"></i> " + getConstructorIssueByNum(constructorName, "issues", issueNum) + "</td></tr>\n");
-									}
+								logger.trace("Outputting the constructor-level results: " + constructorName);
+								spanIssues = getTotalNumberOfConstructorIssues(constructorName);
+								if (spanIssues != 0)
+									spanner = " rowspan=\"" + spanIssues + "\"";
 								else
-									outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>");
+									spanner = "";
+								outFilePW.print("						<tr><td" + spanner + "><span class=\"code\">" + constructorName + "</span></td>");
+
+								int numConstrIssues = getNumberOfAnalysisIssues(ReportItem.CONSTRUCTOR, constructorName);
+								int numConstrSummaryItems = getNumberOfSummaryItems(ReportItem.CONSTRUCTOR, constructorName);
+								spanIssues = numConstrIssues + numConstrSummaryItems;
+								if (spanIssues != 0)
+									spanner = " rowspan=\"" + spanIssues + "\"";
+								else
+									spanner = "";
+								outFilePW.println("<td" + spanner + ">constructor</td>");
+
+								if (numConstrIssues != 0) {
+									for (int issueNum = 0; issueNum < numConstrIssues; issueNum++) {
+										logger.trace("Iterating on issue: " + getMemberIssueSummaryItemByNum(ReportItem.CONSTRUCTOR, constructorName, ReportIssueType.ISSUE, issueNum));
+										if (issueNum != 0)
+											outFilePW.println("						<tr>");
+										outFilePW.println("							<td class=\"problem\"><i class=\"icon-remove\"></i> " +
+												getMemberIssueSummaryItemByNum(ReportItem.CONSTRUCTOR, constructorName, ReportIssueType.ISSUE, issueNum) + "</td></tr>\n");
+									}
+								}
+
+								if (numConstrSummaryItems != 0) {
+									for (int issueNum = 0; issueNum < numConstrSummaryItems; issueNum++) {
+										logger.trace("Iterating on summary item: " + getMemberIssueSummaryItemByNum(ReportItem.CONSTRUCTOR, constructorName, ReportIssueType.SUMMARY, issueNum));
+										if (issueNum != 0 || (issueNum == 0 && numConstrIssues > 0))
+											outFilePW.println("						<tr>");
+										outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> " +
+												getMemberIssueSummaryItemByNum(ReportItem.CONSTRUCTOR, constructorName, ReportIssueType.SUMMARY, issueNum) + "</td></tr>\n");
+									}
+								}
+
+								if (numConstrIssues == 0 && numConstrSummaryItems == 0)
+									outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>\n");
 
 								String [] paramNames;
 
 								// Constructor @throws
 								if (getThrowsAnalyzed()) {
-									numIssues = getNumberOfConstructorIssues(constructorName, "throws");
+									int numIssues = getNumberOfConstructorIssues(constructorName, "throws");
 									spanner = (numIssues != 0) ? " rowspan=\"" + numIssues + "\"" : "";
-									outFilePW.println("					<tr><td" + spanner + ">constructor <tt>@throws</tt></td>");
+									outFilePW.println("						<tr><td" + spanner + ">constructor <span class=\"code\">@throws</span></td>");
 
 									paramNames = getExecutableParamThrowsNames("constructors", "throws", constructorName);
 									if (paramNames != null) {
@@ -275,26 +306,33 @@ public class HTMLReporter extends COMTORReporter {
 
 												if (numIssues != 0)
 													for (int issueNum = 0; issueNum < numIssues; issueNum++) {
-														if (issueNum != 0)
-															outFilePW.println("			<tr>");
+														if (issueNum != 0 || (issueNum == 0 && paramNum != 0))
+															outFilePW.print("						<tr>");
+														else
+															outFilePW.print("							");
 
-														outFilePW.print("			<td class=\"problem\"><i class=\"icon-remove\"></i> throws <tt>");
-														outFilePW.println(paramNames[paramNum] + "</tt>: " + paramIssues[issueNum] + "</td></tr>\n");
+														outFilePW.print("<td class=\"problem\"><i class=\"icon-remove\"></i> throws <span class=\"code\">");
+														outFilePW.println(paramNames[paramNum] + "</span>: " + paramIssues[issueNum] + "</td></tr>\n");
 													}
 												else
-													outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>");
-											} else
-												outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> throws: <tt>" + paramNames[paramNum] + "</tt>: No problems detected.</td></tr>");
+													outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>\n");
+											} else {
+												if (paramNum != 0)
+													outFilePW.print("						<tr>");
+												else
+													outFilePW.print("							");
+												outFilePW.println("<td class=\"ok\"><i class=\"icon-ok\"></i> throws: <span class=\"code\">" + paramNames[paramNum] + "</span>: No problems detected.</td></tr>\n");
+											}
 										}
 									} else
-										outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> Detected no @throws tags to analyze.</td></tr>");
+										outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> Detected no @throws tags to analyze.</td></tr>\n");
 								}
 
 								// Constructor @parameters
 								if (getParamsAnalyzed()) {
-									numIssues = getNumberOfConstructorIssues(constructorName, "parameters");
+									int numIssues = getNumberOfConstructorIssues(constructorName, "parameters");
 									spanner = (numIssues != 0) ? " rowspan=\"" + numIssues + "\"" : "";
-									outFilePW.println("					<tr><td" + spanner + ">constructor <tt>@param</tt></td>");
+									outFilePW.println("						<tr><td" + spanner + ">constructor <span class=\"code\">@param</span></td>");
 
 									paramNames = getExecutableParamThrowsNames("constructors", "parameters", constructorName);
 									if (paramNames != null) {
@@ -304,19 +342,25 @@ public class HTMLReporter extends COMTORReporter {
 												numIssues = paramIssues.length;
 												if (numIssues != 0)
 													for (int issueNum = 0; issueNum < numIssues; issueNum++) {
-														if (issueNum != 0)
-															outFilePW.println("			<tr>");
-
-														outFilePW.print("			<td class=\"problem\"><i class=\"icon-remove\"></i> parameter <tt>");
-														outFilePW.println(paramNames[paramNum] + "</tt>: " + paramIssues[issueNum] + "</td></tr>\n");
+														if (issueNum != 0 || (issueNum == 0 && paramNum > 0))
+															outFilePW.print("						<tr>");
+														else
+															outFilePW.print("							");
+														outFilePW.print("<td class=\"problem\"><i class=\"icon-remove\"></i> parameter <span class=\"code\">");
+														outFilePW.println(paramNames[paramNum] + "</span>: " + paramIssues[issueNum] + "</td></tr>\n");
 													}
 												else
-													outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>");
-											} else
-												outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> parameter <tt>" + paramNames[paramNum] + "</tt>: No problems detected.</td></tr>");
+													outFilePW.println("<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>\n");
+											} else {
+												if (paramNum != 0)
+													outFilePW.print("						<tr>");
+												else
+													outFilePW.print("							");
+												outFilePW.println("<td class=\"ok\"><i class=\"icon-ok\"></i> parameter <span class=\"code\">" + paramNames[paramNum] + "</span>: No problems detected.</td></tr>\n");
+											}
 										}
 									} else
-										outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> Detected no @param tags to analyze.</td></tr>");
+										outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> Detected no @param tags to analyze.</td></tr>\n");
 								}
 							}
 						}
@@ -329,30 +373,52 @@ public class HTMLReporter extends COMTORReporter {
 								String methodName = methodsList[methodNum];
 								logger.trace("Outputting the method-level results: " + methodName);
 
-								int totalNumIssues = getTotalNumberOfMethodIssues(methodName);
-								spanner = (totalNumIssues != 0) ? " rowspan=\"" + totalNumIssues + "\"" : "";
-								outFilePW.println("					<tr><td" + spanner + "><tt>" + methodName + "</tt></td>");
-
-								// Method issues
-								int numIssues = getNumberOfMethodIssues(methodName, "issues");
-								spanner = (numIssues != 0) ? " rowspan=\"" + numIssues + "\"" : "";
-								outFilePW.println("						<td" + spanner + ">method</td>");
-								if (numIssues != 0)
-									for (int issueNum = 0; issueNum < numIssues; issueNum++) {
-										if (issueNum != 0)
-											outFilePW.println("			<tr>");
-										outFilePW.println("				<td class=\"problem\"><i class=\"icon-remove\"></i> " + getMethodIssueByNum(methodName, "issues", issueNum) + "</td></tr>\n");
-									}
+								spanIssues = getTotalNumberOfMethodIssues(methodName);
+								if (spanIssues != 0)
+									spanner = " rowspan=\"" + spanIssues + "\"";
 								else
-									outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>");
+									spanner = "";
+								outFilePW.print("						<tr><td" + spanner + "><span class=\"code\">" + methodName + "</span></td>");
+
+								int numMethodIssues = getNumberOfAnalysisIssues(ReportItem.METHOD, methodName);
+								int numMethodSummaryItems = getNumberOfSummaryItems(ReportItem.METHOD, methodName);
+								spanIssues = numMethodIssues + numMethodSummaryItems;
+								if (spanIssues != 0)
+									spanner = " rowspan=\"" + spanIssues + "\"";
+								else
+									spanner = "";
+								outFilePW.println("<td" + spanner + ">method</td>");
+
+								if (numMethodIssues != 0) {
+									for (int issueNum = 0; issueNum < numMethodIssues; issueNum++) {
+										logger.trace("Iterating on issue: " + getMemberIssueSummaryItemByNum(ReportItem.METHOD, methodName, ReportIssueType.ISSUE, issueNum));
+										if (issueNum != 0)
+											outFilePW.println("						<tr>");
+										outFilePW.println("							<td class=\"problem\"><i class=\"icon-remove\"></i> " +
+												getMemberIssueSummaryItemByNum(ReportItem.METHOD, methodName, ReportIssueType.ISSUE, issueNum) + "</td></tr>\n");
+									}
+								}
+
+								if (numMethodSummaryItems != 0) {
+									for (int issueNum = 0; issueNum < numMethodSummaryItems; issueNum++) {
+										logger.trace("Iterating on summary item: " + getMemberIssueSummaryItemByNum(ReportItem.METHOD, methodName, ReportIssueType.SUMMARY, issueNum));
+										if (issueNum != 0 || (issueNum == 0 && numMethodIssues > 0))
+											outFilePW.println("						<tr>");
+										outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> " +
+												getMemberIssueSummaryItemByNum(ReportItem.METHOD, methodName, ReportIssueType.SUMMARY, issueNum) + "</td></tr>\n");
+									}
+								}
+
+								if (numMethodIssues == 0 && numMethodSummaryItems == 0)
+									outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>\n");
 
 								String [] paramNames;
 
 								// Method @throws
 								if (getThrowsAnalyzed()) {
-									numIssues = getNumberOfMethodIssues(methodName, "throws");
+									int numIssues = getNumberOfMethodIssues(methodName, "throws");
 									spanner = (numIssues != 0) ? " rowspan=\"" + numIssues + "\"" : "";
-									outFilePW.println("					<tr><td" + spanner + ">method <tt>@throws</tt></td>");
+									outFilePW.println("						<tr><td" + spanner + ">method <span class=\"code\">@throws</span></td>");
 
 									paramNames = getExecutableParamThrowsNames("methods", "throws", methodName);
 									if (paramNames != null) {
@@ -363,26 +429,31 @@ public class HTMLReporter extends COMTORReporter {
 
 												if (numIssues != 0)
 													for (int issueNum = 0; issueNum < numIssues; issueNum++) {
-														if (issueNum != 0)
-															outFilePW.println("			<tr>");
+														if (issueNum != 0 || (issueNum == 0 && paramNum > 0))
+															outFilePW.println("						<tr>");
 
-														outFilePW.print("			<td class=\"problem\"><i class=\"icon-remove\"></i> throws <tt>");
-														outFilePW.println(paramNames[paramNum] + "</tt>: " + paramIssues[issueNum] + "</td></tr>\n");
+														outFilePW.print("							<td class=\"problem\"><i class=\"icon-remove\"></i> throws <span class=\"code\">");
+														outFilePW.println(paramNames[paramNum] + "</span>: " + paramIssues[issueNum] + "</td></tr>\n");
 													}
 												else
-													outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>");
-											} else
-												outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i>throws: <tt>" + paramNames[paramNum] + "</tt>:  No problems detected.</td></tr>");
+													outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>\n");
+											} else {
+												if (paramNum != 0)
+													outFilePW.print("						<tr>");
+												else
+													outFilePW.print("							");
+												outFilePW.println("<td class=\"ok\"><i class=\"icon-ok\"></i>throws: <span class=\"code\">" + paramNames[paramNum] + "</span>:  No problems detected.</td></tr>\n");
+											}
 										}
 									} else
-										outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> Detected no @throws tags to analyze</td></tr>");
+										outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> Detected no @throws tags to analyze</td></tr>\n");
 								}
 
 								// Method @parameters
 								if (getParamsAnalyzed()) {
-									numIssues = getNumberOfMethodIssues(methodName, "parameters");
+									int numIssues = getNumberOfMethodIssues(methodName, "parameters");
 									spanner = (numIssues != 0) ? " rowspan=\"" + numIssues + "\"" : "";
-									outFilePW.println("					<tr><td" + spanner + ">method <tt>@param</tt></td>");
+									outFilePW.println("						<tr><td" + spanner + ">method <span class=\"code\">@param</span></td>");
 
 									paramNames = getExecutableParamThrowsNames("methods", "parameters", methodName);
 									if (paramNames != null) {
@@ -393,34 +464,41 @@ public class HTMLReporter extends COMTORReporter {
 
 												if (numIssues != 0)
 													for (int issueNum = 0; issueNum < numIssues; issueNum++) {
-														if (issueNum != 0)
-															outFilePW.println("			<tr>");
+														if (issueNum != 0 || (issueNum == 0 && paramNum != 0))
+															outFilePW.println("						<tr>");
 
-														outFilePW.print("			<td class=\"problem\"><i class=\"icon-remove\"></i> parameter <tt>");
-														outFilePW.println(paramNames[paramNum] + "</tt>: " + paramIssues[issueNum] + "</td></tr>\n");
+														outFilePW.print("							<td class=\"problem\"><i class=\"icon-remove\"></i> parameter <span class=\"code\">");
+														outFilePW.println(paramNames[paramNum] + "</span>: " + paramIssues[issueNum] + "</td></tr>\n");
 													}
 												else
-													outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>");
-											} else
-												outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> parameter <tt>" + paramNames[paramNum] + "</tt>: No problems detected.</td></tr>");
+													outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>\n");
+											} else {
+												if (paramNum != 0)
+													outFilePW.print("						<tr>");
+												else
+													outFilePW.print("							");
+												outFilePW.println("<td class=\"ok\"><i class=\"icon-ok\"></i> parameter <span class=\"code\">" + paramNames[paramNum] + "</span>: No problems detected.</td></tr>\n");
+											}
 										}
 									} else
-										outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> Detected no @params tags to analyze.</td></tr>");
+										outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> Detected no @params tags to analyze.</td></tr>\n");
 								}
 
 								// Method @returns
 								if (getReturnsAnalyzed()) {
-									numIssues = getNumberOfMethodIssues(methodName, "returns");
+									int numIssues = getNumberOfMethodIssues(methodName, "returns");
 									spanner = (numIssues != 0) ? " rowspan=\"" + numIssues + "\"" : "";
-									outFilePW.println("					<tr><td" + spanner + ">method <tt>@return</tt></td>");
+									outFilePW.println("						<tr><td" + spanner + ">method <span class=\"code\">@return</span></td>");
 									if (numIssues != 0)
 										for (int issueNum = 0; issueNum < numIssues; issueNum++) {
 											if (issueNum != 0)
-												outFilePW.println("			<tr>");
-											outFilePW.println("			<td class=\"problem\"><i class=\"icon-remove\"></i> " + getMethodIssueByNum(methodName, "returns", issueNum) +  "</td></tr>\n");
+												outFilePW.print("						<tr>");
+											else
+												outFilePW.print("							");
+											outFilePW.println("<td class=\"problem\"><i class=\"icon-remove\"></i> " + getMethodIssueByNum(methodName, "returns", issueNum) +  "</td></tr>\n");
 										}
 									else
-										outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>");
+										outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>\n");
 								}
 							}
 						}
@@ -432,75 +510,97 @@ public class HTMLReporter extends COMTORReporter {
 								Arrays.sort(fieldsList);
 								for (int fieldNum = 0; fieldNum < fieldsList.length; fieldNum++) {
 									String fieldName = fieldsList[fieldNum];
-									int numIssues = getNumberOfFieldIssues(fieldName);
 
 									logger.trace("Outputting the field-level results: " + fieldName);
-									spanner = (numIssues != 0) ? " rowspan=\"" + numIssues + "\"" : "";
-									outFilePW.println("					<tr><td" + spanner + "><tt>" + fieldName + "</tt></td><td" + spanner + ">field</td>");
-
-									if (getNumberOfFieldIssues(fieldName) != 0)
-										for (int issueNum = 0; issueNum < getNumberOfFieldIssues(fieldName); issueNum++) {
-											logger.trace("Iterating on issue: " + getFieldIssueByNum(fieldName, issueNum));
-											if (issueNum != 0)
-												outFilePW.println("			<tr>");
-											outFilePW.println("			<td class=\"problem\"><i class=\"icon-remove\"></i> " + getFieldIssueByNum(fieldName, issueNum) + "</td></tr>\n");
-										}
+									int numFieldIssues = getNumberOfAnalysisIssues(ReportItem.FIELD, fieldName);
+									int numFieldSummaryItems = getNumberOfSummaryItems(ReportItem.FIELD, fieldName);
+									spanIssues = numFieldIssues + numFieldSummaryItems;
+									if (spanIssues != 0)
+										spanner = " rowspan=\"" + spanIssues + "\"";
 									else
-										outFilePW.println("								<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td>");
+										spanner = "";
+									outFilePW.println("						<tr><td" + spanner + "><span class=\"code\">" + fieldName + "</span></td><td" + spanner + ">field</td>");
+
+									if (numFieldIssues != 0) {
+										for (int issueNum = 0; issueNum < numFieldIssues; issueNum++) {
+											logger.trace("Iterating on issue: " + getMemberIssueSummaryItemByNum(ReportItem.FIELD, fieldName, ReportIssueType.ISSUE, issueNum));
+											if (issueNum != 0)
+												outFilePW.print("						<tr>");
+											else
+												outFilePW.print("							");
+											outFilePW.println("<td class=\"problem\"><i class=\"icon-remove\"></i> " +
+													getMemberIssueSummaryItemByNum(ReportItem.FIELD, fieldName, ReportIssueType.ISSUE, issueNum) + "</td></tr>\n");
+										}
+									}
+
+									if (numFieldSummaryItems != 0) {
+										for (int issueNum = 0; issueNum < numFieldSummaryItems; issueNum++) {
+											logger.trace("Iterating on summary item: " + getMemberIssueSummaryItemByNum(ReportItem.FIELD, fieldName, ReportIssueType.SUMMARY, issueNum));
+											if (issueNum != 0 || (issueNum == 0 && numFieldIssues > 0))
+												outFilePW.print("						<tr>");
+											else
+												outFilePW.print("							");
+											outFilePW.println("<td class=\"ok\"><i class=\"icon-ok\"></i> " +
+													getMemberIssueSummaryItemByNum(ReportItem.FIELD, fieldName, ReportIssueType.SUMMARY, issueNum) + "</td></tr>\n");
+										}
+									}
+
+									if (numFieldIssues == 0 && numFieldSummaryItems == 0)
+										outFilePW.println("							<td class=\"ok\"><i class=\"icon-ok\"></i> No problems detected.</td></tr>\n");
 								}
 							}
 						}
 					}
 
-					outFilePW.println("				</tbody>");
-					outFilePW.println("			</table>");
+					outFilePW.println("					</tbody>");
+					outFilePW.println("				</table>\n");
 				}
 
-				outFilePW.println("<div class=\"hidden\" id=\"" + getReportNameAsAnchor() + "ContentPost\">");
+				outFilePW.println("				<div class=\"hidden\" id=\"" + getReportNameAsAnchor() + "ContentPost\">");
 				amble = getAmbleHTML("postamble");
 				if (amble != null && amble.length != 0) {
-					outFilePW.println("<h4 class=\"toppad\">Post-Report Notes</h4>");
-					outFilePW.println("<ul class=\"unstyled\">");
+					outFilePW.println("				<h4 class=\"toppad\">Post-Report Notes</h4>");
+					outFilePW.println("				<ul class=\"unstyled\">");
 					for (int index = 0; index < amble.length; index++) {
-						outFilePW.println("<li>" + amble[index] + "</li>");
+						outFilePW.println("					<li>" + amble[index] + "</li>");
 					}
-					outFilePW.println("</ul>");
+					outFilePW.println("				</ul>\n");
 				}
 
 				String[] metrics = getExecutionHTML();
 				if (metrics != null && metrics.length != 0) {
-					outFilePW.println("<h4 class=\"toppad\">Execution Metrics</h4>");
-					outFilePW.println("<ul class=\"unstyled\">");
+					outFilePW.println("				<h4 class=\"toppad\">Execution Metrics</h4>");
+					outFilePW.println("				<ul class=\"unstyled\">");
 					for (int index = 0; index < metrics.length; index++) {
-						outFilePW.println("<li>" + metrics[index] + "</li>");
+						outFilePW.println("					<li>" + metrics[index] + "</li>");
 					}
-					outFilePW.println("</ul>");
+					outFilePW.println("				</ul>");
 				}
-				outFilePW.println("</div>");
+				outFilePW.println("				</div>\n");
 
-				outFilePW.println("<p class=\"muted\"><small><a href=\"#top\">Return to top</a></small></p>");
-				outFilePW.println("</div>");
+				outFilePW.println("				<p class=\"muted\"><small><a href=\"#top\">Return to top</a></small></p>");
+				outFilePW.println("			</div>\n");
 			}
 
-			outFilePW.println("<hr style=\"clear:both;\">");
-			outFilePW.println("<p class=\"muted\"><small>This report was generated by the COMTOR project. See <a href=\"http://www.comtor.org\">www.comtor.org</a> ");
-			outFilePW.println("for more information.</small></p>");
+			outFilePW.println("			<hr style=\"clear:both;\">");
+			outFilePW.println("			<p class=\"muted\"><small>This report was generated by the COMTOR project. See <a href=\"http://www.comtor.org\">www.comtor.org</a> ");
+			outFilePW.println("for more information.</small></p>\n");
 
-			outFilePW.println("		</div>");
+			outFilePW.println("		</div>\n`");
 			outFilePW.println("		<script src=\"http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js\"></script>");
 			outFilePW.println("	</body>");
 			outFilePW.println("</html>");
 			outFilePW.close();
 		}
 		catch (IOException e) {
-			System.out.println(e);
 			logger.trace(e);
 
 		} catch (JSONException je) {
-			System.err.println(je);
 			logger.trace(je);
 		}
 
-		logger.exit();
+		finally {
+			logger.exit();
+		}
 	}
 }
