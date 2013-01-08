@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>COMTOR Execution Report - Sun, 6 Jan 2013 10:01:41 -0700</title>
+		<title>COMTOR Execution Report - Mon, 7 Jan 2013 21:50:33 -0700</title>
 <style type="text/css">
 	.toppad { margin-top: 20px; }
 	.cuddle { margin-bottom: 0px; }
-	td.ok { background-color: #DFF0D8; }
-	td.problem { background-color: #F2DEDE; }
-	tt { font-size: 9pt; font-weight: bold; }
+	.code { font-family: "Lucida Console", Monaco, monospace; font-size: 9pt; font-weight: bold; }
 	.hidden { display: none; }
 	.unhidden { display: block; }
+	td.ok { background-color: #DFF0D8; }
+	td.problem { background-color: #F2DEDE; }
 </style>
 
 <script type="text/javascript">
@@ -56,483 +56,672 @@ function unhideReport(reportID) {
 	<body>
 		<div class="container">
 		<div class="row toppad">
-			<div class="span8"><h1><a name="top"></a>COMTOR Execution Report</h1>
-				<p class="muted">Report created: Sun, 6 Jan 2013 10:01:41 -0700</p>
+			<div class="span8" id="top"><h1>COMTOR Execution Report</h1>
+				<p class="muted">Report created: Mon, 7 Jan 2013 21:50:33 -0700</p>
 			</div>
-			<div class="span2 offset2"><img src="http://www.comtor.org/website/images/comtor/comtorLogo.png" classs="pull-right" alt="COMTOR logo"/></div>
+			<div class="span2 offset2"><img src="http://www.comtor.org/website/images/comtor/comtorLogo.png" class="pull-right" alt="COMTOR logo"/></div>
 		</div>
 			<table class="table table-bordered table-condensed">
-				<caption>Table 1 - Execution Score Summary - (rows in beige contain scores &lt;= 70%, 
-rows in red contain scores &lt;= 50%)</caption>
+				<caption>Table 1 - Execution Score Summary - (rows in beige contain scores &lt;= 70%, rows in red contain scores &lt;= 50%)</caption>
 				<tbody>
 					<tr><td><strong>Module Name</strong></td><td><strong>Action</strong></td><td><strong>Score</strong></td></tr>
-					<tr><td><a href="#spellcheck">Spell Check</a></td><td><a href="javascript:unhideReport('spellcheckReport');" id="spellcheckReportButton" class="btn btn-mini btn-primary">Hide report</a></td><td>100%</td></tr>
-					<tr class="error"><td><a href="#percentagemethods">Percentage Methods</a></td><td><a href="javascript:unhideReport('percentagemethodsReport');" id="percentagemethodsReportButton" class="btn btn-mini btn-primary">Hide report</a></td><td>0%</td></tr>
+
 					<tr class="error"><td><a href="#checkauthor">Check Author</a></td><td><a href="javascript:unhideReport('checkauthorReport');" id="checkauthorReportButton" class="btn btn-mini btn-primary">Hide report</a></td><td>0%</td></tr>
+
+					<tr><td><a href="#commentaverageratio">Comment Average Ratio</a></td><td><a href="javascript:unhideReport('commentaverageratioReport');" id="commentaverageratioReportButton" class="btn btn-mini btn-primary">Hide report</a></td><td>0.00</td></tr>
+
 					<tr><td><a href="#offensivewords">Offensive Words</a></td><td><a href="javascript:unhideReport('offensivewordsReport');" id="offensivewordsReportButton" class="btn btn-mini btn-primary">Hide report</a></td><td>100%</td></tr>
+
+					<tr class="error"><td><a href="#percentagemethods">Percentage Methods</a></td><td><a href="javascript:unhideReport('percentagemethodsReport');" id="percentagemethodsReportButton" class="btn btn-mini btn-primary">Hide report</a></td><td>0%</td></tr>
+
+					<tr><td><a href="#spellcheck">Spell Check</a></td><td><a href="javascript:unhideReport('spellcheckReport');" id="spellcheckReportButton" class="btn btn-mini btn-primary">Hide report</a></td><td>100%</td></tr>
+
 				</tbody>
 			</table>
-<p style="clear: both;"/>
-<h3 class="cuddle" style="display: inline; float: left;"><a name="spellcheck"></a>Spell Check
-	<a href="javascript:unhideContent('spellcheckContent');" id="spellcheckContentButton" class="btn btn-mini btn-primary">Display pre-/post-analysis content</a>
-</h3>
-<div class="unhidden" id="spellcheckReport" style="clear:both; padding-left: 25px">
-	<div class="hidden" id="spellcheckContentPre">
-	<p>This module compares words found in comments against an English word dictionary.
+			<p style="clear: both;"></p>
+			<h3 class="cuddle" style="display: inline; float: left;" id="checkauthor">Check Author
+				<a href="javascript:unhideContent('checkauthorContent');" id="checkauthorContentButton" class="btn btn-mini btn-primary">Display pre-/post-analysis content</a>
+			</h3>
+			<div class="unhidden" id="checkauthorReport" style="clear:both; padding-left: 25px">
+				<div class="hidden" id="checkauthorContentPre">
+					<p>This module validates the presence of the @author tag in each class. Additionally,
+this module checks for non-blank @author tags (missing names following the tag).</p>
+
+					<h4 class="toppad">Pre-Report Notes</h4>
+					<ul class="unstyled">
+						<li>The @author tag is widely used to show who has contributed source code to a class.</li>
+						<li>Multiple @author tags are permitted in the class-block of comments.</li>
+						<li>References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis.</li>
+						<li>The score in this module is calculated by determining the percentage of classes processed that contain no errors (contain @author tags with strings following the tag).</li>
+					</ul>
+
+					<h4 class="toppad">Score</h4>
+					<p>Your score for this analysis module is: 0%.</p>
+				</div>
+
+				<h4 class="toppad">Analysis</h4>
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr><th>Entity name</th><th>Comment level</th><th>Analysis</th></tr>
+					</thead>
+
+					<tbody>
+						<tr><td rowspan="1"><span class="code">noComments.Test</span></td><td rowspan="1">class</td>
+							<td class="problem"><i class="icon-remove"></i> No @author tags were found.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test2</span></td><td rowspan="1">class</td>
+							<td class="problem"><i class="icon-remove"></i> No @author tags were found.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3</span></td><td rowspan="1">class</td>
+							<td class="problem"><i class="icon-remove"></i> No @author tags were found.</td></tr>
+
+					</tbody>
+				</table>
+
+				<div class="hidden" id="checkauthorContentPost">
+				<h4 class="toppad">Post-Report Notes</h4>
+				<ul class="unstyled">
+					<li>3 @author tag(s) are missing from class-level documentation.</li>
+					<li>Consider adding @author tags to the comment block proceeding each class header. If
+you are receiving false results, please be sure you are using the Javadoc commenting
+style (i.e. /**  **/).</li>
+				</ul>
+
+				<h4 class="toppad">Execution Metrics</h4>
+				<ul class="unstyled">
+					<li>3 class(es) were processed.</li>
+					<li>3 class(es) contained errors related to the use of the @author tag.</li>
+					<li>3 class(es) are missing @author tags.</li>
+					<li>0 @author tag(s) are empty (missing names following tag)</li>
+					<li>0 @author tag(s) were located with text following the tags.</li>
+				</ul>
+				</div>
+
+				<p class="muted"><small><a href="#top">Return to top</a></small></p>
+			</div>
+
+			<p style="clear: both;"></p>
+			<h3 class="cuddle" style="display: inline; float: left;" id="commentaverageratio">Comment Average Ratio
+				<a href="javascript:unhideContent('commentaverageratioContent');" id="commentaverageratioContentButton" class="btn btn-mini btn-primary">Display pre-/post-analysis content</a>
+			</h3>
+			<div class="unhidden" id="commentaverageratioReport" style="clear:both; padding-left: 25px">
+				<div class="hidden" id="commentaverageratioContentPre">
+					<p>This module analyzes the length (in terms of the number of words) of class, constructor,
+and method comments. The reported score is the ratio of the number of words that
+comprise the comments to the overall number of comments.</p>
+
+					<h4 class="toppad">Pre-Report Notes</h4>
+					<ul class="unstyled">
+						<li>Javadoc tags (@tag) from constructors and methods are not considered as a part of this analysis.</li>
+						<li>The score in this module is calculated by determining the ratio of the number of words from comments to the total number of comments.</li>
+					</ul>
+
+					<h4 class="toppad">Score</h4>
+					<p>Your score for this analysis module is: 0.00.</p>
+				</div>
+
+				<h4 class="toppad">Analysis</h4>
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr><th>Entity name</th><th>Comment level</th><th>Analysis</th></tr>
+					</thead>
+
+					<tbody>
+						<tr><td rowspan="1"><span class="code">noComments.Test</span></td><td rowspan="1">class</td>
+							<td class="problem"><i class="icon-remove"></i> The average length of all comments in the class (including all members) is 0 words.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test(int)</span></td><td rowspan="1">constructor</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 8).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test(int, int)</span></td><td rowspan="1">constructor</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 11).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test.main(java.lang.String[])</span></td><td rowspan="1">method</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 14).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test.returnTrue()</span></td><td rowspan="1">method</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 20).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test.foo</span></td><td rowspan="1">field</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 6).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test2</span></td><td rowspan="1">class</td>
+							<td class="problem"><i class="icon-remove"></i> The average length of all comments in the class (including all members) is 0 words.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test2()</span></td><td rowspan="1">constructor</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 5).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test2.foo</span></td><td rowspan="1">field</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 6).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3</span></td><td rowspan="1">class</td>
+							<td class="problem"><i class="icon-remove"></i> The average length of all comments in the class (including all members) is 0 words.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3(boolean)</span></td><td rowspan="1">constructor</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 16).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3(int)</span></td><td rowspan="1">constructor</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 12).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3(java.lang.String)</span></td><td rowspan="1">constructor</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 20).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3.main(java.lang.String[])</span></td><td rowspan="1">method</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 24).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3.returnTrue()</span></td><td rowspan="1">method</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 28).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3.field1</span></td><td rowspan="1">field</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 6).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3.field2</span></td><td rowspan="1">field</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 10).</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3.field3</span></td><td rowspan="1">field</td>
+							<td class="problem"><i class="icon-remove"></i> There are no Javadoc comments present (on/near line 8).</td></tr>
+
+					</tbody>
+				</table>
+
+				<div class="hidden" id="commentaverageratioContentPost">
+				<h4 class="toppad">Post-Report Notes</h4>
+				<ul class="unstyled">
+					<li>18 location(s) in your source code are missing comments. Consider commenting all
+constructors and methods to reduce this amount. Additionally, if you are receving
+false results, please be sure you are using the Javadoc commenting style (i.e. /**
+ **/).</li>
+				</ul>
+
+				<h4 class="toppad">Execution Metrics</h4>
+				<ul class="unstyled">
+					<li>A total of 3 classes were processed.</li>
+					<li>A total of 6 constructors were processed.</li>
+					<li>A total of 4 methods were processed.</li>
+					<li>A total of 5 fields were processed.</li>
+					<li>A total of 0 words were processed.</li>
+					<li>A total of 15 class, constructor, method, and field comments were processed.</li>
+					<li>The overall average number of words per comment is 0.</li>
+				</ul>
+				</div>
+
+				<p class="muted"><small><a href="#top">Return to top</a></small></p>
+			</div>
+
+			<p style="clear: both;"></p>
+			<h3 class="cuddle" style="display: inline; float: left;" id="offensivewords">Offensive Words
+				<a href="javascript:unhideContent('offensivewordsContent');" id="offensivewordsContentButton" class="btn btn-mini btn-primary">Display pre-/post-analysis content</a>
+			</h3>
+			<div class="unhidden" id="offensivewordsReport" style="clear:both; padding-left: 25px">
+				<div class="hidden" id="offensivewordsContentPre">
+					<p>This module identifies "offensive" English words used in comments at the class, method,
+and field level. Usage of these types of words is considered to be unprofessional.
+The COMTOR dictionary list of offensive words contains over 1,300 words and word
+variants. If you have a suggestion for a word that should be added to the dictionary,
+please email the COMTOR team at comtor@tcnj.edu.</p>
+
+					<h4 class="toppad">Pre-Report Notes</h4>
+					<ul class="unstyled">
+						<li>Constructor and method tags which are not @param, @return, or @throws are not currently processed.</li>
+						<li>The score in this module is calculated by determining the overall percentage of non-offensive words from all comments.</li>
+					</ul>
+
+					<h4 class="toppad">Score</h4>
+					<p>Your score for this analysis module is: 100%.</p>
+				</div>
+
+				<h4 class="toppad">Analysis</h4>
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr><th>Entity name</th><th>Comment level</th><th>Analysis</th></tr>
+					</thead>
+
+					<tbody>
+						<tr><td><span class="code">noComments.Test</span></td><td>class</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td rowspan="3"><span class="code">noComments.Test(int)</span></td><td>constructor</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>constructor <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
+
+						<tr><td>constructor <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
+
+						<tr><td rowspan="3"><span class="code">noComments.Test(int, int)</span></td><td>constructor</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>constructor <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
+
+						<tr><td>constructor <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
+
+						<tr><td rowspan="4"><span class="code">noComments.Test.main(java.lang.String[])</span></td><td>method</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>method <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
+
+						<tr><td>method <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
+
+						<tr><td>method <span class="code">@return</span></td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td rowspan="4"><span class="code">noComments.Test.returnTrue()</span></td><td>method</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>method <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
+
+						<tr><td>method <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
+
+						<tr><td>method <span class="code">@return</span></td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td><span class="code">noComments.Test.foo</span></td><td>field</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td><span class="code">noComments.Test2</span></td><td>class</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td rowspan="3"><span class="code">noComments.Test2()</span></td><td>constructor</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>constructor <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
+
+						<tr><td>constructor <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
+
+						<tr><td><span class="code">noComments.Test2.foo</span></td><td>field</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td><span class="code">noComments.Test3</span></td><td>class</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td rowspan="3"><span class="code">noComments.Test3(boolean)</span></td><td>constructor</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>constructor <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
+
+						<tr><td>constructor <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
+
+						<tr><td rowspan="3"><span class="code">noComments.Test3(int)</span></td><td>constructor</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>constructor <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
+
+						<tr><td>constructor <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
+
+						<tr><td rowspan="3"><span class="code">noComments.Test3(java.lang.String)</span></td><td>constructor</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>constructor <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
+
+						<tr><td>constructor <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
+
+						<tr><td rowspan="4"><span class="code">noComments.Test3.main(java.lang.String[])</span></td><td>method</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>method <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
+
+						<tr><td>method <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
+
+						<tr><td>method <span class="code">@return</span></td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td rowspan="4"><span class="code">noComments.Test3.returnTrue()</span></td><td>method</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>method <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
+
+						<tr><td>method <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
+
+						<tr><td>method <span class="code">@return</span></td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td><span class="code">noComments.Test3.field1</span></td><td>field</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td><span class="code">noComments.Test3.field2</span></td><td>field</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td><span class="code">noComments.Test3.field3</span></td><td>field</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+					</tbody>
+				</table>
+
+				<div class="hidden" id="offensivewordsContentPost">
+				<h4 class="toppad">Post-Report Notes</h4>
+				<ul class="unstyled">
+					<li>0 word(s) in your source code are considered offensive due to the fact that they
+are listed in our 'offensive word list'. In order to create a greater level of professionalism
+in your source code, please consider editing these words.</li>
+				</ul>
+
+				<h4 class="toppad">Execution Metrics</h4>
+				<ul class="unstyled">
+					<li>1 package(s) were processed.</li>
+					<li>3 class(es) were processed.</li>
+					<li>6 constructor(s) were processed.</li>
+					<li>4 method(s) were processed.</li>
+					<li>0 parameter(s) were processed.</li>
+					<li>5 field(s) were processed.</li>
+					<li>0 words were processed (including duplicates).</li>
+					<li>0 unique words were processed (excludes duplicates).</li>
+					<li>0 'offensive' words were identified (including duplicates).</li>
+				</ul>
+				</div>
+
+				<p class="muted"><small><a href="#top">Return to top</a></small></p>
+			</div>
+
+			<p style="clear: both;"></p>
+			<h3 class="cuddle" style="display: inline; float: left;" id="percentagemethods">Percentage Methods
+				<a href="javascript:unhideContent('percentagemethodsContent');" id="percentagemethodsContentButton" class="btn btn-mini btn-primary">Display pre-/post-analysis content</a>
+			</h3>
+			<div class="unhidden" id="percentagemethodsReport" style="clear:both; padding-left: 25px">
+				<div class="hidden" id="percentagemethodsContentPre">
+					<p>This module calculates the percentage of constructors and method that have associated
+comments. The reported score is the overall percentage of methods and constructors
+which are commented. The length and/or content of the comment is not considered.
+Other types of comments (class-level, field-level) are not considered in this analysis.</p>
+
+					<h4 class="toppad">Pre-Report Notes</h4>
+					<ul class="unstyled">
+						<li>References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis.</li>
+						<li>The score in this module is calculated by determining the overall percentage of commented methods and constructors across all methods and constructors identified.</li>
+					</ul>
+
+					<h4 class="toppad">Score</h4>
+					<p>Your score for this analysis module is: 0%.</p>
+				</div>
+
+				<h4 class="toppad">Analysis</h4>
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr><th>Entity name</th><th>Comment level</th><th>Analysis</th></tr>
+					</thead>
+
+					<tbody>
+						<tr><td rowspan="2"><span class="code">noComments.Test</span></td><td rowspan="2">class</td>
+							<td class="problem"><i class="icon-remove"></i> 0 of the 2 constructors (0%) are commented.</td></tr>
+
+						<tr><td class="problem"><i class="icon-remove"></i> 0 of the 2 methods (0%) are commented.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test(int)</span></td><td rowspan="1">constructor</td>
+							<td class="problem"><i class="icon-remove"></i> noComments.Test(int) is not commented at/near line 8.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test(int, int)</span></td><td rowspan="1">constructor</td>
+							<td class="problem"><i class="icon-remove"></i> noComments.Test(int, int) is not commented at/near line 11.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test.main(java.lang.String[])</span></td><td rowspan="1">method</td>
+							<td class="problem"><i class="icon-remove"></i> noComments.Test.main(java.lang.String[]) is not commented at/near line 14.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test.returnTrue()</span></td><td rowspan="1">method</td>
+							<td class="problem"><i class="icon-remove"></i> noComments.Test.returnTrue() is not commented at/near line 20.</td></tr>
+
+						<tr><td rowspan="2"><span class="code">noComments.Test2</span></td><td rowspan="2">class</td>
+							<td class="problem"><i class="icon-remove"></i> 0 of the 1 constructors (0%) are commented.</td></tr>
+
+						<tr>
+							<td class="ok"><i class="icon-ok"></i> 0 of the 0 methods (0%) are commented.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test2()</span></td><td rowspan="1">constructor</td>
+							<td class="problem"><i class="icon-remove"></i> noComments.Test2() is not commented at/near line 5.</td></tr>
+
+						<tr><td rowspan="2"><span class="code">noComments.Test3</span></td><td rowspan="2">class</td>
+							<td class="problem"><i class="icon-remove"></i> 0 of the 3 constructors (0%) are commented.</td></tr>
+
+						<tr><td class="problem"><i class="icon-remove"></i> 0 of the 2 methods (0%) are commented.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3(boolean)</span></td><td rowspan="1">constructor</td>
+							<td class="problem"><i class="icon-remove"></i> noComments.Test3(boolean) is not commented at/near line 16.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3(int)</span></td><td rowspan="1">constructor</td>
+							<td class="problem"><i class="icon-remove"></i> noComments.Test3(int) is not commented at/near line 12.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3(java.lang.String)</span></td><td rowspan="1">constructor</td>
+							<td class="problem"><i class="icon-remove"></i> noComments.Test3(java.lang.String) is not commented at/near line 20.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3.main(java.lang.String[])</span></td><td rowspan="1">method</td>
+							<td class="problem"><i class="icon-remove"></i> noComments.Test3.main(java.lang.String[]) is not commented at/near line 24.</td></tr>
+
+						<tr><td rowspan="1"><span class="code">noComments.Test3.returnTrue()</span></td><td rowspan="1">method</td>
+							<td class="problem"><i class="icon-remove"></i> noComments.Test3.returnTrue() is not commented at/near line 28.</td></tr>
+
+					</tbody>
+				</table>
+
+				<div class="hidden" id="percentagemethodsContentPost">
+				<h4 class="toppad">Post-Report Notes</h4>
+				<ul class="unstyled">
+					<li>10 location(s) (which are methods or constructors) in your source code are missing
+Javadoc comments. Consider commenting all of your constructors and methods to reduce
+this amount. Additionally, if you are receiving false results, please be sure you
+are using the Javadoc commenting style (i.e. /**  **/).</li>
+				</ul>
+
+				<h4 class="toppad">Execution Metrics</h4>
+				<ul class="unstyled">
+					<li>3 class(es) were processed.</li>
+					<li>4 method(s) were processed.</li>
+					<li>0 method(s) were commented.</li>
+					<li>0% method(s) were commented across all classes.</li>
+					<li>6 constructors(s) were processed.</li>
+					<li>0 constructors(s) were commented.</li>
+					<li>0% constructors(s) were commented across all classes.</li>
+				</ul>
+				</div>
+
+				<p class="muted"><small><a href="#top">Return to top</a></small></p>
+			</div>
+
+			<p style="clear: both;"></p>
+			<h3 class="cuddle" style="display: inline; float: left;" id="spellcheck">Spell Check
+				<a href="javascript:unhideContent('spellcheckContent');" id="spellcheckContentButton" class="btn btn-mini btn-primary">Display pre-/post-analysis content</a>
+			</h3>
+			<div class="unhidden" id="spellcheckReport" style="clear:both; padding-left: 25px">
+				<div class="hidden" id="spellcheckContentPre">
+					<p>This module compares words found in comments against an English word dictionary.
 The COMTOR word dictionary contains more than 97,000 entries. The analysis includes
 the list of known Java API classes (JDK), HTML tags and attributes, Java keywords,
 and user-defined symbols from the submitted code (class, method, constructor, field
 names). COMTOR uses JavaDoc, as such JavaDoc does not provide access to local variables
 within methods and blocks. Thus, the word list is not exhaustive.</p>
-	<h4 class="toppad">Pre-Report Notes</h4>
-<ul class="unstyled">
-<li>Constructor and method tags which are not @param, @return, or @throws are not currently processed.</li>
-<li>The score in this module is calculated by determining the overall percentage of correctly spelled words from all comments </li>
-</ul>
-<h4 class="toppad">Score</h4>
-<p>Your score for this analysis module is: 100%.</p>
-	</div>
-<h4 class="toppad">Analysis</h4>
-			<table class="table table-bordered table-condensed">
-				<thead>
-					<tr><th>Entity name</th><th>Comment level</th><th>Analysis</th></tr>
-				</thead>
-				<tbody>
-					<tr><td><tt>noComments.Test</tt></td>
-						<td>class</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td rowspan="3"><tt>noComments.Test(int)</tt></td>
-						<td>constructor</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>constructor <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
-					<tr><td>constructor <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
-					<tr><td rowspan="3"><tt>noComments.Test(int, int)</tt></td>
-						<td>constructor</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>constructor <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
-					<tr><td>constructor <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
-					<tr><td rowspan="4"><tt>noComments.Test.main(java.lang.String[])</tt></td>
-						<td>method</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>method <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
-					<tr><td>method <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
-					<tr><td>method <tt>@return</tt></td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td rowspan="4"><tt>noComments.Test.returnTrue()</tt></td>
-						<td>method</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>method <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
-					<tr><td>method <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
-					<tr><td>method <tt>@return</tt></td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td><tt>noComments.Test.foo</tt></td><td>field</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td>
-					<tr><td><tt>noComments.Test2</tt></td>
-						<td>class</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td rowspan="3"><tt>noComments.Test2()</tt></td>
-						<td>constructor</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>constructor <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
-					<tr><td>constructor <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
-					<tr><td><tt>noComments.Test2.foo</tt></td><td>field</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td>
-					<tr><td><tt>noComments.Test3</tt></td>
-						<td>class</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td rowspan="3"><tt>noComments.Test3(boolean)</tt></td>
-						<td>constructor</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>constructor <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
-					<tr><td>constructor <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
-					<tr><td rowspan="3"><tt>noComments.Test3(int)</tt></td>
-						<td>constructor</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>constructor <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
-					<tr><td>constructor <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
-					<tr><td rowspan="3"><tt>noComments.Test3(java.lang.String)</tt></td>
-						<td>constructor</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>constructor <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
-					<tr><td>constructor <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
-					<tr><td rowspan="4"><tt>noComments.Test3.main(java.lang.String[])</tt></td>
-						<td>method</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>method <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
-					<tr><td>method <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
-					<tr><td>method <tt>@return</tt></td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td rowspan="4"><tt>noComments.Test3.returnTrue()</tt></td>
-						<td>method</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>method <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
-					<tr><td>method <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
-					<tr><td>method <tt>@return</tt></td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td><tt>noComments.Test3.field1</tt></td><td>field</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td>
-					<tr><td><tt>noComments.Test3.field2</tt></td><td>field</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td>
-					<tr><td><tt>noComments.Test3.field3</tt></td><td>field</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td>
-				</tbody>
-			</table>
-<div class="hidden" id="spellcheckContentPost">
-<h4 class="toppad">Post-Report Notes</h4>
-<ul class="unstyled">
-<li>0 word(s) in your source code are considered spelled incorrectly due to the fact
+
+					<h4 class="toppad">Pre-Report Notes</h4>
+					<ul class="unstyled">
+						<li>Constructor and method tags which are not @param, @return, or @throws are not currently processed.</li>
+						<li>The score in this module is calculated by determining the overall percentage of correctly spelled words from all comments </li>
+					</ul>
+
+					<h4 class="toppad">Score</h4>
+					<p>Your score for this analysis module is: 100%.</p>
+				</div>
+
+				<h4 class="toppad">Analysis</h4>
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr><th>Entity name</th><th>Comment level</th><th>Analysis</th></tr>
+					</thead>
+
+					<tbody>
+						<tr><td><span class="code">noComments.Test</span></td><td>class</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td rowspan="3"><span class="code">noComments.Test(int)</span></td><td>constructor</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>constructor <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
+
+						<tr><td>constructor <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
+
+						<tr><td rowspan="3"><span class="code">noComments.Test(int, int)</span></td><td>constructor</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>constructor <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
+
+						<tr><td>constructor <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
+
+						<tr><td rowspan="4"><span class="code">noComments.Test.main(java.lang.String[])</span></td><td>method</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>method <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
+
+						<tr><td>method <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
+
+						<tr><td>method <span class="code">@return</span></td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td rowspan="4"><span class="code">noComments.Test.returnTrue()</span></td><td>method</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>method <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
+
+						<tr><td>method <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
+
+						<tr><td>method <span class="code">@return</span></td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td><span class="code">noComments.Test.foo</span></td><td>field</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td><span class="code">noComments.Test2</span></td><td>class</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td rowspan="3"><span class="code">noComments.Test2()</span></td><td>constructor</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>constructor <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
+
+						<tr><td>constructor <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
+
+						<tr><td><span class="code">noComments.Test2.foo</span></td><td>field</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td><span class="code">noComments.Test3</span></td><td>class</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td rowspan="3"><span class="code">noComments.Test3(boolean)</span></td><td>constructor</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>constructor <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
+
+						<tr><td>constructor <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
+
+						<tr><td rowspan="3"><span class="code">noComments.Test3(int)</span></td><td>constructor</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>constructor <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
+
+						<tr><td>constructor <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
+
+						<tr><td rowspan="3"><span class="code">noComments.Test3(java.lang.String)</span></td><td>constructor</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>constructor <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
+
+						<tr><td>constructor <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
+
+						<tr><td rowspan="4"><span class="code">noComments.Test3.main(java.lang.String[])</span></td><td>method</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>method <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
+
+						<tr><td>method <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
+
+						<tr><td>method <span class="code">@return</span></td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td rowspan="4"><span class="code">noComments.Test3.returnTrue()</span></td><td>method</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td>method <span class="code">@throws</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
+
+						<tr><td>method <span class="code">@param</span></td>
+							<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
+
+						<tr><td>method <span class="code">@return</span></td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td><span class="code">noComments.Test3.field1</span></td><td>field</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td><span class="code">noComments.Test3.field2</span></td><td>field</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+						<tr><td><span class="code">noComments.Test3.field3</span></td><td>field</td>
+							<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
+
+					</tbody>
+				</table>
+
+				<div class="hidden" id="spellcheckContentPost">
+				<h4 class="toppad">Post-Report Notes</h4>
+				<ul class="unstyled">
+					<li>0 word(s) in your source code are considered spelled incorrectly due to the fact
 that they are listed in our dictionary. In order to create a greater level of professionalism
 in your source code, please consider editing these words. If you believe you have
 a false positive result, please email the COMTOR team at comtor@tcnj.edu and we
 consider your submission to the dictionary.</li>
-</ul>
-<h4 class="toppad">Execution Metrics</h4>
-<ul class="unstyled">
-<li>0% of the words in the comments were misspelled.</li>
-<li>0 words analyzed.</li>
-<li>3 class(es) were processed.</li>
-<li>0 correctly spelled words (excludes duplicates)</li>
-<li>0 incorrectly spelled words (excludes duplicates)</li>
-<li>0 duplicate good words</li>
-<li>0 duplicate bad words</li>
-</ul>
-</div>
-<p class="muted"><small><a href="#top">Return to top</a></small></p>
-</div>
-<p style="clear: both;"/>
-<h3 class="cuddle" style="display: inline; float: left;"><a name="percentagemethods"></a>Percentage Methods
-	<a href="javascript:unhideContent('percentagemethodsContent');" id="percentagemethodsContentButton" class="btn btn-mini btn-primary">Display pre-/post-analysis content</a>
-</h3>
-<div class="unhidden" id="percentagemethodsReport" style="clear:both; padding-left: 25px">
-	<div class="hidden" id="percentagemethodsContentPre">
-	<p>This module calculates the percentage of constructors and method that have associated
-comments. The reported score is the overall percentage of methods and constructors
-which are commented. The length and/or content of the comment is not considered.
-Other types of comments (class-level, field-level) are not considered in this analysis.</p>
-	<h4 class="toppad">Pre-Report Notes</h4>
-<ul class="unstyled">
-<li>References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis.</li>
-<li>The score in this module is calculated by determining the overall percentage of commented methods and constructors across all methods and constructors identified.</li>
-</ul>
-<h4 class="toppad">Score</h4>
-<p>Your score for this analysis module is: 0%.</p>
-	</div>
-<h4 class="toppad">Analysis</h4>
-			<table class="table table-bordered table-condensed">
-				<thead>
-					<tr><th>Entity name</th><th>Comment level</th><th>Analysis</th></tr>
-				</thead>
-				<tbody>
-					<tr><td rowspan="2"><tt>noComments.Test</tt></td>
-						<td rowspan="2">class</td>
-						<td class="problem"><i class="icon-remove"></i> 0 of the 2 constructors (0%) are commented.</td></tr>
+				</ul>
 
-					<tr>
-						<td class="problem"><i class="icon-remove"></i> 0 of the 2 methods (0%) are commented.</td></tr>
+				<h4 class="toppad">Execution Metrics</h4>
+				<ul class="unstyled">
+					<li>0% of the words in the comments were misspelled.</li>
+					<li>0 words analyzed.</li>
+					<li>3 class(es) were processed.</li>
+					<li>0 correctly spelled words (excludes duplicates)</li>
+					<li>0 incorrectly spelled words (excludes duplicates)</li>
+					<li>0 duplicate good words</li>
+					<li>0 duplicate bad words</li>
+				</ul>
+				</div>
 
-					<tr><td rowspan="1"><tt>noComments.Test(int)</tt></td>
-						<td rowspan="1">constructor</td>
-				<td class="problem"><i class="icon-remove"></i> noComments.Test(int) is not commented at/near line 8.</td></tr>
+				<p class="muted"><small><a href="#top">Return to top</a></small></p>
+			</div>
 
-					<tr><td rowspan="1"><tt>noComments.Test(int, int)</tt></td>
-						<td rowspan="1">constructor</td>
-				<td class="problem"><i class="icon-remove"></i> noComments.Test(int, int) is not commented at/near line 11.</td></tr>
-
-					<tr><td rowspan="1"><tt>noComments.Test.main(java.lang.String[])</tt></td>
-						<td rowspan="1">method</td>
-				<td class="problem"><i class="icon-remove"></i> noComments.Test.main(java.lang.String[]) is not commented at/near line 14.</td></tr>
-
-					<tr><td rowspan="1"><tt>noComments.Test.returnTrue()</tt></td>
-						<td rowspan="1">method</td>
-				<td class="problem"><i class="icon-remove"></i> noComments.Test.returnTrue() is not commented at/near line 20.</td></tr>
-
-					<tr><td rowspan="2"><tt>noComments.Test2</tt></td>
-						<td rowspan="2">class</td>
-						<td class="problem"><i class="icon-remove"></i> 0 of the 1 constructors (0%) are commented.</td></tr>
-
-						<td class="ok"><i class="icon-ok"></i> 0 of the 0 methods (0%) are commented.</td></tr>
-
-					<tr><td rowspan="1"><tt>noComments.Test2()</tt></td>
-						<td rowspan="1">constructor</td>
-				<td class="problem"><i class="icon-remove"></i> noComments.Test2() is not commented at/near line 5.</td></tr>
-
-					<tr><td rowspan="2"><tt>noComments.Test3</tt></td>
-						<td rowspan="2">class</td>
-						<td class="problem"><i class="icon-remove"></i> 0 of the 3 constructors (0%) are commented.</td></tr>
-
-					<tr>
-						<td class="problem"><i class="icon-remove"></i> 0 of the 2 methods (0%) are commented.</td></tr>
-
-					<tr><td rowspan="1"><tt>noComments.Test3(boolean)</tt></td>
-						<td rowspan="1">constructor</td>
-				<td class="problem"><i class="icon-remove"></i> noComments.Test3(boolean) is not commented at/near line 16.</td></tr>
-
-					<tr><td rowspan="1"><tt>noComments.Test3(int)</tt></td>
-						<td rowspan="1">constructor</td>
-				<td class="problem"><i class="icon-remove"></i> noComments.Test3(int) is not commented at/near line 12.</td></tr>
-
-					<tr><td rowspan="1"><tt>noComments.Test3(java.lang.String)</tt></td>
-						<td rowspan="1">constructor</td>
-				<td class="problem"><i class="icon-remove"></i> noComments.Test3(java.lang.String) is not commented at/near line 20.</td></tr>
-
-					<tr><td rowspan="1"><tt>noComments.Test3.main(java.lang.String[])</tt></td>
-						<td rowspan="1">method</td>
-				<td class="problem"><i class="icon-remove"></i> noComments.Test3.main(java.lang.String[]) is not commented at/near line 24.</td></tr>
-
-					<tr><td rowspan="1"><tt>noComments.Test3.returnTrue()</tt></td>
-						<td rowspan="1">method</td>
-				<td class="problem"><i class="icon-remove"></i> noComments.Test3.returnTrue() is not commented at/near line 28.</td></tr>
-
-				</tbody>
-			</table>
-<div class="hidden" id="percentagemethodsContentPost">
-<h4 class="toppad">Post-Report Notes</h4>
-<ul class="unstyled">
-<li>10 location(s) (which are methods or constructors) in your source code are missing
-Javadoc comments. Consider commenting all of your constructors and methods to reduce
-this amount. Additionally, if you are receiving false results, please be sure you
-are using the Javadoc commenting style (i.e. /**  **/).</li>
-</ul>
-<h4 class="toppad">Execution Metrics</h4>
-<ul class="unstyled">
-<li>3 class(es) were processed.</li>
-<li>4 method(s) were processed.</li>
-<li>0 method(s) were commented.</li>
-<li>0% method(s) were commented across all classes.</li>
-<li>6 constructors(s) were processed.</li>
-<li>0 constructors(s) were commented.</li>
-<li>0% constructors(s) were commented across all classes.</li>
-</ul>
-</div>
-<p class="muted"><small><a href="#top">Return to top</a></small></p>
-</div>
-<p style="clear: both;"/>
-<h3 class="cuddle" style="display: inline; float: left;"><a name="checkauthor"></a>Check Author
-	<a href="javascript:unhideContent('checkauthorContent');" id="checkauthorContentButton" class="btn btn-mini btn-primary">Display pre-/post-analysis content</a>
-</h3>
-<div class="unhidden" id="checkauthorReport" style="clear:both; padding-left: 25px">
-	<div class="hidden" id="checkauthorContentPre">
-	<p>This module validates the presence of the @author tag in each class. Additionally,
-this module checks for non-blank @author tags (missing names following the tag).</p>
-	<h4 class="toppad">Pre-Report Notes</h4>
-<ul class="unstyled">
-<li>The @author tag is widely used to show who has contributed source code to a class.</li>
-<li>Multiple @author tags are permitted in the class-block of comments.</li>
-<li>References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis.</li>
-<li>The score in this module is calculated by determining the percentage of classes processed that contain no errors (contain @author tags with strings following the tag).</li>
-</ul>
-<h4 class="toppad">Score</h4>
-<p>Your score for this analysis module is: 0%.</p>
-	</div>
-<h4 class="toppad">Analysis</h4>
-			<table class="table table-bordered table-condensed">
-				<thead>
-					<tr><th>Entity name</th><th>Comment level</th><th>Analysis</th></tr>
-				</thead>
-				<tbody>
-					<tr><td rowspan="1"><tt>noComments.Test</tt></td>
-						<td rowspan="1">class</td>
-						<td class="problem"><i class="icon-remove"></i> No @author tags were found.</td></tr>
-
-					<tr><td rowspan="1"><tt>noComments.Test2</tt></td>
-						<td rowspan="1">class</td>
-						<td class="problem"><i class="icon-remove"></i> No @author tags were found.</td></tr>
-
-					<tr><td rowspan="1"><tt>noComments.Test3</tt></td>
-						<td rowspan="1">class</td>
-						<td class="problem"><i class="icon-remove"></i> No @author tags were found.</td></tr>
-
-				</tbody>
-			</table>
-<div class="hidden" id="checkauthorContentPost">
-<h4 class="toppad">Post-Report Notes</h4>
-<ul class="unstyled">
-<li>3 @author tag(s) are missing from class-level documentation.</li>
-<li>Consider adding @author tags to the comment block proceeding each class header. If
-you are receiving false results, please be sure you are using the Javadoc commenting
-style (i.e. /**  **/).</li>
-</ul>
-<h4 class="toppad">Execution Metrics</h4>
-<ul class="unstyled">
-<li>3 class(es) were processed.</li>
-<li>3 class(es) contained errors related to the use of the @author tag.</li>
-<li>3 class(es) are missing @author tags.</li>
-<li>0 @author tag(s) are empty (missing names following tag)</li>
-<li>0 @author tag(s) were located with text following the tags.</li>
-</ul>
-</div>
-<p class="muted"><small><a href="#top">Return to top</a></small></p>
-</div>
-<p style="clear: both;"/>
-<h3 class="cuddle" style="display: inline; float: left;"><a name="offensivewords"></a>Offensive Words
-	<a href="javascript:unhideContent('offensivewordsContent');" id="offensivewordsContentButton" class="btn btn-mini btn-primary">Display pre-/post-analysis content</a>
-</h3>
-<div class="unhidden" id="offensivewordsReport" style="clear:both; padding-left: 25px">
-	<div class="hidden" id="offensivewordsContentPre">
-	<p>This module identifies "offensive" English words used in comments at the class, method,
-and field level. Usage of these types of words is considered to be unprofessional.
-The COMTOR dictionary list of offensive words contains over 1,300 words and word
-variants. If you have a suggestion for a word that should be added to the dictionary,
-please email the COMTOR team at comtor@tcnj.edu.</p>
-	<h4 class="toppad">Pre-Report Notes</h4>
-<ul class="unstyled">
-<li>Constructor and method tags which are not @param, @return, or @throws are not currently processed.</li>
-<li>The score in this module is calculated by determining the overall percentage of non-offensive words from all comments.</li>
-</ul>
-<h4 class="toppad">Score</h4>
-<p>Your score for this analysis module is: 100%.</p>
-	</div>
-<h4 class="toppad">Analysis</h4>
-			<table class="table table-bordered table-condensed">
-				<thead>
-					<tr><th>Entity name</th><th>Comment level</th><th>Analysis</th></tr>
-				</thead>
-				<tbody>
-					<tr><td><tt>noComments.Test</tt></td>
-						<td>class</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td rowspan="3"><tt>noComments.Test(int)</tt></td>
-						<td>constructor</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>constructor <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
-					<tr><td>constructor <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
-					<tr><td rowspan="3"><tt>noComments.Test(int, int)</tt></td>
-						<td>constructor</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>constructor <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
-					<tr><td>constructor <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
-					<tr><td rowspan="4"><tt>noComments.Test.main(java.lang.String[])</tt></td>
-						<td>method</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>method <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
-					<tr><td>method <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
-					<tr><td>method <tt>@return</tt></td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td rowspan="4"><tt>noComments.Test.returnTrue()</tt></td>
-						<td>method</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>method <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
-					<tr><td>method <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
-					<tr><td>method <tt>@return</tt></td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td><tt>noComments.Test.foo</tt></td><td>field</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td>
-					<tr><td><tt>noComments.Test2</tt></td>
-						<td>class</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td rowspan="3"><tt>noComments.Test2()</tt></td>
-						<td>constructor</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>constructor <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
-					<tr><td>constructor <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
-					<tr><td><tt>noComments.Test2.foo</tt></td><td>field</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td>
-					<tr><td><tt>noComments.Test3</tt></td>
-						<td>class</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td rowspan="3"><tt>noComments.Test3(boolean)</tt></td>
-						<td>constructor</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>constructor <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
-					<tr><td>constructor <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
-					<tr><td rowspan="3"><tt>noComments.Test3(int)</tt></td>
-						<td>constructor</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>constructor <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
-					<tr><td>constructor <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
-					<tr><td rowspan="3"><tt>noComments.Test3(java.lang.String)</tt></td>
-						<td>constructor</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>constructor <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze.</td></tr>
-					<tr><td>constructor <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @param tags to analyze.</td></tr>
-					<tr><td rowspan="4"><tt>noComments.Test3.main(java.lang.String[])</tt></td>
-						<td>method</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>method <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
-					<tr><td>method <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
-					<tr><td>method <tt>@return</tt></td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td rowspan="4"><tt>noComments.Test3.returnTrue()</tt></td>
-						<td>method</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td>method <tt>@throws</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @throws tags to analyze</td></tr>
-					<tr><td>method <tt>@param</tt></td>
-								<td class="ok"><i class="icon-ok"></i> Detected no @params tags to analyze.</td></tr>
-					<tr><td>method <tt>@return</tt></td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td></tr>
-					<tr><td><tt>noComments.Test3.field1</tt></td><td>field</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td>
-					<tr><td><tt>noComments.Test3.field2</tt></td><td>field</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td>
-					<tr><td><tt>noComments.Test3.field3</tt></td><td>field</td>
-								<td class="ok"><i class="icon-ok"></i> No problems detected.</td>
-				</tbody>
-			</table>
-<div class="hidden" id="offensivewordsContentPost">
-<h4 class="toppad">Post-Report Notes</h4>
-<ul class="unstyled">
-<li>0 word(s) in your source code are considered offensive due to the fact that they
-are listed in our 'offensive word list'. In order to create a greater level of professionalism
-in your source code, please consider editing these words.</li>
-</ul>
-<h4 class="toppad">Execution Metrics</h4>
-<ul class="unstyled">
-<li>1 package(s) were processed.</li>
-<li>3 class(es) were processed.</li>
-<li>6 constructor(s) were processed.</li>
-<li>4 method(s) were processed.</li>
-<li>0 parameter(s) were processed.</li>
-<li>5 field(s) were processed.</li>
-<li>0 words were processed (including duplicates).</li>
-<li>0 unique words were processed (excludes duplicates).</li>
-<li>0 'offensive' words were identified (including duplicates).</li>
-</ul>
-</div>
-<p class="muted"><small><a href="#top">Return to top</a></small></p>
-</div>
-<hr style="clear:both;">
-<p class="muted"><small>This report was generated by the COMTOR project. See <a href="http://www.comtor.org">www.comtor.org</a> 
+			<hr style="clear:both;">
+			<p class="muted"><small>This report was generated by the COMTOR project. See <a href="http://www.comtor.org">www.comtor.org</a> 
 for more information.</small></p>
+
 		</div>
+`
 		<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
 	</body>
 </html>

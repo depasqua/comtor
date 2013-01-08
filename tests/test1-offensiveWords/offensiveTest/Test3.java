@@ -13,7 +13,8 @@ public class Test3 {
 
 	private Integer field3;
 
-	/** fucking test fuck **/
+	/**
+	 * fucking test fuck **/
 	private String field2;
 	
 	/**
