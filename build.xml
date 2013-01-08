@@ -92,8 +92,13 @@
 	</target>
 
 	<!-- Runs the command line version (stand alone) via jar file of COMTOR -->
-	<target name="runcli" description="Runs the CLI version of COMTOR via the jar file on the dir path provided.">
+	<target name="runcli" depends="cli" description="Runs the CLI version of COMTOR via the jar file on the dir path provided.">
 		<ant dir="code" target="executeCli" inheritRefs="true"/>
+	</target>
+
+	<!-- Runs the command line version (stand alone) via jar file of COMTOR on the test cases in the tests/ -->
+	<target name="testcli" depends="cli" description="Runs the CLI version of COMTOR against the tests/ directory">
+		<ant dir="code" target="testCli" inheritRefs="true"/>
 	</target>
 
 	<!-- Builds a jar file of the COMTOR source code (used for dogfooding) -->

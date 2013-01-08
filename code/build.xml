@@ -79,6 +79,51 @@
 		<antcall target="-runCliOutput"/>
 	</target>
 
+	<!-- Executes the test cases using the CLI version of COMTOR -->
+	<target name="testCli" description="Runs the CLI version of COMTOR on the test files.">
+		<antcall target="-runtest1"/>
+		<antcall target="-runtest2"/>
+
+		<delete>
+			<fileset dir=".">
+				<include name="badwords.txt"/>
+				<include name="dictionary.txt"/>
+				<include name="htmltags.txt"/>
+				<include name="javaKeywords.txt"/>
+				<include name="javaclasslist.txt"/>
+				<include name="usersubmitted.txt"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- Executes the cli against the tests/test1-offensiveWords directory -->
+	<target name="-runtest1" description="Runs the CLI version of COMTOR on the test files found in the tests/test1-offensiveWords directory.">
+		<property name="dirpath" location="../tests/test1-offensiveWords"/>
+		<java jar="comtor.jar" fork="true" resultproperty="execResult">
+			<arg value="-dir"/>
+			<arg path="${dirpath}"/>
+		</java>
+
+		<condition property="runFail" value="true">
+			<equals arg1="${execResult}" arg2="1"/>
+		</condition>
+		<antcall target="-runCliOutput"/>
+	</target>
+
+	<!-- Executes the cli against the tests/test2-nocomments directory -->
+	<target name="-runtest2" description="Runs the CLI version of COMTOR on the test files found in the tests/test2-nocomment directory.">
+		<property name="dirpath" location="../tests/test2-nocomments"/>
+		<java jar="comtor.jar" fork="true" resultproperty="execResult">
+			<arg value="-dir"/>
+			<arg path="${dirpath}"/>
+		</java>
+
+		<condition property="runFail" value="true">
+			<equals arg1="${execResult}" arg2="1"/>
+		</condition>
+		<antcall target="-runCliOutput"/>
+	</target>
+
 	<!-- Prompts the user for the dir to process when executing the CLI version -->
 	<target name="-promptDir" depends="cli" description="Prompts the user for the dirpath to use as input.">
 		<input message="Input the directory (absolute or relative) path to the location of the testing code:" addproperty="dirpath"/>
