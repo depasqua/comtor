@@ -129,14 +129,19 @@ public class CloudUpload extends HttpServlet {
 			// Store the report, shorten the report URL, and email the report to the user
 			try {
 				File reportFile = new File(pathToFile + java.io.File.separator + "comtorReport.txt");
-				String reportURLString = AWSServices.storeReportS3(reportFile, sessionID).toString();
+				String textReportURLString = AWSServices.storeReportS3(reportFile, sessionID).toString();
+				reportFile = new File(pathToFile + java.io.File.separator + "comtorReport.html");
+				String htmlReportURLString = AWSServices.storeReportS3(reportFile, sessionID).toString();
 
 				// Rewrite protocol of URL for report to eliminate https (certificate warnings)
-				if (reportURLString.startsWith("https"))
-					reportURLString = reportURLString.replaceFirst("https", "http");
+				if (textReportURLString.startsWith("https"))
+					textReportURLString = textReportURLString.replaceFirst("https", "http");
+				if (htmlReportURLString.startsWith("https"))
+					htmlReportURLString = htmlReportURLString.replaceFirst("https", "http");
 				
 				// Shorten the url via Bitly and send email to user.
-				reportURLString = BitlyServices.shortenUrl(reportURLString);
+				textReportURLString = BitlyServices.shortenUrl(textReportURLString);
+				htmlReportURLString = BitlyServices.shortenUrl(htmlReportURLString);
 
 				// Construct body of email message and send it
 				String contextBase = "http://" + request.getServerName();
@@ -154,15 +159,18 @@ public class CloudUpload extends HttpServlet {
 						"src=\"" + contextBase + "/images/comtor/comtorLogo.png\" width=\"160\" " +
 						"alt=\"COMTOR logo\"/>";
 				msgText += "Thank you for your submission to the COMTOR system. Your report is "; 
-				msgText += "now available for access/download at the following URL: " + reportURLString + ". ";
-				msgText += "This link will remain active for a period of 5 days.\n\n";
-				msgText += "You can reach the COMTOR team at comtor@tcnj.edu.";
+				msgText += "now available for access/download as follows at the following URLs:\n<ul>";
+				msgText += "<li>HTML version: <a href=\"" + htmlReportURLString + "\">" + htmlReportURLString + "</a></li>";
+				msgText += "<li>Text version: <a href=\"" + textReportURLString + "\">" + textReportURLString + "</a></li>";
+				msgText += "</ul>These links will remain active for a period of 5 days.\n\n";
+				msgText += "If you have any questions about this system, you can reach the COMTOR team at comtor@tcnj.edu.";
 				AWSServices.sendEmail(emailAddress, msgText);
 
 				// Record cloud usage, but not for the dev version.
 				if (!contextPath.equals("comtorDev/")) {
 					GregorianCalendar now = new GregorianCalendar();
-					AWSServices.storeCloudUse(requesterIPAddress, sessionID, reportURLString, emailAddress, now.getTime().toString());
+					AWSServices.storeCloudUse(requesterIPAddress, sessionID, htmlReportURLString, emailAddress, now.getTime().toString());
+					AWSServices.storeCloudUse(requesterIPAddress, sessionID, textReportURLString, emailAddress, now.getTime().toString());
 				}
 
 				// Start of output returned
