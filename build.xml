@@ -48,6 +48,7 @@
 		<ant dir="api/apiserv" target="clean"/>
 		<ant dir="api/client" target="clean"/>
 		<ant dir="api/authserv" target="clean"/>
+		<ant dir="wordProblemSubmitter" target="clean"/>
 		<ant dir="code" target="clean"/>
 		<ant dir="lamp" target="clean"/>
 		
@@ -154,6 +155,28 @@
 	</target>
 
 
+	<!-- Word Problem Submitter Server -->
+	<target name="wordProblemCompile" description="Compiles the source code of the app" depends="init">
+	 	<ant dir="wordProblemSubmitter" target="compile" inheritRefs="true"/>
+ 	</target>
+	
+	<target name="wordProblemCreateWar" description="Builds the war file">
+		<ant dir="wordProblemSubmitter" target="createWar" inheritRefs="true"/>
+	</target>
+
+	<target name="wordProblemWarDeploy" depends="-credentials.check" description="Deploys the war file">
+		<ant dir="wordProblemSubmitter" target="warDeploy" inheritRefs="true"/>
+	</target>
+
+	<target name="wordProblemWarUndeploy" depends="-credentials.check" description="Undeploys the war file">
+		<ant dir="wordProblemSubmitter" target="warUndeploy" inheritRefs="true"/>
+	</target>
+
+	<target name="wordProblemWarRedeploy" depends="-credentials.check" description="Redeploys the war file">
+		<ant dir="wordProblemSubmitter" target="warRedeploy" inheritRefs="true"/>
+	</target>
+
+
 	<!-- API Auth Server -->
 	<target name="authServCompile" description="Compiles the source code of the api authserv app" depends="init">
 	 	<ant dir="api/authserv" target="compile" inheritRefs="true"/>
@@ -174,8 +197,6 @@
 	<target name="authServWarRedeploy" depends="-credentials.check" description="Redeploys the authserv war file">
 		<ant dir="api/authserv" target="warRedeploy" inheritRefs="true"/>
 	</target>
-
-
 
 
 	<!-- API Server -->

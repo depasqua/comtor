@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<project name="wordSubmit" default="compile" basedir=".">
+	<description>Build file for the COMTOR problem word submission application</description>
+	<echo>Subproject: wordSubmit</echo>
+
+	<property name="baseDir" location="."/>
+	<property name="srcDir" location="${baseDir}/src"/>
+	<property name="classesDir" location="${baseDir}/WEB-INF/classes"/>
+	<property name="warfilename" value="wordProblem.war"/>
+	<defaultexcludes remove="**/.DS_Store"/>
+
+	<condition property="deploymentPath" value="/wordSubmit" else="/wordSubmitDev">
+		<isset property="release"/>
+	</condition>
+
+	<!-- Compiles the source code of the web application -->
+	<target name="compile" description="Compiles the source code of the web app">
+		<mkdir dir="${classesDir}"/>
+		<javac srcdir="${srcDir}" destdir="${classesDir}" includeantruntime="false">
+			<classpath>
+				<path refid="comtor.class.path"/>
+				<fileset dir="${baseDir}/WEB-INF/lib">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- Removes the class files, source backups, and other uneeded files -->
+	<target name="clean" description="Clean source backups, old warfiles, and .class files">
+		<delete dir="${classesDir}"/>
+		
+		<delete>
+			<fileset dir="." casesensitive="yes">
+				<include name="**/*~ "/>
+				<include name="**/.DS_Store"/>
+				<include name="${warfilename}"/>
+			</fileset>
+		</delete>		
+	</target>
+
+	<!-- Builds the war file for TOMCAT release -->
+	<target name="createWar" depends="compile" description="Builds the war file for the release.">
+		<copy file="../loggerconfig/log4j2.xml.cloud" tofile="../loggerconfig/log4j2.xml" overwrite="true"/>
+		<war destfile="${warfilename}" webxml="${baseDir}/WEB-INF/web.xml">
+			<lib dir="${baseDir}/WEB-INF/lib" excludes="javax.jar"/>
+			<classes dir="${classesDir}"/>
+			<classes file="../loggerconfig/log4j2.xml"/>
+		</war>
+		<delete file="../loggerconfig/log4j2.xml"/>
+	</target>
+
+	<!-- Deployment tasks -->
+	<target name="warDeploy" depends="createWar" description="Deploys the web application">
+		<deploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}" war="file:${baseDir}/${warfilename}"/>
+	</target>
+
+	<target name="warUndeploy" description="Undeploys the web application.">
+		<undeploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}"/>
+	</target>
+
+	<target name="warRedeploy" depends="createWar" description="Redeploys the web application.">
+		<antcall target="warUndeploy"/>
+		<antcall target="warDeploy"/>
+	</target>
+
+</project>

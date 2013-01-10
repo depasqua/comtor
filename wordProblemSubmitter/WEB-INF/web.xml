@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+	<display-name>COMTOR Word Problem Submitter Servlet</display-name>
+
+	<servlet>
+		<description>Servlet to accept problems with misspelling/offensive words</description>
+		<display-name>Word Problems</display-name>
+		<servlet-name>WordProblemSubmitter</servlet-name>
+		<servlet-class>org.comtor.support.WordProblem</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>WordProblemSubmitter</servlet-name>
+		<url-pattern>/wordproblem</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>CORS</filter-name>
+		<filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>CORS</filter-name>
+		<servlet-name>WordProblemSubmitter</servlet-name>
+	</filter-mapping>
+</web-app>
