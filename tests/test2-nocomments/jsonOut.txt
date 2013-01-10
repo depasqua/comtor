@@ -57,9 +57,9 @@
       ],
       "score": "0%",
       "timing": {
-         "execution time": "3",
-         "start time": "1357620631552",
-         "end time": "1357620631555"
+         "execution time": "2",
+         "start time": "1357786724077",
+         "end time": "1357786724079"
       },
       "notes": {
          "postamble": [
@@ -244,8 +244,8 @@
       "score": "0.00",
       "timing": {
          "execution time": "6",
-         "start time": "1357620631552",
-         "end time": "1357620631558"
+         "start time": "1357786724082",
+         "end time": "1357786724088"
       },
       "notes": {
          "postamble": ["18 location(s) in your source code are missing comments. Consider commenting all\nconstructors and methods to reduce this amount. Additionally, if you are receving\nfalse results, please be sure you are using the Javadoc commenting style (i.e. /**\n **/)."],
@@ -440,8 +440,8 @@
       "score": "100%",
       "timing": {
          "execution time": "4",
-         "start time": "1357620631979",
-         "end time": "1357620631983"
+         "start time": "1357786724508",
+         "end time": "1357786724512"
       },
       "notes": {
          "postamble": ["0 word(s) in your source code are considered offensive due to the fact that they\nare listed in our 'offensive word list'. In order to create a greater level of professionalism\nin your source code, please consider editing these words."],
@@ -610,9 +610,9 @@
       ],
       "score": "0%",
       "timing": {
-         "execution time": "3",
-         "start time": "1357620631561",
-         "end time": "1357620631564"
+         "execution time": "2",
+         "start time": "1357786724146",
+         "end time": "1357786724148"
       },
       "notes": {
          "postamble": ["10 location(s) (which are methods or constructors) in your source code are missing\nJavadoc comments. Consider commenting all of your constructors and methods to reduce\nthis amount. Additionally, if you are receiving false results, please be sure you\nare using the Javadoc commenting style (i.e. /**  **/)."],
@@ -798,9 +798,9 @@
       ],
       "score": "100%",
       "timing": {
-         "execution time": "7",
-         "start time": "1357620633690",
-         "end time": "1357620633697"
+         "execution time": "4",
+         "start time": "1357786726202",
+         "end time": "1357786726206"
       },
       "notes": {
          "postamble": ["0 word(s) in your source code are considered spelled incorrectly due to the fact\nthat they are listed in our dictionary. In order to create a greater level of professionalism\nin your source code, please consider editing these words. If you believe you have\na false positive result, please email the COMTOR team at comtor@tcnj.edu and we\nconsider your submission to the dictionary."],
