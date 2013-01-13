@@ -113,6 +113,8 @@ public class HTMLReporter extends COMTORReporter {
 			outFilePW.println("		<script src=\"http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js\"></script>");
 			outFilePW.println();
 			outFilePW.println("		<script type=\"text/javascript\">");
+			outFilePW.println("		var disputeWarningSeen = false;");
+			outFilePW.println();
 			outFilePW.println("		function submitWord(submittedWord, reportName, elementID) {");
 			outFilePW.println("			var element = document.getElementById(elementID);");
 			outFilePW.println("			if (submittedWord && reportName && element) {");
@@ -121,6 +123,10 @@ public class HTMLReporter extends COMTORReporter {
 			outFilePW.println("				request.send();");
 			outFilePW.println("				var newClass = \"\";");
 			outFilePW.println("				element.className = newClass.concat(element.className, \" disabled\");");
+			outFilePW.println("				if (disputeWarningSeen == false) {");
+			outFilePW.println("					disputeWarningSeen = true;");
+			outFilePW.println("					$('#modalWarning').modal('show');");
+			outFilePW.println("				}");
 			outFilePW.println("			}");
 			outFilePW.println("		}");
 			outFilePW.println();
@@ -165,6 +171,27 @@ public class HTMLReporter extends COMTORReporter {
 			outFilePW.println("	</head>");
 			outFilePW.println();
 			outFilePW.println("	<body>");
+
+			outFilePW.println("		<div id=\"modalWarning\" class=\"modal hide fade\" tabindex=\"-1\" data-keyboard=\"true\">");
+			outFilePW.println("			<div class=\"modal-header\">");
+			outFilePW.println("				<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>");
+			outFilePW.println("				<h3>A note about disputes...</h3>");
+			outFilePW.println("			</div>");
+			outFilePW.println("			<div class=\"modal-body\">");
+			outFilePW.println("				<img src=\"http://www.comtor.org/website/images/comtor/comtorLogo.png\" class=\"pull-left\" alt=\"COMTOR logo\" width=\"100px\"></img>" +
+					"<p>Please note that each dispute results in an email being sent to the development team.</p>");
+			outFilePW.println();
+			outFilePW.println("				<p>Dispute decisions are not automatic and a development team member will review the dispute and adjudicate any spelling/offensive word " +
+					"changes to the system as soon as possible. Please do not rerun the report and expect to see the dispute resolved immediately. Dispute adjudication decisions " +
+					"are not currently emailed to you, but we may consider doing this in the future.</p>");
+			outFilePW.println();
+			outFilePW.println("				<p>We appreciate your feedback and welcome your input to make COMTOR the best possible system.</p>");
+			outFilePW.println("			</div>");
+			outFilePW.println("			<div class=\"modal-footer\">");
+			outFilePW.println("				<a href=\"#\" class=\"btn btn-primary\" data-dismiss=\"modal\">OK</a>");
+			outFilePW.println("			</div>");
+			outFilePW.println("		</div>");
+
 			outFilePW.println("		<div class=\"container\">");
 			outFilePW.println("		<div class=\"row toppad\">");
 			outFilePW.println("			<div class=\"span8\" id=\"top\"><h1>COMTOR Execution Report</h1>");
