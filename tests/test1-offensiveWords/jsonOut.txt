@@ -3,30 +3,15 @@
       "classes processed": 3,
       "description": "This module validates the presence of the @author tag in each class. Additionally,\nthis module checks for non-blank @author tags (missing names following the tag).",
       "name": "Check Author",
-      "classes with errors": 2,
-      "tags errors": 2,
-      "tags found": 2
+      "classes with errors": 0,
+      "tags errors": 0,
+      "tags found": 3
    },
    "results": {
       "classes": {
-         "offensiveTest.Test2": {
+         "offensiveTest.NoOffensiveWords": {
             "returns_analyzed": false,
-            "summary": [],
-            "methods": {},
-            "location": {},
-            "issues": [
-               "An empty @author tag was found in the comment block preceeding line 12.",
-               "An empty @author tag was found in the comment block preceeding line 12."
-            ],
-            "fields_analyzed": false,
-            "throws_analyzed": false,
-            "params_analyzed": false,
-            "constructors": {},
-            "fields": {}
-         },
-         "offensiveTest.Test3": {
-            "returns_analyzed": false,
-            "summary": ["@author tag found: Peter DePasquale"],
+            "summary": ["@author tag found: Peter J DePasquale"],
             "methods": {},
             "noProblemMessage": "1 or more @author tags were found.",
             "location": {},
@@ -37,12 +22,26 @@
             "constructors": {},
             "fields": {}
          },
-         "offensiveTest.Test": {
+         "offensiveTest.OneOffensiveWord": {
             "returns_analyzed": false,
-            "summary": [],
+            "summary": ["@author tag found: xxx"],
             "methods": {},
+            "noProblemMessage": "1 or more @author tags were found.",
             "location": {},
-            "issues": ["No @author tags were found."],
+            "issues": [],
+            "fields_analyzed": false,
+            "throws_analyzed": false,
+            "params_analyzed": false,
+            "constructors": {},
+            "fields": {}
+         },
+         "offensiveTest.AllOffensiveWords": {
+            "returns_analyzed": false,
+            "summary": ["@author tag found: xxx xxx"],
+            "methods": {},
+            "noProblemMessage": "1 or more @author tags were found.",
+            "location": {},
+            "issues": [],
             "fields_analyzed": false,
             "throws_analyzed": false,
             "params_analyzed": false,
@@ -54,23 +53,19 @@
       "packages": {},
       "metrics": [
          "3 class(es) were processed.",
-         "2 class(es) contained errors related to the use of the @author tag.",
-         "1 class(es) are missing @author tags.",
-         "2 @author tag(s) are empty (missing names following tag)",
-         "2 @author tag(s) were located with text following the tags."
+         "0 class(es) contained errors related to the use of the @author tag.",
+         "0 class(es) are missing @author tags.",
+         "0 @author tag(s) are empty (missing names following tag)",
+         "3 @author tag(s) were located with text following the tags."
       ],
-      "score": "33%",
+      "score": "100%",
       "timing": {
-         "execution time": "4",
-         "start time": "1357786716223",
-         "end time": "1357786716227"
+         "execution time": "3",
+         "start time": "1358053618370",
+         "end time": "1358053618373"
       },
       "notes": {
-         "postamble": [
-            "1 @author tag(s) are missing from class-level documentation.",
-            "2 @author tag(s) are empty and have no author specified.",
-            "Consider adding @author tags to the comment block proceeding each class header. If\nyou are receiving false results, please be sure you are using the Javadoc commenting\nstyle (i.e. /**  **/)."
-         ],
+         "postamble": [],
          "preamble": [
             "The @author tag is widely used to show who has contributed source code to a class.",
             "Multiple @author tags are permitted in the class-block of comments.",
@@ -87,60 +82,25 @@
    },
    "results": {
       "classes": {
-         "offensiveTest.Test2": {
+         "offensiveTest.NoOffensiveWords": {
             "returns_analyzed": false,
             "summary": [
-               "There were 4 words in the class comments.",
-               "The average length of all comments in the class (including all members) is 1 words."
-            ],
-            "methods": {},
-            "location": "12",
-            "issues": [],
-            "fields_analyzed": true,
-            "throws_analyzed": false,
-            "params_analyzed": false,
-            "constructors": {"offensiveTest.Test2()": {
-               "summary": [],
-               "location": "12",
-               "issues": ["There are no Javadoc comments present (on/near line 12)."],
-               "throws": {},
-               "analyzed": {},
-               "parameters": {}
-            }},
-            "fields": {"offensiveTest.Test2.foo": {
-               "summary": [],
-               "location": "13",
-               "issues": ["There are no Javadoc comments present (on/near line 13)."]
-            }}
-         },
-         "offensiveTest.Test3": {
-            "returns_analyzed": false,
-            "summary": [
-               "There were 8 words in the class comments.",
-               "The average length of all comments in the class (including all members) is 3 words."
+               "There were 29 words in the class comments.",
+               "The average length of all comments in the class (including all members) is 14 words."
             ],
             "methods": {
-               "offensiveTest.Test3.returnTrue(int, int)": {
-                  "summary": ["The length of comments is 2 words (on/near line 72)."],
-                  "location": "72",
+               "offensiveTest.NoOffensiveWords.returnTrue()": {
+                  "summary": ["The length of comments is 10 words (on/near line 59)."],
+                  "location": "59",
                   "issues": [],
                   "throws": {},
                   "analyzed": {},
                   "returns": [],
                   "parameters": {}
                },
-               "offensiveTest.Test3.returnTrue()": {
-                  "summary": [],
-                  "location": "59",
-                  "issues": ["There are no Javadoc comments present (on/near line 59)."],
-                  "throws": {},
-                  "analyzed": {},
-                  "returns": [],
-                  "parameters": {}
-               },
-               "offensiveTest.Test3.main(java.lang.String[])": {
-                  "summary": ["The length of comments is 7 words (on/near line 50)."],
-                  "location": "50",
+               "offensiveTest.NoOffensiveWords.main(java.lang.String[])": {
+                  "summary": ["The length of comments is 16 words (on/near line 48)."],
+                  "location": "48",
                   "issues": [],
                   "throws": {},
                   "analyzed": {},
@@ -154,68 +114,48 @@
             "throws_analyzed": false,
             "params_analyzed": false,
             "constructors": {
-               "offensiveTest.Test3(int)": {
-                  "summary": ["The length of comments is 7 words (on/near line 25)."],
-                  "location": "25",
+               "offensiveTest.NoOffensiveWords(int, int)": {
+                  "summary": ["The length of comments is 15 words (on/near line 35)."],
+                  "location": "35",
                   "issues": [],
                   "throws": {},
                   "analyzed": {},
                   "parameters": {}
                },
-               "offensiveTest.Test3(java.lang.String)": {
-                  "summary": [],
-                  "location": "41",
-                  "issues": ["There are no Javadoc comments present (on/near line 41)."],
-                  "throws": {},
-                  "analyzed": {},
-                  "parameters": {}
-               },
-               "offensiveTest.Test3(boolean, int)": {
-                  "summary": ["The length of comments is 4 words (on/near line 37)."],
-                  "location": "37",
+               "offensiveTest.NoOffensiveWords(int)": {
+                  "summary": ["The length of comments is 12 words (on/near line 20)."],
+                  "location": "20",
                   "issues": [],
                   "throws": {},
                   "analyzed": {},
                   "parameters": {}
                }
             },
-            "fields": {
-               "offensiveTest.Test3.field1": {
-                  "summary": [],
-                  "location": "12",
-                  "issues": ["There are no Javadoc comments present (on/near line 12)."]
-               },
-               "offensiveTest.Test3.field2": {
-                  "summary": ["The length of comments is 3 words (on/near line 18)."],
-                  "location": "18",
-                  "issues": []
-               },
-               "offensiveTest.Test3.field3": {
-                  "summary": [],
-                  "location": "14",
-                  "issues": ["There are no Javadoc comments present (on/near line 14)."]
-               }
-            }
+            "fields": {"offensiveTest.NoOffensiveWords.foo": {
+               "summary": ["The length of comments is 5 words (on/near line 13)."],
+               "location": "13",
+               "issues": []
+            }}
          },
-         "offensiveTest.Test": {
+         "offensiveTest.OneOffensiveWord": {
             "returns_analyzed": false,
             "summary": [
-               "There were 5 words in the class comments.",
-               "The average length of all comments in the class (including all members) is 5 words."
+               "There were 42 words in the class comments.",
+               "The average length of all comments in the class (including all members) is 24 words."
             ],
             "methods": {
-               "offensiveTest.Test.main(java.lang.String[])": {
-                  "summary": ["The length of comments is 7 words (on/near line 32)."],
-                  "location": "32",
+               "offensiveTest.OneOffensiveWord.returnTrue()": {
+                  "summary": ["The length of comments is 20 words (on/near line 60)."],
+                  "location": "60",
                   "issues": [],
                   "throws": {},
                   "analyzed": {},
                   "returns": [],
                   "parameters": {}
                },
-               "offensiveTest.Test.returnTrue()": {
-                  "summary": ["The length of comments is 4 words (on/near line 43)."],
-                  "location": "43",
+               "offensiveTest.OneOffensiveWord.main(java.lang.String[])": {
+                  "summary": ["The length of comments is 23 words (on/near line 48)."],
+                  "location": "48",
                   "issues": [],
                   "throws": {},
                   "analyzed": {},
@@ -223,32 +163,66 @@
                   "parameters": {}
                }
             },
-            "location": "8",
+            "location": "12",
             "issues": [],
             "fields_analyzed": true,
             "throws_analyzed": false,
             "params_analyzed": false,
             "constructors": {
-               "offensiveTest.Test(int, int)": {
-                  "summary": ["The length of comments is 7 words (on/near line 25)."],
-                  "location": "25",
+               "offensiveTest.OneOffensiveWord(int, int)": {
+                  "summary": ["The length of comments is 28 words (on/near line 34)."],
+                  "location": "34",
                   "issues": [],
                   "throws": {},
                   "analyzed": {},
                   "parameters": {}
                },
-               "offensiveTest.Test(int)": {
-                  "summary": ["The length of comments is 5 words (on/near line 16)."],
-                  "location": "16",
+               "offensiveTest.OneOffensiveWord(int)": {
+                  "summary": ["The length of comments is 22 words (on/near line 22)."],
+                  "location": "22",
                   "issues": [],
                   "throws": {},
                   "analyzed": {},
                   "parameters": {}
                }
             },
-            "fields": {"offensiveTest.Test.foo": {
-               "summary": ["The length of comments is 4 words (on/near line 10)."],
-               "location": "10",
+            "fields": {"offensiveTest.OneOffensiveWord.foo": {
+               "summary": ["The length of comments is 10 words (on/near line 14)."],
+               "location": "14",
+               "issues": []
+            }}
+         },
+         "offensiveTest.AllOffensiveWords": {
+            "returns_analyzed": false,
+            "summary": [
+               "There were 43 words in the class comments.",
+               "The average length of all comments in the class (including all members) is 26 words."
+            ],
+            "methods": {"offensiveTest.AllOffensiveWords.someMethod(java.lang.String, java.lang.String)": {
+               "summary": ["The length of comments is 29 words (on/near line 40)."],
+               "location": "40",
+               "issues": [],
+               "throws": {},
+               "analyzed": {},
+               "returns": [],
+               "parameters": {}
+            }},
+            "location": "12",
+            "issues": [],
+            "fields_analyzed": true,
+            "throws_analyzed": false,
+            "params_analyzed": false,
+            "constructors": {"offensiveTest.AllOffensiveWords(int, int)": {
+               "summary": ["The length of comments is 24 words (on/near line 24)."],
+               "location": "24",
+               "issues": [],
+               "throws": {},
+               "analyzed": {},
+               "parameters": {}
+            }},
+            "fields": {"offensiveTest.AllOffensiveWords.foo": {
+               "summary": ["The length of comments is 9 words (on/near line 14)."],
+               "location": "14",
                "issues": []
             }}
          }
@@ -257,21 +231,21 @@
       "packages": {},
       "metrics": [
          "A total of 3 classes were processed.",
-         "A total of 6 constructors were processed.",
+         "A total of 5 constructors were processed.",
          "A total of 5 methods were processed.",
-         "A total of 5 fields were processed.",
-         "A total of 67 words were processed.",
-         "A total of 19 class, constructor, method, and field comments were processed.",
-         "The overall average number of words per comment is 3."
+         "A total of 3 fields were processed.",
+         "A total of 337 words were processed.",
+         "A total of 16 class, constructor, method, and field comments were processed.",
+         "The overall average number of words per comment is 21."
       ],
-      "score": "3.53",
+      "score": "21.06",
       "timing": {
-         "execution time": "32",
-         "start time": "1357786716229",
-         "end time": "1357786716261"
+         "execution time": "6",
+         "start time": "1358053618374",
+         "end time": "1358053618380"
       },
       "notes": {
-         "postamble": ["6 location(s) in your source code are missing comments. Consider commenting all constructors\nand methods to reduce this amount. Additionally, if you are receving false results,\nplease be sure you are using the Javadoc commenting style (i.e. /**  **/)."],
+         "postamble": [],
          "preamble": [
             "Javadoc tags (@tag) from constructors and methods are not considered as a part of this analysis.",
             "The score in this module is calculated by determining the ratio of the number of words from comments to the total number of comments."
@@ -281,22 +255,41 @@
 }
 {
    "information": {
-      "constructors processed": 6,
-      "fields processed": 5,
+      "constructors processed": 5,
+      "fields processed": 3,
       "classes processed": 3,
       "description": "This module identifies \"offensive\" English words used in comments at the class, method,\nand field level. Usage of these types of words is considered to be unprofessional.\nThe COMTOR dictionary list of offensive words contains over 1,300 words and word\nvariants. If you have a suggestion for a word that should be added to the dictionary,\nplease email the COMTOR team at comtor@tcnj.edu.",
       "name": "Offensive Words",
       "methods processed": 5,
       "packages processed": 1,
-      "parameters processed": 9,
-      "total number of words processed": 124
+      "parameters processed": 12,
+      "total number of words processed": 434
    },
    "results": {
       "classes": {
-         "offensiveTest.Test2": {
+         "offensiveTest.NoOffensiveWords": {
             "returns_analyzed": true,
             "summary": [],
-            "methods": {},
+            "methods": {
+               "offensiveTest.NoOffensiveWords.returnTrue()": {
+                  "summary": [],
+                  "location": {},
+                  "issues": [],
+                  "throws": {},
+                  "analyzed": {},
+                  "returns": [],
+                  "parameters": {}
+               },
+               "offensiveTest.NoOffensiveWords.main(java.lang.String[])": {
+                  "summary": [],
+                  "location": {},
+                  "issues": [],
+                  "throws": {"NullPointerException": []},
+                  "analyzed": {},
+                  "returns": [],
+                  "parameters": {"args": []}
+               }
+            },
             "noProblemMessage": "No offensive words were found in processing this class.",
             "location": {},
             "issues": [],
@@ -304,177 +297,158 @@
             "throws_analyzed": true,
             "params_analyzed": true,
             "numProblemsDetected": "0",
-            "constructors": {"offensiveTest.Test2()": {
-               "summary": [],
-               "location": {},
-               "issues": [],
-               "throws": {},
-               "analyzed": {},
-               "parameters": {}
-            }},
-            "fields": {"offensiveTest.Test2.foo": {
+            "constructors": {
+               "offensiveTest.NoOffensiveWords(int, int)": {
+                  "summary": [],
+                  "location": {},
+                  "issues": [],
+                  "throws": {"NullPointerException": []},
+                  "analyzed": {},
+                  "parameters": {
+                     "two": [],
+                     "three": []
+                  }
+               },
+               "offensiveTest.NoOffensiveWords(int)": {
+                  "summary": [],
+                  "location": {},
+                  "issues": [],
+                  "throws": {},
+                  "analyzed": {},
+                  "parameters": {"one": []}
+               }
+            },
+            "fields": {"offensiveTest.NoOffensiveWords.foo": {
                "summary": [],
                "location": {},
                "issues": []
             }}
          },
-         "offensiveTest.Test3": {
+         "offensiveTest.OneOffensiveWord": {
             "returns_analyzed": true,
             "summary": [],
             "methods": {
-               "offensiveTest.Test3.returnTrue(int, int)": {
+               "offensiveTest.OneOffensiveWord.returnTrue()": {
                   "summary": [],
                   "location": {},
-                  "issues": [],
-                  "throws": {
-                     "ClassCastException": [],
-                     "ArrayIndexOutOfBoundsException": []
-                  },
-                  "analyzed": {},
-                  "returns": [],
-                  "parameters": {
-                     "alpha": [],
-                     "beta": []
-                  }
-               },
-               "offensiveTest.Test3.returnTrue()": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {
-                     "ClassCastException": [],
-                     "ArrayIndexOutOfBoundsException": []
-                  },
-                  "analyzed": {},
-                  "returns": [
-                     "'fuck' considered an offensive word on/near line 59.",
-                     "'shit' considered an offensive word on/near line 59."
-                  ],
-                  "parameters": {}
-               },
-               "offensiveTest.Test3.main(java.lang.String[])": {
-                  "summary": [],
-                  "location": {},
-                  "issues": ["'ass' considered an offensive word on/near line 50."],
+                  "issues": ["'xxx' considered an offensive word on/near line 60."],
                   "throws": {},
                   "analyzed": {},
+                  "returns": ["'xxx' considered an offensive word on/near line 60."],
+                  "parameters": {}
+               },
+               "offensiveTest.OneOffensiveWord.main(java.lang.String[])": {
+                  "summary": [],
+                  "location": {},
+                  "issues": ["'xxx' considered an offensive word on/near line 48."],
+                  "throws": {"NullPointerException": ["'xxx' considered an offensive word on/near line 48."]},
+                  "analyzed": {},
                   "returns": [],
-                  "parameters": {"args": ["'cock' considered an offensive word on/near line 50."]}
+                  "parameters": {"args": ["'xxx' considered an offensive word on/near line 48."]}
                }
             },
             "location": {},
-            "issues": ["'shit' considered an offensive word on/near line 11."],
+            "issues": ["'xxx' considered an offensive word on/near line 12."],
             "fields_analyzed": true,
             "throws_analyzed": true,
             "params_analyzed": true,
-            "numProblemsDetected": "9",
+            "numProblemsDetected": "12",
             "constructors": {
-               "offensiveTest.Test3(int)": {
+               "offensiveTest.OneOffensiveWord(int, int)": {
                   "summary": [],
                   "location": {},
-                  "issues": ["'fuck' considered an offensive word on/near line 25."],
-                  "throws": {},
-                  "analyzed": {},
-                  "parameters": {"foo": ["'shit' considered an offensive word on/near line 25."]}
-               },
-               "offensiveTest.Test3(java.lang.String)": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {},
-                  "analyzed": {},
-                  "parameters": {}
-               },
-               "offensiveTest.Test3(boolean, int)": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {
-                     "ClassCastException": [],
-                     "ArrayIndexOutOfBoundsException": []
-                  },
+                  "issues": ["'xxx' considered an offensive word on/near line 34."],
+                  "throws": {"NullPointerException": ["'xxx' considered an offensive word on/near line 34."]},
                   "analyzed": {},
                   "parameters": {
-                     "foo": [],
-                     "bar": []
-                  }
-               }
-            },
-            "fields": {
-               "offensiveTest.Test3.field1": {
-                  "summary": [],
-                  "location": {},
-                  "issues": []
-               },
-               "offensiveTest.Test3.field2": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [
-                     "'fucking' considered an offensive word on/near line 18.",
-                     "'fuck' considered an offensive word on/near line 18."
-                  ]
-               },
-               "offensiveTest.Test3.field3": {
-                  "summary": [],
-                  "location": {},
-                  "issues": []
-               }
-            }
-         },
-         "offensiveTest.Test": {
-            "returns_analyzed": true,
-            "summary": [],
-            "methods": {
-               "offensiveTest.Test.main(java.lang.String[])": {
-                  "summary": [],
-                  "location": {},
-                  "issues": ["'fuck' considered an offensive word on/near line 32."],
-                  "throws": {"NullPointerException": ["'dick' considered an offensive word on/near line 32."]},
-                  "analyzed": {},
-                  "returns": [],
-                  "parameters": {"args": ["'ass' considered an offensive word on/near line 32."]}
-               },
-               "offensiveTest.Test.returnTrue()": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {},
-                  "analyzed": {},
-                  "returns": ["'bullshit' considered an offensive word on/near line 43."],
-                  "parameters": {}
-               }
-            },
-            "location": {},
-            "issues": ["'xxx' considered an offensive word on/near line 8."],
-            "fields_analyzed": true,
-            "throws_analyzed": true,
-            "params_analyzed": true,
-            "numProblemsDetected": "9",
-            "constructors": {
-               "offensiveTest.Test(int, int)": {
-                  "summary": [],
-                  "location": {},
-                  "issues": ["'fuck' considered an offensive word on/near line 25."],
-                  "throws": {"NullPointerException": ["'shit' considered an offensive word on/near line 25."]},
-                  "analyzed": {},
-                  "parameters": {
-                     "two": ["'fuck' considered an offensive word on/near line 25."],
-                     "three": ["'dick' considered an offensive word on/near line 25."]
+                     "two": ["'xxx' considered an offensive word on/near line 34."],
+                     "three": []
                   }
                },
-               "offensiveTest.Test(int)": {
+               "offensiveTest.OneOffensiveWord(int)": {
                   "summary": [],
                   "location": {},
-                  "issues": [],
+                  "issues": ["'xxx' considered an offensive word on/near line 22."],
                   "throws": {},
                   "analyzed": {},
-                  "parameters": {}
+                  "parameters": {"one": ["'xxx' considered an offensive word on/near line 22."]}
                }
             },
-            "fields": {"offensiveTest.Test.foo": {
+            "fields": {"offensiveTest.OneOffensiveWord.foo": {
                "summary": [],
                "location": {},
-               "issues": []
+               "issues": ["'xxx' considered an offensive word on/near line 14."]
+            }}
+         },
+         "offensiveTest.AllOffensiveWords": {
+            "returns_analyzed": true,
+            "summary": [],
+            "methods": {"offensiveTest.AllOffensiveWords.someMethod(java.lang.String, java.lang.String)": {
+               "summary": [],
+               "location": {},
+               "issues": [
+                  "'xxx' considered an offensive word on/near line 40.",
+                  "'xxx' considered an offensive word on/near line 40."
+               ],
+               "throws": {"NullPointerException": [
+                  "'xxx' considered an offensive word on/near line 40.",
+                  "'xxx' considered an offensive word on/near line 40."
+               ]},
+               "analyzed": {},
+               "returns": [
+                  "'xxx' considered an offensive word on/near line 40.",
+                  "'xxx' considered an offensive word on/near line 40."
+               ],
+               "parameters": {
+                  "arg2": [
+                     "'xxx' considered an offensive word on/near line 40.",
+                     "'xxx' considered an offensive word on/near line 40."
+                  ],
+                  "arg1": [
+                     "'xxx' considered an offensive word on/near line 40.",
+                     "'xxx' considered an offensive word on/near line 40."
+                  ]
+               }
+            }},
+            "location": {},
+            "issues": [
+               "'xxx' considered an offensive word on/near line 12.",
+               "'xxx' considered an offensive word on/near line 12."
+            ],
+            "fields_analyzed": true,
+            "throws_analyzed": true,
+            "params_analyzed": true,
+            "numProblemsDetected": "22",
+            "constructors": {"offensiveTest.AllOffensiveWords(int, int)": {
+               "summary": [],
+               "location": {},
+               "issues": [
+                  "'xxx' considered an offensive word on/near line 24.",
+                  "'xxx' considered an offensive word on/near line 24."
+               ],
+               "throws": {"NullPointerException": [
+                  "'xxx' considered an offensive word on/near line 24.",
+                  "'xxx' considered an offensive word on/near line 24."
+               ]},
+               "analyzed": {},
+               "parameters": {
+                  "two": [
+                     "'xxx' considered an offensive word on/near line 24.",
+                     "'xxx' considered an offensive word on/near line 24."
+                  ],
+                  "three": [
+                     "'xxx' considered an offensive word on/near line 24.",
+                     "'xxx' considered an offensive word on/near line 24."
+                  ]
+               }
+            }},
+            "fields": {"offensiveTest.AllOffensiveWords.foo": {
+               "summary": [],
+               "location": {},
+               "issues": [
+                  "'xxx' considered an offensive word on/near line 14.",
+                  "'xxx' considered an offensive word on/near line 14."
+               ]
             }}
          }
       },
@@ -483,22 +457,22 @@
       "metrics": [
          "1 package(s) were processed.",
          "3 class(es) were processed.",
-         "6 constructor(s) were processed.",
+         "5 constructor(s) were processed.",
          "5 method(s) were processed.",
-         "9 parameter(s) were processed.",
-         "5 field(s) were processed.",
-         "124 words were processed (including duplicates).",
-         "56 unique words were processed (excludes duplicates).",
-         "18 'offensive' words were identified (including duplicates)."
+         "12 parameter(s) were processed.",
+         "3 field(s) were processed.",
+         "434 words were processed (including duplicates).",
+         "89 unique words were processed (excludes duplicates).",
+         "34 'offensive' words were identified (including duplicates)."
       ],
-      "score": "85%",
+      "score": "92%",
       "timing": {
-         "execution time": "33",
-         "start time": "1357786716694",
-         "end time": "1357786716727"
+         "execution time": "36",
+         "start time": "1358053618616",
+         "end time": "1358053618652"
       },
       "notes": {
-         "postamble": ["18 word(s) in your source code are considered offensive due to the fact that they\nare listed in our 'offensive word list'. In order to create a greater level of professionalism\nin your source code, please consider editing these words."],
+         "postamble": ["34 word(s) in your source code are considered offensive due to the fact that they\nare listed in our 'offensive word list'. In order to create a greater level of professionalism\nin your source code, please consider editing these words."],
          "preamble": [
             "Constructor and method tags which are not @param, @return, or @throws are not currently processed.",
             "The score in this module is calculated by determining the overall percentage of non-offensive words from all comments."
@@ -508,110 +482,24 @@
 }
 {
    "information": {
-      "constructors processed": 6,
+      "constructors processed": 5,
       "classes processed": 3,
       "description": "This module calculates the percentage of constructors and method that have associated\ncomments. The reported score is the overall percentage of methods and constructors\nwhich are commented. The length and/or content of the comment is not considered.\nOther types of comments (class-level, field-level) are not considered in this analysis.",
       "name": "Percentage Methods",
-      "constructors commented": 4,
+      "constructors commented": 5,
       "methods processed": 5,
       "methods commented": 5
    },
    "results": {
       "classes": {
-         "offensiveTest.Test2": {
-            "returns_analyzed": false,
-            "summary": ["0 of the 0 methods (0%) are commented."],
-            "methods": {},
-            "location": {},
-            "issues": ["0 of the 1 constructors (0%) are commented."],
-            "fields_analyzed": false,
-            "throws_analyzed": false,
-            "params_analyzed": false,
-            "numProblemsDetected": "1",
-            "constructors": {"offensiveTest.Test2()": {
-               "summary": [],
-               "location": {},
-               "issues": ["offensiveTest.Test2() is not commented at/near line 12."],
-               "throws": {},
-               "analyzed": {},
-               "parameters": {}
-            }},
-            "fields": {}
-         },
-         "offensiveTest.Test3": {
-            "returns_analyzed": false,
-            "summary": ["3 of the 3 methods (100%) are commented."],
-            "methods": {
-               "offensiveTest.Test3.returnTrue(int, int)": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {},
-                  "analyzed": {},
-                  "returns": [],
-                  "parameters": {}
-               },
-               "offensiveTest.Test3.returnTrue()": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {},
-                  "analyzed": {},
-                  "returns": [],
-                  "parameters": {}
-               },
-               "offensiveTest.Test3.main(java.lang.String[])": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {},
-                  "analyzed": {},
-                  "returns": [],
-                  "parameters": {}
-               }
-            },
-            "location": {},
-            "issues": ["2 of the 3 constructors (67%) are commented."],
-            "fields_analyzed": false,
-            "throws_analyzed": false,
-            "params_analyzed": false,
-            "numProblemsDetected": "1",
-            "constructors": {
-               "offensiveTest.Test3(int)": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {},
-                  "analyzed": {},
-                  "parameters": {}
-               },
-               "offensiveTest.Test3(java.lang.String)": {
-                  "summary": [],
-                  "location": {},
-                  "issues": ["offensiveTest.Test3(java.lang.String) is not commented at/near line 41."],
-                  "throws": {},
-                  "analyzed": {},
-                  "parameters": {}
-               },
-               "offensiveTest.Test3(boolean, int)": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {},
-                  "analyzed": {},
-                  "parameters": {}
-               }
-            },
-            "fields": {}
-         },
-         "offensiveTest.Test": {
+         "offensiveTest.NoOffensiveWords": {
             "returns_analyzed": false,
             "summary": [
                "2 of the 2 constructors (100%) are commented.",
                "2 of the 2 methods (100%) are commented."
             ],
             "methods": {
-               "offensiveTest.Test.main(java.lang.String[])": {
+               "offensiveTest.NoOffensiveWords.returnTrue()": {
                   "summary": [],
                   "location": {},
                   "issues": [],
@@ -620,7 +508,7 @@
                   "returns": [],
                   "parameters": {}
                },
-               "offensiveTest.Test.returnTrue()": {
+               "offensiveTest.NoOffensiveWords.main(java.lang.String[])": {
                   "summary": [],
                   "location": {},
                   "issues": [],
@@ -638,7 +526,7 @@
             "params_analyzed": false,
             "numProblemsDetected": "0",
             "constructors": {
-               "offensiveTest.Test(int, int)": {
+               "offensiveTest.NoOffensiveWords(int, int)": {
                   "summary": [],
                   "location": {},
                   "issues": [],
@@ -646,7 +534,7 @@
                   "analyzed": {},
                   "parameters": {}
                },
-               "offensiveTest.Test(int)": {
+               "offensiveTest.NoOffensiveWords(int)": {
                   "summary": [],
                   "location": {},
                   "issues": [],
@@ -655,6 +543,91 @@
                   "parameters": {}
                }
             },
+            "fields": {}
+         },
+         "offensiveTest.OneOffensiveWord": {
+            "returns_analyzed": false,
+            "summary": [
+               "2 of the 2 constructors (100%) are commented.",
+               "2 of the 2 methods (100%) are commented."
+            ],
+            "methods": {
+               "offensiveTest.OneOffensiveWord.returnTrue()": {
+                  "summary": [],
+                  "location": {},
+                  "issues": [],
+                  "throws": {},
+                  "analyzed": {},
+                  "returns": [],
+                  "parameters": {}
+               },
+               "offensiveTest.OneOffensiveWord.main(java.lang.String[])": {
+                  "summary": [],
+                  "location": {},
+                  "issues": [],
+                  "throws": {},
+                  "analyzed": {},
+                  "returns": [],
+                  "parameters": {}
+               }
+            },
+            "noProblemMessage": "No uncommented constructors or methods were found in processing this class.",
+            "location": {},
+            "issues": [],
+            "fields_analyzed": false,
+            "throws_analyzed": false,
+            "params_analyzed": false,
+            "numProblemsDetected": "0",
+            "constructors": {
+               "offensiveTest.OneOffensiveWord(int, int)": {
+                  "summary": [],
+                  "location": {},
+                  "issues": [],
+                  "throws": {},
+                  "analyzed": {},
+                  "parameters": {}
+               },
+               "offensiveTest.OneOffensiveWord(int)": {
+                  "summary": [],
+                  "location": {},
+                  "issues": [],
+                  "throws": {},
+                  "analyzed": {},
+                  "parameters": {}
+               }
+            },
+            "fields": {}
+         },
+         "offensiveTest.AllOffensiveWords": {
+            "returns_analyzed": false,
+            "summary": [
+               "1 of the 1 constructors (100%) are commented.",
+               "1 of the 1 methods (100%) are commented."
+            ],
+            "methods": {"offensiveTest.AllOffensiveWords.someMethod(java.lang.String, java.lang.String)": {
+               "summary": [],
+               "location": {},
+               "issues": [],
+               "throws": {},
+               "analyzed": {},
+               "returns": [],
+               "parameters": {}
+            }},
+            "noProblemMessage": "No uncommented constructors or methods were found in processing this class.",
+            "location": {},
+            "issues": [],
+            "fields_analyzed": false,
+            "throws_analyzed": false,
+            "params_analyzed": false,
+            "numProblemsDetected": "0",
+            "constructors": {"offensiveTest.AllOffensiveWords(int, int)": {
+               "summary": [],
+               "location": {},
+               "issues": [],
+               "throws": {},
+               "analyzed": {},
+               "parameters": {}
+            }},
             "fields": {}
          }
       },
@@ -665,18 +638,18 @@
          "5 method(s) were processed.",
          "5 method(s) were commented.",
          "100% method(s) were commented across all classes.",
-         "6 constructors(s) were processed.",
-         "4 constructors(s) were commented.",
-         "67% constructors(s) were commented across all classes."
+         "5 constructors(s) were processed.",
+         "5 constructors(s) were commented.",
+         "100% constructors(s) were commented across all classes."
       ],
-      "score": "82%",
+      "score": "100%",
       "timing": {
          "execution time": "1",
-         "start time": "1357786716263",
-         "end time": "1357786716264"
+         "start time": "1358053618386",
+         "end time": "1358053618387"
       },
       "notes": {
-         "postamble": ["2 location(s) (which are methods or constructors) in your source code are missing\nJavadoc comments. Consider commenting all of your constructors and methods to reduce\nthis amount. Additionally, if you are receiving false results, please be sure you\nare using the Javadoc commenting style (i.e. /**  **/)."],
+         "postamble": [],
          "preamble": [
             "References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis.",
             "The score in this module is calculated by determining the overall percentage of commented methods and constructors across all methods and constructors identified."
@@ -692,10 +665,29 @@
    },
    "results": {
       "classes": {
-         "offensiveTest.Test2": {
+         "offensiveTest.NoOffensiveWords": {
             "returns_analyzed": true,
             "summary": [],
-            "methods": {},
+            "methods": {
+               "offensiveTest.NoOffensiveWords.returnTrue()": {
+                  "summary": [],
+                  "location": {},
+                  "issues": [],
+                  "throws": {},
+                  "analyzed": {},
+                  "returns": [],
+                  "parameters": {}
+               },
+               "offensiveTest.NoOffensiveWords.main(java.lang.String[])": {
+                  "summary": [],
+                  "location": {},
+                  "issues": [],
+                  "throws": {"NullPointerException": []},
+                  "analyzed": {},
+                  "returns": [],
+                  "parameters": {"args": []}
+               }
+            },
             "noProblemMessage": "No spelling errors were found in processing this class.",
             "location": {},
             "issues": [],
@@ -703,161 +695,11 @@
             "throws_analyzed": true,
             "params_analyzed": true,
             "numProblemsDetected": "0",
-            "constructors": {"offensiveTest.Test2()": {
-               "summary": [],
-               "location": {},
-               "issues": [],
-               "throws": {},
-               "analyzed": {},
-               "parameters": {}
-            }},
-            "fields": {"offensiveTest.Test2.foo": {
-               "summary": [],
-               "location": {},
-               "issues": []
-            }}
-         },
-         "offensiveTest.Test3": {
-            "returns_analyzed": true,
-            "summary": [],
-            "methods": {
-               "offensiveTest.Test3.returnTrue(int, int)": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {
-                     "ClassCastException": ["'anotherz' considered a misspelled word on/near line 72."],
-                     "ArrayIndexOutOfBoundsException": ["'mizspelling' considered a misspelled word on/near line 72."]
-                  },
-                  "analyzed": {},
-                  "returns": [],
-                  "parameters": {
-                     "alpha": ["'Mizspelled' considered a misspelled word on/near line 72."],
-                     "beta": ["'mizspelleded' considered a misspelled word on/near line 72."]
-                  }
-               },
-               "offensiveTest.Test3.returnTrue()": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {
-                     "ClassCastException": [],
-                     "ArrayIndexOutOfBoundsException": []
-                  },
-                  "analyzed": {},
-                  "returns": ["'thiz' considered a misspelled word on/near line 59."],
-                  "parameters": {}
-               },
-               "offensiveTest.Test3.main(java.lang.String[])": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {},
-                  "analyzed": {},
-                  "returns": [],
-                  "parameters": {"args": []}
-               }
-            },
-            "location": {},
-            "issues": [],
-            "fields_analyzed": true,
-            "throws_analyzed": true,
-            "params_analyzed": true,
-            "numProblemsDetected": "10",
             "constructors": {
-               "offensiveTest.Test3(int)": {
+               "offensiveTest.NoOffensiveWords(int, int)": {
                   "summary": [],
                   "location": {},
                   "issues": [],
-                  "throws": {},
-                  "analyzed": {},
-                  "parameters": {"foo": []}
-               },
-               "offensiveTest.Test3(java.lang.String)": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {},
-                  "analyzed": {},
-                  "parameters": {}
-               },
-               "offensiveTest.Test3(boolean, int)": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [
-                     "'Mizspelling' considered a misspelled word on/near line 37.",
-                     "'constructrror' considered a misspelled word on/near line 37."
-                  ],
-                  "throws": {
-                     "ClassCastException": ["'anotherz' considered a misspelled word on/near line 37."],
-                     "ArrayIndexOutOfBoundsException": ["'mizspelling' considered a misspelled word on/near line 37."]
-                  },
-                  "analyzed": {},
-                  "parameters": {
-                     "foo": ["'mizspeling' considered a misspelled word on/near line 37."],
-                     "bar": []
-                  }
-               }
-            },
-            "fields": {
-               "offensiveTest.Test3.field1": {
-                  "summary": [],
-                  "location": {},
-                  "issues": []
-               },
-               "offensiveTest.Test3.field2": {
-                  "summary": [],
-                  "location": {},
-                  "issues": []
-               },
-               "offensiveTest.Test3.field3": {
-                  "summary": [],
-                  "location": {},
-                  "issues": []
-               }
-            }
-         },
-         "offensiveTest.Test": {
-            "returns_analyzed": true,
-            "summary": [],
-            "methods": {
-               "offensiveTest.Test.main(java.lang.String[])": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [],
-                  "throws": {"NullPointerException": []},
-                  "analyzed": {},
-                  "returns": [],
-                  "parameters": {"args": []}
-               },
-               "offensiveTest.Test.returnTrue()": {
-                  "summary": [],
-                  "location": {},
-                  "issues": ["'methodz' considered a misspelled word on/near line 43."],
-                  "throws": {},
-                  "analyzed": {},
-                  "returns": [],
-                  "parameters": {}
-               }
-            },
-            "location": {},
-            "issues": [
-               "'xxx' considered a misspelled word on/near line 8.",
-               "'COMTOR' considered a misspelled word on/near line 8."
-            ],
-            "fields_analyzed": true,
-            "throws_analyzed": true,
-            "params_analyzed": true,
-            "numProblemsDetected": "9",
-            "constructors": {
-               "offensiveTest.Test(int, int)": {
-                  "summary": [],
-                  "location": {},
-                  "issues": [
-                     "'missingz' considered a misspelled word on/near line 25.",
-                     "'HHH' considered a misspelled word on/near line 25.",
-                     "'MMM' considered a misspelled word on/near line 25."
-                  ],
                   "throws": {"NullPointerException": []},
                   "analyzed": {},
                   "parameters": {
@@ -865,44 +707,168 @@
                      "three": []
                   }
                },
-               "offensiveTest.Test(int)": {
+               "offensiveTest.NoOffensiveWords(int)": {
                   "summary": [],
                   "location": {},
-                  "issues": [
-                     "'Multi' considered a misspelled word on/near line 16.",
-                     "'aboutz' considered a misspelled word on/near line 16."
-                  ],
+                  "issues": [],
                   "throws": {},
                   "analyzed": {},
-                  "parameters": {}
+                  "parameters": {"one": []}
                }
             },
-            "fields": {"offensiveTest.Test.foo": {
+            "fields": {"offensiveTest.NoOffensiveWords.foo": {
                "summary": [],
                "location": {},
-               "issues": ["'agout' considered a misspelled word on/near line 10."]
+               "issues": []
+            }}
+         },
+         "offensiveTest.OneOffensiveWord": {
+            "returns_analyzed": true,
+            "summary": [],
+            "methods": {
+               "offensiveTest.OneOffensiveWord.returnTrue()": {
+                  "summary": [],
+                  "location": {},
+                  "issues": ["'xxx' considered a misspelled word on/near line 60."],
+                  "throws": {},
+                  "analyzed": {},
+                  "returns": ["'xxx' considered a misspelled word on/near line 60."],
+                  "parameters": {}
+               },
+               "offensiveTest.OneOffensiveWord.main(java.lang.String[])": {
+                  "summary": [],
+                  "location": {},
+                  "issues": ["'xxx' considered a misspelled word on/near line 48."],
+                  "throws": {"NullPointerException": ["'xxx' considered a misspelled word on/near line 48."]},
+                  "analyzed": {},
+                  "returns": [],
+                  "parameters": {"args": ["'xxx' considered a misspelled word on/near line 48."]}
+               }
+            },
+            "location": {},
+            "issues": ["'xxx' considered a misspelled word on/near line 12."],
+            "fields_analyzed": true,
+            "throws_analyzed": true,
+            "params_analyzed": true,
+            "numProblemsDetected": "12",
+            "constructors": {
+               "offensiveTest.OneOffensiveWord(int, int)": {
+                  "summary": [],
+                  "location": {},
+                  "issues": ["'xxx' considered a misspelled word on/near line 34."],
+                  "throws": {"NullPointerException": ["'xxx' considered a misspelled word on/near line 34."]},
+                  "analyzed": {},
+                  "parameters": {
+                     "two": ["'xxx' considered a misspelled word on/near line 34."],
+                     "three": []
+                  }
+               },
+               "offensiveTest.OneOffensiveWord(int)": {
+                  "summary": [],
+                  "location": {},
+                  "issues": ["'xxx' considered a misspelled word on/near line 22."],
+                  "throws": {},
+                  "analyzed": {},
+                  "parameters": {"one": ["'xxx' considered a misspelled word on/near line 22."]}
+               }
+            },
+            "fields": {"offensiveTest.OneOffensiveWord.foo": {
+               "summary": [],
+               "location": {},
+               "issues": ["'xxx' considered a misspelled word on/near line 14."]
+            }}
+         },
+         "offensiveTest.AllOffensiveWords": {
+            "returns_analyzed": true,
+            "summary": [],
+            "methods": {"offensiveTest.AllOffensiveWords.someMethod(java.lang.String, java.lang.String)": {
+               "summary": [],
+               "location": {},
+               "issues": [
+                  "'xxx' considered a misspelled word on/near line 40.",
+                  "'XXX' considered a misspelled word on/near line 40."
+               ],
+               "throws": {"NullPointerException": [
+                  "'XXX' considered a misspelled word on/near line 40.",
+                  "'XXX' considered a misspelled word on/near line 40."
+               ]},
+               "analyzed": {},
+               "returns": [
+                  "'xxx' considered a misspelled word on/near line 40.",
+                  "'xxx' considered a misspelled word on/near line 40."
+               ],
+               "parameters": {
+                  "arg2": [
+                     "'xxx' considered a misspelled word on/near line 40.",
+                     "'xxx' considered a misspelled word on/near line 40."
+                  ],
+                  "arg1": [
+                     "'XXX' considered a misspelled word on/near line 40.",
+                     "'XXX' considered a misspelled word on/near line 40."
+                  ]
+               }
+            }},
+            "location": {},
+            "issues": [
+               "'xxx' considered a misspelled word on/near line 12.",
+               "'xxx' considered a misspelled word on/near line 12."
+            ],
+            "fields_analyzed": true,
+            "throws_analyzed": true,
+            "params_analyzed": true,
+            "numProblemsDetected": "22",
+            "constructors": {"offensiveTest.AllOffensiveWords(int, int)": {
+               "summary": [],
+               "location": {},
+               "issues": [
+                  "'xxx' considered a misspelled word on/near line 24.",
+                  "'xxx' considered a misspelled word on/near line 24."
+               ],
+               "throws": {"NullPointerException": [
+                  "'xxx' considered a misspelled word on/near line 24.",
+                  "'xxx' considered a misspelled word on/near line 24."
+               ]},
+               "analyzed": {},
+               "parameters": {
+                  "two": [
+                     "'xxx' considered a misspelled word on/near line 24.",
+                     "'xxx' considered a misspelled word on/near line 24."
+                  ],
+                  "three": [
+                     "'xxx' considered a misspelled word on/near line 24.",
+                     "'xxx' considered a misspelled word on/near line 24."
+                  ]
+               }
+            }},
+            "fields": {"offensiveTest.AllOffensiveWords.foo": {
+               "summary": [],
+               "location": {},
+               "issues": [
+                  "'xxx' considered a misspelled word on/near line 14.",
+                  "'xxx' considered a misspelled word on/near line 14."
+               ]
             }}
          }
       },
       "charts": [],
       "packages": {},
       "metrics": [
-         "14% of the words in the comments were misspelled.",
-         "124 words analyzed.",
+         "0% of the words in the comments were misspelled.",
+         "434 words analyzed.",
          "3 class(es) were processed.",
-         "42 correctly spelled words (excludes duplicates)",
-         "17 incorrectly spelled words (excludes duplicates)",
-         "63 duplicate good words",
-         "2 duplicate bad words"
+         "93 correctly spelled words (excludes duplicates)",
+         "2 incorrectly spelled words (excludes duplicates)",
+         "307 duplicate good words",
+         "32 duplicate bad words"
       ],
-      "score": "85%",
+      "score": "92%",
       "timing": {
-         "execution time": "7",
-         "start time": "1357786721895",
-         "end time": "1357786721902"
+         "execution time": "12",
+         "start time": "1358053620587",
+         "end time": "1358053620599"
       },
       "notes": {
-         "postamble": ["17 word(s) in your source code are considered spelled incorrectly due to the fact\nthat they are listed in our dictionary. In order to create a greater level of professionalism\nin your source code, please consider editing these words. If you believe you have\na false positive result, please email the COMTOR team at comtor@tcnj.edu and we\nconsider your submission to the dictionary."],
+         "postamble": ["2 word(s) in your source code are considered spelled incorrectly due to the fact\nthat they are listed in our dictionary. In order to create a greater level of professionalism\nin your source code, please consider editing these words. If you believe you have\na false positive result, please email the COMTOR team at comtor@tcnj.edu and we\nconsider your submission to the dictionary."],
          "preamble": [
             "Constructor and method tags which are not @param, @return, or @throws are not currently processed.",
             "The score in this module is calculated by determining the overall percentage of correctly spelled words from all comments "
