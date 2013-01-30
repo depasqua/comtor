@@ -83,6 +83,7 @@
 	<target name="testCli" description="Runs the CLI version of COMTOR on the test files.">
 		<antcall target="-runtest1"/>
 		<antcall target="-runtest2"/>
+		<antcall target="-runtest3"/>
 
 		<delete>
 			<fileset dir=".">
@@ -113,6 +114,20 @@
 	<!-- Executes the cli against the tests/test2-nocomments directory -->
 	<target name="-runtest2" description="Runs the CLI version of COMTOR on the test files found in the tests/test2-nocomment directory.">
 		<property name="dirpath" location="../tests/test2-nocomments"/>
+		<java jar="comtor.jar" fork="true" resultproperty="execResult">
+			<arg value="-dir"/>
+			<arg path="${dirpath}"/>
+		</java>
+
+		<condition property="runFail" value="true">
+			<equals arg1="${execResult}" arg2="1"/>
+		</condition>
+		<antcall target="-runCliOutput"/>
+	</target>
+
+	<!-- Executes the cli against the tests/test3-spellCheck directory -->
+	<target name="-runtest3" description="Runs the CLI version of COMTOR on the test files found in the tests/test3-spellCheck directory.">
+		<property name="dirpath" location="../tests/test3-spellCheck"/>
 		<java jar="comtor.jar" fork="true" resultproperty="execResult">
 			<arg value="-dir"/>
 			<arg path="${dirpath}"/>
