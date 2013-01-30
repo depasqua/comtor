@@ -1,0 +1,398 @@
+{
+   "information": {
+      "classes processed": 1,
+      "description": "This module validates the presence of the @author tag in each class. Additionally,\nthis module checks for non-blank @author tags (missing names following the tag).",
+      "name": "Check Author",
+      "classes with errors": 0,
+      "tags errors": 0,
+      "tags found": 1
+   },
+   "results": {
+      "classes": {"spellCheck.Test": {
+         "returns_analyzed": false,
+         "summary": ["@author tag found: javajava java"],
+         "methods": {},
+         "noProblemMessage": "1 or more @author tags were found.",
+         "location": {},
+         "issues": [],
+         "fields_analyzed": false,
+         "throws_analyzed": false,
+         "params_analyzed": false,
+         "constructors": {},
+         "fields": {}
+      }},
+      "charts": [],
+      "packages": {},
+      "metrics": [
+         "1 class(es) were processed.",
+         "0 class(es) contained errors related to the use of the @author tag.",
+         "0 class(es) are missing @author tags.",
+         "0 @author tag(s) are empty (missing names following tag)",
+         "1 @author tag(s) were located with text following the tags."
+      ],
+      "score": "100%",
+      "timing": {
+         "execution time": "2",
+         "start time": "1358109521309",
+         "end time": "1358109521311"
+      },
+      "notes": {
+         "postamble": [],
+         "preamble": [
+            "The @author tag is widely used to show who has contributed source code to a class.",
+            "Multiple @author tags are permitted in the class-block of comments.",
+            "References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis.",
+            "The score in this module is calculated by determining the percentage of classes processed that contain no errors (contain @author tags with strings following the tag)."
+         ]
+      }
+   }
+}
+{
+   "information": {
+      "description": "This module analyzes the length (in terms of the number of words) of class, constructor,\nand method comments. The reported score is the ratio of the number of words that\ncomprise the comments to the overall number of comments.",
+      "name": "Comment Average Ratio"
+   },
+   "results": {
+      "classes": {"spellCheck.Test": {
+         "returns_analyzed": false,
+         "summary": [
+            "There were 42 words in the class comments.",
+            "The average length of all comments in the class (including all members) is 18 words."
+         ],
+         "methods": {
+            "spellCheck.Test.main(java.lang.String[])": {
+               "summary": ["The length of comments is 18 words (on/near line 40)."],
+               "location": "40",
+               "issues": [],
+               "throws": {},
+               "analyzed": {},
+               "returns": [],
+               "parameters": {}
+            },
+            "spellCheck.Test.returnTrue()": {
+               "summary": ["The length of comments is 8 words (on/near line 51)."],
+               "location": "51",
+               "issues": [],
+               "throws": {},
+               "analyzed": {},
+               "returns": [],
+               "parameters": {}
+            }
+         },
+         "location": "12",
+         "issues": [],
+         "fields_analyzed": true,
+         "throws_analyzed": false,
+         "params_analyzed": false,
+         "constructors": {"spellCheck.Test(int, int)": {
+            "summary": ["The length of comments is 18 words (on/near line 25)."],
+            "location": "25",
+            "issues": [],
+            "throws": {},
+            "analyzed": {},
+            "parameters": {}
+         }},
+         "fields": {"spellCheck.Test.foo": {
+            "summary": ["The length of comments is 7 words (on/near line 14)."],
+            "location": "14",
+            "issues": []
+         }}
+      }},
+      "charts": [],
+      "packages": {},
+      "metrics": [
+         "A total of 1 classes were processed.",
+         "A total of 1 constructors were processed.",
+         "A total of 2 methods were processed.",
+         "A total of 1 fields were processed.",
+         "A total of 93 words were processed.",
+         "A total of 5 class, constructor, method, and field comments were processed.",
+         "The overall average number of words per comment is 18."
+      ],
+      "score": "18.60",
+      "timing": {
+         "execution time": "4",
+         "start time": "1358109521313",
+         "end time": "1358109521317"
+      },
+      "notes": {
+         "postamble": [],
+         "preamble": [
+            "Javadoc tags (@tag) from constructors and methods are not considered as a part of this analysis.",
+            "The score in this module is calculated by determining the ratio of the number of words from comments to the total number of comments."
+         ]
+      }
+   }
+}
+{
+   "information": {
+      "constructors processed": 1,
+      "fields processed": 1,
+      "classes processed": 1,
+      "description": "This module identifies \"offensive\" English words used in comments at the class, method,\nand field level. Usage of these types of words is considered to be unprofessional.\nThe COMTOR dictionary list of offensive words contains over 1,300 words and word\nvariants. If you have a suggestion for a word that should be added to the dictionary,\nplease email the COMTOR team at comtor@tcnj.edu.",
+      "name": "Offensive Words",
+      "methods processed": 2,
+      "packages processed": 1,
+      "parameters processed": 4,
+      "total number of words processed": 163
+   },
+   "results": {
+      "classes": {"spellCheck.Test": {
+         "returns_analyzed": true,
+         "summary": [],
+         "methods": {
+            "spellCheck.Test.main(java.lang.String[])": {
+               "summary": [],
+               "location": {},
+               "issues": [],
+               "throws": {"Throws": []},
+               "analyzed": {},
+               "returns": [],
+               "parameters": {
+                  "two": [],
+                  "three": []
+               }
+            },
+            "spellCheck.Test.returnTrue()": {
+               "summary": [],
+               "location": {},
+               "issues": [],
+               "throws": {},
+               "analyzed": {},
+               "returns": [],
+               "parameters": {}
+            }
+         },
+         "noProblemMessage": "No offensive words were found in processing this class.",
+         "location": {},
+         "issues": [],
+         "fields_analyzed": true,
+         "throws_analyzed": true,
+         "params_analyzed": true,
+         "numProblemsDetected": "0",
+         "constructors": {"spellCheck.Test(int, int)": {
+            "summary": [],
+            "location": {},
+            "issues": [],
+            "throws": {"Throws": []},
+            "analyzed": {},
+            "parameters": {
+               "two": [],
+               "three": []
+            }
+         }},
+         "fields": {"spellCheck.Test.foo": {
+            "summary": [],
+            "location": {},
+            "issues": []
+         }}
+      }},
+      "charts": [],
+      "packages": {"spellCheck": []},
+      "metrics": [
+         "1 package(s) were processed.",
+         "1 class(es) were processed.",
+         "1 constructor(s) were processed.",
+         "2 method(s) were processed.",
+         "4 parameter(s) were processed.",
+         "1 field(s) were processed.",
+         "163 words were processed (including duplicates).",
+         "71 unique words were processed (excludes duplicates).",
+         "0 'offensive' words were identified (including duplicates)."
+      ],
+      "score": "100%",
+      "timing": {
+         "execution time": "13",
+         "start time": "1358109521925",
+         "end time": "1358109521938"
+      },
+      "notes": {
+         "postamble": ["0 word(s) in your source code are considered offensive due to the fact that they\nare listed in our 'offensive word list'. In order to create a greater level of professionalism\nin your source code, please consider editing these words."],
+         "preamble": [
+            "Constructor and method tags which are not @param, @return, or @throws are not currently processed.",
+            "The score in this module is calculated by determining the overall percentage of non-offensive words from all comments."
+         ]
+      }
+   }
+}
+{
+   "information": {
+      "constructors processed": 1,
+      "classes processed": 1,
+      "description": "This module calculates the percentage of constructors and method that have associated\ncomments. The reported score is the overall percentage of methods and constructors\nwhich are commented. The length and/or content of the comment is not considered.\nOther types of comments (class-level, field-level) are not considered in this analysis.",
+      "name": "Percentage Methods",
+      "constructors commented": 1,
+      "methods processed": 2,
+      "methods commented": 2
+   },
+   "results": {
+      "classes": {"spellCheck.Test": {
+         "returns_analyzed": false,
+         "summary": [
+            "1 of the 1 constructors (100%) are commented.",
+            "2 of the 2 methods (100%) are commented."
+         ],
+         "methods": {
+            "spellCheck.Test.main(java.lang.String[])": {
+               "summary": [],
+               "location": {},
+               "issues": [],
+               "throws": {},
+               "analyzed": {},
+               "returns": [],
+               "parameters": {}
+            },
+            "spellCheck.Test.returnTrue()": {
+               "summary": [],
+               "location": {},
+               "issues": [],
+               "throws": {},
+               "analyzed": {},
+               "returns": [],
+               "parameters": {}
+            }
+         },
+         "noProblemMessage": "No uncommented constructors or methods were found in processing this class.",
+         "location": {},
+         "issues": [],
+         "fields_analyzed": false,
+         "throws_analyzed": false,
+         "params_analyzed": false,
+         "numProblemsDetected": "0",
+         "constructors": {"spellCheck.Test(int, int)": {
+            "summary": [],
+            "location": {},
+            "issues": [],
+            "throws": {},
+            "analyzed": {},
+            "parameters": {}
+         }},
+         "fields": {}
+      }},
+      "charts": [],
+      "packages": {},
+      "metrics": [
+         "1 class(es) were processed.",
+         "2 method(s) were processed.",
+         "2 method(s) were commented.",
+         "100% method(s) were commented across all classes.",
+         "1 constructors(s) were processed.",
+         "1 constructors(s) were commented.",
+         "100% constructors(s) were commented across all classes."
+      ],
+      "score": "100%",
+      "timing": {
+         "execution time": "1",
+         "start time": "1358109521322",
+         "end time": "1358109521323"
+      },
+      "notes": {
+         "postamble": [],
+         "preamble": [
+            "References to line numbers in this report are generally to the subsequent non-comment Java statement that follows the commment/comment block under analysis.",
+            "The score in this module is calculated by determining the overall percentage of commented methods and constructors across all methods and constructors identified."
+         ]
+      }
+   }
+}
+{
+   "information": {
+      "classes processed": 1,
+      "description": "This module compares words found in comments against an English word dictionary.\nThe COMTOR word dictionary contains more than 97,000 entries. The analysis includes\nthe list of known Java API classes (JDK), HTML tags and attributes, Java keywords,\nand user-defined symbols from the submitted code (class, method, constructor, field\nnames). COMTOR uses JavaDoc, as such JavaDoc does not provide access to local variables\nwithin methods and blocks. Thus, the word list is not exhaustive.",
+      "name": "Spell Check"
+   },
+   "results": {
+      "classes": {"spellCheck.Test": {
+         "returns_analyzed": true,
+         "summary": [],
+         "methods": {
+            "spellCheck.Test.main(java.lang.String[])": {
+               "summary": [],
+               "location": {},
+               "issues": [
+                  "'testz' considered a misspelled word on/near line 40.",
+                  "'param'' considered a misspelled word on/near line 40.",
+                  "'throws'' considered a misspelled word on/near line 40."
+               ],
+               "throws": {"Throws": [
+                  "'refernce' considered a misspelled word on/near line 40.",
+                  "'assigment' considered a misspelled word on/near line 40."
+               ]},
+               "analyzed": {},
+               "returns": [],
+               "parameters": {
+                  "two": ["'spelleded' considered a misspelled word on/near line 40."],
+                  "three": []
+               }
+            },
+            "spellCheck.Test.returnTrue()": {
+               "summary": [],
+               "location": {},
+               "issues": ["'return'' considered a misspelled word on/near line 51."],
+               "throws": {},
+               "analyzed": {},
+               "returns": ["'trueue' considered a misspelled word on/near line 51."],
+               "parameters": {}
+            }
+         },
+         "location": {},
+         "issues": [
+            "''aa'' considered a misspelled word on/near line 12.",
+            "'misspeldt' considered a misspelled word on/near line 12.",
+            "'author'' considered a misspelled word on/near line 12.",
+            "'author'' considered a misspelled word on/near line 12."
+         ],
+         "fields_analyzed": true,
+         "throws_analyzed": true,
+         "params_analyzed": true,
+         "numProblemsDetected": "19",
+         "constructors": {"spellCheck.Test(int, int)": {
+            "summary": [],
+            "location": {},
+            "issues": [
+               "'testz' considered a misspelled word on/near line 25.",
+               "'param'' considered a misspelled word on/near line 25.",
+               "'throws'' considered a misspelled word on/near line 25."
+            ],
+            "throws": {"Throws": [
+               "'refernce' considered a misspelled word on/near line 25.",
+               "'assigment' considered a misspelled word on/near line 25."
+            ]},
+            "analyzed": {},
+            "parameters": {
+               "two": ["'spelleded' considered a misspelled word on/near line 25."],
+               "three": []
+            }
+         }},
+         "fields": {"spellCheck.Test.foo": {
+            "summary": [],
+            "location": {},
+            "issues": ["'Anither' considered a misspelled word on/near line 14."]
+         }}
+      }},
+      "charts": [],
+      "packages": {},
+      "metrics": [
+         "7% of the words in the comments were misspelled.",
+         "163 words analyzed.",
+         "1 class(es) were processed.",
+         "61 correctly spelled words (excludes duplicates)",
+         "12 incorrectly spelled words (excludes duplicates)",
+         "83 duplicate good words",
+         "7 duplicate bad words"
+      ],
+      "score": "88%",
+      "timing": {
+         "execution time": "5",
+         "start time": "1358109523900",
+         "end time": "1358109523905"
+      },
+      "notes": {
+         "postamble": ["12 word(s) in your source code are considered spelled incorrectly due to the fact\nthat they are listed in our dictionary. In order to create a greater level of professionalism\nin your source code, please consider editing these words. If you believe you have\na false positive result, please email the COMTOR team at comtor@tcnj.edu and we\nconsider your submission to the dictionary."],
+         "preamble": [
+            "Constructor and method tags which are not @param, @return, or @throws are not currently processed.",
+            "The score in this module is calculated by determining the overall percentage of correctly spelled words from all comments "
+         ]
+      }
+   }
+}
