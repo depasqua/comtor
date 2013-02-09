@@ -38,6 +38,7 @@ public final class OffensiveWords implements ComtorDoclet {
 
 	// Hash sets that hold the list of 'bad' (offensive) words found in comments and the unique words processed
 	private HashSet<String> badWordsList = new HashSet<String>();
+	private HashSet<String> whiteList = new HashSet<String>();
 	private HashSet<String> uniqueWordList = new HashSet<String>();
 	
 	// Counters for the packages, classes, and members
@@ -68,7 +69,8 @@ public final class OffensiveWords implements ComtorDoclet {
 
 		// Load the bad words list into a hashset
 		Util.loadDataList("badwords.txt", badWordsList, true, this.getClass().getName());
-		
+		Util.loadDataList("offensiveWhiteList.txt", whiteList, true, this.getClass().getName());
+
 		// Capture the starting time, just prior to the start of the analysis
 		long startTime = new Date().getTime();
 
@@ -234,7 +236,7 @@ public final class OffensiveWords implements ComtorDoclet {
 			totalNumWords++;
 			String word = scan.next().toLowerCase();
 			uniqueWordList.add(word);
-			if (badWordsList.contains(word)) {
+			if (badWordsList.contains(word) && !whiteList.contains(word)) {
 				numBadWords++;
 				numProblems++;
 				report.appendMessage(ReportItem.LASTITEM, "'" + word + "' considered an offensive word " +
