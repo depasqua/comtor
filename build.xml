@@ -55,6 +55,7 @@
 		<delete>
 			<fileset dir="." casesensitive="yes">
 				<include name="**/*~ "/>
+				<include name="**/*.class"/>
 				<include name="**/.DS_Store"/>
 				<include name="comtorReport.txt"/>
 				<include name="trace-*.txt"/>
