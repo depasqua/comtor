@@ -147,7 +147,7 @@ public class AWSServices {
 	 * @param hostname	User's ISP Host for metrics
 	 * @return			Return successful = TRUE if DynamoDB request is successful, else FALSE
 	 */
-	public static boolean addUser(String email, String ipAddress, String hostname) {
+	public static boolean addUser(String email, String ipAddress, String hostname, HttpServletRequest request) {
 		 boolean successful = false;
 		 
 		 // If database does not already contain the specified key for the email, insert a new one.
@@ -162,10 +162,67 @@ public class AWSServices {
 			dynamoDB.putItem(putItemRequest);
 
 			putItemRequest = new PutItemRequest(keyTable, items[1]);
-			dynamoDB.putItem(putItemRequest);		
+			dynamoDB.putItem(putItemRequest);
+
 			successful = true;
 		 }
+
+		// Send the user an email with the API key
+		sendKeyEmail(email, getAPIKey(email), request);
+
 		 return successful;	
+	}
+
+	/**
+	 * Sends an email to the specified recipient. This method is called after
+	 * the API key has been generated.
+	 *
+	 * @param toAddr the recipient's email address
+	 * @param apiKey the API for the specified email address
+	 * @param req the servlet handling the inbound HTTP request	 
+	 */
+	public static void sendKeyEmail(String toAddr, String apiKey, HttpServletRequest req) {
+		String comtorEmail = "comtor@tcnj.edu";
+		try {
+			// Create a new Message
+			com.amazonaws.services.simpleemail.model.Message msg =
+				new com.amazonaws.services.simpleemail.model.Message().withSubject(new Content("COMTOR API Key Request"));
+			SendEmailRequest request = new SendEmailRequest().withSource(comtorEmail);
+			Destination dest = new Destination().withToAddresses(toAddr);
+			request.withDestination(dest);
+
+			String contextBase = "http://" + req.getServerName();
+			String contextPath = req.getContextPath();
+
+			if (req.getServerPort() != 80)
+				contextBase += ":" + req.getServerPort();
+
+			if (contextPath.equals(""))
+				contextBase += "/";
+			else
+				contextBase += contextPath;
+
+			String msgText = "<img style=\"margin-left: auto; margin-right: auto; display: block;\" " +
+					"src=\"" + contextBase + "/images/comtor/comtorLogo.png\" width=\"160\" " +
+					"alt=\"COMTOR logo\"/>";
+			msgText += "<p>Thank you for your API key request for the " + toAddr + " email address. ";
+			msgText += "Your COMTOR API key is: <b>" + apiKey + "</b></p>";
+			msgText += "If you have any questions, you can always reach the COMTOR team at: " ;
+			msgText += "<a href=\"mailto:" + comtorEmail + "\">" + comtorEmail + "</a>.";
+
+			Content htmlContent = new Content().withData(msgText);
+			Body body = new Body().withHtml(htmlContent);
+			msg.setBody(body);
+			
+			request.setMessage(msg);
+			ses.sendEmail(request);
+
+		} catch (AmazonClientException e) {
+			e.printStackTrace();
+			System.err.println("Caught a AmazonClientException, which means that there was a "
+					+ "problem sending your message to Amazon's E-mail Service check the "
+					+ "stack trace for more information.");
+		}
 	}
 
 	/**

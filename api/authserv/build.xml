@@ -48,7 +48,6 @@
 	<!-- Builds the war file for TOMCAT/cloud release -->
 	<target name="createWar" depends="compile" description="Builds the war file for the authserv release.">
 		<war destfile="${warfilename}" webxml="${apiauthservBaseDir}/WEB-INF/web.xml">
-			<fileset dir="${apiauthservBaseDir}/Web-Content"/>
 			<lib dir="${apiauthservBaseDir}/WEB-INF/lib" excludes="javax.jar"/>
 			<classes dir="${apiauthservClasses}"/>
 		</war>
@@ -67,6 +66,4 @@
 		<antcall target="warUndeploy"/>
 		<antcall target="warDeploy"/>
 	</target>
-
-
 </project>

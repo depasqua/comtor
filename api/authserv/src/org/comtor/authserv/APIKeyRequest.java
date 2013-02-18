@@ -50,10 +50,9 @@ public class APIKeyRequest extends HttpServlet {
 		String email = request.getParameter("email");
 
 		if (email != null) {
-			boolean success = AWSServices.addUser(email, ipAddress, hostname);
-			String key = AWSServices.getAPIKey(email);
+			boolean success = AWSServices.addUser(email, ipAddress, hostname, request);
 			Map<String, String> responseStruct = new HashMap<String, String>();
-			responseStruct.put("apikey", key);  // return the new key, or the existing key; no email sent!
+			responseStruct.put("request_processed", "true");
 
 			ObjectMapper mapper = new ObjectMapper();
 			String userResponse = mapper.writeValueAsString(responseStruct);
