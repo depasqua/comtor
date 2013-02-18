@@ -21,7 +21,7 @@
 	<!-- Compiles the sourec code of the COMTOR application (lamp, cloud, cli) -->
 	<target name="compile" description="Compiles the source code of the COMTOR app">
 		<mkdir dir="${cloudClasses}"/>
-		<javac srcdir="${cloudSrc}" destdir="${cloudClasses}" includeantruntime="false"
+		<javac srcdir="${cloudSrc}" destdir="${cloudClasses}" includeantruntime="false" debug="true" debuglevel="lines,vars,source"
 			excludes="org/comtor/incomplete/** org/comtor/examples/**">
 			<classpath>
 				<path refid="comtor.class.path"/>
@@ -36,6 +36,17 @@
 	<target name="cli" depends="compile" description="Builds a distributable .jar file for use as a stand-alone application">
 		<tstamp/>
 		<copy file="../loggerconfig/log4j2.xml.cli" tofile="log4j2.xml" overwrite="true"/>
+		<mkdir dir="temp"/>
+		<unjar dest="temp">
+			<fileset dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib">
+				<include name="log4j*.jar"/>
+			</fileset>
+
+			<patternset>
+				<include name="org/**"/>
+			</patternset>
+		</unjar>
+
 		<jar destfile="${jarfilename}">
 			<manifest>
 				<attribute name="Main-Class" value="org.comtor.drivers.Comtor"/>
@@ -44,19 +55,28 @@
 				<attribute name="Implementation-Version" value="${version} ${TODAY}"/> 
 				<attribute name="Implementation-Vendor" value="The College of New Jersey"/>
 			</manifest>
+
 			<fileset dir="${cloudClasses}">
 				<include name="**/*.class"/>
 				<exclude name="org/comtor/cloud/*.class"/>
 			</fileset>
+
+			<fileset dir="temp">
+				<include name="org/**"/>
+			</fileset>
+
 			<fileset dir=".">
 				<include name="log4j2.xml"/>
 			</fileset>
 		</jar>
 		<delete file="log4j2.xml"/>
+		<delete dir="temp"/>
 	</target>
 
 	<!-- Initiates execution of the CLI -->
 	<target name="executeCli" depends="-promptDir" if="dirPresent" description="Runs the CLI version of COMTOR.">
+		<copy file="../loggerconfig/log4j2.xml.cli" tofile="${dirpath}/log4j2.xml" overwrite="true"/>
+
 		<java jar="comtor.jar" fork="true" resultproperty="execResult">
 			<arg value="-dir"/>
 			<arg path="${dirpath}"/>
@@ -64,12 +84,14 @@
 
 		<delete>
 			<fileset dir=".">
+				<include name="log4j2.xml"/>
 				<include name="badwords.txt"/>
 				<include name="dictionary.txt"/>
 				<include name="htmltags.txt"/>
 				<include name="javaKeywords.txt"/>
 				<include name="javaclasslist.txt"/>
 				<include name="usersubmitted.txt"/>
+				<include name="offensiveWhiteList.txt"/>
 			</fileset>
 		</delete>
 
@@ -93,6 +115,7 @@
 				<include name="javaKeywords.txt"/>
 				<include name="javaclasslist.txt"/>
 				<include name="usersubmitted.txt"/>
+				<include name="offensiveWhiteList.txt"/>
 			</fileset>
 		</delete>
 	</target>
