@@ -29,12 +29,16 @@ import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import org.comtor.util.*;
 import org.comtor.drivers.*;
 import org.comtor.analyzers.*;
 
 @SuppressWarnings("serial")
 public class CloudUpload extends HttpServlet {
+	private static Logger logger = LogManager.getLogger(CloudUpload.class.getName());
 	private static final String DESTINATION_DIR_PATH = "/files";
 	private File tmpDir;
 	private File destinationDir;
@@ -50,11 +54,14 @@ public class CloudUpload extends HttpServlet {
 	 * @throws ServletException if an exception occurs that interrupts the servlet's normal operation
 	 */
 	public void init(ServletConfig config) throws ServletException {
+		logger.entry();
 		super.init(config);
 		ServletSupport.setTempDir((File) getServletContext().getAttribute("javax.servlet.context.tempdir"));
 		destinationDir = new File(getServletContext().getRealPath(DESTINATION_DIR_PATH));
 		if (!destinationDir.isDirectory())
 			throw new ServletException(DESTINATION_DIR_PATH + " is not a directory.");
+		logger.exit();
+		System.err.println("cloud init: " + CloudUpload.class.getName());
 	}
 
 	/**
@@ -63,6 +70,7 @@ public class CloudUpload extends HttpServlet {
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		logger.entry();
 		String emailAddress = "";
 		String requesterIPAddress = request.getRemoteAddr();
 		PrintWriter out = response.getWriter();
@@ -167,10 +175,15 @@ public class CloudUpload extends HttpServlet {
 				AWSServices.sendEmail(emailAddress, msgText);
 
 				// Record cloud usage, but not for the dev version.
-				if (!contextPath.equals("comtorDev/")) {
+				if (!contextPath.equals("/comtorDev")) {
 					GregorianCalendar now = new GregorianCalendar();
-					AWSServices.storeCloudUse(requesterIPAddress, sessionID, htmlReportURLString, emailAddress, now.getTime().toString());
-					AWSServices.storeCloudUse(requesterIPAddress, sessionID, textReportURLString, emailAddress, now.getTime().toString());
+					File jsonFile = new File(pathToFile + java.io.File.separator + "jsonOut.txt");
+//					AWSServices.storeCloudUse(requesterIPAddress, sessionID, jsonFile, emailAddress, now.getTimeInMillis());
+				} else {
+					// to be removed once we are happy that this release is solid...
+					GregorianCalendar now = new GregorianCalendar();
+					File jsonFile = new File(pathToFile + java.io.File.separator + "jsonOut.txt");
+					AWSServices.storeCloudUse(requesterIPAddress, sessionID, jsonFile, emailAddress, now.getTimeInMillis());
 				}
 
 				// Start of output returned
@@ -201,13 +214,14 @@ public class CloudUpload extends HttpServlet {
 
 				out.println("</html>");
 			} catch (Exception ex) {
-				System.err.println(ex);
+				logger.error(ex);
 			}
 		} catch (FileUploadException ex) {
-			System.err.println("Error encountered while parsing the request" + ex);
+			logger.error("Error encountered while parsing the request" + ex);
 		} catch (Exception ex) {
-			System.err.println("Error encountered while uploading file" + ex);
+			logger.error("Error encountered while uploading file" + ex);
 		}
+		logger.exit();
 	}
 
 	/**
@@ -217,7 +231,9 @@ public class CloudUpload extends HttpServlet {
 	 */
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 				throws ServletException, IOException {
+		logger.entry();
 		doPost(request, response);
+		logger.exit();
 	}
 	
 	/**
@@ -228,6 +244,7 @@ public class CloudUpload extends HttpServlet {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static void extractJarFile(File file, String path) {
+		logger.entry();
 		try {
 			JarFile jar = new JarFile(file);
 			Enumeration jarEnum = jar.entries();
@@ -288,8 +305,9 @@ public class CloudUpload extends HttpServlet {
 					}
 			}
 		} catch (Exception ex) {
-			System.err.println("Error encountered while unjarring.");
-			System.err.println(ex);
+			logger.error("Error encountered while unjarring.");
+			logger.error(ex);
 		}
+		logger.exit();
 	}
 }

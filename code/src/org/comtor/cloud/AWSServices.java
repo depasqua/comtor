@@ -33,14 +33,17 @@ import com.amazonaws.services.simpleemail.*;
 import com.amazonaws.services.simpleemail.model.*;
 import com.amazonaws.services.simpledb.*;
 import com.amazonaws.services.simpledb.model.*;
+import com.amazonaws.services.dynamodb.*;
+import com.amazonaws.services.dynamodb.model.*;
 import com.amazonaws.auth.PropertiesCredentials;
+
+import org.apache.commons.io.*;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 public class AWSServices {
-	private static Logger logger = LogManager.getLogger(org.comtor.cloud.AWSServices.class.getName());
-
+	private static Logger logger = LogManager.getLogger(AWSServices.class.getName());
 	private static File awscreds = new File ("AwsCredentials.properties");
 
 	/**
@@ -138,26 +141,37 @@ public class AWSServices {
 	 * @param emailAddr the String representation of the client's email address
 	 * @param dateTime the String representation of the current date/time 
 	 */
-	public static void storeCloudUse(String requestIP, String sessionID, String reportURL,
-			String emailAddr, String dateTime) {
+	public static void storeCloudUse(String requestIP, String sessionID, File jsonReport,
+			String emailAddr, long dateTime) {
 		logger.entry();
 		try {
-			AmazonSimpleDB sdb = new AmazonSimpleDBClient(new PropertiesCredentials(awscreds));
+//			AmazonSimpleDB sdb = new AmazonSimpleDBClient(new PropertiesCredentials(awscreds));
+			AmazonDynamoDB dynamoDB = new AmazonDynamoDBClient(new PropertiesCredentials(awscreds));
 
 			// Set the domain to use
-			String myDomain = "org.comtor.cloud.usage";
-			List<ReplaceableItem> data = new ArrayList<ReplaceableItem>();
-			data.add(new ReplaceableItem(dateTime).withAttributes(
-				new ReplaceableAttribute("IP Address", requestIP, true),
-				new ReplaceableAttribute("Session ID", sessionID, true),
-				new ReplaceableAttribute("Report URL", reportURL, true),
-				new ReplaceableAttribute("Email Address", emailAddr, true)));
-			
-			sdb.batchPutAttributes(new BatchPutAttributesRequest(myDomain, data));
+			// String myDomain = "org.comtor.cloud.usage";
+			// List<ReplaceableItem> data = new ArrayList<ReplaceableItem>();
+			// data.add(new ReplaceableItem(dateTime).withAttributes(
+			// 	new ReplaceableAttribute("IP Address", requestIP, true),
+			// 	new ReplaceableAttribute("Session ID", sessionID, true),
+			// 	new ReplaceableAttribute("Report URL", reportURL, true),
+			// 	new ReplaceableAttribute("Email Address", emailAddr, true)));
+			// sdb.batchPutAttributes(new BatchPutAttributesRequest(myDomain, data));
+
+			String tableName = "org.comtor.usage";
+			Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
+			item.put("email", new AttributeValue(emailAddr));
+			item.put("datetime", new AttributeValue().withN(Long.toString(dateTime)));
+			item.put("accessMechanism", new AttributeValue("www"));
+			item.put("ipAddress", new AttributeValue(requestIP));
+			item.put("jsonReport", new AttributeValue(FileUtils.readFileToString(jsonReport)));
+
+			PutItemRequest putItemRequest = new PutItemRequest(tableName, item);
+			PutItemResult putItemResult = dynamoDB.putItem(putItemRequest);
 
 		} catch (AmazonServiceException ase) {
 			logger.error("Caught an AmazonServiceException, which means the request made it "
-					+ "to Amazon SimpleDB, but was rejected with an error response for some reason.");
+					+ "to Amazon DynamoDB, but was rejected with an error response for some reason.");
 			logger.error("Error Message:    " + ase.getMessage());
 			logger.error("HTTP Status Code: " + ase.getStatusCode());
 			logger.error("AWS Error Code:   " + ase.getErrorCode());
@@ -166,7 +180,7 @@ public class AWSServices {
 
 		} catch (AmazonClientException ace) {
 			logger.error("Caught an AmazonClientException, which means the client encountered "
-					+ "a serious internal problem while trying to communicate with SimpleDB, "
+					+ "a serious internal problem while trying to communicate with DynamoDB, "
 					+ "such as not being able to access the network.");
 			logger.error("Error Message: " + ace.getMessage());
 
