@@ -5,11 +5,11 @@
 			<PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
 		</Console>
 
-		<File name="drivers" fileName="comtorDriverLog.txt" suppressExceptions="false" append="false">
+		<File name="drivers" fileName="comtorDriverLog.txt" suppressExceptions="false" immediateFlush="true" append="false">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %C.%M [%t] - %msg%n"/>
 		</File>
 
-		<File name="analyzers" fileName="comtorAnalyzerLog.txt" suppressExceptions="false" append="false">
+		<File name="analyzers" fileName="comtorAnalyzerLog.txt" suppressExceptions="false" immediateFlush="true" append="false">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %C.%M [%t] - %msg%n"/>
 		</File>
 	</appenders>

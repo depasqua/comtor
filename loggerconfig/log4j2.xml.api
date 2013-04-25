@@ -26,7 +26,7 @@
 	
 	<loggers>
 		<logger name="org.comtor" level="error" additivity="false">
-			<appender-ref ref="drivers"/>
+			<appender-ref ref="error"/>
 		</logger>
 
 		<logger name="org.comtor" level="trace" additivity="false">
