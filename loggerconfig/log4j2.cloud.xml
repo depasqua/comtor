@@ -26,14 +26,14 @@
 	
 	<loggers>
 		<logger name="org.comtor" level="error" additivity="false">
-			<appender-ref ref="error"/>
-		</logger>
-
-		<logger name="org.comtor" level="trace" additivity="false">
 			<appender-ref ref="drivers"/>
 		</logger>
 
-		<logger name="org.comtor.analyzers" level="trace" additivity="false">
+		<logger name="org.comtor" level="debug" additivity="false">
+			<appender-ref ref="drivers"/>
+		</logger>
+
+		<logger name="org.comtor.analyzers" level="debug" additivity="false">
 			<appender-ref ref="analyzers"/>
 		</logger>
 	</loggers>
