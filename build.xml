@@ -14,9 +14,12 @@
 	<taskdef name="undeploy"  classname="org.apache.catalina.ant.UndeployTask"/>	
 
 	<!-- Define some basic properties -->
-	<property name="thirdpartyjars" location="lamp/comtor_data/code/"/>
+	<property name="thirdpartyjars" location="third-party/lib"/>
 	<property name="version" value="2.1.5"/>
-	<property name="managerURL" value="http://cloud.comtor.org/manager/text"/>
+	<property name="releasehost" value="cloud.comtor.org"/>
+	<property name="devhost" value="54.225.226.33"/>
+	<property name="localhost" value="localhost"/>
+	<property name="managerURL" value="http://${releasehost}/manager/text"/>
 	
 	<!-- Build up a classpath file path for later use. -->
 	<condition property="toolsjar" value="${java.home}/../Classes/classes.jar" else="${java.home}/../lib/tools.jar">
@@ -31,6 +34,7 @@
 			<include name="*.jar"/>
 		</fileset>
 		<pathelement path="${toolsjar}"/>
+		<pathelement path="core/comtorcore.jar"/>
 	</path>
 	
 	<!-- ================ -->
@@ -50,6 +54,7 @@
 		<ant dir="api/authserv" target="clean"/>
 		<ant dir="wordProblemSubmitter" target="clean"/>
 		<ant dir="code" target="clean"/>
+		<ant dir="core" target="clean"/>
 		<ant dir="lamp" target="clean"/>
 		
 		<delete>
@@ -63,6 +68,13 @@
 		</delete>		
 	</target>
 	
+	<!-- Sets the deployment host based on the user-provided input, or uses localhost (default) -->
+	<target name="-sethost">
+		<condition property="deployhost" value="http://${deploy}:8080/manager/text" else="http://localhost:8080/manager/text">
+			<isset property="deploy"/>
+		</condition>
+	</target>
+
 	<!-- Ensures the user has set the deployment properties to provide to the servlet container -->
 	<target name="-credentials.check">
 		<condition property="credentials.set">
@@ -108,6 +120,12 @@
 		<ant dir="code" target="srcjar" inheritRefs="true"/>
 	</target>
 	
+	<!-- Builds the COMTOR core jar file -->
+	<target name="corejar" description="Builds the COMTOR core library jar file.">
+		<ant dir="core" target="jar" inheritRefs="true"/>
+	</target>
+
+
 	<!-- CLOUD CLIENT -->
 	<target name="cloudCompile" description="Compile the source code of the cloud app" depends="init">
 		<ant dir="code" inheritRefs="true"/>
@@ -116,6 +134,7 @@
 	<target name="cloudWar" description="Builds the keygen war file of the cloud app">
 		<ant dir="code" target="createWar" inheritRefs="true"/>
 	</target>
+
 
 	<!-- Ant-based deploy for servlet version -->
 	<!-- Requires the catalina-ant.jar file in the ant/lib directory locally. See 
@@ -179,32 +198,26 @@
 
 
 	<!-- API Auth Server -->
-	<target name="authServCompile" description="Compiles the source code of the api authserv app" depends="init">
+	<target name="authServCompile" depends="init, corejar" description="Compiles the source code of the api server app">
 	 	<ant dir="api/authserv" target="compile" inheritRefs="true"/>
  	</target>
 	
-	<target name="authServWar" description="Builds the authserv war file">
+	<target name="authServWar" depends="authServCompile" description="Builds the api server war file">
 		<ant dir="api/authserv" target="createWar" inheritRefs="true"/>
 	</target>
 
-	<target name="authServWarDeploy" depends="-credentials.check" description="Deploys the authserv war file">
+	<target name="authServWarDeploy" depends="-credentials.check, -sethost" description="Deploys the api server war file">
 		<ant dir="api/authserv" target="warDeploy" inheritRefs="true"/>
 	</target>
 
-	<target name="authServWarUndeploy" depends="-credentials.check" description="Undeploys the authserv war file">
+	<target name="authServWarUndeploy" depends="-credentials.check, -sethost" description="Undeploys the api server war file">
 		<ant dir="api/authserv" target="warUndeploy" inheritRefs="true"/>
 	</target>
 
-	<target name="authServWarRedeploy" depends="-credentials.check" description="Redeploys the authserv war file">
+	<target name="authServWarRedeploy" depends="-credentials.check, -sethost" description="Redeploys the api server war file">
 		<ant dir="api/authserv" target="warRedeploy" inheritRefs="true"/>
 	</target>
 
-
-	<!-- API Server -->
-	<target name="compileAPIServer" description="Compiles the source code of the api server app" depends="init">
-		<ant dir="api/server" target="compile" inheritRefs="true"/>
-	</target>
-	
 
 	<!-- API Client -->
 	<target name="compileAPIClient" description="Compiles the source code of the api client app" depends="init">
