@@ -1,6 +1,6 @@
 /**
  *  Comment Mentor: A Comment Quality Assessment Tool
- *  Copyright (C) 2012 The College of New Jersey
+ *  Copyright (C) 2013 The College of New Jersey
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@ package org.comtor.authserv;
 import java.io.*;
 import java.util.*;
 
+import org.comtor.cloud.*;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 import com.amazonaws.services.securitytoken.model.*;
@@ -27,7 +29,7 @@ import com.amazonaws.services.securitytoken.model.*;
 import com.fasterxml.jackson.databind.*;
 
 /**
- * This Java servlet provides 
+ * This Java servlet provides API-level key request functionality to various non-web interface clients.
  *
  * @author Peter DePasquale
  */

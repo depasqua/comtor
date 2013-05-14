@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
-	<display-name>COMTOR APIKeyRequest web app</display-name>
+	<display-name>COMTOR API (KeyRequest/APIServer) application</display-name>
 
 	<servlet>
 		<description>Servlet to provide key request service to a client</description>
@@ -11,5 +11,16 @@
 	<servlet-mapping>
 		<servlet-name>APIKeyRequest</servlet-name>
 		<url-pattern>/keyrequest</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<description>Servlet to provide upload/submission service to a client</description>
+		<servlet-name>APIServer</servlet-name>
+		<servlet-class>org.comtor.authserv.APIServer</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>APIServer</servlet-name>
+		<url-pattern>/submit</url-pattern>
 	</servlet-mapping>
 </web-app>
