@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<project name="comtorCloudClient" default="compile" basedir=".">
+	<description>Build file for the COMTOR core library</description>
+	<echo>Subproject: corejar</echo>
+
+	<property name="coreBaseDir" location="."/>
+	<property name="coreSrc" location="${coreBaseDir}/src"/>
+	<property name="coreClasses" location="${coreBaseDir}/classes"/>
+	<property name="jarfilename" value="comtorcore.jar"/>
+	<defaultexcludes remove="**/.DS_Store"/>
+
+	<!-- Compiles the source code of the core of COMTOR -->
+	<target name="compile" description="Compiles the source code of the core of COMTOR">
+		<mkdir dir="${coreClasses}"/>
+		<javac srcdir="${coreSrc}" destdir="${coreClasses}" includeantruntime="false" debug="true" debuglevel="lines,vars,source">
+			<classpath>
+				<fileset dir="../third-party/lib">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- Removes the class files, source backups, and debug output -->
+	<target name="clean" description="Clean source backups and .class files">
+		<delete dir="${coreClasses}"/>
+		
+		<delete>
+			<fileset dir="." casesensitive="yes">
+				<include name="**/*~ "/>
+				<include name="**/.DS_Store"/>
+				<include name="${jarfilename}"/>
+			</fileset>
+		</delete>		
+	</target>
+
+	<target name="jar" depends="compile" description="Create a jar file of the core COMTOR functionality">
+		<jar destfile="comtorcore.jar">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Implementation-Title" value="COMTOR CORE"/>
+				<attribute name="Implementation-Version" value="${version} ${TODAY}"/> 
+				<attribute name="Implementation-Vendor" value="The College of New Jersey"/>
+			</manifest>
+
+			<fileset dir="${coreClasses}">
+				<include name="**/*.class"/>
+			</fileset>
+		</jar>
+	</target>
+</project>
