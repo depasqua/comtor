@@ -50,8 +50,6 @@
 	<target name="clean" description="Clean source backups, old reports, and .class files">
 		<ant dir="api/keygen" target="clean"/>
 		<ant dir="api/apiserv" target="clean"/>
-		<ant dir="api/client" target="clean"/>
-		<ant dir="api/authserv" target="clean"/>
 		<ant dir="wordProblemSubmitter" target="clean"/>
 		<ant dir="code" target="clean"/>
 		<ant dir="core" target="clean"/>
@@ -95,11 +93,6 @@
 	</target>
 
 
-	<!-- Original LAMP implementation -->
-	<target name="lamp" description="jars and deploys comtor.jar to proper directory" depends="cloudCompile">
-		<ant dir="lamp" target="compile" inheritRefs="true"/>
-	</target>
-	
 	<!-- Builds the command line version (stand alone) jar file of COMTOR -->
 	<target name="cli" description="Builds a distributable Jar file for use as a stand-alone application">
 		<ant dir="code" target="cli" inheritRefs="true"/>
@@ -197,35 +190,25 @@
 	</target>
 
 
-	<!-- API Auth Server -->
-	<target name="authServCompile" depends="init, corejar" description="Compiles the source code of the api server app">
-	 	<ant dir="api/authserv" target="compile" inheritRefs="true"/>
+	<!-- API Server -->
+	<target name="apiServCompile" depends="init, corejar" description="Compiles the source code of the api server app">
+	 	<ant dir="api/apiserv" target="apiServCompile" inheritRefs="true"/>
  	</target>
 	
-	<target name="authServWar" depends="authServCompile" description="Builds the api server war file">
-		<ant dir="api/authserv" target="createWar" inheritRefs="true"/>
+	<target name="apiServWar" depends="apiServCompile" description="Builds the api server war file">
+		<ant dir="api/apiserv" target="createWar" inheritRefs="true"/>
 	</target>
 
-	<target name="authServWarDeploy" depends="-credentials.check, -sethost" description="Deploys the api server war file">
-		<ant dir="api/authserv" target="warDeploy" inheritRefs="true"/>
+	<target name="apiServWarDeploy" depends="-credentials.check, -sethost, corejar" description="Deploys the api server war file">
+		<ant dir="api/apiserv" target="warDeploy" inheritRefs="true"/>
 	</target>
 
-	<target name="authServWarUndeploy" depends="-credentials.check, -sethost" description="Undeploys the api server war file">
-		<ant dir="api/authserv" target="warUndeploy" inheritRefs="true"/>
+	<target name="apiServWarUndeploy" depends="-credentials.check, -sethost" description="Undeploys the api server war file">
+		<ant dir="api/apiserv" target="warUndeploy" inheritRefs="true"/>
 	</target>
 
-	<target name="authServWarRedeploy" depends="-credentials.check, -sethost" description="Redeploys the api server war file">
-		<ant dir="api/authserv" target="warRedeploy" inheritRefs="true"/>
+	<target name="apiServWarRedeploy" depends="-credentials.check, -sethost, corejar" description="Redeploys the api server war file">
+		<ant dir="api/apiserv" target="warRedeploy" inheritRefs="true"/>
 	</target>
 
-
-	<!-- API Client -->
-	<target name="compileAPIClient" description="Compiles the source code of the api client app" depends="init">
-		<ant dir="api/client" target="compile" inheritRefs="true"/>
-	</target>
-
-	<target name="runAPIClient" description="Runs the API client">
-		<ant dir="api/client" target="runAPIClient" inheritRefs="true"/>
-	</target>
-	
 </project>
