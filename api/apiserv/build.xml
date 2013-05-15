@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+<project name="comtorAPIServer" default="compile" basedir=".">
+	<description>Build file for the COMTOR API Server applications</description>
+	<echo>Subproject: comtorAPIServer</echo>
+
+	<property name="apiServBaseDir" location="."/>
+	<property name="apiServSrc" location="${apiServBaseDir}/src"/>
+	<property name="apiServClasses" location="${apiServBaseDir}/classes"/>
+	<property name="warfilename" value="apiserv.war"/>
+	<property name="includejars" value="../../third-party/lib"/>
+	<defaultexcludes remove="**/.DS_Store"/>
+
+	<condition property="deploymentPath" value="/apiServ" else="/apiServDev">
+		<isset property="release"/>
+	</condition>
+
+	<!-- Compiles the API Server application -->
+	<target name="apiServCompile" description="Compiles the source code of the api server app">
+		<mkdir dir="${apiServClasses}"/>
+		<javac destdir="${apiServClasses}" includeantruntime="false" deprecation="on" debug="on">
+			<src path="${apiServSrc}"/>
+			<classpath>
+				<path refid="comtor.class.path"/>
+				<pathelement location="../../core/comtorcore.jar"/>
+				<fileset dir="${includejars}">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- Removes the class files, source backups, and debug output -->
+	<target name="clean" description="Clean source backups and .class files">
+		<delete dir="${apiServClasses}"/>
+		
+		<delete>
+			<fileset dir="." casesensitive="yes">
+				<include name="**/*~ "/>
+				<include name="**/.DS_Store"/>
+				<include name="${warfilename}"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- Builds the war file for TOMCAT/cloud release -->
+	<target name="createWar" depends="apiServCompile" description="Builds the war file for the apiServ release.">
+		<copy file="../../loggerconfig/log4j2.api.xml" tofile="log4j2.xml" overwrite="true"/>
+		<war destfile="${warfilename}" webxml="${apiServBaseDir}/WEB-INF/web.xml">
+ 			<lib dir="${includejars}">
+ 				<exclude name="javax.jar"/>
+ 			</lib>
+ 			<lib file="../../core/comtorcore.jar"/>
+			<classes dir="${apiServClasses}"/>
+			<classes file="log4j2.xml"/>
+		</war>
+		<delete file="log4j2.xml"/>
+	</target>
+
+	<!-- Deployment tasks -->
+ 	<target name="warDeploy" description="Deploys the web application">
+ 		<antcall target="createWar" inheritRefs="true"/>
+		<deploy url="${deployhost}" username="${username}" password="${password}" path="${deploymentPath}" war="file:api/apiserv/${warfilename}"/>
+	</target>
+
+	<target name="warUndeploy" description="Undeploys the cloud web application.">
+		<undeploy url="${deployhost}" username="${username}" password="${password}" path="${deploymentPath}"/>
+	</target>
+
+	<target name="warRedeploy" description="Redeploys the cloud web application.">
+		<antcall target="createWar"/>
+		<antcall target="warUndeploy"/>
+		<antcall target="warDeploy"/>
+	</target>
+</project>
