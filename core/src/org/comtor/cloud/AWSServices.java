@@ -196,11 +196,13 @@ public class AWSServices {
 	}
 
 	/**
-	 * Create and put user data item in DynamoDB table
+	 * Create and put user data item in DynamoDB table. This method does check to determine if the email address 
+	 * is already bound to an API key.
 	 * 
 	 * @param email		The user's email that is requesting a key
 	 * @param ipAddress	User's IP Address for metrics
 	 * @param hostname	User's ISP Host for metrics
+	 * @param request	The request object, needed to pass to the email subsystem to obtain the COMTOR logo in the email
 	 * @return			Return successful = TRUE if DynamoDB request is successful, else FALSE
 	 */
 	public static boolean addUser(String email, String ipAddress, String hostname, HttpServletRequest request) {
