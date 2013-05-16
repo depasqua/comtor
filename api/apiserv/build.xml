@@ -68,8 +68,8 @@
 	</target>
 
 	<target name="warRedeploy" description="Redeploys the cloud web application.">
-		<antcall target="createWar"/>
-		<antcall target="warUndeploy"/>
-		<antcall target="warDeploy"/>
+		<antcall target="createWar" inheritRefs="true"/>
+		<antcall target="warUndeploy" inheritRefs="true"/>
+		<antcall target="warDeploy" inheritRefs="true"/>
 	</target>
 </project>
