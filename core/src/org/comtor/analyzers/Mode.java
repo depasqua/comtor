@@ -24,5 +24,6 @@ public enum Mode {
 	CLI,	/* command line */
 	CLOUD,	/* cloud-based Tomcat servlet */
 	WEB,	/* web-based experimentation mode */
-	API		/* API server mode */
+	API,	/* API server mode */
+	WEBCAT	/* webcat mode; api via webcat */
 }
