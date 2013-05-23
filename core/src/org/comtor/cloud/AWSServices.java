@@ -446,6 +446,9 @@ public class AWSServices {
 					item.put("accessMechanism", new AttributeValue("netbeans"));
 					break;
 
+				case API:
+					item.put("accessMechanism", new AttributeValue("api - not specified"));
+					break;
 
 				default:
 					item.put("accessMechanism", new AttributeValue("unknown"));
@@ -468,5 +471,46 @@ public class AWSServices {
 		}
 
 		logger.exit();
+	}
+
+	/**
+	 * Allows for the submisssion of a word by a user that the user feels is non spelled incorrectly or not offensive.
+	 * This servlet permits the user to submit the problem via this service which will email it to the COMTOR team for 
+	 * consideration of correction.
+	 *
+	 * @param reportName the name of the COMTOR report that generated the issue in question again the specified word
+	 * @param word the word that the user feels is incorrect
+	 * @return returns a true value if the email was sent successfully, false otherwise
+	 * 
+	 * @author Peter J. DePasquale
+	 */
+	public static boolean submitDisputedWord(String reportName, String word) {
+		logger.entry(reportName, word);
+		String comtorEmail = "comtor@tcnj.edu";
+		String toAddress = "peter.depasquale@gmail.com";
+		boolean result = false;
+
+		try {
+			// Create a new message to submit for disputing the specific word in the specified report
+			com.amazonaws.services.simpleemail.model.Message msg =
+				new com.amazonaws.services.simpleemail.model.Message().withSubject(new Content("COMTOR Result Dispute"));
+			SendEmailRequest request = new SendEmailRequest().withSource(comtorEmail);
+			Destination dest = new Destination().withToAddresses(toAddress);
+			request.withDestination(dest);
+
+			Content htmlContent = new Content().withData("A user has submitted \"" + word +
+				"\" as incorrectly identified in the \"" + reportName + "\" analysis report.");
+			Body msgBody = new Body().withText(htmlContent);
+			msg.setBody(msgBody);
+			
+			request.setMessage(msg);
+			sesClient.sendEmail(request);
+			result = true;
+
+		} catch (AmazonClientException e) {
+			logger.catching(e);
+		}
+		
+		return logger.exit(result);
 	}
 }
