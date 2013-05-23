@@ -59,7 +59,8 @@
 
 	<!-- Deployment tasks -->
  	<target name="warDeploy" description="Deploys the web application">
- 		<antcall target="createWar" inheritRefs="true"/>
+		<antcall target="createWar" inheritRefs="true"/>
+		<echo>Attempting to deploy to: ${deployhost}${deploymentPath}</echo>
 		<deploy url="${deployhost}" username="${username}" password="${password}" path="${deploymentPath}" war="file:api/apiserv/${warfilename}"/>
 	</target>
 
