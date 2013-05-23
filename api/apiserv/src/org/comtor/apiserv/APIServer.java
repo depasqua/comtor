@@ -63,6 +63,8 @@ public class APIServer extends HttpServlet {
 		String interfaceClient = null;
 		String webcat_uuid = null;
 		String webcat_institution = null;
+		String fileName = null;
+		long fileSize = 0;
 		boolean extractedJar = false;
 		InterfaceSystem clientType = InterfaceSystem.WWW;
 		File destinationDir = new File(getServletContext().getRealPath(DESTINATION_DIR_PATH));
@@ -106,18 +108,15 @@ public class APIServer extends HttpServlet {
 							requiredItems++;
 							submittedAPIKey = item.getString();
 							logger.debug("Submitted apikey: " + submittedAPIKey);
-							responseStruct.put("apikey", submittedAPIKey);
 							if (submittedAPIKey != null && !submittedAPIKey.equals("") && AWSServices.checkAPIKey(submittedAPIKey))
 								emailAddress = AWSServices.getEmailFromKey(submittedAPIKey);
 							if (emailAddress == null)
 								requiredItems--;
-							responseStruct.put("email_from_apikey: ", emailAddress);
 
 						} else if (fieldName.equals("response_type")) {
 							// Possible supported valid values here are "email", "http"
 							requiredItems++;
 							requestedResponseTypes = item.getString();							
-							responseStruct.put("response_type", requestedResponseTypes);
 							if (requestedResponseTypes == null || (!requestedResponseTypes.contains("email") && !requestedResponseTypes.contains("http")))
 								requiredItems--;
 							logger.debug("Submitted response_type: " + requestedResponseTypes);
@@ -126,7 +125,6 @@ public class APIServer extends HttpServlet {
 							// Possible supported valid values here are "text", "html", "json" (and others later)
 							requiredItems++;
 							requestedResponseFormats = item.getString();
-							responseStruct.put("response_format", requestedResponseFormats);
 							if (requestedResponseFormats == null || (!requestedResponseFormats.contains("text") && !requestedResponseFormats.contains("html") &&
 								!requestedResponseFormats.contains("json")))
 								requiredItems--;
@@ -135,20 +133,17 @@ public class APIServer extends HttpServlet {
 						} else if (fieldName.equals("webcat_uuid")) {
 							// Supports WebCat passing us the UUID of the user 
 							webcat_uuid = item.getString();							
-							responseStruct.put("webcat_uuid", webcat_uuid);
 							logger.debug("Submitted webcat_uuid: " + webcat_uuid);
 
 						} else if (fieldName.equals("webcat_institution")) {
 							// Supports WebCat passing us the user's institution name
 							webcat_institution = item.getString();							
-							responseStruct.put("webcat_institution", webcat_institution);
 							logger.debug("Submitted webcat_institution: " + webcat_institution);
 
 						} else if (fieldName.equals("interface_client")) {
 							// Pass the interface client (Eclipse, WebCat, Netbeans, etc. to the API)
 							requiredItems++;
 							interfaceClient = item.getString();							
-							responseStruct.put("interface_client", interfaceClient);
 							if (interfaceClient.equals("webcat"))
 								clientType = InterfaceSystem.WEBCAT;
 							else if (interfaceClient.equals("netbeans"))
@@ -165,7 +160,7 @@ public class APIServer extends HttpServlet {
 					} else {
 						// item.getName() returns whatever filename the client provides in the request, so we need to
 						// strip out the path content, if present, and get just the name.
-						String fileName = item.getName();
+						fileName = item.getName();
 						logger.debug("Attempting to process the file upload: " + fileName);
 						if (fileName != null) {
 							// Write the uploaded file to the temp path (pathToFile) in the servlets context
@@ -173,12 +168,11 @@ public class APIServer extends HttpServlet {
 							fileName = FilenameUtils.getName(fileName);
 
 							if (fileName != null ) {
-								responseStruct.put("uploaded filename", fileName);
-								responseStruct.put("uploaded file size", item.getSize() + "");
 								File uploadedFile = new File(pathToFile, fileName);
 								if (uploadedFile == null)
 									requiredItems--;
 								item.write(uploadedFile);
+								fileSize = item.getSize();
 								extractedJar = extractJarFile(uploadedFile, pathToFile);
 							}
 						}
@@ -187,6 +181,16 @@ public class APIServer extends HttpServlet {
 
 				// Only process if we have a valid set of parameters
 				if (requiredItems == 5 && extractedJar) {
+					if (!interfaceClient.equals("webcat")) {
+						responseStruct.put("apikey", submittedAPIKey);
+						responseStruct.put("interface_client", interfaceClient);
+						responseStruct.put("email_from_apikey", emailAddress);
+						responseStruct.put("response_type", requestedResponseTypes);
+						responseStruct.put("response_format", requestedResponseFormats);
+						responseStruct.put("uploaded filename", fileName);
+						responseStruct.put("uploaded file size", fileSize + "");
+					}
+
 					// Create the list of analysis modules to execute
 					String docletFileName = pathToFile + java.io.File.separator + "docletList.properties";
 					BufferedWriter fwrite = new BufferedWriter(new FileWriter(new File(docletFileName)));
@@ -203,7 +207,11 @@ public class APIServer extends HttpServlet {
 					fwrite.close();
 
 					// Commence processing
-					ComtorStandAlone.setMode(Mode.API);
+					if (clientType == InterfaceSystem.WEBCAT)
+						ComtorStandAlone.setMode(Mode.WEBCAT);
+					else
+						ComtorStandAlone.setMode(Mode.API);
+
 					ComtorStandAlone.setTempDir((File) getServletContext().getAttribute("javax.servlet.context.tempdir"));
 					logger.debug("Execution mode set to API.");
 					logger.debug("Temp dir set to: " + ComtorStandAlone.getTempDir());
@@ -256,23 +264,28 @@ public class APIServer extends HttpServlet {
 						AWSServices.sendEmail(emailAddress, msgText);
 					}
 
+					String htmlReportContents = null;
 					if (requestedResponseTypes.contains("http")) {
 						if (requestedResponseFormats.contains("html")) {
-							responseStruct.put("html_report_url", htmlReportURLString);
-							String reportContents = FileUtils.readFileToString(htmlReportFile);
-							responseStruct.put("html_report_contents", reportContents);
+							htmlReportContents = FileUtils.readFileToString(htmlReportFile);
+							if (!interfaceClient.equals("webcat")) {
+								responseStruct.put("html_report_url", htmlReportURLString);
+								responseStruct.put("html_report_contents", htmlReportContents);
+							}
 						}
 
 						if (requestedResponseFormats.contains("text")) {
 							responseStruct.put("text_report_url", textReportURLString);
-							String reportContents = FileUtils.readFileToString(textReportFile);
-							responseStruct.put("text_report_contents", reportContents);
+							String textReportContents = FileUtils.readFileToString(textReportFile);
+							if (!interfaceClient.equals("webcat"))
+								responseStruct.put("text_report_contents", textReportContents);
 						} 
 
 						if (requestedResponseFormats.contains("json")) {
 							File jsonReportFile = new File(pathToFile + java.io.File.separator + "jsonOut.txt");
-							String reportContents = FileUtils.readFileToString(jsonReportFile);
-							responseStruct.put("json_report_contents", reportContents);
+							String jsonReportContents = FileUtils.readFileToString(jsonReportFile);
+							if (!interfaceClient.equals("webcat"))
+								responseStruct.put("json_report_contents", jsonReportContents);
 						}
 					}
 
@@ -280,17 +293,21 @@ public class APIServer extends HttpServlet {
 					if (!contextPath.endsWith("Dev")) {
 						GregorianCalendar now = new GregorianCalendar();
 						File jsonFile = new File(pathToFile + java.io.File.separator + "jsonOut.txt");
-	//					AWSServices.storeCloudUse(requesterIPAddress, sessionID, jsonFile, emailAddress, now.getTimeInMillis(), InterfaceSystem.API);
-
-					} else {
-						// to be removed once we are happy that this release is solid...
-						GregorianCalendar now = new GregorianCalendar();
-						File jsonFile = new File(pathToFile + java.io.File.separator + "jsonOut.txt");
 						AWSServices.storeCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(), clientType, jsonFile);
+					// } else {
+					// 	// to be removed once we are happy that this release is solid...
+					// 	GregorianCalendar now = new GregorianCalendar();
+					// 	File jsonFile = new File(pathToFile + java.io.File.separator + "jsonOut.txt");
+					// 	AWSServices.storeCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(), clientType, jsonFile);
 					}
 
 					ObjectMapper mapper = new ObjectMapper();
-					String userResponse = mapper.writeValueAsString(responseStruct);
+					String userResponse = null;
+					if (!interfaceClient.equals("webcat"))
+						userResponse = mapper.writeValueAsString(responseStruct);
+					else 
+						userResponse = htmlReportContents;
+
 					out.println(userResponse);
 
 				} else {

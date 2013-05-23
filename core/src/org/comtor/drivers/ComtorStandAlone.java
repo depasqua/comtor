@@ -113,7 +113,10 @@ public class ComtorStandAlone extends Doclet {
 			(new TextReporter()).generateReportFile(jsonReportVector);
 
 			logger.debug("Commencing HTML report creation.");
-			(new HTMLReporter()).generateReportFile(jsonReportVector);
+			if (currentMode == Mode.WEBCAT)
+				(new WebcatReporter()).generateReportFile(jsonReportVector);
+			else
+				(new HTMLReporter()).generateReportFile(jsonReportVector);
 
 		} catch (Exception e) {
 			// Exceptions from above.  This should be less catch-all and integrated above better.

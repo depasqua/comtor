@@ -25,6 +25,7 @@ package org.comtor.util;
 public enum InterfaceSystem {
 	WWW,		/* cloud-based Tomcat servlet */
 	ECLIPSE,	/* API use from Eclipse */
+	API,		/* API general use */
 	WEBCAT,		/* API use from WebCat */
-	NETBEANS	/* API use from Netbeans */
+	NETBEANS,	/* API use from Netbeans */
 }
