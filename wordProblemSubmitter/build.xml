@@ -8,6 +8,7 @@
 	<property name="srcDir" location="${baseDir}/src"/>
 	<property name="classesDir" location="${baseDir}/WEB-INF/classes"/>
 	<property name="warfilename" value="wordProblem.war"/>
+	<property name="includejars" value="../third-party/lib"/>
 	<defaultexcludes remove="**/.DS_Store"/>
 
 	<condition property="deploymentPath" value="/wordSubmit" else="/wordSubmitDev">
@@ -15,12 +16,12 @@
 	</condition>
 
 	<!-- Compiles the source code of the web application -->
-	<target name="compile" description="Compiles the source code of the web app">
+	<target name="compile" description="Compiles the source code of the word submitter app">
 		<mkdir dir="${classesDir}"/>
-		<javac srcdir="${srcDir}" destdir="${classesDir}" includeantruntime="false">
+		<javac srcdir="${srcDir}" includeantruntime="false" deprecation="on" debug="on" destdir="${classesDir}">
 			<classpath>
 				<path refid="comtor.class.path"/>
-				<fileset dir="${baseDir}/WEB-INF/lib">
+				<fileset dir="${includejars}">
 					<include name="*.jar"/>
 				</fileset>
 			</classpath>
@@ -41,10 +42,9 @@
 	</target>
 
 	<!-- Builds the war file for TOMCAT release -->
-	<target name="createWar" depends="compile" description="Builds the war file for the release.">
-		<copy file="../loggerconfig/log4j2.xml.cloud" tofile="../loggerconfig/log4j2.xml" overwrite="true"/>
+	<target name="createWar" depends="compile" description="Builds the war file for word submitter app release.">
+		<copy file="../loggerconfig/log4j2.api.xml" tofile="../loggerconfig/log4j2.xml" overwrite="true"/>
 		<war destfile="${warfilename}" webxml="${baseDir}/WEB-INF/web.xml">
-			<lib dir="${baseDir}/WEB-INF/lib" excludes="javax.jar"/>
 			<classes dir="${classesDir}"/>
 			<classes file="../loggerconfig/log4j2.xml"/>
 		</war>
@@ -53,16 +53,18 @@
 
 	<!-- Deployment tasks -->
 	<target name="warDeploy" depends="createWar" description="Deploys the web application">
-		<deploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}" war="file:${baseDir}/${warfilename}"/>
+		<echo message="Attempting to deploy to: ${deployhost}"/>
+		<deploy url="${deployhost}" username="${username}" password="${password}" path="${deploymentPath}" war="file:${baseDir}/${warfilename}"/>
 	</target>
 
 	<target name="warUndeploy" description="Undeploys the web application.">
-		<undeploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}"/>
+		<undeploy url="${deployhost}" username="${username}" password="${password}" path="${deploymentPath}"/>
 	</target>
 
 	<target name="warRedeploy" depends="createWar" description="Redeploys the web application.">
-		<antcall target="warUndeploy"/>
-		<antcall target="warDeploy"/>
+		<antcall target="createWar" inheritRefs="true"/>
+		<antcall target="warUndeploy" inheritRefs="true"/>
+		<antcall target="warDeploy" inheritRefs="true"/>
 	</target>
 
 </project>
