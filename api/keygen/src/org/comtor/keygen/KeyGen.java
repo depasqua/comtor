@@ -17,7 +17,7 @@
  */
 package org.comtor.keygen;
 
-import org.comtor.keygen.cloud.*;
+import org.comtor.cloud.*;
 
 import java.io.*;
 import java.util.*;
@@ -27,6 +27,9 @@ import javax.servlet.http.*;
 
 import net.tanesha.recaptcha.ReCaptchaImpl;
 import net.tanesha.recaptcha.ReCaptchaResponse;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * This Java Servlet handles the API key creation request. The Servlet hashes the user-
@@ -39,6 +42,8 @@ import net.tanesha.recaptcha.ReCaptchaResponse;
  * @author Peter DePasquale
  */
 public class KeyGen extends HttpServlet {	   
+	private static Logger logger = LogManager.getLogger(KeyGen.class.getName());
+
 	/**
 	 * Handles the get request on this URI
 	 *
@@ -48,6 +53,7 @@ public class KeyGen extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		logger.entry(request, response);
 		PrintWriter out = response.getWriter();
 		AWSServices.init();
 		
@@ -63,23 +69,20 @@ public class KeyGen extends HttpServlet {
 		String uresponse = request.getParameter("recaptcha_response_field");
 		ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(ipAddress, challenge, uresponse);
 
-		if (reCaptchaResponse.isValid() && email != null) {
+		if (reCaptchaResponse.isValid() && email != null && !email.equals("")) {
 			// Attempt to put user in DynamoDB
-			boolean success = AWSServices.addUser(email, ipAddress, hostname);
-			String apikey = AWSServices.getAPIKey(email);
+			boolean success = AWSServices.addUser(email, ipAddress, hostname, request);
 
 			// Determine success of db insertion
 			RequestDispatcher dispatcher = null;
-			if (success) {
-				// Send the user an email with the API key and forward to the response page.
-				AWSServices.sendKeyEmail(email, apikey, request);
-				dispatcher = getServletContext().getRequestDispatcher("/keyGenerated.jsp?email=" + email + "&apikey=" + apikey);
+			if (success)
+				// Forward to the response page.
+				dispatcher = getServletContext().getRequestDispatcher("/keyGenerated.jsp?email=" + email + "&apikey=" + 
+					AWSServices.getAPIKey(email));
 
-			} else {
-				// Resend email with API key and forward to response page.
-				AWSServices.resendKeyEmail(email, apikey, request);
+			else
+				// Forward to response page.
 				dispatcher = getServletContext().getRequestDispatcher("/duplicateEmail.jsp?email=" + email);
-			}
 
 			dispatcher.forward(request, response);
 
@@ -89,6 +92,7 @@ public class KeyGen extends HttpServlet {
 		}
 
 		out.close();
+		logger.exit();
 	}
 
 	/**
