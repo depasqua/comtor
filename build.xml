@@ -147,45 +147,45 @@
 
 
 	<!-- KEYGEN -->
-	<target name="keygenCompile" description="Compiles the source code of the keygen app" depends="init">
+	<target name="keygenCompile" depends="init, corejar" description="Compiles the source code of the keygen app">
 	 	<ant dir="api/keygen" inheritRefs="true"/>
  	</target>
 	
-	<target name="keygenWar" description="Builds the keygen war file">
+	<target name="keygenWar" depends="init, corejar" description="Builds the keygen war file">
 		<ant dir="api/keygen" target="createWar" inheritRefs="true"/>
 	</target>
 
-	<target name="keygenWarDeploy" depends="-credentials.check" description="Deploys the keygen war file">
+	<target name="keygenWarDeploy" depends="-credentials.check, -sethost, corejar" description="Deploys the keygen war file">
 		<ant dir="api/keygen" target="warDeploy" inheritRefs="true"/>
 	</target>
 
-	<target name="keygenWarUndeploy" depends="-credentials.check" description="Undeploys the keygen war file">
+	<target name="keygenWarUndeploy" depends="-credentials.check, -sethost" description="Undeploys the keygen war file">
 		<ant dir="api/keygen" target="warUndeploy" inheritRefs="true"/>
 	</target>
 
-	<target name="keygenWarRedeploy" depends="-credentials.check" description="Redeploys the keygen war file">
+	<target name="keygenWarRedeploy" depends="-credentials.check, -sethost, corejar" description="Redeploys the keygen war file">
 		<ant dir="api/keygen" target="warRedeploy" inheritRefs="true"/>
 	</target>
 
 
 	<!-- Word Problem Submitter Server -->
-	<target name="wordProblemCompile" description="Compiles the source code of the app" depends="init">
+	<target name="wordProblemCompile" depends="init, corejar" description="Compiles the source code of the app">
 	 	<ant dir="wordProblemSubmitter" target="compile" inheritRefs="true"/>
  	</target>
 	
-	<target name="wordProblemCreateWar" description="Builds the war file">
+	<target name="wordProblemCreateWar" depends="init, corejar" description="Builds the war file">
 		<ant dir="wordProblemSubmitter" target="createWar" inheritRefs="true"/>
 	</target>
 
-	<target name="wordProblemWarDeploy" depends="-credentials.check" description="Deploys the war file">
+	<target name="wordProblemWarDeploy" depends="-credentials.check, -sethost, corejar" description="Deploys the war file">
 		<ant dir="wordProblemSubmitter" target="warDeploy" inheritRefs="true"/>
 	</target>
 
-	<target name="wordProblemWarUndeploy" depends="-credentials.check" description="Undeploys the war file">
+	<target name="wordProblemWarUndeploy" depends="-credentials.check, -sethost" description="Undeploys the war file">
 		<ant dir="wordProblemSubmitter" target="warUndeploy" inheritRefs="true"/>
 	</target>
 
-	<target name="wordProblemWarRedeploy" depends="-credentials.check" description="Redeploys the war file">
+	<target name="wordProblemWarRedeploy" depends="-credentials.check, -sethost, corejar" description="Redeploys the war file">
 		<ant dir="wordProblemSubmitter" target="warRedeploy" inheritRefs="true"/>
 	</target>
 
