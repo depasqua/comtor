@@ -169,8 +169,8 @@ public class AWSServices {
 	 */
 	private static Map<String, AttributeValue>[] createUserDataItems(String apikey,
 			String email, String ipAddress, String hostname) {
-
 		logger.entry(apikey, email, ipAddress, hostname);
+
 		Map[] dataPair = new Map[2];
 		// Get date and time of put request
 		Calendar cal = Calendar.getInstance();
@@ -209,25 +209,34 @@ public class AWSServices {
 		logger.entry(email, ipAddress, hostname, request);
 		boolean successful = false;
 
-		// If database does not already contain the specified key for the email, insert a new one.
-		if (getAPIKey(email) == null) {
-			String apiKey = generateSHAKey(email);
+		try {
+			email = URLDecoder.decode(email, "UTF-8");
 
-			// User items contains API Key (MD5), Email address, IP address, and host name
-			Map<String, AttributeValue>[] items = createUserDataItems(apiKey, email, ipAddress, hostname);
+			// If database does not already contain the specified key for the email, insert a new one.
+			if (getAPIKey(email) == null) {
+				String apiKey = generateSHAKey(email);
 
-			// Place items in their respective databases
-			PutItemRequest putItemRequest = new PutItemRequest(ownerTable, items[0]);
-			dynamoDBClient.putItem(putItemRequest);
+				// User items contains API Key (MD5), Email address, IP address, and host name
+				Map<String, AttributeValue>[] items = createUserDataItems(apiKey, email, ipAddress, hostname);
 
-			putItemRequest = new PutItemRequest(keyTable, items[1]);
-			dynamoDBClient.putItem(putItemRequest);
+				// Place items in their respective databases
+				PutItemRequest putItemRequest = new PutItemRequest(ownerTable, items[0]);
+				dynamoDBClient.putItem(putItemRequest);
 
-			successful = true;
+				putItemRequest = new PutItemRequest(keyTable, items[1]);
+				dynamoDBClient.putItem(putItemRequest);
+
+				successful = true;
+
+				// Send the user an email with the API key
+				sendAPIKeyEmail(email, apiKey, request);
+
+			} else
+				resendKeyEmail(email, getAPIKey(email), request);
+
+		} catch (UnsupportedEncodingException uee) {
+			logger.catching(uee);
 		}
-
-		// Send the user an email with the API key
-		sendAPIKeyEmail(email, getAPIKey(email), request);
 
 		return logger.exit(successful);
 	}
@@ -422,7 +431,7 @@ public class AWSServices {
 	 * @param dateTime the String representation of the current date/time 
 	 */
 	public static void storeCloudUse(String requestIP, String emailAddr, Long dateTime, InterfaceSystem frontEnd, File jsonReport) {
-		logger.entry(requestIP, emailAddr, dateTime, frontEnd);
+		logger.entry(requestIP, emailAddr, dateTime, frontEnd, jsonReport);
 
 		try {
 			String tableName = "org.comtor.usage";
@@ -456,7 +465,7 @@ public class AWSServices {
 			}
 			item.put("ipAddress", new AttributeValue(requestIP));
 			item.put("jsonReport", new AttributeValue(FileUtils.readFileToString(jsonReport)));
-
+			logger.debug(item);
 			PutItemRequest putItemRequest = new PutItemRequest(tableName, item);
 			PutItemResult putItemResult = dynamoDBClient.putItem(putItemRequest);
 
@@ -512,5 +521,57 @@ public class AWSServices {
 		}
 		
 		return logger.exit(result);
+	}
+
+	/**
+	 * Resends an API key to the specified recipient. This method is called after
+	 * the API key has been attempted to be generated and a key already exists for the 
+	 * specified email address.
+	 *
+	 * @param toAddr the recipient's email address
+	 * @param apiKey the API for the specified email address
+	 * @param req the servlet handling the inbound HTTP request	 
+	 */
+	public static void resendKeyEmail(String toAddr, String apiKey, HttpServletRequest req) {
+		logger.entry(toAddr, apiKey, req);
+		String comtorEmail = "comtor@tcnj.edu";
+		try {
+			// Create a new Message
+			com.amazonaws.services.simpleemail.model.Message msg =
+				new com.amazonaws.services.simpleemail.model.Message().withSubject(new Content("COMTOR API Key Resend Request"));
+			SendEmailRequest request = new SendEmailRequest().withSource(comtorEmail);
+			Destination dest = new Destination().withToAddresses(toAddr);
+			request.withDestination(dest);
+
+			String contextBase = "http://" + req.getServerName();
+			String contextPath = req.getContextPath();
+
+			if (req.getServerPort() != 80)
+				contextBase += ":" + req.getServerPort();
+
+			if (contextPath.equals(""))
+				contextBase += "/";
+			else
+				contextBase += contextPath;
+
+			String msgText = "<img style=\"margin-left: auto; margin-right: auto; display: block;\" " +
+					"src=\"" + contextBase + "/images/comtor/comtorLogo.png\" width=\"160\" " +
+					"alt=\"COMTOR logo\"/>";
+			msgText += "<p>Recently, you or someone requested a COMTOR API Key for the " + toAddr + " email address. ";
+			msgText += "As a result, we are resending your COMTOR API key, which is: <b>" + apiKey + "</b></p>";
+			msgText += "If you have any questions, you can always reach the COMTOR team at: " ;
+			msgText += "<a href=\"mailto:" + comtorEmail + "\">" + comtorEmail + "</a>.";
+
+			Content htmlContent = new Content().withData(msgText);
+			Body body = new Body().withHtml(htmlContent);
+			msg.setBody(body);
+			
+			request.setMessage(msg);
+			sesClient.sendEmail(request);
+
+		} catch (AmazonClientException e) {
+			logger.catching(e);
+		}
+		logger.exit();
 	}
 }
