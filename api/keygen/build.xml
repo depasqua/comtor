@@ -7,8 +7,7 @@
 	<property name="keygenBaseDir" location="."/>
 	<property name="keygenSrc" location="${keygenBaseDir}/src"/>
 	<property name="keygenClasses" location="${keygenBaseDir}/classes"/>
-	<property name="cloudLibs" location="../../code/cloudDeploy/WEB-INF/lib"/>
-	<property name="keygenLibs" location="WEB-INF/lib"/>
+	<property name="includejars" value="../../third-party/lib"/>
 	<property name="warfilename" value="keygen.war"/>
 	<defaultexcludes remove="**/.DS_Store"/>
 
@@ -22,14 +21,8 @@
 		<javac srcdir="${keygenSrc}" destdir="${keygenClasses}" includeantruntime="false">
 			<classpath>
 				<path refid="comtor.class.path"/>
-				<fileset dir="${cloudLibs}">
-					<include name="mail-1.4.3.jar"/>
-					<include name="javax.jar"/>
-					<include name="aws-java-sdk-1.3.25.jar"/>
-				</fileset>
-
-				<fileset dir="${keygenLibs}">
-					<include name="recaptcha4j-0.0.7.jar"/>
+				<fileset dir="${includejars}">
+					<include name="*.jar"/>
 				</fileset>
 			</classpath>
 		</javac>
@@ -49,33 +42,28 @@
 	</target>
 
 	<!-- Determine correct Tomcat deployment path based type of deployment to create -->
-	<target name="createWar" depends="compile" description="Builds the war file for the key gen release.">
+	<target name="createWar" depends="compile" description="Builds the war file for the key gen servlet.">
 		<war destfile="${warfilename}" webxml="${keygenBaseDir}/WEB-INF/web.xml">
 			<fileset dir="${keygenBaseDir}/Web-Content"/>
-			<lib dir="${keygenBaseDir}/WEB-INF/lib">
-				<exclude name="javax.jar"/>
-				<exclude name="httpclient-4.2.jar"/>
-				<exclude name="httpcore-4.2.jar"/>
-				<exclude name="commons-codec-1.6.jar"/>
-				<exclude name="commons-logging-1.1.1.jar"/>
-				<exclude name="jackson-mini-1.9.7.jar"/>
-			</lib>
 			<classes dir="${keygenBaseDir}/classes"/>
 		</war>
 	</target>
 
 	<!-- Deployment tasks -->
- 	<target name="warDeploy" depends="createWar" description="Deploys the key generator web application">
-		<deploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}" war="file:api/keygen/${warfilename}"/>
+ 	<target name="warDeploy" description="Deploys the key generator web application">
+		<antcall target="createWar" inheritRefs="true"/>
+		<echo>Attempting to deploy to: ${deployhost}${deploymentPath}</echo>
+		<deploy url="${deployhost}" username="${username}" password="${password}" path="${deploymentPath}" war="file:api/keygen/${warfilename}"/>
 	</target>
 
 	<target name="warUndeploy" description="Undeploys the cloud web application.">
-		<undeploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}"/>
+		<undeploy url="${deployhost}" username="${username}" password="${password}" path="${deploymentPath}"/>
 	</target>
 
 	<target name="warRedeploy" description="Redeploys the cloud web application.">
-		<antcall target="warUndeploy"/>
-		<antcall target="warDeploy"/>
+		<antcall target="createWar" inheritRefs="true"/>
+		<antcall target="warUndeploy" inheritRefs="true"/>
+		<antcall target="warDeploy" inheritRefs="true"/>
 	</target>
 
 </project>
