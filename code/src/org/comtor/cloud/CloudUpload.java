@@ -56,12 +56,11 @@ public class CloudUpload extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		logger.entry();
 		super.init(config);
-		ServletSupport.setTempDir((File) getServletContext().getAttribute("javax.servlet.context.tempdir"));
+		ComtorStandAlone.setTempDir((File) getServletContext().getAttribute("javax.servlet.context.tempdir"));
 		destinationDir = new File(getServletContext().getRealPath(DESTINATION_DIR_PATH));
 		if (!destinationDir.isDirectory())
 			throw new ServletException(DESTINATION_DIR_PATH + " is not a directory.");
 		logger.exit();
-		System.err.println("cloud init: " + CloudUpload.class.getName());
 	}
 
 	/**
@@ -71,6 +70,7 @@ public class CloudUpload extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		logger.entry();
+		AWSServices.init();
 		String emailAddress = "";
 		String requesterIPAddress = request.getRemoteAddr();
 		PrintWriter out = response.getWriter();
@@ -178,12 +178,14 @@ public class CloudUpload extends HttpServlet {
 				if (!contextPath.equals("/comtorDev")) {
 					GregorianCalendar now = new GregorianCalendar();
 					File jsonFile = new File(pathToFile + java.io.File.separator + "jsonOut.txt");
-//					AWSServices.storeCloudUse(requesterIPAddress, sessionID, jsonFile, emailAddress, now.getTimeInMillis());
+					AWSServices.storeCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(),
+						InterfaceSystem.WWW, jsonFile);
 				} else {
 					// to be removed once we are happy that this release is solid...
 					GregorianCalendar now = new GregorianCalendar();
 					File jsonFile = new File(pathToFile + java.io.File.separator + "jsonOut.txt");
-					AWSServices.storeCloudUse(requesterIPAddress, sessionID, jsonFile, emailAddress, now.getTimeInMillis());
+					AWSServices.storeCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(),
+						InterfaceSystem.WWW, jsonFile);
 				}
 
 				// Start of output returned
