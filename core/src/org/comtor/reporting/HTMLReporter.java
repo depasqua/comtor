@@ -41,7 +41,6 @@ public class HTMLReporter extends COMTORReporter {
 	 * @return a string representation of the output necessary to create an HTML button (using Bootstrap) for display.
 	 */
 	private String createDisputeButton(String elementID, String reportName, String submittedWord) {
-		logger.entry();
 		String result = "<span class=\"pull-right\">\n";
 		try {
 			String word = submittedWord.substring(1, submittedWord.indexOf("'", 1));
@@ -55,7 +54,6 @@ public class HTMLReporter extends COMTORReporter {
 		}
 
 		result += "</span>";
-		logger.exit();
 		return result;
 	}
 
