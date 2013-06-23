@@ -8,6 +8,7 @@
 	<property name="cloudSrc" location="${cloudBaseDir}/src"/>
 	<property name="cloudClasses" location="${cloudBaseDir}/classes"/>
 	<property name="jarfilename" value="comtor.jar"/>
+	<property name="includejars" value="../third-party/lib"/>
 	<defaultexcludes remove="**/.DS_Store"/>
 
 	<condition property="deploymentPath" value="/" else="/comtorDev">
@@ -25,8 +26,11 @@
 			excludes="org/comtor/incomplete/** org/comtor/examples/**">
 			<classpath>
 				<path refid="comtor.class.path"/>
-				<fileset dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib">
+				<fileset dir="${includejars}">
 					<include name="*.jar"/>
+				</fileset>
+				<fileset dir="../core">
+					<include name="comtorcore.jar"/>
 				</fileset>
 			</classpath>
 		</javac>
@@ -35,7 +39,7 @@
 	<!-- Builds the command line version (stand alone) jar file of COMTOR -->
 	<target name="cli" depends="compile" description="Builds a distributable .jar file for use as a stand-alone application">
 		<tstamp/>
-		<copy file="../loggerconfig/log4j2.xml.cli" tofile="log4j2.xml" overwrite="true"/>
+		<copy file="../loggerconfig/log4j2.cli.xml" tofile="log4j2.xml" overwrite="true"/>
 		<mkdir dir="temp"/>
 		<unjar dest="temp">
 			<fileset dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib">
@@ -75,7 +79,7 @@
 
 	<!-- Initiates execution of the CLI -->
 	<target name="executeCli" depends="-promptDir" if="dirPresent" description="Runs the CLI version of COMTOR.">
-		<copy file="../loggerconfig/log4j2.xml.cli" tofile="${dirpath}/log4j2.xml" overwrite="true"/>
+		<copy file="../loggerconfig/log4j2.cli.xml" tofile="${dirpath}/log4j2.xml" overwrite="true"/>
 
 		<java jar="comtor.jar" fork="true" resultproperty="execResult">
 			<arg value="-dir"/>
@@ -212,14 +216,13 @@
 	<!-- Builds the war file for TOMCAT/cloud release -->
 	<target name="createWar" depends="compile" description="Builds the war file for the cloud release.">
 		<mkdir dir="${cloudBaseDir}/cloudDeploy/www/files"/>
-		<copy file="../loggerconfig/log4j2.xml.cloud" tofile="../loggerconfig/log4j2.xml" overwrite="true"/>
+		<copy file="../loggerconfig/log4j2.api.xml" tofile="../loggerconfig/log4j2.xml" overwrite="true"/>
 		<concat destfile="${cloudBaseDir}/cloudDeploy/www/files/README">
 			This directory will contain session directories.
 		</concat>
 		<war destfile="${warfilename}" webxml="${cloudBaseDir}/cloudDeploy/WEB-INF/web.xml">
 			<fileset dir="${cloudBaseDir}/cloudDeploy/www"/>
 			<fileset dir="${cloudBaseDir}/cloudDeploy/Web-Content"/>
-			<lib dir="${cloudBaseDir}/cloudDeploy/WEB-INF/lib" excludes="javax.jar"/>
 			<classes dir="${cloudBaseDir}/classes"/>
 			<classes file="../loggerconfig/log4j2.xml"/>
 		</war>
@@ -229,16 +232,17 @@
 
 	<!-- Deployment tasks -->
  	<target name="warDeploy" depends="createWar" description="Deploys the key generator web application">
-		<deploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}" war="file:code/${warfilename}"/>
+		<deploy url="${deployhost}" username="${username}" password="${password}" path="${deploymentPath}" war="file:code/${warfilename}"/>
 	</target>
 
 	<target name="warUndeploy" description="Undeploys the cloud web application.">
-		<undeploy url="${managerURL}" username="${username}" password="${password}" path="${deploymentPath}"/>
+		<undeploy url="${deployhost}" username="${username}" password="${password}" path="${deploymentPath}"/>
 	</target>
 
 	<target name="warRedeploy" depends="createWar" description="Redeploys the cloud web application.">
-		<antcall target="warUndeploy"/>
-		<antcall target="warDeploy"/>
+		<antcall target="createWar" inheritRefs="true"/>
+		<antcall target="warUndeploy" inheritRefs="true"/>
+		<antcall target="warDeploy" inheritRefs="true"/>
 	</target>
 
 </project>
