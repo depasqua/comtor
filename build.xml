@@ -120,7 +120,7 @@
 
 
 	<!-- CLOUD CLIENT -->
-	<target name="cloudCompile" description="Compile the source code of the cloud app" depends="init">
+	<target name="cloudCompile" description="Compile the source code of the cloud app" depends="init, corejar">
 		<ant dir="code" inheritRefs="true"/>
 	</target>
 
@@ -133,15 +133,15 @@
 	<!-- Requires the catalina-ant.jar file in the ant/lib directory locally. See 
 	     http://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html#Executing_Manager_Commands_With_Ant or, 
 	     http://tomcat.apache.org/tomcat-6.0-doc/manager-howto.html#Executing_Manager_Commands_With_Ant -->
-	<target name="cloudWarDeploy" depends="-credentials.check" description="Deploys the cloud web application.">
+	<target name="cloudWarDeploy" depends="-credentials.check, -sethost, corejar" description="Deploys the cloud web application.">
 		<ant dir="code" target="warDeploy" inheritRefs="true"/>
 	</target>
 
-	<target name="cloudWarUndeploy" depends="-credentials.check" description="Undeploys the cloud web application.">
+	<target name="cloudWarUndeploy" depends="-credentials.check, -sethost" description="Undeploys the cloud web application.">
 		<ant dir="code" target="warUndeploy" inheritRefs="true"/>
 	</target>
 
-	<target name="cloudWarRedeploy" depends="-credentials.check" description="Redeploys the cloud web application.">
+	<target name="cloudWarRedeploy" depends="-credentials.check, -sethost, corejar" description="Redeploys the cloud web application.">
 		<ant dir="code" target="warRedeploy" inheritRefs="true"/>
 	</target>
 
