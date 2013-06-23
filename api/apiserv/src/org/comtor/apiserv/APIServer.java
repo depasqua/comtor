@@ -157,6 +157,9 @@ public class APIServer extends HttpServlet {
 							logger.debug("Submitted interface_client: " + interfaceClient);
 						}
 
+						// add new param violations_only (defaults to true) and only shows bad "issues", otherwise if set to false;
+						// shows good results and violations in the output report.
+
 					} else {
 						// item.getName() returns whatever filename the client provides in the request, so we need to
 						// strip out the path content, if present, and get just the name.
@@ -293,7 +296,11 @@ public class APIServer extends HttpServlet {
 					if (!contextPath.endsWith("Dev")) {
 						GregorianCalendar now = new GregorianCalendar();
 						File jsonFile = new File(pathToFile + java.io.File.separator + "jsonOut.txt");
-						AWSServices.storeCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(), clientType, jsonFile);
+						logger.debug("json file size: " + jsonFile.length());
+						if (jsonFile.isFile() && jsonFile.length() < 65000L)
+							AWSServices.storeCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(), clientType, jsonFile);
+						else
+							AWSServices.storeCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(), clientType, null);
 					// } else {
 					// 	// to be removed once we are happy that this release is solid...
 					// 	GregorianCalendar now = new GregorianCalendar();
@@ -301,11 +308,11 @@ public class APIServer extends HttpServlet {
 					// 	AWSServices.storeCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(), clientType, jsonFile);
 					}
 
-					ObjectMapper mapper = new ObjectMapper();
 					String userResponse = null;
-					if (!interfaceClient.equals("webcat"))
+					if (!interfaceClient.equals("webcat")) {
+						ObjectMapper mapper = new ObjectMapper();
 						userResponse = mapper.writeValueAsString(responseStruct);
-					else 
+					} else 
 						userResponse = htmlReportContents;
 
 					out.println(userResponse);
