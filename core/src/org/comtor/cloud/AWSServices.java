@@ -431,7 +431,7 @@ public class AWSServices {
 	 * @param dateTime the String representation of the current date/time 
 	 */
 	public static void storeCloudUse(String requestIP, String emailAddr, Long dateTime, InterfaceSystem frontEnd, File jsonReport) {
-		logger.entry(requestIP, emailAddr, dateTime, frontEnd, jsonReport);
+		logger.entry(requestIP, emailAddr, dateTime, frontEnd);
 
 		try {
 			String tableName = "org.comtor.usage";
