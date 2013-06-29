@@ -165,7 +165,7 @@ public class APIServer extends HttpServlet {
 						// strip out the path content, if present, and get just the name.
 						fileName = item.getName();
 						logger.debug("Attempting to process the file upload: " + fileName);
-						if (fileName != null) {
+						if (fileName != null & !fileName.equals("")) {
 							// Write the uploaded file to the temp path (pathToFile) in the servlets context
 							requiredItems++;
 							fileName = FilenameUtils.getName(fileName);
