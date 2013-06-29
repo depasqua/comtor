@@ -175,17 +175,17 @@ public class CloudUpload extends HttpServlet {
 				AWSServices.sendEmail(emailAddress, msgText);
 
 				// Record cloud usage, but not for the dev version.
-				if (!contextPath.equals("/comtorDev")) {
+				if (!contextPath.endsWith("Dev")) {
 					GregorianCalendar now = new GregorianCalendar();
+					AWSServices.logCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(), InterfaceSystem.WWW);
 					File jsonFile = new File(pathToFile + java.io.File.separator + "jsonOut.txt");
-					AWSServices.storeCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(),
-						InterfaceSystem.WWW, jsonFile);
+					AWSServices.logCOMTORReport(jsonFile, emailAddress + "-" + now.getTimeInMillis());
 				} else {
 					// to be removed once we are happy that this release is solid...
 					GregorianCalendar now = new GregorianCalendar();
+					AWSServices.logCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(), InterfaceSystem.WWW);
 					File jsonFile = new File(pathToFile + java.io.File.separator + "jsonOut.txt");
-					AWSServices.storeCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(),
-						InterfaceSystem.WWW, jsonFile);
+					AWSServices.logCOMTORReport(jsonFile, emailAddress + "-" + now.getTimeInMillis());
 				}
 
 				// Start of output returned
