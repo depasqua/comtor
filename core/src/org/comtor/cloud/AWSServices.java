@@ -387,7 +387,7 @@ public class AWSServices {
 	}
 
 	/**
-	 * Stores the specified report on the S3 store.
+	 * Stores the specified COMTOR report output (what we give the user) on the S3 storage service.
 	 *
 	 * @param report A File reference to the report created by this execution of COMTOR
 	 * @param prefix The prefix String to be used as part of the stored file name
@@ -405,8 +405,6 @@ public class AWSServices {
 			expiring.add(Calendar.DATE, 5);
 
 			// Obtain AWS credentials
-			logger.debug("S3 key: " + key);
-			logger.debug(s3Client);
 			s3Client.putObject(new PutObjectRequest(bucketName, key, report));
 			reportURL = s3Client.generatePresignedUrl(bucketName, key, expiring.getTime());
 
@@ -428,9 +426,10 @@ public class AWSServices {
 	 * 
 	 * @param requestIP the String representation of the requesting client's IP address
 	 * @param emailAddr the String representation of the client's email address
-	 * @param dateTime the String representation of the current date/time 
+	 * @param dateTime the String representation of the current date/time
+	 * @param frontEnd the type of front-end client used to access the system (WWW, Webcat, etc.)
 	 */
-	public static void storeCloudUse(String requestIP, String emailAddr, Long dateTime, InterfaceSystem frontEnd, File jsonReport) {
+	public static void logCloudUse(String requestIP, String emailAddr, Long dateTime, InterfaceSystem frontEnd) {
 		logger.entry(requestIP, emailAddr, dateTime, frontEnd);
 
 		try {
@@ -464,7 +463,7 @@ public class AWSServices {
 					break;
 			}
 			item.put("ipAddress", new AttributeValue(requestIP));
-			item.put("jsonReport", new AttributeValue(FileUtils.readFileToString(jsonReport)));
+
 			logger.debug(item);
 			PutItemRequest putItemRequest = new PutItemRequest(tableName, item);
 			PutItemResult putItemResult = dynamoDBClient.putItem(putItemRequest);
@@ -475,8 +474,33 @@ public class AWSServices {
 		} catch (AmazonClientException ace) {
 			logger.catching(ace);
 
-		} catch (IOException ieo) {
-			logger.catching(ieo);
+		}
+
+		logger.exit();
+	}
+
+	/**
+	 * Stores the COMTOR Json report to S3 for future analysis. This is used by the cloud interface (www) and the 
+	 * API server. We do this on S3 since the report files are too large for storage in dynamoDB.
+	 *
+	 * @param jsonReport A File reference to the json report created by the system.
+	 */
+	public static void logCOMTORReport(File jsonReport, String fileKey) {
+		logger.entry();
+		try {
+			String key = URLEncoder.encode(fileKey, "UTF-8");
+			String bucketName = "org.comtor.reports.json";
+			s3Client.putObject(new PutObjectRequest(bucketName, key, jsonReport));
+
+		} catch (UnsupportedEncodingException uee) {
+			logger.catching(uee);
+
+		} catch (AmazonServiceException ase) {
+			logger.catching(ase);
+
+		} catch (AmazonClientException ace) {
+			logger.catching(ace);
+
 		}
 
 		logger.exit();
