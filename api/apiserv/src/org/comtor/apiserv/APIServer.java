@@ -295,17 +295,9 @@ public class APIServer extends HttpServlet {
 					// Record cloud usage, but not for the dev version.
 					if (!contextPath.endsWith("Dev")) {
 						GregorianCalendar now = new GregorianCalendar();
+						AWSServices.logCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(), clientType);
 						File jsonFile = new File(pathToFile + java.io.File.separator + "jsonOut.txt");
-						logger.debug("json file size: " + jsonFile.length());
-						if (jsonFile.isFile() && jsonFile.length() < 65000L)
-							AWSServices.storeCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(), clientType, jsonFile);
-						else
-							AWSServices.storeCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(), clientType, null);
-					// } else {
-					// 	// to be removed once we are happy that this release is solid...
-					// 	GregorianCalendar now = new GregorianCalendar();
-					// 	File jsonFile = new File(pathToFile + java.io.File.separator + "jsonOut.txt");
-					// 	AWSServices.storeCloudUse(requesterIPAddress, emailAddress, now.getTimeInMillis(), clientType, jsonFile);
+						AWSServices.logCOMTORReport(jsonFile, emailAddress + "-" + now.getTimeInMillis());
 					}
 
 					String userResponse = null;
