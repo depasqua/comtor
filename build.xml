@@ -15,11 +15,8 @@
 
 	<!-- Define some basic properties -->
 	<property name="thirdpartyjars" location="third-party/lib"/>
-	<property name="version" value="2.1.5"/>
-	<property name="releasehost" value="cloud.comtor.org"/>
-	<property name="devhost" value="54.225.226.33"/>
+	<property name="version" value="2.2.0"/>
 	<property name="localhost" value="localhost"/>
-	<property name="managerURL" value="http://${releasehost}/manager/text"/>
 	
 	<!-- Build up a classpath file path for later use. -->
 	<condition property="toolsjar" value="${java.home}/../Classes/classes.jar" else="${java.home}/../lib/tools.jar">
@@ -67,10 +64,40 @@
 	</target>
 	
 	<!-- Sets the deployment host based on the user-provided input, or uses localhost (default) -->
-	<target name="-sethost">
-		<condition property="deployhost" value="http://${deploy}:8080/manager/text" else="http://localhost:8080/manager/text">
+	<target name="-sethost" depends="-setport">
+		<condition property="deployhost" value="http://${deploy}:${deployport}/manager/text"
+					else="http://localhost:${deployport}/manager/text">
 			<isset property="deploy"/>
 		</condition>
+	</target>
+
+	<!-- -->
+	<target name="-setport">
+		<condition property="deployport" value="80" else="8080">
+			<isset property="port"/>
+		</condition>
+	</target>
+
+	<!-- Ensures that the user has set the deployment action property -->
+	<target name="-waraction.check">
+		<condition property="waraction" value="warDeploy">
+			<equals arg1="${action}" arg2="deploy"/>
+		</condition>
+
+		<condition property="waraction" value="warRedeploy">
+			<equals arg1="${action}" arg2="redeploy"/>
+		</condition>
+
+		<condition property="waraction" value="warUndeploy">
+			<equals arg1="${action}" arg2="undeploy"/>
+		</condition>
+
+		<antcall target="-waraction.fail"/>
+	</target>
+
+	<!-- Stops the build and outputs a message if the waraction property was not set by user -->
+	<target name="-waraction.fail" unless="waraction">
+		<fail message="Please the 'action' property to one of: 'deploy', 'undeploy', 'redeploy'"/>
 	</target>
 
 	<!-- Ensures the user has set the deployment properties to provide to the servlet container -->
@@ -92,19 +119,18 @@
 		</fail>
 	</target>
 
-
 	<!-- Builds the command line version (stand alone) jar file of COMTOR -->
 	<target name="cli" description="Builds a distributable Jar file for use as a stand-alone application">
 		<ant dir="code" target="cli" inheritRefs="true"/>
 	</target>
 
 	<!-- Runs the command line version (stand alone) via jar file of COMTOR -->
-	<target name="runcli" depends="cli" description="Runs the CLI version of COMTOR via the jar file on the dir path provided.">
+	<target name="cliRun" depends="cli" description="Runs the CLI version of COMTOR via the jar file on the dir path provided.">
 		<ant dir="code" target="executeCli" inheritRefs="true"/>
 	</target>
 
 	<!-- Runs the command line version (stand alone) via jar file of COMTOR on the test cases in the tests/ -->
-	<target name="testcli" depends="cli" description="Runs the CLI version of COMTOR against the tests/ directory">
+	<target name="cliTest" depends="cli" description="Runs the CLI version of COMTOR against the tests/ directory">
 		<ant dir="code" target="testCli" inheritRefs="true"/>
 	</target>
 
@@ -119,96 +145,51 @@
 	</target>
 
 
-	<!-- CLOUD CLIENT -->
-	<target name="cloudCompile" description="Compile the source code of the cloud app" depends="init, corejar">
-		<ant dir="code" inheritRefs="true"/>
-	</target>
-
-	<target name="cloudWar" description="Builds the keygen war file of the cloud app">
-		<ant dir="code" target="createWar" inheritRefs="true"/>
-	</target>
-
-
-	<!-- Ant-based deploy for servlet version -->
 	<!-- Requires the catalina-ant.jar file in the ant/lib directory locally. See 
 	     http://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html#Executing_Manager_Commands_With_Ant or, 
 	     http://tomcat.apache.org/tomcat-6.0-doc/manager-howto.html#Executing_Manager_Commands_With_Ant -->
-	<target name="cloudWarDeploy" depends="-credentials.check, -sethost, corejar" description="Deploys the cloud web application.">
-		<ant dir="code" target="warDeploy" inheritRefs="true"/>
+
+	<!-- WWW Interface Service -->
+	<target name="cloudWww" depends="init, corejar" description="Compiles the source code and builds the cloud/servlet www app">
+		<ant dir="code" target="createWar" inheritRefs="true"/>
 	</target>
 
-	<target name="cloudWarUndeploy" depends="-credentials.check, -sethost" description="Undeploys the cloud web application.">
-		<ant dir="code" target="warUndeploy" inheritRefs="true"/>
-	</target>
-
-	<target name="cloudWarRedeploy" depends="-credentials.check, -sethost, corejar" description="Redeploys the cloud web application.">
-		<ant dir="code" target="warRedeploy" inheritRefs="true"/>
-	</target>
-
-
-	<!-- KEYGEN -->
-	<target name="keygenCompile" depends="init, corejar" description="Compiles the source code of the keygen app">
-	 	<ant dir="api/keygen" inheritRefs="true"/>
- 	</target>
-	
-	<target name="keygenWar" depends="init, corejar" description="Builds the keygen war file">
-		<ant dir="api/keygen" target="createWar" inheritRefs="true"/>
-	</target>
-
-	<target name="keygenWarDeploy" depends="-credentials.check, -sethost, corejar" description="Deploys the keygen war file">
-		<ant dir="api/keygen" target="warDeploy" inheritRefs="true"/>
-	</target>
-
-	<target name="keygenWarUndeploy" depends="-credentials.check, -sethost" description="Undeploys the keygen war file">
-		<ant dir="api/keygen" target="warUndeploy" inheritRefs="true"/>
-	</target>
-
-	<target name="keygenWarRedeploy" depends="-credentials.check, -sethost, corejar" description="Redeploys the keygen war file">
-		<ant dir="api/keygen" target="warRedeploy" inheritRefs="true"/>
+	<target name="cloudWwwWar" depends="-credentials.check, -sethost, -waraction.check, corejar"
+			description="Performs the specified war deployment action on the cloud www interface.">
+		<ant dir="code" target="${waraction}" inheritRefs="true"/>
 	</target>
 
 
-	<!-- Word Problem Submitter Server -->
-	<target name="wordProblemCompile" depends="init, corejar" description="Compiles the source code of the app">
-	 	<ant dir="wordProblemSubmitter" target="compile" inheritRefs="true"/>
- 	</target>
-	
-	<target name="wordProblemCreateWar" depends="init, corejar" description="Builds the war file">
+	<!-- Word Problem Submitter Service -->
+	<target name="wordProblem" depends="init, corejar" description="Compiles the code base and builds the war file">
 		<ant dir="wordProblemSubmitter" target="createWar" inheritRefs="true"/>
 	</target>
 
-	<target name="wordProblemWarDeploy" depends="-credentials.check, -sethost, corejar" description="Deploys the war file">
-		<ant dir="wordProblemSubmitter" target="warDeploy" inheritRefs="true"/>
-	</target>
-
-	<target name="wordProblemWarUndeploy" depends="-credentials.check, -sethost" description="Undeploys the war file">
-		<ant dir="wordProblemSubmitter" target="warUndeploy" inheritRefs="true"/>
-	</target>
-
-	<target name="wordProblemWarRedeploy" depends="-credentials.check, -sethost, corejar" description="Redeploys the war file">
-		<ant dir="wordProblemSubmitter" target="warRedeploy" inheritRefs="true"/>
+	<target name="wordProblemWar" depends="-credentials.check, -sethost, -waraction.check, corejar"
+			description="Performs the specified war deployment action on the disputer service.">
+		<ant dir="wordProblemSubmitter" target="${waraction}" inheritRefs="true"/>
 	</target>
 
 
-	<!-- API Server -->
-	<target name="apiServCompile" depends="init, corejar" description="Compiles the source code of the api server app">
-	 	<ant dir="api/apiserv" target="apiServCompile" inheritRefs="true"/>
- 	</target>
-	
-	<target name="apiServWar" depends="apiServCompile" description="Builds the api server war file">
+	<!-- API Service -->	
+	<target name="apiServ" depends="init, corejar" description="Compiles the source code and builds the api server war file">
 		<ant dir="api/apiserv" target="createWar" inheritRefs="true"/>
 	</target>
 
-	<target name="apiServWarDeploy" depends="-credentials.check, -sethost, corejar" description="Deploys the api server war file">
-		<ant dir="api/apiserv" target="warDeploy" inheritRefs="true"/>
+	<target name="apiServWar" depends="-credentials.check, -sethost, -waraction.check, corejar" 
+			description="Performs the specified war deployment action on the api service.">
+		<ant dir="api/apiserv" target="${waraction}" inheritRefs="true"/>
 	</target>
 
-	<target name="apiServWarUndeploy" depends="-credentials.check, -sethost" description="Undeploys the api server war file">
-		<ant dir="api/apiserv" target="warUndeploy" inheritRefs="true"/>
+
+	<!-- API Keygen Service -->
+	<target name="apiKeygen" depends="init, corejar" description="Compiles the source code and builds the keygen war file">
+		<ant dir="api/keygen" target="createWar" inheritRefs="true"/>
 	</target>
 
-	<target name="apiServWarRedeploy" depends="-credentials.check, -sethost, corejar" description="Redeploys the api server war file">
-		<ant dir="api/apiserv" target="warRedeploy" inheritRefs="true"/>
+	<target name="apiKeygenWar" depends="-credentials.check, -sethost, -waraction.check, corejar"
+			description="Performs the specified war deployment action on the api keygen service.">
+		<ant dir="api/keygen" target="${waraction}" inheritRefs="true"/>
 	</target>
 
 </project>
