@@ -521,8 +521,8 @@ public abstract class COMTORReporter {
 			if (constructorsBlock != null) {
 				JSONObject constructorSought = constructorsBlock.getJSONObject(constructorName);
 
-				int length = constructorSought.getJSONArray("issues").length() + constructorSought.getJSONArray("summary").length();
-				result += (length == 0) ? 1 : length;
+				int length = constructorSought.getJSONArray("issues").length();
+				result += length;
 
 				JSONObject throwsObj = constructorSought.getJSONObject("throws");
 				String[] names = JSONObject.getNames(throwsObj);
@@ -530,9 +530,8 @@ public abstract class COMTORReporter {
 				if (names != null) {
 					for (int index = 0; index < names.length; index++)
 						length += throwsObj.getJSONArray(names[index]).length();
-					length = (names.length > length) ? names.length : length;
 				}
-				result += (length == 0 && currentClass.getBoolean("throws_analyzed")) ? 1 : length;;
+				result += length;
 
 				JSONObject params = constructorSought.getJSONObject("parameters");
 				names = JSONObject.getNames(params);
@@ -540,9 +539,8 @@ public abstract class COMTORReporter {
 				if (names != null) {
 					for (int index = 0; index < names.length; index++)
 						length += params.getJSONArray(names[index]).length();
-					length = (names.length > length) ? names.length : length;
 				}
-				result += (length == 0 && currentClass.getBoolean("params_analyzed")) ? 1 : length;;
+				result += length;
 			}
 
 		} catch (JSONException je) {
@@ -566,11 +564,11 @@ public abstract class COMTORReporter {
 				JSONObject methodSought = methodsBlock.getJSONObject(methodName);
 
 				int length= methodSought.getJSONArray("issues").length() + methodSought.getJSONArray("summary").length();
-				length = (length == 0) ? 1 : length;
+				// length = (length == 0) ? 1 : length;
 				result += length;				
 
 				length = methodSought.getJSONArray("returns").length();
-				length = (length == 0 && currentClass.getBoolean("returns_analyzed")) ? 1 : length;
+				// length = (length == 0 && currentClass.getBoolean("returns_analyzed")) ? 1 : length;
 				result += length;
 
 				JSONObject throwsObj = methodSought.getJSONObject("throws");
@@ -579,9 +577,10 @@ public abstract class COMTORReporter {
 				if (names != null) {
 					for (int index = 0; index < names.length; index++)
 						length += throwsObj.getJSONArray(names[index]).length();
-					length = (names.length > length) ? names.length : length;
+					// length = (names.length > length) ? names.length : length;
 				}
-				result += (length == 0 && currentClass.getBoolean("throws_analyzed")) ? 1 : length;
+				// result += (length == 0 && currentClass.getBoolean("throws_analyzed")) ? 1 : length;
+				result += length;
 
 				JSONObject params = methodSought.getJSONObject("parameters");
 				names = JSONObject.getNames(params);
@@ -589,9 +588,10 @@ public abstract class COMTORReporter {
 				if (names != null) {
 					for (int index = 0; index < names.length; index++)
 						length += params.getJSONArray(names[index]).length();
-					length = (names.length > length) ? names.length : length;
+					// length = (names.length > length) ? names.length : length;
 				}
-				result += (length == 0 && currentClass.getBoolean("params_analyzed")) ? 1 : length;
+				// result += (length == 0 && currentClass.getBoolean("params_analyzed")) ? 1 : length;
+				result += length;
 			}
 
 		} catch (JSONException je) {
@@ -633,7 +633,8 @@ public abstract class COMTORReporter {
 									JSONArray entityArray = typeBlock.getJSONArray(entityNames[entityNum]);
 									length += entityArray.length();
 								}
-								result = (entityNames.length > length) ? entityNames.length : length;
+								// result = (entityNames.length > length) ? entityNames.length : length;
+								result = length;
 							}
 						}
 					}
