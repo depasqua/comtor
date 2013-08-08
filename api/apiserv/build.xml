@@ -47,10 +47,6 @@
 	<target name="createWar" depends="apiServCompile" description="Builds the war file for the apiServ release.">
 		<copy file="../../loggerconfig/log4j2.api.xml" tofile="log4j2.xml" overwrite="true"/>
 		<war destfile="${warfilename}" webxml="${apiServBaseDir}/WEB-INF/web.xml">
- 			<lib dir="${includejars}">
- 				<exclude name="javax.jar"/>
- 			</lib>
- 			<lib file="../../core/comtorcore.jar"/>
 			<classes dir="${apiServClasses}"/>
 			<classes file="log4j2.xml"/>
 		</war>
