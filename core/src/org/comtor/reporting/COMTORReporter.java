@@ -562,35 +562,24 @@ public abstract class COMTORReporter {
 			JSONObject methodsBlock = currentClass.getJSONObject("methods");
 			if (methodsBlock != null) {
 				JSONObject methodSought = methodsBlock.getJSONObject(methodName);
+				int length = 0;
 
-				int length= methodSought.getJSONArray("issues").length() + methodSought.getJSONArray("summary").length();
-				// length = (length == 0) ? 1 : length;
-				result += length;				
-
-				length = methodSought.getJSONArray("returns").length();
-				// length = (length == 0 && currentClass.getBoolean("returns_analyzed")) ? 1 : length;
-				result += length;
+				result += methodSought.getJSONArray("issues").length() + methodSought.getJSONArray("summary").length();			
+				result += methodSought.getJSONArray("returns").length();
 
 				JSONObject throwsObj = methodSought.getJSONObject("throws");
 				String[] names = JSONObject.getNames(throwsObj);
-				length = 0;
-				if (names != null) {
+				if (names != null)
 					for (int index = 0; index < names.length; index++)
 						length += throwsObj.getJSONArray(names[index]).length();
-					// length = (names.length > length) ? names.length : length;
-				}
-				// result += (length == 0 && currentClass.getBoolean("throws_analyzed")) ? 1 : length;
 				result += length;
 
 				JSONObject params = methodSought.getJSONObject("parameters");
 				names = JSONObject.getNames(params);
 				length = 0;
-				if (names != null) {
+				if (names != null)
 					for (int index = 0; index < names.length; index++)
 						length += params.getJSONArray(names[index]).length();
-					// length = (names.length > length) ? names.length : length;
-				}
-				// result += (length == 0 && currentClass.getBoolean("params_analyzed")) ? 1 : length;
 				result += length;
 			}
 
@@ -633,7 +622,6 @@ public abstract class COMTORReporter {
 									JSONArray entityArray = typeBlock.getJSONArray(entityNames[entityNum]);
 									length += entityArray.length();
 								}
-								// result = (entityNames.length > length) ? entityNames.length : length;
 								result = length;
 							}
 						}
