@@ -51,6 +51,7 @@
 		<ant dir="code" target="clean"/>
 		<ant dir="core" target="clean"/>
 		<ant dir="lamp" target="clean"/>
+		<ant dir="ide-clients/netbeans" target="clean"/>
 		
 		<delete>
 			<fileset dir="." casesensitive="yes">
