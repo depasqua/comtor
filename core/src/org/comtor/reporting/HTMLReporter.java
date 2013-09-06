@@ -68,13 +68,13 @@ public class HTMLReporter extends COMTORReporter {
 			outFilePW.println("			td.problem { background-color: #F2DEDE; }");
 			outFilePW.println("		</style>");
 			outFilePW.println();
-			outFilePW.println("		<link type=\"text/css\" href=\"http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css\" rel=\"stylesheet\">");
+			outFilePW.println("		<link type=\"text/css\" href=\"http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css\" rel=\"stylesheet\"/>");
 			outFilePW.println("		<script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-1.8.3.min.js\"></script>");
 			outFilePW.println("		<script type=\"text/javascript\" src=\"http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js\"></script>");
 			outFilePW.println();
-			outFilePW.println("		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-			outFilePW.println("		<meta name=\"description\" content=\"COMTOR Execution Report\">");
-			outFilePW.println("		<meta name=\"author\" content=\"comtor.org\">");
+			outFilePW.println("		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>");
+			outFilePW.println("		<meta name=\"description\" content=\"COMTOR Execution Report\"/>");
+			outFilePW.println("		<meta name=\"author\" content=\"comtor.org\"/>");
 			outFilePW.println("	</head>");
 			outFilePW.println();
 			outFilePW.println("	<body>");
@@ -240,7 +240,7 @@ public class HTMLReporter extends COMTORReporter {
 									outFilePW.print("						<tr>");
 								else
 									outFilePW.print("							");
-								outFilePW.print("<td class=\"problem\"><i class=\"icon-remove\">&nbsp;</i> " + getClassIssueByNum(issueNum) + "</td></tr>\n");
+								outFilePW.print("<td class=\"problem\"><i class=\"icon-remove\">&#160;</i> " + getClassIssueByNum(issueNum) + "</td></tr>\n");
 							}
 
 						} else {
@@ -280,7 +280,7 @@ public class HTMLReporter extends COMTORReporter {
 										for (int issueNum = 0; issueNum < spanIssues; issueNum++) {
 											if (issueNum != 0)
 												outFilePW.println("						<tr>");
-											outFilePW.print("							<td class=\"problem\"><i class=\"icon-remove\">&nbsp;</i>" +
+											outFilePW.print("							<td class=\"problem\"><i class=\"icon-remove\">&#160;</i>" +
 												getMemberIssueSummaryItemByNum(ReportItem.CONSTRUCTOR, constructorName, ReportIssueType.ISSUE, issueNum));
 											outFilePW.println("</td></tr>\n");
 										}
@@ -308,7 +308,7 @@ public class HTMLReporter extends COMTORReporter {
 																else
 																	outFilePW.print("							");
 
-																outFilePW.print("<td class=\"problem\"><i class=\"icon-remove\">&nbsp;</i> throws <span class=\"code\">");
+																outFilePW.print("<td class=\"problem\"><i class=\"icon-remove\">&#160;</i> throws <span class=\"code\">");
 																outFilePW.print(paramNames[paramNum] + "</span>: " + paramIssues[issueNum]);
 																outFilePW.println("</td></tr>\n");
 															}
@@ -346,7 +346,7 @@ public class HTMLReporter extends COMTORReporter {
 																	outFilePW.print("						<tr>");
 																else
 																	outFilePW.print("							");
-																outFilePW.print("<td class=\"problem\"><i class=\"icon-remove\">&nbsp;</i> parameter <span class=\"code\">");
+																outFilePW.print("<td class=\"problem\"><i class=\"icon-remove\">&#160;</i> parameter <span class=\"code\">");
 																outFilePW.print(paramNames[paramNum] + "</span>: " + paramIssues[issueNum]);
 																outFilePW.println("</td></tr>\n");
 															}
@@ -393,7 +393,7 @@ public class HTMLReporter extends COMTORReporter {
 										for (int issueNum = 0; issueNum < numMethodIssues; issueNum++) {
 											if (issueNum != 0)
 												outFilePW.println("						<tr>");
-											outFilePW.print("							<td class=\"problem\"><i class=\"icon-remove\">&nbsp;</i> " +
+											outFilePW.print("							<td class=\"problem\"><i class=\"icon-remove\">&#160;</i> " +
 												getMemberIssueSummaryItemByNum(ReportItem.METHOD, methodName, ReportIssueType.ISSUE, issueNum));
 											outFilePW.println("</td></tr>\n");
 										}
@@ -405,7 +405,7 @@ public class HTMLReporter extends COMTORReporter {
 											if (issueNum != 0 || (issueNum == 0 && numMethodIssues > 0))
 												outFilePW.println("						<tr>");
 											outFilePW.println("<td" + spanner + ">method</td>");
-											outFilePW.println("							<td class=\"ok\">&nbsp;<i class=\"icon-ok\"></i> " +
+											outFilePW.println("							<td class=\"ok\">&#160;<i class=\"icon-ok\"></i> " +
 													getMemberIssueSummaryItemByNum(ReportItem.METHOD, methodName, ReportIssueType.SUMMARY, issueNum) + "</td></tr>\n");
 										}
 									}
@@ -431,7 +431,7 @@ public class HTMLReporter extends COMTORReporter {
 															if (issueNum != 0 || (issueNum == 0 && paramNum > 0))
 																outFilePW.println("						<tr>");
 
-															outFilePW.print("							<td class=\"problem\"><i class=\"icon-remove\">&nbsp;</i> throws <span class=\"code\">");
+															outFilePW.print("							<td class=\"problem\"><i class=\"icon-remove\">&#160;</i> throws <span class=\"code\">");
 															outFilePW.print(paramNames[paramNum] + "</span>: " + paramIssues[issueNum]);
 															outFilePW.println("</td></tr>\n");
 														}
@@ -460,7 +460,7 @@ public class HTMLReporter extends COMTORReporter {
 															if (issueNum != 0 || (issueNum == 0 && paramNum != 0))
 																outFilePW.println("						<tr>");
 
-															outFilePW.print("							<td class=\"problem\"><i class=\"icon-remove\">&nbsp;</i> parameter <span class=\"code\">");
+															outFilePW.print("							<td class=\"problem\"><i class=\"icon-remove\">&#160;</i> parameter <span class=\"code\">");
 															outFilePW.print(paramNames[paramNum] + "</span>: " + paramIssues[issueNum]);
 															outFilePW.println("</td></tr>\n");
 														}
@@ -481,7 +481,7 @@ public class HTMLReporter extends COMTORReporter {
 													outFilePW.print("						<tr>");
 												else
 													outFilePW.print("							");
-												outFilePW.print("<td class=\"problem\"><i class=\"icon-remove\">&nbsp;</i> " + getMethodIssueByNum(methodName, "returns", issueNum));
+												outFilePW.print("<td class=\"problem\"><i class=\"icon-remove\">&#160;</i> " + getMethodIssueByNum(methodName, "returns", issueNum));
 												outFilePW.print("</td></tr>\n");
 											}
 										}
@@ -511,7 +511,7 @@ public class HTMLReporter extends COMTORReporter {
 												outFilePW.print("						<tr>");
 											else
 												outFilePW.print("							");
-											outFilePW.print("<td class=\"problem\"><i class=\"icon-remove\">&nbsp;</i> " +
+											outFilePW.print("<td class=\"problem\"><i class=\"icon-remove\">&#160;</i> " +
 													getMemberIssueSummaryItemByNum(ReportItem.FIELD, fieldName, ReportIssueType.ISSUE, issueNum));
 											outFilePW.println("</td></tr>\n");
 										}
@@ -570,7 +570,7 @@ public class HTMLReporter extends COMTORReporter {
 				outFilePW.println("			</div>\n");
 			}
 
-			outFilePW.println("			<hr style=\"clear:both;\">");
+			outFilePW.println("			<hr style=\"clear:both;\"/>");
 			outFilePW.println("			<p class=\"muted\"><small>This report was generated by the COMTOR project. See <a href=\"http://www.comtor.org\">www.comtor.org</a> ");
 			outFilePW.println("for more information.</small></p>\n");
 
