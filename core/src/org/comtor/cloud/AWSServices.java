@@ -46,7 +46,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 public class AWSServices {
-	private static Logger logger = LogManager.getLogger(AWSServices.class.getName());
+	private static Logger logger = LogManager.getFormatterLogger(AWSServices.class.getName());
 	private static PropertiesCredentials apiCredentials = null;
 	private static AmazonS3 s3Client = null;
 	private static AmazonDynamoDBAsyncClient dynamoDBClient = null;
@@ -61,14 +61,14 @@ public class AWSServices {
 	public static void init() {
 		logger.entry();
 		try {
-			logger.debug("Attempting to access credentials: " + System.getProperty("catalina.base") + java.io.File.separator + "APICredentials.properties");
+			logger.debug("Attempting to access credentials: %s", System.getProperty("catalina.base") + java.io.File.separator + "APICredentials.properties");
 			File apiCreds = new File(System.getProperty("catalina.base") + java.io.File.separator + "APICredentials.properties");
 			apiCredentials = new PropertiesCredentials(apiCreds);
 
 			s3Client = new AmazonS3Client(apiCredentials);
 			dynamoDBClient = new AmazonDynamoDBAsyncClient(apiCredentials);
 			sesClient = new AmazonSimpleEmailServiceClient(apiCredentials);
-
+			logger.debug("AWS services initialized");
 		} catch (FileNotFoundException fnfe) {
 			logger.catching(fnfe);
 
@@ -86,7 +86,7 @@ public class AWSServices {
 	 * @return A true value if the key is valid and active, false otherwise
 	 */
 	public static boolean checkAPIKey(String apiKey) {
-		logger.entry();
+		logger.entry(apiKey);
 		boolean result = false;
 
 		// Initialize query request object
@@ -210,6 +210,7 @@ public class AWSServices {
 		boolean successful = false;
 
 		try {
+			logger.debug("Attempting to add user '%s' to API key user table", email);
 			email = URLDecoder.decode(email, "UTF-8");
 
 			// If database does not already contain the specified key for the email, insert a new one.
@@ -227,13 +228,14 @@ public class AWSServices {
 				dynamoDBClient.putItem(putItemRequest);
 
 				successful = true;
-
+				logger.debug("User '%s' added to table with API key %s", email, apiKey);
 				// Send the user an email with the API key
 				sendAPIKeyEmail(email, apiKey, request);
-
-			} else
+				
+			} else{
+				logger.debug("User '%s' already has API key", email);
 				resendKeyEmail(email, getAPIKey(email), request);
-
+			}
 		} catch (UnsupportedEncodingException uee) {
 			logger.catching(uee);
 		}
@@ -252,6 +254,7 @@ public class AWSServices {
 		String comtorEmail = "comtor@tcnj.edu";
 
 		try {
+			logger.debug("Attempting to send results email to '%s'", toAddr);
 			// Create a new Message
 			com.amazonaws.services.simpleemail.model.Message msg =
 				new com.amazonaws.services.simpleemail.model.Message().withSubject(new Content("COMTOR Results"));
@@ -265,7 +268,7 @@ public class AWSServices {
 			
 			request.setMessage(msg);
 			sesClient.sendEmail(request);
-
+			logger.debug("Results email sent successfully to '%s'", toAddr);
 		} catch (AmazonClientException e) {
 			logger.catching(e);
 		}
@@ -286,6 +289,7 @@ public class AWSServices {
 
 		String comtorEmail = "comtor@tcnj.edu";
 		try {
+			logger.debug("Attempting to send API key '%s' via email to '%s'", apiKey, toAddr);
 			// Create a new Message
 			com.amazonaws.services.simpleemail.model.Message msg =
 				new com.amazonaws.services.simpleemail.model.Message().withSubject(new Content("COMTOR API Key Request"));
@@ -318,7 +322,9 @@ public class AWSServices {
 			
 			request.setMessage(msg);
 			sesClient.sendEmail(request);
-
+			
+			logger.debug("API key '%s' sent successfully to '%s'", apiKey, toAddr);
+			
 		} catch (AmazonClientException ace) {
 			logger.catching(ace);
 		}
@@ -398,15 +404,16 @@ public class AWSServices {
 
 		URL reportURL = null;
 		try {
+			logger.debug("Attempting to store report to S3 service");
 			SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmssSSSZ");
 			String key = prefix + '-' + formatter.format(new Date());
 			String bucketName = "org.comtor.reports";
 			GregorianCalendar expiring = new GregorianCalendar();
 			expiring.add(Calendar.DATE, 5);
-
 			// Obtain AWS credentials
 			s3Client.putObject(new PutObjectRequest(bucketName, key, report));
 			reportURL = s3Client.generatePresignedUrl(bucketName, key, expiring.getTime());
+			logger.debug("Report stored to S3 service successfully. File will expire in: %s", expiring.getTime());
 
 		} catch (AmazonServiceException ase) {
 			logger.catching(ase);
@@ -433,6 +440,7 @@ public class AWSServices {
 		logger.entry(requestIP, emailAddr, dateTime, frontEnd);
 
 		try {
+			logger.info("Attempting to log request to SDB service");
 			String tableName = "org.comtor.usage";
 			Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
 			item.put("email", new AttributeValue(emailAddr));
@@ -464,10 +472,10 @@ public class AWSServices {
 			}
 			item.put("ipAddress", new AttributeValue(requestIP));
 
-			logger.debug(item);
+			logger.debug("Request attributes: {}", item);
 			PutItemRequest putItemRequest = new PutItemRequest(tableName, item);
 			PutItemResult putItemResult = dynamoDBClient.putItem(putItemRequest);
-
+			logger.debug("Request logged to SDB service successfully");
 		} catch (AmazonServiceException ase) {
 			logger.catching(ase);
 
@@ -488,9 +496,11 @@ public class AWSServices {
 	public static void logCOMTORReport(File jsonReport, String fileKey) {
 		logger.entry();
 		try {
+			logging.debug("Attempting to store JSON report to S3");
 			String key = URLEncoder.encode(fileKey, "UTF-8");
 			String bucketName = "org.comtor.reports.json";
 			s3Client.putObject(new PutObjectRequest(bucketName, key, jsonReport));
+			logging.debug("JSON report stored to S3 successfully");
 
 		} catch (UnsupportedEncodingException uee) {
 			logger.catching(uee);
@@ -524,6 +534,7 @@ public class AWSServices {
 		boolean result = false;
 
 		try {
+			logger.debug("Attempting to send disputed word '%s' to '%s' from '%s'", word, toAddress, comtorEmail);
 			// Create a new message to submit for disputing the specific word in the specified report
 			com.amazonaws.services.simpleemail.model.Message msg =
 				new com.amazonaws.services.simpleemail.model.Message().withSubject(new Content("COMTOR Result Dispute"));
@@ -539,7 +550,7 @@ public class AWSServices {
 			request.setMessage(msg);
 			sesClient.sendEmail(request);
 			result = true;
-
+			logger.debug("Disputed word submission completed successfully");
 		} catch (AmazonClientException e) {
 			logger.catching(e);
 		}
@@ -560,6 +571,8 @@ public class AWSServices {
 		logger.entry(toAddr, apiKey, req);
 		String comtorEmail = "comtor@tcnj.edu";
 		try {
+			logger.debug("Attempting to resend API key '%s' to '%s'", apiKey, toAddr);
+		
 			// Create a new Message
 			com.amazonaws.services.simpleemail.model.Message msg =
 				new com.amazonaws.services.simpleemail.model.Message().withSubject(new Content("COMTOR API Key Resend Request"));
@@ -592,7 +605,7 @@ public class AWSServices {
 			
 			request.setMessage(msg);
 			sesClient.sendEmail(request);
-
+			logger.debug("Resent API key email successfully");
 		} catch (AmazonClientException e) {
 			logger.catching(e);
 		}
