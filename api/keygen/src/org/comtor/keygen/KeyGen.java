@@ -42,7 +42,7 @@ import org.apache.logging.log4j.LogManager;
  * @author Peter DePasquale
  */
 public class KeyGen extends HttpServlet {	   
-	private static Logger logger = LogManager.getLogger(KeyGen.class.getName());
+	private static Logger logger = LogManager.getFormatterLogger(KeyGen.class.getName());
 
 	/**
 	 * Handles the get request on this URI
@@ -60,6 +60,7 @@ public class KeyGen extends HttpServlet {
 		String email = request.getParameter("email"); 		// User E-mail
 		String ipAddress = request.getRemoteAddr(); 		// User's IP Address
 		String hostname = request.getRemoteHost(); 			// User's host name
+		logger.info("Attempting API key creation for IP:{} hostname:{} email:{}", ipAddress, hostname, email);
 
 		// Check the recaptcha
 		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
@@ -75,18 +76,22 @@ public class KeyGen extends HttpServlet {
 
 			// Determine success of db insertion
 			RequestDispatcher dispatcher = null;
-			if (success)
+			if (success){
 				// Forward to the response page.
 				dispatcher = getServletContext().getRequestDispatcher("/keyGenerated.jsp?email=" + email + "&apikey=" + 
 					AWSServices.getAPIKey(email));
-
-			else
+				logger.debug("New API key created successfully");
+			}
+			else{
 				// Forward to response page.
 				dispatcher = getServletContext().getRequestDispatcher("/duplicateEmail.jsp?email=" + email);
+				logger.warn("Failed to create API key (Failed to add user)");
+			}
 
 			dispatcher.forward(request, response);
 
 		} else {
+			logger.debug("Failed to create API key (bad input)");
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/badRecaptcha.jsp");
 			dispatcher.forward(request, response);
 		}
