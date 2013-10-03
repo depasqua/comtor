@@ -46,7 +46,7 @@ import org.apache.logging.log4j.LogManager;
  */
 public class APIServer extends HttpServlet {	   
 	private static final String DESTINATION_DIR_PATH = "/files";
-	private static Logger logger = LogManager.getLogger(APIServer.class.getName());
+	private static Logger logger = LogManager.getFormatterLogger(APIServer.class.getName());
 
 	/**
 	 * Handles the post request on this servlet (if any) by passing it to the get method (above)
@@ -68,8 +68,10 @@ public class APIServer extends HttpServlet {
 		boolean extractedJar = false;
 		InterfaceSystem clientType = InterfaceSystem.WWW;
 		File destinationDir = new File(getServletContext().getRealPath(DESTINATION_DIR_PATH));
-		if (!destinationDir.isDirectory())
+		if (!destinationDir.isDirectory()){
 			destinationDir.mkdir();
+			logger.debug("Upload directory missing. Creating directory at: %s", destinationDir);
+		}
 
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json");
@@ -86,6 +88,7 @@ public class APIServer extends HttpServlet {
 			// Create directory based on unique session ID
 			File session_fileDir = new File(destinationDir + java.io.File.separator + sessionID);
 			session_fileDir.mkdir();
+			logger.debug("Creating session specific directory at: %s", session_fileDir);
 
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
@@ -107,7 +110,7 @@ public class APIServer extends HttpServlet {
 						if (fieldName.equals("apikey")) {
 							requiredItems++;
 							submittedAPIKey = item.getString();
-							logger.debug("Submitted apikey: " + submittedAPIKey);
+							logger.debug("Submitted apikey: %s", submittedAPIKey);
 							if (submittedAPIKey != null && !submittedAPIKey.equals("") && AWSServices.checkAPIKey(submittedAPIKey))
 								emailAddress = AWSServices.getEmailFromKey(submittedAPIKey);
 							if (emailAddress == null)
@@ -119,7 +122,7 @@ public class APIServer extends HttpServlet {
 							requestedResponseTypes = item.getString();							
 							if (requestedResponseTypes == null || (!requestedResponseTypes.contains("email") && !requestedResponseTypes.contains("http")))
 								requiredItems--;
-							logger.debug("Submitted response_type: " + requestedResponseTypes);
+							logger.debug("Submitted response_type: %s", requestedResponseTypes);
 
 						} else if (fieldName.equals("response_format")) {
 							// Possible supported valid values here are "text", "html", "json" (and others later)
@@ -133,12 +136,12 @@ public class APIServer extends HttpServlet {
 						} else if (fieldName.equals("webcat_uuid")) {
 							// Supports WebCat passing us the UUID of the user 
 							webcat_uuid = item.getString();							
-							logger.debug("Submitted webcat_uuid: " + webcat_uuid);
+							logger.debug("Submitted webcat_uuid: %s", webcat_uuid);
 
 						} else if (fieldName.equals("webcat_institution")) {
 							// Supports WebCat passing us the user's institution name
 							webcat_institution = item.getString();							
-							logger.debug("Submitted webcat_institution: " + webcat_institution);
+							logger.debug("Submitted webcat_institution: %s", webcat_institution);
 
 						} else if (fieldName.equals("interface_client")) {
 							// Pass the interface client (Eclipse, WebCat, Netbeans, etc. to the API)
@@ -154,7 +157,7 @@ public class APIServer extends HttpServlet {
 								clientType = InterfaceSystem.WWW;
 							else 
 								requiredItems--;
-							logger.debug("Submitted interface_client: " + interfaceClient);
+							logger.debug("Submitted interface_client: %s", interfaceClient);
 						}
 
 						// add new param violations_only (defaults to true) and only shows bad "issues", otherwise if set to false;
@@ -164,7 +167,7 @@ public class APIServer extends HttpServlet {
 						// item.getName() returns whatever filename the client provides in the request, so we need to
 						// strip out the path content, if present, and get just the name.
 						fileName = item.getName();
-						logger.debug("Attempting to process the file upload: " + fileName);
+						logger.debug("Attempting to process the file upload: %s", fileName);
 						if (fileName != null & !fileName.equals("")) {
 							// Write the uploaded file to the temp path (pathToFile) in the servlets context
 							requiredItems++;
@@ -174,6 +177,8 @@ public class APIServer extends HttpServlet {
 								File uploadedFile = new File(pathToFile, fileName);
 								if (uploadedFile == null)
 									requiredItems--;
+									//logger.debug("No file found to process"); is this an ERROR?
+				
 								item.write(uploadedFile);
 								fileSize = item.getSize();
 								extractedJar = extractJarFile(uploadedFile, pathToFile);
@@ -198,30 +203,38 @@ public class APIServer extends HttpServlet {
 					String docletFileName = pathToFile + java.io.File.separator + "docletList.properties";
 					BufferedWriter fwrite = new BufferedWriter(new FileWriter(new File(docletFileName)));
 					fwrite.write("doclet1 : org.comtor.analyzers.SpellCheck");
+					logging.debug("Adding 'SpellCheck' to list of analysis modules");
 					fwrite.newLine();
 					fwrite.write("doclet2 : org.comtor.analyzers.OffensiveWords");
+					logging.debug("Adding 'OffensiveWords' to list of analysis modules");
 					fwrite.newLine();
 					fwrite.write("doclet3 : org.comtor.analyzers.CheckAuthor");
+					logging.debug("Adding 'CheckAuthor' to list of analysis modules");
 					fwrite.newLine();
 					fwrite.write("doclet4 : org.comtor.analyzers.PercentageMethods");
+					logging.debug("Adding 'PercentageMethods' to list of analysis modules");
 					fwrite.newLine();
 					fwrite.write("doclet5 : org.comtor.analyzers.CommentAvgRatio");
+					logging.debug("Adding 'CommentAvgRatio' to list of analysis modules");
 					fwrite.newLine();
 					fwrite.close();
 
 					// Commence processing
-					if (clientType == InterfaceSystem.WEBCAT)
+					if (clientType == InterfaceSystem.WEBCAT){
 						ComtorStandAlone.setMode(Mode.WEBCAT);
-					else
+						logger.debug("Execution mode set to: WEBCAT.");
+					}
+					else{
 						ComtorStandAlone.setMode(Mode.API);
+						logger.debug("Execution mode set to: API.");
+					}
 
 					ComtorStandAlone.setTempDir((File) getServletContext().getAttribute("javax.servlet.context.tempdir"));
-					logger.debug("Execution mode set to API.");
-					logger.debug("Temp dir set to: " + ComtorStandAlone.getTempDir());
+					logger.debug("Temp dir set to: %s", ComtorStandAlone.getTempDir());
 					Comtor.start(pathToFile);
 
 					// Store the report, shorten the report URL, and email the report to the user
-					logger.debug("Output files produced to: " + pathToFile + java.io.File.separator);
+					logger.debug("Output files produced to: %s", pathToFile + java.io.File.separator);
 					File textReportFile = new File(pathToFile + java.io.File.separator + "comtorReport.txt");
 					String textReportURLString = AWSServices.storeReportS3(textReportFile, sessionID).toString();
 					File htmlReportFile = new File(pathToFile + java.io.File.separator + "comtorReport.html");
@@ -236,7 +249,7 @@ public class APIServer extends HttpServlet {
 					// Shorten the url via Bitly and send email to user.
 					textReportURLString = BitlyServices.shortenUrl(textReportURLString);
 					htmlReportURLString = BitlyServices.shortenUrl(htmlReportURLString);
-
+					
 					// Construct body of email message and send it
 					String contextBase = "http://" + request.getServerName();
 					String contextPath = request.getContextPath();
@@ -264,6 +277,7 @@ public class APIServer extends HttpServlet {
 
 						msgText += "</ul>These links will remain active for a period of 5 days.\n\n";
 						msgText += "If you have any questions about this system, you can reach the COMTOR team at comtor@tcnj.edu.";
+						logger.debug("Send email to: {} with the following message: {}", emailAddress, msgText);
 						AWSServices.sendEmail(emailAddress, msgText);
 					}
 
@@ -310,7 +324,7 @@ public class APIServer extends HttpServlet {
 					out.println(userResponse);
 
 				} else {
-					logger.debug("Terminating processing with invalid parameter count: " + requiredItems);
+					logger.debug("Terminating processing with invalid parameter count: %s", requiredItems);
 				}
 
 			} catch (FileUploadException fue) {
