@@ -36,7 +36,7 @@ import org.apache.logging.log4j.LogManager;
  * @author Peter DePasquale
  */
 public class APIKeyRequest extends HttpServlet {
-	private static Logger logger = LogManager.getLogger(APIKeyRequest.class.getName());
+	private static Logger logger = LogManager.getFormatterLogger(APIKeyRequest.class.getName());
 
 	/**
 	 * Handles the post request on this servlet (if any) by passing it to the get method (above)
@@ -54,16 +54,23 @@ public class APIKeyRequest extends HttpServlet {
 		String ipAddress = request.getRemoteAddr(); 		// User's IP Address
 		String hostname = request.getRemoteHost(); 			// User's host name
 		String email = request.getParameter("email");
+		logger.debug("Attempting API key creation for:\n\tIP:%s\n\thostname:%s\n\temail:%s", ipAddress, hostname, email);
 
 		Map<String, String> responseStruct = new HashMap<String, String>();
 		if (email != null && !email.equals("")) {
-			if (AWSServices.addUser(email, ipAddress, hostname, request)) 
+			if (AWSServices.addUser(email, ipAddress, hostname, request)){ 
 				responseStruct.put("request_processed", "new user API key generated, notification email sent");
-			else
+				logger.debug("New API key created successfully");
+			}
+			else{
 				responseStruct.put("request_processed", "false; failed to add a new user: " + email);
+				logger.warn("Failed to create API key (Failed to add user)");
+			}
 
-		} else
+		} else{
 			responseStruct.put("request_processed", "false; bad input");
+			logger.debug("Failed to create API key (Bad input)");
+		}
 
 		ObjectMapper mapper = new ObjectMapper();
 		String userResponse = mapper.writeValueAsString(responseStruct);
