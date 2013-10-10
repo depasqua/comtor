@@ -18,6 +18,7 @@
 				<fileset dir="../third-party/lib">
 					<include name="*.jar"/>
 				</fileset>
+				<pathelement location="${toolsjar}"/>
 			</classpath>
 		</javac>
 	</target>
