@@ -57,10 +57,12 @@
 	</target>
 
 	<target name="warUndeploy" description="Undeploys the cloud web application.">
+		<echo>Attempting to undeploy from: ${deployhost}${deploymentPath}</echo>
 		<undeploy url="${deployhost}" username="${username}" password="${password}" path="${deploymentPath}"/>
 	</target>
 
 	<target name="warRedeploy" description="Redeploys the cloud web application.">
+		<echo>Attempting to redeploy at: ${deployhost}${deploymentPath}</echo>
 		<antcall target="createWar" inheritRefs="true"/>
 		<antcall target="warUndeploy" inheritRefs="true"/>
 		<antcall target="warDeploy" inheritRefs="true"/>

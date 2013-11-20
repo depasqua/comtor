@@ -496,11 +496,11 @@ public class AWSServices {
 	public static void logCOMTORReport(File jsonReport, String fileKey) {
 		logger.entry();
 		try {
-			logging.debug("Attempting to store JSON report to S3");
+			logger.debug("Attempting to store JSON report to S3");
 			String key = URLEncoder.encode(fileKey, "UTF-8");
 			String bucketName = "org.comtor.reports.json";
 			s3Client.putObject(new PutObjectRequest(bucketName, key, jsonReport));
-			logging.debug("JSON report stored to S3 successfully");
+			logger.debug("JSON report stored to S3 successfully");
 
 		} catch (UnsupportedEncodingException uee) {
 			logger.catching(uee);
