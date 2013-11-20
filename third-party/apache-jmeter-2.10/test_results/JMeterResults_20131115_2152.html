@@ -1,0 +1,651 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>COMTOR .jar Upload Simulation</title>
+<style type="text/css">
+				body {
+					font:normal 68% verdana,arial,helvetica;
+					color:#000000;
+				}
+				table tr td, table tr th {
+					font-size: 68%;
+				}
+				table.details tr th{
+				    color: #ffffff;
+					font-weight: bold;
+					text-align:center;
+					background:#2674a6;
+					white-space: nowrap;
+				}
+				table.details tr td{
+					background:#eeeee0;
+					white-space: nowrap;
+				}
+				h1 {
+					margin: 0px 0px 5px; font: 165% verdana,arial,helvetica
+				}
+				h2 {
+					margin-top: 1em; margin-bottom: 0.5em; font: bold 125% verdana,arial,helvetica
+				}
+				h3 {
+					margin-bottom: 0.5em; font: bold 115% verdana,arial,helvetica
+				}
+				.Failure {
+					font-weight:bold; color:red;
+				}
+				
+	
+				img
+				{
+				  border-width: 0px;
+				}
+				
+				.expand_link
+				{
+				   position=absolute;
+				   right: 0px;
+				   width: 27px;
+				   top: 1px;
+				   height: 27px;
+				}
+				
+				.page_details
+				{
+				   display: none;
+				}
+                                
+                                .page_details_expanded
+                                {
+                                    display: block;
+                                    display/* hide this definition from  IE5/6 */: table-row;
+                                }
+
+
+			</style>
+<script language="JavaScript">
+                           function expand(details_id)
+			   {
+			      
+			      document.getElementById(details_id).className = "page_details_expanded";
+			   }
+			   
+			   function collapse(details_id)
+			   {
+			      
+			      document.getElementById(details_id).className = "page_details";
+			   }
+			   
+			   function change(details_id)
+			   {
+			      if(document.getElementById(details_id+"_image").src.match("expand"))
+			      {
+			         document.getElementById(details_id+"_image").src = "collapse.png";
+			         expand(details_id);
+			      }
+			      else
+			      {
+			         document.getElementById(details_id+"_image").src = "expand.png";
+			         collapse(details_id);
+			      } 
+                           }
+			</script>
+</head>
+<body>
+<h1>COMTOR .jar Upload Simulation</h1>
+<table width="100%">
+<tr>
+<td align="left">Date report: 2013/11/15 21:53</td><td align="right">Designed for use with <a href="http://jmeter.apache.org/">JMeter</a> and <a href="http://ant.apache.org">Ant</a>.</td>
+</tr>
+</table>
+<hr size="1">
+<h2>Summary</h2>
+<table align="center" class="details" border="0" cellpadding="5" cellspacing="2" width="95%">
+<tr valign="top">
+<th># Samples</th><th>Failures</th><th>Success Rate</th><th>Average Time</th><th>Min Time</th><th>Max Time</th>
+</tr>
+<tr valign="top" class="">
+<td align="center">90</td><td align="center">0</td><td align="center">100.00%</td><td align="center">178 ms</td><td align="center">NaN</td><td align="center">NaN</td>
+</tr>
+</table>
+<hr size="1" width="95%" align="center">
+<h2>Pages</h2>
+<table align="center" class="details" border="0" cellpadding="5" cellspacing="2" width="95%">
+<tr valign="top">
+<th>URL</th><th># Samples</th><th>Failures</th><th>Success Rate</th><th>Average Time</th><th>Min Time</th><th>Max Time</th><th></th>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/</td><td align="center">12</td><td align="center">0</td><td align="right">100.00%</td><td align="right">56 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_1')"><img src="expand.png" alt="expand/collapse" id="page_details_1_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_1">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">1</td><td align="right">131</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">2</td><td align="right">131</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">131</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">84</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">5</td><td align="right">20</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">6</td><td align="right">18</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">7</td><td align="right">30</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">8</td><td align="right">23</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">9</td><td align="right">31</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">10</td><td align="right">24</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">11</td><td align="right">34</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">12</td><td align="right">20</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/</td><td align="center">12</td><td align="center">0</td><td align="right">100.00%</td><td align="right">56 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_2')"><img src="expand.png" alt="expand/collapse" id="page_details_2_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_2">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">1</td><td align="right">131</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">2</td><td align="right">131</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">131</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">84</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">5</td><td align="right">20</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">6</td><td align="right">18</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">7</td><td align="right">30</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">8</td><td align="right">23</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">9</td><td align="right">31</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">10</td><td align="right">24</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">11</td><td align="right">34</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">12</td><td align="right">20</td><td align="right">3914</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/stylesheets/app.css</td><td align="center">6</td><td align="center">0</td><td align="right">100.00%</td><td align="right">21 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_3')"><img src="expand.png" alt="expand/collapse" id="page_details_3_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_3">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/stylesheets/app.css"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">1</td><td align="right">19</td><td align="right">822</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">2</td><td align="right">19</td><td align="right">822</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">20</td><td align="right">822</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">26</td><td align="right">822</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">5</td><td align="right">20</td><td align="right">822</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">6</td><td align="right">20</td><td align="right">822</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/stylesheets/foundation.css</td><td align="center">6</td><td align="center">0</td><td align="right">100.00%</td><td align="right">83 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_4')"><img src="expand.png" alt="expand/collapse" id="page_details_4_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_4">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/stylesheets/foundation.css"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">1</td><td align="right">78</td><td align="right">56195</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">2</td><td align="right">88</td><td align="right">56195</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">88</td><td align="right">56195</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">84</td><td align="right">56195</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">5</td><td align="right">83</td><td align="right">56195</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">6</td><td align="right">79</td><td align="right">56195</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/stylesheets/ie.css</td><td align="center">6</td><td align="center">0</td><td align="right">100.00%</td><td align="right">22 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_5')"><img src="expand.png" alt="expand/collapse" id="page_details_5_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_5">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/stylesheets/ie.css"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">1</td><td align="right">19</td><td align="right">920</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">2</td><td align="right">19</td><td align="right">920</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">28</td><td align="right">920</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">19</td><td align="right">920</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">5</td><td align="right">27</td><td align="right">920</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">6</td><td align="right">21</td><td align="right">920</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/scripts/jquery.min.js</td><td align="center">6</td><td align="center">0</td><td align="right">100.00%</td><td align="right">98 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_6')"><img src="expand.png" alt="expand/collapse" id="page_details_6_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_6">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/scripts/jquery.min.js"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">1</td><td align="right">101</td><td align="right">94110</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">2</td><td align="right">103</td><td align="right">94110</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">102</td><td align="right">94110</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">85</td><td align="right">94110</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">5</td><td align="right">109</td><td align="right">94110</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">6</td><td align="right">87</td><td align="right">94110</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/scripts/validate.min.js</td><td align="center">6</td><td align="center">0</td><td align="right">100.00%</td><td align="right">24 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_7')"><img src="expand.png" alt="expand/collapse" id="page_details_7_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_7">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/scripts/validate.min.js"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">1</td><td align="right">29</td><td align="right">4999</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">2</td><td align="right">23</td><td align="right">4999</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">19</td><td align="right">4999</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">27</td><td align="right">4999</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">5</td><td align="right">22</td><td align="right">4999</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">6</td><td align="right">21</td><td align="right">4999</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/scripts/modernizr.foundation.js</td><td align="center">6</td><td align="center">0</td><td align="right">100.00%</td><td align="right">23 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_8')"><img src="expand.png" alt="expand/collapse" id="page_details_8_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_8">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/scripts/modernizr.foundation.js"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">1</td><td align="right">22</td><td align="right">6871</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">2</td><td align="right">21</td><td align="right">6871</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">22</td><td align="right">6871</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">21</td><td align="right">6871</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">5</td><td align="right">26</td><td align="right">6871</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">6</td><td align="right">28</td><td align="right">6871</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/images/comtor/comtorLogo.png</td><td align="center">6</td><td align="center">0</td><td align="right">100.00%</td><td align="right">44 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_9')"><img src="expand.png" alt="expand/collapse" id="page_details_9_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_9">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/images/comtor/comtorLogo.png"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">1</td><td align="right">44</td><td align="right">30961</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">2</td><td align="right">43</td><td align="right">30961</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">53</td><td align="right">30961</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">39</td><td align="right">30961</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">5</td><td align="right">40</td><td align="right">30961</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">6</td><td align="right">44</td><td align="right">30961</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/scripts/app.js</td><td align="center">6</td><td align="center">0</td><td align="right">100.00%</td><td align="right">28 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_10')"><img src="expand.png" alt="expand/collapse" id="page_details_10_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_10">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/scripts/app.js"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">1</td><td align="right">20</td><td align="right">2912</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">2</td><td align="right">28</td><td align="right">2912</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">22</td><td align="right">2912</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">20</td><td align="right">2912</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">5</td><td align="right">32</td><td align="right">2912</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">6</td><td align="right">43</td><td align="right">2912</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/scripts/foundation.js</td><td align="center">6</td><td align="center">0</td><td align="right">100.00%</td><td align="right">36 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_11')"><img src="expand.png" alt="expand/collapse" id="page_details_11_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_11">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/scripts/foundation.js"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">1</td><td align="right">40</td><td align="right">23050</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">2</td><td align="right">42</td><td align="right">23050</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">45</td><td align="right">23050</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">23</td><td align="right">23050</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">5</td><td align="right">38</td><td align="right">23050</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">6</td><td align="right">31</td><td align="right">23050</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/images/misc/modal-gloss.png</td><td align="center">6</td><td align="center">0</td><td align="right">100.00%</td><td align="right">25 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_12')"><img src="expand.png" alt="expand/collapse" id="page_details_12_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_12">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/images/misc/modal-gloss.png"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">1</td><td align="right">20</td><td align="right">3071</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">2</td><td align="right">21</td><td align="right">3071</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">27</td><td align="right">3071</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">23</td><td align="right">3071</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">5</td><td align="right">29</td><td align="right">3071</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">6</td><td align="right">31</td><td align="right">3071</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/images/misc/button-gloss.png</td><td align="center">6</td><td align="center">0</td><td align="right">100.00%</td><td align="right">20 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_13')"><img src="expand.png" alt="expand/collapse" id="page_details_13_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_13">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/images/misc/button-gloss.png"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">1</td><td align="right">19</td><td align="right">298</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">2</td><td align="right">18</td><td align="right">298</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">18</td><td align="right">298</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">26</td><td align="right">298</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">5</td><td align="right">18</td><td align="right">298</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">6</td><td align="right">19</td><td align="right">298</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/images/misc/input-bg.png</td><td align="center">6</td><td align="center">0</td><td align="right">100.00%</td><td align="right">23 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_14')"><img src="expand.png" alt="expand/collapse" id="page_details_14_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_14">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/images/misc/input-bg.png"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">1</td><td align="right">28</td><td align="right">3221</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">2</td><td align="right">20</td><td align="right">3221</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">3</td><td align="right">28</td><td align="right">3221</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">23</td><td align="right">3221</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">5</td><td align="right">19</td><td align="right">3221</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">6</td><td align="right">20</td><td align="right">3221</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="top" class="">
+<td>/comtorDev/upload</td><td align="center">6</td><td align="center">0</td><td align="right">100.00%</td><td align="right">2112 ms</td><td align="right">NaN</td><td align="right">NaN</td><td align="center"><a href="javascript:change('page_details_15')"><img src="expand.png" alt="expand/collapse" id="page_details_15_image"></a></td>
+</tr>
+<tr class="page_details" id="page_details_15">
+<td colspan="8" bgcolor="#FF0000">
+<div align="center">
+<b>Details for Page "/comtorDev/upload"</b>
+<table bordercolor="#000000" bgcolor="#2674A6" border="0" cellpadding="1" cellspacing="1" width="95%">
+<tr>
+<th>Thread</th><th>Iteration</th><th>Time (milliseconds)</th><th>Bytes</th><th>Success</th>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">1</td><td align="right">2366</td><td align="right">231</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">2</td><td align="right">2683</td><td align="right">2024</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">3</td><td align="right">2074</td><td align="right">2024</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-1</td><td align="center">4</td><td align="right">2434</td><td align="right">2024</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-2</td><td align="center">5</td><td align="right">1564</td><td align="right">2024</td><td align="center">true</td>
+</tr>
+<tr>
+<td>Users 1-3</td><td align="center">6</td><td align="right">1550</td><td align="right">2024</td><td align="center">true</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+<hr size="1" width="95%" align="center">
+</body>
+</html>

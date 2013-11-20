@@ -1,0 +1,2 @@
+../../../tests/test1.jar
+../../../tests/test2.jar
