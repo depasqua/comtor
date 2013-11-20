@@ -19,7 +19,7 @@
 	<property name="localhost" value="localhost"/>
 	
 	<!-- Build up a classpath file path for later use. -->
-	<condition property="toolsjar" value="${java.home}${file.separator}..${file.separator}Classes${file.separator}classes.jar" else="${java.home}${file.separator}..${file.separator}lib${file.separator}tools.jar">
+	<condition property="toolsjar" value="${java.home}/../Classes/classes.jar" else="${java.home}${file.separator}..${file.separator}lib${file.separator}tools.jar">
 		<and>
 			<os family="mac"/>
 			<os family="unix"/>
@@ -98,7 +98,7 @@
 
 	<!-- Stops the build and outputs a message if the waraction property was not set by user -->
 	<target name="-waraction.fail" unless="waraction">
-		<fail message="Please set the 'action' property to one of: 'deploy', 'undeploy', 'redeploy'"/>
+		<fail message="Please the 'action' property to one of: 'deploy', 'undeploy', 'redeploy'"/>
 	</target>
 
 	<!-- Ensures the user has set the deployment properties to provide to the servlet container -->
@@ -142,17 +142,15 @@
 	
 	<!-- Builds the COMTOR core jar file -->
 	<target name="corejar" description="Builds the COMTOR core library jar file.">
+		<echo>JAVAHOME is: ${java.home}</echo>
+		<echo>tools.jar location is: ${toolsjar}</echo>
 		<ant dir="core" target="jar" inheritRefs="true" inheritAll="true"/>
 	</target>
 
 
 	<!-- Requires the catalina-ant.jar file in the ant/lib directory locally. See 
 	     http://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html#Executing_Manager_Commands_With_Ant or, 
-	     http://tomcat.apache.org/tomcat-6.0-doc/manager-howto.html#Executing_Manager_Commands_With_Ant 
-
-		 Note that as of 10/2013, we found that all of the tomcat-*.jar files are also needed
-		 uncluding -juli, -util, etc. PJ
-	 -->
+	     http://tomcat.apache.org/tomcat-6.0-doc/manager-howto.html#Executing_Manager_Commands_With_Ant -->
 
 	<!-- WWW Interface Service -->
 	<target name="cloudWww" depends="init, corejar" description="Compiles the source code and builds the cloud/servlet www app">
@@ -196,5 +194,60 @@
 			description="Performs the specified war deployment action on the api keygen service.">
 		<ant dir="api/keygen" target="${waraction}" inheritRefs="true"/>
 	</target>
-
+	
+	<!-- Setup Jmeter load testing requirements -->
+	<property name="jmeterDir" value="${basedir}/third-party/apache-jmeter-2.10"/>
+	<path id="jmeter.classpath">
+        <fileset dir="${jmeterDir}/extras">
+          <include name="ant-jmeter*.jar"/>
+        </fileset>
+    </path>
+	
+	<path id="xslt.classpath">
+        <fileset dir="${jmeterDir}/lib" includes="xalan*.jar"/>
+        <fileset dir="${jmeterDir}/lib" includes="serializer*.jar"/>
+    </path>
+	
+	<taskdef name="jmeter" classpathref="jmeter.classpath" classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask"/>
+	
+	<!-- Execute Jmeter load testing -->
+	<target name ="loadTest" depends="-setJmeterParams">
+		<tstamp><format property="output.datestamp" pattern="yyyyMMdd_HHmm"/></tstamp>
+		<jmeter jmeterhome="${jmeterDir}/" testplan="${jmeterDir}/test_plans/COMTOR.jmx" resultlog="${jmeterDir}/test_results/JMeterResults_${output.datestamp}.xml">
+			<property name="request.threads" value="${userCount}"/>
+			<property name="request.loop" value="${loopCount}"/>
+			<property name="jmeter.save.saveservice.assertion_results" value="all"/>
+			<property name="jmeter.save.saveservice.output_format" value="xml"/>
+		</jmeter>
+		<echo message="${userCount}"/>
+	</target> 
+	
+	<!-- Set default jmeter paramters -->
+	<target name="-setJmeterParams">
+        <condition property="userCount" value="5">
+			<not>
+				<isset property="userCount"/>
+			</not>
+		</condition>
+		<condition property="loopCount" value="1">
+			<not>
+				<isset property="loopCount"/>
+			</not>
+		</condition>
+	</target>
+	
+	<!-- Generate Jmeter HTML report -->
+	<target name="jmeterReport" depends="loadTest">
+		<tstamp><format property="report.datestamp" pattern="yyyy/MM/dd HH:mm"/></tstamp>
+		<xslt
+		in="${jmeterDir}/test_results/JMeterResults_${output.datestamp}.xml"
+		out="${jmeterDir}/test_results/JMeterResults_${output.datestamp}.html"
+		style="${jmeterDir}/extras/jmeter-results-detail-report_21.xsl">
+			<param name="showData" expression="y"/>
+			<param name="titleReport" expression="COMTOR .jar Upload Simulation"/>
+			<param name="dateReport" expression="${report.datestamp}"/>
+		</xslt>
+		<delete file="${jmeterDir}/test_results/JMeterResults_${output.datestamp}.xml"/>
+	</target>
+	
 </project>
