@@ -203,19 +203,19 @@ public class APIServer extends HttpServlet {
 					String docletFileName = pathToFile + java.io.File.separator + "docletList.properties";
 					BufferedWriter fwrite = new BufferedWriter(new FileWriter(new File(docletFileName)));
 					fwrite.write("doclet1 : org.comtor.analyzers.SpellCheck");
-					logging.debug("Adding 'SpellCheck' to list of analysis modules");
+					logger.debug("Adding 'SpellCheck' to list of analysis modules");
 					fwrite.newLine();
 					fwrite.write("doclet2 : org.comtor.analyzers.OffensiveWords");
-					logging.debug("Adding 'OffensiveWords' to list of analysis modules");
+					logger.debug("Adding 'OffensiveWords' to list of analysis modules");
 					fwrite.newLine();
 					fwrite.write("doclet3 : org.comtor.analyzers.CheckAuthor");
-					logging.debug("Adding 'CheckAuthor' to list of analysis modules");
+					logger.debug("Adding 'CheckAuthor' to list of analysis modules");
 					fwrite.newLine();
 					fwrite.write("doclet4 : org.comtor.analyzers.PercentageMethods");
-					logging.debug("Adding 'PercentageMethods' to list of analysis modules");
+					logger.debug("Adding 'PercentageMethods' to list of analysis modules");
 					fwrite.newLine();
 					fwrite.write("doclet5 : org.comtor.analyzers.CommentAvgRatio");
-					logging.debug("Adding 'CommentAvgRatio' to list of analysis modules");
+					logger.debug("Adding 'CommentAvgRatio' to list of analysis modules");
 					fwrite.newLine();
 					fwrite.close();
 
