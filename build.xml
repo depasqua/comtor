@@ -137,9 +137,34 @@
 
 	<!-- Builds a jar file of the COMTOR source code (used for dogfooding) -->
 	<target name="srcjar" description="Builds a jar file of the COMTOR source code.">
-		<ant dir="code" target="srcjar" inheritRefs="true"/>
+		<jar destfile="tests/comtorSrc.jar">
+			<fileset dir="api/apiserv/src/">
+				<include name="**/*.java"/>
+			</fileset>
+
+			<fileset dir="api/keygen/src/">
+				<include name="**/*.java"/>
+			</fileset>
+
+			<fileset dir="code/src/">
+				<include name="**/*.java"/>
+				<exclude name="org/comtor/incomplete/*.java"/>
+				<exclude name="org/json/*.java"/>
+			</fileset>
+
+			<fileset dir="core/src/">
+				<include name="**/*.java"/>
+				<exclude name="org/comtor/analyzers/GeneralResources/*.java"/>
+				<exclude name="org/json/*.java"/>
+			</fileset>
+
+			<fileset dir="ide-clients/netbeans/src/">
+				<include name="**/*.java"/>
+			</fileset>
+
+		</jar>
 	</target>
-	
+
 	<!-- Builds the COMTOR core jar file -->
 	<target name="corejar" description="Builds the COMTOR core library jar file.">
 		<echo>JAVAHOME is: ${java.home}</echo>
