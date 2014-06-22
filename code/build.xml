@@ -200,19 +200,6 @@
 		</delete>		
 	</target>
 
-	<!-- Builds a jar file of the COMTOR source code (used for dogfooding) -->
-	<target name="srcjar" description="Builds a jar file of the COMTOR source code.">
-		<jar destfile="../tests/comtorSrc.jar">
-			<fileset dir="${cloudSrc}">
-				<include name="**/*.java"/>
-				<exclude name="org/comtor/analyzers/GeneralResources/*.java"/>
-				<exclude name="org/comtor/analyzers/InteractionsResources/*.java"/>
-				<exclude name="org/comtor/incomplete/*.java"/>
-				<exclude name="org/json/*.java"/>
-			</fileset>
-		</jar>
-	</target>
-
 	<!-- Builds the war file for TOMCAT/cloud release -->
 	<target name="createWar" depends="compile" description="Builds the war file for the cloud release.">
 		<mkdir dir="${cloudBaseDir}/cloudDeploy/www/files"/>
