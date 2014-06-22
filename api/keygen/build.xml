@@ -43,10 +43,13 @@
 
 	<!-- Determine correct Tomcat deployment path based type of deployment to create -->
 	<target name="createWar" depends="compile" description="Builds the war file for the key gen servlet.">
+		<copy file="../../loggerconfig/log4j2.api.xml" tofile="../../loggerconfig/log4j2.xml" overwrite="true"/>
 		<war destfile="${warfilename}" webxml="${keygenBaseDir}/WEB-INF/web.xml">
 			<fileset dir="${keygenBaseDir}/Web-Content"/>
 			<classes dir="${keygenBaseDir}/classes"/>
+			<classes file="../../loggerconfig/log4j2.xml"/>
 		</war>
+		<delete file="../loggerconfig/log4j2.xml"/>
 	</target>
 
 	<!-- Deployment tasks -->
