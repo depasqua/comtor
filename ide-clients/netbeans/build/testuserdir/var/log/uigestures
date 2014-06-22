@@ -1,6 +1,6 @@
 <record>
-  <date>2013-07-09T00:37:33</date>
-  <millis>1373351853372</millis>
+  <date>2014-06-22T11:24:41</date>
+  <millis>1403457881397</millis>
   <sequence>31</sequence>
   <level>FINEST</level>
   <thread>10</thread>
@@ -8,8 +8,8 @@
   <param>4</param>
 </record>
 <record>
-  <date>2013-07-09T00:37:33</date>
-  <millis>1373351853389</millis>
+  <date>2014-06-22T11:24:41</date>
+  <millis>1403457881408</millis>
   <sequence>32</sequence>
   <level>FINEST</level>
   <thread>10</thread>
@@ -19,1141 +19,120 @@
   <param>1</param>
 </record>
 <record>
-  <date>2013-07-09T00:37:33</date>
-  <millis>1373351853390</millis>
+  <date>2014-06-22T11:24:41</date>
+  <millis>1403457881408</millis>
   <sequence>33</sequence>
   <level>CONFIG</level>
   <thread>10</thread>
   <message>IDE_STARTUP</message>
 </record>
 <record>
-  <date>2013-07-09T00:37:41</date>
-  <millis>1373351861229</millis>
-  <sequence>41</sequence>
-  <level>INFO</level>
-  <thread>11</thread>
-  <message>MEMORY</message>
-  <key>MEMORY</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>8589934592</param>
-</record>
-<record>
-  <date>2013-07-09T00:37:45</date>
-  <millis>1373351865472</millis>
-  <sequence>43</sequence>
+  <date>2014-06-22T11:25:05</date>
+  <millis>1403457905617</millis>
+  <sequence>56</sequence>
   <logger>org.netbeans.ui.actions</logger>
   <level>FINER</level>
-  <thread>12</thread>
+  <thread>15</thread>
   <message>UI_ACTION_BUTTON_PRESS</message>
   <key>UI_ACTION_BUTTON_PRESS</key>
   <catalog>org.openide.awt.Bundle</catalog>
-  <param>org.openide.awt.Toolbar$DefaultIconButton[]</param>
-  <param>org.openide.awt.Toolbar$DefaultIconButton</param>
+  <param>org.openide.awt.Actions$MenuItem[Open Project...]</param>
+  <param>org.openide.awt.Actions$MenuItem</param>
   <param>org.netbeans.modules.project.ui.actions.OpenProject[Open Proj&amp;ect...]</param>
   <param>org.netbeans.modules.project.ui.actions.OpenProject</param>
   <param>Open Proj&amp;ect...</param>
 </record>
 <record>
-  <date>2013-07-09T00:37:54</date>
-  <millis>1373351874270</millis>
-  <sequence>54</sequence>
-  <logger>org.netbeans.ui.projects</logger>
-  <level>CONFIG</level>
-  <thread>14</thread>
-  <message>UI_OPEN_PROJECTS</message>
-  <key>UI_OPEN_PROJECTS</key>
-  <catalog>org.netbeans.modules.project.ui.Bundle</catalog>
-  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
-  <param>J2SEProject</param>
+  <date>2014-06-22T11:25:07</date>
+  <millis>1403457907548</millis>
+  <sequence>60</sequence>
+  <level>FINEST</level>
+  <thread>16</thread>
+  <message>CPU INFO</message>
+  <param>4</param>
+</record>
+<record>
+  <date>2014-06-22T11:25:07</date>
+  <millis>1403457907548</millis>
+  <sequence>61</sequence>
+  <level>FINEST</level>
+  <thread>16</thread>
+  <message>SCREEN SIZE</message>
+  <param>1680</param>
+  <param>1050</param>
   <param>1</param>
 </record>
 <record>
-  <date>2013-07-09T00:37:54</date>
-  <millis>1373351874271</millis>
-  <sequence>55</sequence>
+  <date>2014-06-22T11:25:07</date>
+  <millis>1403457907548</millis>
+  <sequence>62</sequence>
+  <level>CONFIG</level>
+  <thread>16</thread>
+  <message>IDE_STARTUP</message>
+</record>
+<record>
+  <date>2014-06-22T11:25:07</date>
+  <millis>1403457907544</millis>
+  <sequence>59</sequence>
   <logger>org.netbeans.ui.metrics.projects</logger>
   <level>INFO</level>
-  <thread>14</thread>
+  <thread>16</thread>
   <message>USG_PROJECT_OPEN</message>
   <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
 </record>
 <record>
-  <date>2013-07-09T00:37:54</date>
-  <millis>1373351874558</millis>
-  <sequence>56</sequence>
+  <date>2014-06-22T11:25:07</date>
+  <millis>1403457907771</millis>
+  <sequence>63</sequence>
   <logger>org.netbeans.ui.indexing</logger>
   <level>INFO</level>
-  <thread>14</thread>
+  <thread>17</thread>
   <message>INDEXING_STARTED</message>
   <key>INDEXING_STARTED</key>
   <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
   <param>0</param>
 </record>
 <record>
-  <date>2013-07-09T00:37:57</date>
-  <millis>1373351877550</millis>
-  <sequence>140</sequence>
+  <date>2014-06-22T11:25:10</date>
+  <millis>1403457910422</millis>
+  <sequence>149</sequence>
   <logger>org.netbeans.ui.indexing</logger>
   <level>INFO</level>
-  <thread>14</thread>
+  <thread>17</thread>
   <message>INDEXING_FINISHED</message>
   <key>INDEXING_FINISHED</key>
   <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>2988</param>
+  <param>2650</param>
 </record>
 <record>
-  <date>2013-07-09T00:37:57</date>
-  <millis>1373351877551</millis>
-  <sequence>141</sequence>
+  <date>2014-06-22T11:25:10</date>
+  <millis>1403457910423</millis>
+  <sequence>150</sequence>
   <logger>org.netbeans.ui.indexing</logger>
   <level>INFO</level>
-  <thread>14</thread>
+  <thread>17</thread>
   <message>INDEXING_STARTED</message>
   <key>INDEXING_STARTED</key>
   <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>2</param>
+  <param>1</param>
 </record>
 <record>
-  <date>2013-07-09T00:38:20</date>
-  <millis>1373351900028</millis>
-  <sequence>302</sequence>
+  <date>2014-06-22T11:25:22</date>
+  <millis>1403457922786</millis>
+  <sequence>310</sequence>
   <logger>org.netbeans.ui.indexing</logger>
   <level>INFO</level>
-  <thread>14</thread>
+  <thread>17</thread>
   <message>INDEXING_FINISHED</message>
   <key>INDEXING_FINISHED</key>
   <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>22477</param>
+  <param>12363</param>
   <param>TaskListIndexer</param>
   <param>2</param>
-  <param>2</param>
+  <param>1</param>
   <param>javascript</param>
   <param>188</param>
-  <param>656</param>
-  <param>CopyResourcesIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>SpringBinary</param>
-  <param>25</param>
-  <param>11</param>
-  <param>jsfBinary</param>
-  <param>25</param>
-  <param>0</param>
-  <param>jsfCustomIndexer</param>
-  <param>2</param>
-  <param>34</param>
-  <param>java</param>
-  <param>26</param>
-  <param>18034</param>
-  <param>TLIndexer</param>
-  <param>188</param>
-  <param>813</param>
-  <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
-  <param>2</param>
-  <param>0</param>
-  <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
-  <param>2</param>
-  <param>6</param>
-</record>
-<record>
-  <date>2013-07-09T00:57:32</date>
-  <millis>1373353052496</millis>
-  <sequence>31</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-09T00:57:32</date>
-  <millis>1373353052538</millis>
-  <sequence>32</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>SCREEN SIZE</message>
-  <param>1680</param>
-  <param>1050</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-09T00:57:32</date>
-  <millis>1373353052539</millis>
-  <sequence>33</sequence>
-  <level>CONFIG</level>
-  <thread>10</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-09T00:57:41</date>
-  <millis>1373353061176</millis>
-  <sequence>42</sequence>
-  <logger>org.netbeans.ui.projects</logger>
-  <level>CONFIG</level>
-  <thread>14</thread>
-  <message>UI_INIT_PROJECTS</message>
-  <key>UI_INIT_PROJECTS</key>
-  <catalog>org.netbeans.modules.project.ui.Bundle</catalog>
-  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
-  <param>J2SEProject</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-09T00:57:41</date>
-  <millis>1373353061177</millis>
-  <sequence>43</sequence>
-  <logger>org.netbeans.ui.metrics.projects</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>USG_PROJECT_OPEN</message>
-  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
-</record>
-<record>
-  <date>2013-07-09T00:57:41</date>
-  <millis>1373353061229</millis>
-  <sequence>44</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-09T00:57:43</date>
-  <millis>1373353063999</millis>
-  <sequence>48</sequence>
-  <logger>org.netbeans.ui.performance</logger>
-  <level>CONFIG</level>
-  <thread>16</thread>
-  <message>Snapshot statistics</message>
-  <param>1373353059191</param>
-  <param>Samples</param>
-  <param>479</param>
-  <param>Average</param>
-  <param>9.955711899791238</param>
-  <param>Minimum</param>
-  <param>1.341</param>
-  <param>Maximum</param>
-  <param>108.898</param>
-  <param>Std. deviation</param>
-  <param>9.97528574357501</param>
-</record>
-<record>
-  <date>2013-07-09T00:57:46</date>
-  <millis>1373353066256</millis>
-  <sequence>54</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>5021</param>
-</record>
-<record>
-  <date>2013-07-09T00:57:46</date>
-  <millis>1373353066259</millis>
-  <sequence>55</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>3</param>
-</record>
-<record>
-  <date>2013-07-09T00:57:46</date>
-  <millis>1373353066786</millis>
-  <sequence>61</sequence>
-  <level>INFO</level>
-  <thread>18</thread>
-  <message>MEMORY</message>
-  <key>MEMORY</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>8589934592</param>
-</record>
-<record>
-  <date>2013-07-09T00:57:48</date>
-  <millis>1373353068952</millis>
-  <sequence>90</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>2693</param>
-  <param>TaskListIndexer</param>
-  <param>2</param>
-  <param>25</param>
-  <param>CopyResourcesIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>SpringBinary</param>
-  <param>25</param>
-  <param>17</param>
-  <param>jsfBinary</param>
-  <param>25</param>
-  <param>3</param>
-  <param>jsfCustomIndexer</param>
-  <param>2</param>
-  <param>0</param>
-  <param>java</param>
-  <param>26</param>
-  <param>269</param>
-  <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
-  <param>2</param>
-  <param>2</param>
-  <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
-  <param>2</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-09T19:13:24</date>
-  <millis>1373418804410</millis>
-  <sequence>31</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-09T19:13:24</date>
-  <millis>1373418804450</millis>
-  <sequence>32</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>SCREEN SIZE</message>
-  <param>1680</param>
-  <param>1050</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-09T19:13:24</date>
-  <millis>1373418804451</millis>
-  <sequence>33</sequence>
-  <level>CONFIG</level>
-  <thread>10</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-09T19:13:39</date>
-  <millis>1373418819913</millis>
-  <sequence>43</sequence>
-  <logger>org.netbeans.ui.projects</logger>
-  <level>CONFIG</level>
-  <thread>13</thread>
-  <message>UI_INIT_PROJECTS</message>
-  <key>UI_INIT_PROJECTS</key>
-  <catalog>org.netbeans.modules.project.ui.Bundle</catalog>
-  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
-  <param>J2SEProject</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-09T19:13:39</date>
-  <millis>1373418819915</millis>
-  <sequence>44</sequence>
-  <logger>org.netbeans.ui.metrics.projects</logger>
-  <level>INFO</level>
-  <thread>13</thread>
-  <message>USG_PROJECT_OPEN</message>
-  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
-</record>
-<record>
-  <date>2013-07-09T19:13:40</date>
-  <millis>1373418820370</millis>
-  <sequence>45</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>13</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-09T19:13:44</date>
-  <millis>1373418824535</millis>
-  <sequence>48</sequence>
-  <logger>org.netbeans.ui.performance</logger>
-  <level>CONFIG</level>
-  <thread>14</thread>
-  <message>Snapshot statistics</message>
-  <param>1373418819970</param>
-  <param>Samples</param>
-  <param>452</param>
-  <param>Average</param>
-  <param>9.93741150442478</param>
-  <param>Minimum</param>
-  <param>1.457</param>
-  <param>Maximum</param>
-  <param>110.875</param>
-  <param>Std. deviation</param>
-  <param>8.554094370533916</param>
-</record>
-<record>
-  <date>2013-07-09T19:13:46</date>
-  <millis>1373418826588</millis>
-  <sequence>84</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>13</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>6211</param>
-  <param>SpringBinary</param>
-  <param>2</param>
-  <param>2</param>
-  <param>jsfBinary</param>
-  <param>2</param>
-  <param>0</param>
-  <param>java</param>
-  <param>2</param>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-09T19:13:46</date>
-  <millis>1373418826589</millis>
-  <sequence>85</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>13</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-09T19:13:46</date>
-  <millis>1373418826855</millis>
-  <sequence>90</sequence>
-  <level>INFO</level>
-  <thread>17</thread>
-  <message>MEMORY</message>
-  <key>MEMORY</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>8589934592</param>
-</record>
-<record>
-  <date>2013-07-09T19:13:54</date>
-  <millis>1373418834639</millis>
-  <sequence>100</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>13</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>8050</param>
-  <param>TaskListIndexer</param>
-  <param>2</param>
-  <param>21</param>
-  <param>CopyResourcesIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>SpringBinary</param>
-  <param>23</param>
-  <param>3</param>
-  <param>jsfBinary</param>
-  <param>23</param>
-  <param>2</param>
-  <param>jsfCustomIndexer</param>
-  <param>2</param>
-  <param>0</param>
-  <param>java</param>
-  <param>24</param>
-  <param>264</param>
-  <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
-  <param>2</param>
-  <param>2</param>
-  <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
-  <param>2</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:09</date>
-  <millis>1373418849025</millis>
-  <sequence>101</sequence>
-  <logger>org.netbeans.ui.actions</logger>
-  <level>FINER</level>
-  <thread>12</thread>
-  <message>UI_ACTION_BUTTON_PRESS</message>
-  <key>UI_ACTION_BUTTON_PRESS</key>
-  <catalog>org.openide.awt.Bundle</catalog>
-  <param>org.openide.awt.Toolbar$DefaultIconButton[]</param>
-  <param>org.openide.awt.Toolbar$DefaultIconButton</param>
-  <param>org.netbeans.modules.project.ui.actions.NewFile[&amp;New File...]</param>
-  <param>org.netbeans.modules.project.ui.actions.NewFile</param>
-  <param>&amp;New File...</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:09</date>
-  <millis>1373418849026</millis>
-  <sequence>102</sequence>
-  <logger>org.netbeans.ui.actions</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_BUTTON_PRESS</message>
-  <key>UI_ACTION_BUTTON_PRESS</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>org.openide.awt.Toolbar$DefaultIconButton[]</param>
-  <param>org.openide.awt.Toolbar$DefaultIconButton</param>
-  <param>org.netbeans.modules.project.ui.actions.NewFile[&amp;New File...]</param>
-  <param>org.netbeans.modules.project.ui.actions.NewFile</param>
-  <param>&amp;New File...</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:41</date>
-  <millis>1373418881319</millis>
-  <sequence>104</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>13</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>46680</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:41</date>
-  <millis>1373418881363</millis>
-  <sequence>105</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>13</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>43</param>
-  <param>TaskListIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>CopyResourcesIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>jsfCustomIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>java</param>
-  <param>1</param>
-  <param>2</param>
-  <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
-  <param>1</param>
-  <param>1</param>
-  <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
-  <param>1</param>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:42</date>
-  <millis>1373418882251</millis>
-  <sequence>107</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>17</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>888</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:43</date>
-  <millis>1373418883457</millis>
-  <sequence>108</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>17</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>1206</param>
-  <param>TaskListIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>CopyResourcesIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>jsfCustomIndexer</param>
-  <param>1</param>
-  <param>23</param>
-  <param>java</param>
-  <param>1</param>
-  <param>747</param>
-  <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
-  <param>1</param>
-  <param>47</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:43</date>
-  <millis>1373418883457</millis>
-  <sequence>109</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>17</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:43</date>
-  <millis>1373418883735</millis>
-  <sequence>110</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>17</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>277</param>
-  <param>TaskListIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>CopyResourcesIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>jsfCustomIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>java</param>
-  <param>1</param>
-  <param>158</param>
-  <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
-  <param>1</param>
-  <param>1</param>
-  <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
-  <param>1</param>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:46</date>
-  <millis>1373418886564</millis>
-  <sequence>111</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418886519,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418886519,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction[insert-break]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction@44c92656</param>
-  <param>insert-break</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:46</date>
-  <millis>1373418886769</millis>
-  <sequence>112</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418886655,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418886655,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction[insert-break]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction@44c92656</param>
-  <param>insert-break</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:54</date>
-  <millis>1373418894656</millis>
-  <sequence>113</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418894655,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418894655,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction[insert-break]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction@44c92656</param>
-  <param>insert-break</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:55</date>
-  <millis>1373418895280</millis>
-  <sequence>114</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418895279,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418895279,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction[insert-break]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction@44c92656</param>
-  <param>insert-break</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:57</date>
-  <millis>1373418897912</millis>
-  <sequence>116</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418897911,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418897911,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction[insert-break]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction@44c92656</param>
-  <param>insert-break</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:58</date>
-  <millis>1373418898056</millis>
-  <sequence>117</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418898055,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418898055,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction[insert-break]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction@44c92656</param>
-  <param>insert-break</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:58</date>
-  <millis>1373418898224</millis>
-  <sequence>118</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418898223,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418898223,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction[insert-break]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction@44c92656</param>
-  <param>insert-break</param>
-</record>
-<record>
-  <date>2013-07-09T19:14:59</date>
-  <millis>1373418899008</millis>
-  <sequence>119</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⇥,when=1373418899007,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⇥,when=1373418899007,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertTabAction[insert-tab]</param>
-  <param>org.netbeans.editor.BaseKit$InsertTabAction@106be703</param>
-  <param>insert-tab</param>
-</record>
-<record>
-  <date>2013-07-09T19:15:00</date>
-  <millis>1373418900568</millis>
-  <sequence>120</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418900567,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418900567,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction[insert-break]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction@44c92656</param>
-  <param>insert-break</param>
-</record>
-<record>
-  <date>2013-07-09T19:15:01</date>
-  <millis>1373418901232</millis>
-  <sequence>121</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⇥,when=1373418901231,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⇥,when=1373418901231,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertTabAction[insert-tab]</param>
-  <param>org.netbeans.editor.BaseKit$InsertTabAction@106be703</param>
-  <param>insert-tab</param>
-</record>
-<record>
-  <date>2013-07-09T19:15:06</date>
-  <millis>1373418906367</millis>
-  <sequence>122</sequence>
-  <logger>org.netbeans.ui.editor.completion</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>COMPL_INVOCATION</message>
-  <key>COMPL_INVOCATION</key>
-  <catalog>org.netbeans.modules.editor.completion.Bundle</catalog>
-  <param>false</param>
-</record>
-<record>
-  <date>2013-07-09T19:15:14</date>
-  <millis>1373418914872</millis>
-  <sequence>123</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418914871,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418914871,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction[insert-break]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction@44c92656</param>
-  <param>insert-break</param>
-</record>
-<record>
-  <date>2013-07-09T19:15:15</date>
-  <millis>1373418915393</millis>
-  <sequence>124</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418915391,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418915391,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction[insert-break]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction@44c92656</param>
-  <param>insert-break</param>
-</record>
-<record>
-  <date>2013-07-09T19:15:15</date>
-  <millis>1373418915552</millis>
-  <sequence>125</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418915551,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373418915551,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction[insert-break]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction@44c92656</param>
-  <param>insert-break</param>
-</record>
-<record>
-  <date>2013-07-09T19:15:16</date>
-  <millis>1373418916160</millis>
-  <sequence>126</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⇥,when=1373418916159,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⇥,when=1373418916159,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@71956a6a,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@2111e072,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertTabAction[insert-tab]</param>
-  <param>org.netbeans.editor.BaseKit$InsertTabAction@106be703</param>
-  <param>insert-tab</param>
-</record>
-<record>
-  <date>2013-07-09T19:15:18</date>
-  <millis>1373418918404</millis>
-  <sequence>127</sequence>
-  <logger>org.netbeans.ui.editor.completion</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>COMPL_INVOCATION</message>
-  <key>COMPL_INVOCATION</key>
-  <catalog>org.netbeans.modules.editor.completion.Bundle</catalog>
-  <param>false</param>
-</record>
-<record>
-  <date>2013-07-09T19:15:22</date>
-  <millis>1373418922891</millis>
-  <sequence>131</sequence>
-  <logger>org.netbeans.ui.editor.completion</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>COMPL_INVOCATION</message>
-  <key>COMPL_INVOCATION</key>
-  <catalog>org.netbeans.modules.editor.completion.Bundle</catalog>
-  <param>false</param>
-</record>
-<record>
-  <date>2013-07-09T19:15:26</date>
-  <millis>1373418926075</millis>
-  <sequence>142</sequence>
-  <logger>org.netbeans.ui.editor.completion</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>COMPL_KEY_SELECT</message>
-  <key>COMPL_KEY_SELECT</key>
-  <catalog>org.netbeans.modules.editor.completion.Bundle</catalog>
-  <param>.</param>
-  <param>0</param>
-  <param>FieldItem</param>
-</record>
-<record>
-  <date>2013-07-09T19:16:00</date>
-  <millis>1373418960605</millis>
-  <sequence>178</sequence>
-  <logger>org.netbeans.ui.actions</logger>
-  <level>FINER</level>
-  <thread>12</thread>
-  <message>UI_ACTION_BUTTON_PRESS</message>
-  <key>UI_ACTION_BUTTON_PRESS</key>
-  <catalog>org.openide.awt.Bundle</catalog>
-  <param>org.openide.awt.Toolbar$DefaultIconButton[]</param>
-  <param>org.openide.awt.Toolbar$DefaultIconButton</param>
-  <param>org.openide.awt.GeneralAction$BaseDelAction[Save &amp;All]</param>
-  <param>org.openide.awt.GeneralAction$BaseDelAction</param>
-  <param>Save &amp;All</param>
-</record>
-<record>
-  <date>2013-07-09T19:16:00</date>
-  <millis>1373418960644</millis>
-  <sequence>179</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>20</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>76909</param>
-</record>
-<record>
-  <date>2013-07-09T19:16:00</date>
-  <millis>1373418960798</millis>
-  <sequence>180</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>20</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>153</param>
-  <param>TaskListIndexer</param>
-  <param>1</param>
-  <param>1</param>
-  <param>CopyResourcesIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>jsfCustomIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>java</param>
-  <param>1</param>
-  <param>101</param>
-  <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
-  <param>1</param>
-  <param>1</param>
-  <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
-  <param>1</param>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-09T19:20:20</date>
-  <millis>1373419220393</millis>
-  <sequence>192</sequence>
-  <logger>org.netbeans.ui.performance</logger>
-  <level>CONFIG</level>
-  <thread>22</thread>
-  <message>Snapshot statistics</message>
-  <param>1373419216127</param>
-  <param>Samples</param>
-  <param>425</param>
-  <param>Average</param>
-  <param>10.003520000000002</param>
-  <param>Minimum</param>
-  <param>1.009</param>
-  <param>Maximum</param>
-  <param>22.198</param>
-  <param>Std. deviation</param>
-  <param>1.317499631878507</param>
-</record>
-<record>
-  <date>2013-07-09T19:20:28</date>
-  <millis>1373419228677</millis>
-  <sequence>261</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>LOG_WINDOW_DEACTIVATED</message>
-  <key>LOG_WINDOW_DEACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-</record>
-<record>
-  <date>2013-07-09T19:21:25</date>
-  <millis>1373419285555</millis>
-  <sequence>262</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>23</thread>
-  <message>LOG_WINDOW_ACTIVATED</message>
-  <key>LOG_WINDOW_ACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-  <param>20</param>
-</record>
-<record>
-  <date>2013-07-09T19:21:28</date>
-  <millis>1373419288297</millis>
-  <sequence>263</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>LOG_WINDOW_DEACTIVATED</message>
-  <key>LOG_WINDOW_DEACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-</record>
-<record>
-  <date>2013-07-09T19:42:15</date>
-  <millis>1373420535374</millis>
-  <sequence>264</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>24</thread>
-  <message>LOG_WINDOW_ACTIVATED</message>
-  <key>LOG_WINDOW_ACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-  <param>17</param>
-</record>
-<record>
-  <date>2013-07-09T19:42:31</date>
-  <millis>1373420551370</millis>
-  <sequence>266</sequence>
-  <logger>org.netbeans.ui.metrics.editor</logger>
-  <level>INFO</level>
-  <thread>25</thread>
-  <message>USG_EDITOR_MIME_TYPE</message>
-  <param>text/x-java</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-10T08:10:10</date>
-  <millis>1373465410647</millis>
-  <sequence>31</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-10T08:10:10</date>
-  <millis>1373465410699</millis>
-  <sequence>32</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>SCREEN SIZE</message>
-  <param>1680</param>
-  <param>1050</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-10T08:10:10</date>
-  <millis>1373465410700</millis>
-  <sequence>33</sequence>
-  <level>CONFIG</level>
-  <thread>10</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-10T08:10:20</date>
-  <millis>1373465420265</millis>
-  <sequence>44</sequence>
-  <logger>org.netbeans.ui.projects</logger>
-  <level>CONFIG</level>
-  <thread>13</thread>
-  <message>UI_INIT_PROJECTS</message>
-  <key>UI_INIT_PROJECTS</key>
-  <catalog>org.netbeans.modules.project.ui.Bundle</catalog>
-  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
-  <param>J2SEProject</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-10T08:10:20</date>
-  <millis>1373465420273</millis>
-  <sequence>45</sequence>
-  <logger>org.netbeans.ui.metrics.projects</logger>
-  <level>INFO</level>
-  <thread>13</thread>
-  <message>USG_PROJECT_OPEN</message>
-  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
-</record>
-<record>
-  <date>2013-07-10T08:10:20</date>
-  <millis>1373465420432</millis>
-  <sequence>46</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-10T08:10:22</date>
-  <millis>1373465422629</millis>
-  <sequence>50</sequence>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>MEMORY</message>
-  <key>MEMORY</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>8589934592</param>
-</record>
-<record>
-  <date>2013-07-10T08:10:26</date>
-  <millis>1373465426550</millis>
-  <sequence>55</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>6115</param>
-</record>
-<record>
-  <date>2013-07-10T08:10:26</date>
-  <millis>1373465426551</millis>
-  <sequence>56</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-10T08:10:32</date>
-  <millis>1373465432829</millis>
-  <sequence>66</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>6278</param>
-  <param>TaskListIndexer</param>
-  <param>2</param>
-  <param>56</param>
+  <param>842</param>
   <param>CopyResourcesIndexer</param>
   <param>1</param>
   <param>0</param>
@@ -1162,351 +141,60 @@
   <param>2</param>
   <param>jsfBinary</param>
   <param>25</param>
-  <param>0</param>
+  <param>1</param>
   <param>jsfCustomIndexer</param>
-  <param>2</param>
-  <param>0</param>
-  <param>java</param>
-  <param>26</param>
-  <param>657</param>
-  <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
-  <param>2</param>
-  <param>2</param>
-  <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
-  <param>2</param>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-10T08:12:57</date>
-  <millis>1373465577075</millis>
-  <sequence>78</sequence>
-  <logger>org.netbeans.ui.performance</logger>
-  <level>CONFIG</level>
-  <thread>16</thread>
-  <message>Snapshot statistics</message>
-  <param>1373465572762</param>
-  <param>Samples</param>
-  <param>430</param>
-  <param>Average</param>
-  <param>9.997400000000003</param>
-  <param>Minimum</param>
-  <param>1.165</param>
-  <param>Maximum</param>
-  <param>23.16</param>
-  <param>Std. deviation</param>
-  <param>1.2461271725761216</param>
-</record>
-<record>
-  <date>2013-07-10T08:13:05</date>
-  <millis>1373465585569</millis>
-  <sequence>164</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>LOG_WINDOW_DEACTIVATED</message>
-  <key>LOG_WINDOW_DEACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-</record>
-<record>
-  <date>2013-07-10T08:14:11</date>
-  <millis>1373465651579</millis>
-  <sequence>165</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>17</thread>
-  <message>LOG_WINDOW_ACTIVATED</message>
-  <key>LOG_WINDOW_ACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-  <param>241</param>
-</record>
-<record>
-  <date>2013-07-10T08:14:34</date>
-  <millis>1373465674550</millis>
-  <sequence>173</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>LOG_WINDOW_DEACTIVATED</message>
-  <key>LOG_WINDOW_DEACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-</record>
-<record>
-  <date>2013-07-10T08:17:08</date>
-  <millis>1373465828928</millis>
-  <sequence>174</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>18</thread>
-  <message>LOG_WINDOW_ACTIVATED</message>
-  <key>LOG_WINDOW_ACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-  <param>235</param>
-</record>
-<record>
-  <date>2013-07-10T08:17:30</date>
-  <millis>1373465850825</millis>
-  <sequence>184</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373465850824,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@7a9046f8,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@4c910f3e,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373465850824,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@7a9046f8,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@4c910f3e,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction[insert-break]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction@47465303</param>
-  <param>insert-break</param>
-</record>
-<record>
-  <date>2013-07-10T08:17:32</date>
-  <millis>1373465852313</millis>
-  <sequence>185</sequence>
-  <logger>org.netbeans.ui.actions.editor</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>UI_ACTION_EDITOR</message>
-  <key>UI_ACTION_EDITOR</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373465852312,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@7a9046f8,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@4c910f3e,typeHandlers=]</param>
-  <param>java.awt.event.ActionEvent[ACTION_PERFORMED,cmd=⏎,when=1373465852312,modifiers=] on org.openide.text.QuietEditorPane[,0,0,988x691,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@7a9046f8,flags=296,maximumSize=,minimumSize=,preferredSize=,caretColor=java.awt.Color[r=0,g=0,b=0],disabledTextColor=javax.swing.plaf.ColorUIResource[r=128,g=128,b=128],editable=true,margin=java.awt.Insets[top=0,left=0,bottom=0,right=0],selectedTextColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=0,g=0,b=0],selectionColor=com.apple.laf.AquaImageFactory$SystemColorProxy[r=186,g=254,b=108],kit=org.netbeans.modules.editor.java.JavaKit@4c910f3e,typeHandlers=]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction[insert-break]</param>
-  <param>org.netbeans.editor.BaseKit$InsertBreakAction@47465303</param>
-  <param>insert-break</param>
-</record>
-<record>
-  <date>2013-07-10T08:17:47</date>
-  <millis>1373465867400</millis>
-  <sequence>186</sequence>
-  <logger>org.netbeans.ui.actions</logger>
-  <level>FINER</level>
-  <thread>12</thread>
-  <message>UI_ACTION_BUTTON_PRESS</message>
-  <key>UI_ACTION_BUTTON_PRESS</key>
-  <catalog>org.openide.awt.Bundle</catalog>
-  <param>org.openide.awt.Toolbar$DefaultIconButton[]</param>
-  <param>org.openide.awt.Toolbar$DefaultIconButton</param>
-  <param>org.openide.awt.GeneralAction$BaseDelAction[Save &amp;All]</param>
-  <param>org.openide.awt.GeneralAction$BaseDelAction</param>
-  <param>Save &amp;All</param>
-</record>
-<record>
-  <date>2013-07-10T08:17:47</date>
-  <millis>1373465867467</millis>
-  <sequence>187</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>20</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>434638</param>
-</record>
-<record>
-  <date>2013-07-10T08:17:48</date>
-  <millis>1373465868270</millis>
-  <sequence>188</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>20</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>802</param>
-  <param>TaskListIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>CopyResourcesIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>jsfCustomIndexer</param>
-  <param>1</param>
-  <param>1</param>
-  <param>java</param>
-  <param>1</param>
-  <param>263</param>
-  <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
-  <param>1</param>
-  <param>1</param>
-  <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
-  <param>1</param>
-  <param>20</param>
-</record>
-<record>
-  <date>2013-07-10T20:17:20</date>
-  <millis>1373509040950</millis>
-  <sequence>31</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-10T20:17:20</date>
-  <millis>1373509040958</millis>
-  <sequence>32</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>SCREEN SIZE</message>
-  <param>1680</param>
-  <param>1050</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-10T20:17:20</date>
-  <millis>1373509040958</millis>
-  <sequence>33</sequence>
-  <level>CONFIG</level>
-  <thread>10</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-10T20:17:30</date>
-  <millis>1373509050134</millis>
-  <sequence>44</sequence>
-  <level>FINEST</level>
-  <thread>14</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-10T20:17:30</date>
-  <millis>1373509050134</millis>
-  <sequence>45</sequence>
-  <level>FINEST</level>
-  <thread>14</thread>
-  <message>SCREEN SIZE</message>
-  <param>1680</param>
-  <param>1050</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-10T20:17:30</date>
-  <millis>1373509050135</millis>
-  <sequence>46</sequence>
-  <level>CONFIG</level>
-  <thread>14</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-10T20:17:30</date>
-  <millis>1373509050128</millis>
-  <sequence>43</sequence>
-  <logger>org.netbeans.ui.metrics.projects</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>USG_PROJECT_OPEN</message>
-  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
-</record>
-<record>
-  <date>2013-07-10T20:17:30</date>
-  <millis>1373509050234</millis>
-  <sequence>47</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>11</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-10T20:17:35</date>
-  <millis>1373509055378</millis>
-  <sequence>53</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>11</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>5141</param>
-</record>
-<record>
-  <date>2013-07-10T20:17:35</date>
-  <millis>1373509055380</millis>
-  <sequence>54</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>11</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>2</param>
-</record>
-<record>
-  <date>2013-07-10T20:17:35</date>
-  <millis>1373509055812</millis>
-  <sequence>59</sequence>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>MEMORY</message>
-  <key>MEMORY</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>8589934592</param>
-</record>
-<record>
-  <date>2013-07-10T20:17:47</date>
-  <millis>1373509067864</millis>
-  <sequence>66</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>11</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>12484</param>
-  <param>TaskListIndexer</param>
   <param>2</param>
   <param>27</param>
-  <param>CopyResourcesIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>SpringBinary</param>
-  <param>25</param>
-  <param>3</param>
-  <param>jsfBinary</param>
-  <param>25</param>
-  <param>3</param>
-  <param>jsfCustomIndexer</param>
-  <param>2</param>
-  <param>0</param>
   <param>java</param>
   <param>26</param>
-  <param>9129</param>
+  <param>8208</param>
+  <param>TLIndexer</param>
+  <param>188</param>
+  <param>636</param>
   <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
   <param>2</param>
   <param>1</param>
   <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
   <param>2</param>
-  <param>1</param>
+  <param>3</param>
 </record>
 <record>
-  <date>2013-07-10T20:18:55</date>
-  <millis>1373509135044</millis>
-  <sequence>80</sequence>
+  <date>2014-06-22T11:26:07</date>
+  <millis>1403457967837</millis>
+  <sequence>327</sequence>
   <logger>org.netbeans.ui.focus</logger>
   <level>FINE</level>
-  <thread>12</thread>
+  <thread>15</thread>
   <message>LOG_WINDOW_DEACTIVATED</message>
   <key>LOG_WINDOW_DEACTIVATED</key>
   <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
 </record>
 <record>
-  <date>2013-07-10T20:28:22</date>
-  <millis>1373509702028</millis>
-  <sequence>81</sequence>
+  <date>2014-06-22T11:31:07</date>
+  <millis>1403458267341</millis>
+  <sequence>328</sequence>
   <logger>org.netbeans.ui.focus</logger>
   <level>FINE</level>
-  <thread>18</thread>
+  <thread>21</thread>
   <message>LOG_WINDOW_ACTIVATED</message>
   <key>LOG_WINDOW_ACTIVATED</key>
   <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-  <param>156</param>
+  <param>148</param>
 </record>
 <record>
-  <date>2013-07-10T20:28:55</date>
-  <millis>1373509735758</millis>
+  <date>2014-06-22T11:31:16</date>
+  <millis>1403458276105</millis>
+  <sequence>329</sequence>
+  <logger>org.netbeans.ui.metrics.editor</logger>
+  <level>INFO</level>
+  <thread>22</thread>
+  <message>USG_EDITOR_MIME_TYPE</message>
+  <param>text/x-java</param>
+  <param>2</param>
+</record>
+<record>
+  <date>2014-06-22T11:34:13</date>
+  <millis>1403458453590</millis>
   <sequence>31</sequence>
   <level>FINEST</level>
   <thread>10</thread>
@@ -1514,8 +202,8 @@
   <param>4</param>
 </record>
 <record>
-  <date>2013-07-10T20:28:55</date>
-  <millis>1373509735765</millis>
+  <date>2014-06-22T11:34:13</date>
+  <millis>1403458453643</millis>
   <sequence>32</sequence>
   <level>FINEST</level>
   <thread>10</thread>
@@ -1525,330 +213,118 @@
   <param>1</param>
 </record>
 <record>
-  <date>2013-07-10T20:28:55</date>
-  <millis>1373509735766</millis>
+  <date>2014-06-22T11:34:13</date>
+  <millis>1403458453644</millis>
   <sequence>33</sequence>
   <level>CONFIG</level>
   <thread>10</thread>
   <message>IDE_STARTUP</message>
 </record>
 <record>
-  <date>2013-07-10T20:29:02</date>
-  <millis>1373509742511</millis>
-  <sequence>44</sequence>
-  <level>FINEST</level>
-  <thread>11</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-10T20:29:02</date>
-  <millis>1373509742511</millis>
-  <sequence>45</sequence>
-  <level>FINEST</level>
-  <thread>11</thread>
-  <message>SCREEN SIZE</message>
-  <param>1680</param>
-  <param>1050</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-10T20:29:02</date>
-  <millis>1373509742511</millis>
-  <sequence>46</sequence>
-  <level>CONFIG</level>
-  <thread>11</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-10T20:29:02</date>
-  <millis>1373509742506</millis>
-  <sequence>43</sequence>
-  <logger>org.netbeans.ui.metrics.projects</logger>
-  <level>INFO</level>
-  <thread>11</thread>
-  <message>USG_PROJECT_OPEN</message>
-  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
-</record>
-<record>
-  <date>2013-07-10T20:29:02</date>
-  <millis>1373509742596</millis>
-  <sequence>48</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-10T20:29:05</date>
-  <millis>1373509745145</millis>
-  <sequence>52</sequence>
-  <level>INFO</level>
-  <thread>11</thread>
-  <message>MEMORY</message>
-  <key>MEMORY</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>8589934592</param>
-</record>
-<record>
-  <date>2013-07-10T20:29:07</date>
-  <millis>1373509747023</millis>
-  <sequence>56</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>4425</param>
-</record>
-<record>
-  <date>2013-07-10T20:29:07</date>
-  <millis>1373509747024</millis>
-  <sequence>57</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-10T20:29:08</date>
-  <millis>1373509748405</millis>
-  <sequence>66</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>1380</param>
-  <param>TaskListIndexer</param>
-  <param>2</param>
-  <param>3</param>
-  <param>CopyResourcesIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>SpringBinary</param>
-  <param>25</param>
-  <param>5</param>
-  <param>jsfBinary</param>
-  <param>25</param>
-  <param>4</param>
-  <param>jsfCustomIndexer</param>
-  <param>2</param>
-  <param>0</param>
-  <param>java</param>
-  <param>26</param>
-  <param>147</param>
-  <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
-  <param>2</param>
-  <param>1</param>
-  <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
-  <param>2</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-10T20:29:28</date>
-  <millis>1373509768485</millis>
-  <sequence>79</sequence>
-  <logger>org.netbeans.ui.performance</logger>
-  <level>CONFIG</level>
-  <thread>15</thread>
-  <message>Snapshot statistics</message>
-  <param>1373509764932</param>
-  <param>Samples</param>
-  <param>353</param>
-  <param>Average</param>
-  <param>9.999067988668562</param>
-  <param>Minimum</param>
-  <param>1.108</param>
-  <param>Maximum</param>
-  <param>36.003</param>
-  <param>Std. deviation</param>
-  <param>2.304652334395854</param>
-</record>
-<record>
-  <date>2013-07-10T20:29:35</date>
-  <millis>1373509775601</millis>
-  <sequence>200</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>LOG_WINDOW_DEACTIVATED</message>
-  <key>LOG_WINDOW_DEACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-</record>
-<record>
-  <date>2013-07-10T21:36:47</date>
-  <millis>1373513807051</millis>
-  <sequence>201</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>18</thread>
-  <message>LOG_WINDOW_ACTIVATED</message>
-  <key>LOG_WINDOW_ACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-  <param>129</param>
-</record>
-<record>
-  <date>2013-07-15T13:46:38</date>
-  <millis>1373917598763</millis>
-  <sequence>31</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-15T13:46:38</date>
-  <millis>1373917598804</millis>
-  <sequence>32</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>SCREEN SIZE</message>
-  <param>2560</param>
-  <param>1600</param>
-  <param>2</param>
-</record>
-<record>
-  <date>2013-07-15T13:46:38</date>
-  <millis>1373917598805</millis>
-  <sequence>33</sequence>
-  <level>CONFIG</level>
-  <thread>10</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-15T13:46:55</date>
-  <millis>1373917615533</millis>
-  <sequence>46</sequence>
-  <level>FINEST</level>
-  <thread>11</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-15T13:46:55</date>
-  <millis>1373917615533</millis>
-  <sequence>47</sequence>
-  <level>FINEST</level>
-  <thread>11</thread>
-  <message>SCREEN SIZE</message>
-  <param>2560</param>
-  <param>1600</param>
-  <param>2</param>
-</record>
-<record>
-  <date>2013-07-15T13:46:55</date>
-  <millis>1373917615533</millis>
-  <sequence>48</sequence>
-  <level>CONFIG</level>
-  <thread>11</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-15T13:46:55</date>
-  <millis>1373917615530</millis>
-  <sequence>45</sequence>
-  <logger>org.netbeans.ui.metrics.projects</logger>
-  <level>INFO</level>
-  <thread>11</thread>
-  <message>USG_PROJECT_OPEN</message>
-  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
-</record>
-<record>
-  <date>2013-07-15T13:46:55</date>
-  <millis>1373917615976</millis>
+  <date>2014-06-22T11:34:44</date>
+  <millis>1403458484515</millis>
   <sequence>49</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>CPU INFO</message>
+  <param>4</param>
+</record>
+<record>
+  <date>2014-06-22T11:34:44</date>
+  <millis>1403458484516</millis>
+  <sequence>50</sequence>
+  <level>FINEST</level>
+  <thread>14</thread>
+  <message>SCREEN SIZE</message>
+  <param>1680</param>
+  <param>1050</param>
+  <param>1</param>
+</record>
+<record>
+  <date>2014-06-22T11:34:44</date>
+  <millis>1403458484516</millis>
+  <sequence>51</sequence>
+  <level>CONFIG</level>
+  <thread>14</thread>
+  <message>IDE_STARTUP</message>
+</record>
+<record>
+  <date>2014-06-22T11:34:44</date>
+  <millis>1403458484514</millis>
+  <sequence>48</sequence>
+  <logger>org.netbeans.ui.metrics.projects</logger>
   <level>INFO</level>
   <thread>14</thread>
+  <message>USG_PROJECT_OPEN</message>
+  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
+</record>
+<record>
+  <date>2014-06-22T11:34:45</date>
+  <millis>1403458485100</millis>
+  <sequence>52</sequence>
+  <logger>org.netbeans.ui.indexing</logger>
+  <level>INFO</level>
+  <thread>15</thread>
   <message>INDEXING_STARTED</message>
   <key>INDEXING_STARTED</key>
   <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
   <param>0</param>
 </record>
 <record>
-  <date>2013-07-15T13:46:56</date>
-  <millis>1373917616772</millis>
-  <sequence>52</sequence>
+  <date>2014-06-22T11:34:46</date>
+  <millis>1403458486715</millis>
+  <sequence>55</sequence>
   <level>INFO</level>
-  <thread>15</thread>
+  <thread>16</thread>
   <message>MEMORY</message>
   <key>MEMORY</key>
   <catalog>&lt;null&gt;</catalog>
   <param>8589934592</param>
 </record>
 <record>
-  <date>2013-07-15T13:47:05</date>
-  <millis>1373917625656</millis>
-  <sequence>59</sequence>
+  <date>2014-06-22T11:34:55</date>
+  <millis>1403458495166</millis>
+  <sequence>61</sequence>
   <logger>org.netbeans.ui.indexing</logger>
   <level>INFO</level>
-  <thread>14</thread>
+  <thread>15</thread>
   <message>INDEXING_FINISHED</message>
   <key>INDEXING_FINISHED</key>
   <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>9651</param>
+  <param>10049</param>
 </record>
 <record>
-  <date>2013-07-15T13:47:05</date>
-  <millis>1373917625657</millis>
-  <sequence>60</sequence>
+  <date>2014-06-22T11:34:55</date>
+  <millis>1403458495290</millis>
+  <sequence>62</sequence>
   <logger>org.netbeans.ui.indexing</logger>
   <level>INFO</level>
-  <thread>14</thread>
+  <thread>15</thread>
   <message>INDEXING_STARTED</message>
   <key>INDEXING_STARTED</key>
   <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>1</param>
+  <param>124</param>
 </record>
 <record>
-  <date>2013-07-15T13:47:10</date>
-  <millis>1373917630035</millis>
-  <sequence>70</sequence>
-  <logger>org.netbeans.ui.performance</logger>
-  <level>CONFIG</level>
-  <thread>19</thread>
-  <message>Snapshot statistics</message>
-  <param>1373917624942</param>
-  <param>Samples</param>
-  <param>508</param>
-  <param>Average</param>
-  <param>9.99832283464567</param>
-  <param>Minimum</param>
-  <param>1.18</param>
-  <param>Maximum</param>
-  <param>25.316</param>
-  <param>Std. deviation</param>
-  <param>2.532466335444063</param>
-</record>
-<record>
-  <date>2013-07-15T13:47:10</date>
-  <millis>1373917630470</millis>
+  <date>2014-06-22T11:35:05</date>
+  <millis>1403458505704</millis>
   <sequence>73</sequence>
   <logger>org.netbeans.ui.indexing</logger>
   <level>INFO</level>
-  <thread>14</thread>
+  <thread>15</thread>
   <message>INDEXING_FINISHED</message>
   <key>INDEXING_FINISHED</key>
   <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>4813</param>
+  <param>10414</param>
   <param>TaskListIndexer</param>
   <param>2</param>
-  <param>24</param>
+  <param>86</param>
   <param>CopyResourcesIndexer</param>
   <param>1</param>
   <param>0</param>
   <param>SpringBinary</param>
   <param>25</param>
-  <param>45</param>
+  <param>86</param>
   <param>jsfBinary</param>
   <param>25</param>
   <param>1</param>
@@ -1856,405 +332,84 @@
   <param>2</param>
   <param>0</param>
   <param>java</param>
-  <param>26</param>
-  <param>349</param>
+  <param>25</param>
+  <param>1008</param>
   <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
   <param>2</param>
   <param>1</param>
   <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
   <param>2</param>
-  <param>1</param>
+  <param>10</param>
 </record>
 <record>
-  <date>2013-07-15T13:47:47</date>
-  <millis>1373917667012</millis>
-  <sequence>228</sequence>
+  <date>2014-06-22T11:36:03</date>
+  <millis>1403458563114</millis>
+  <sequence>94</sequence>
   <logger>org.netbeans.ui.focus</logger>
   <level>FINE</level>
-  <thread>12</thread>
+  <thread>13</thread>
   <message>LOG_WINDOW_DEACTIVATED</message>
   <key>LOG_WINDOW_DEACTIVATED</key>
   <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
 </record>
 <record>
-  <date>2013-07-15T14:06:08</date>
-  <millis>1373918768208</millis>
-  <sequence>229</sequence>
+  <date>2014-06-22T11:36:26</date>
+  <millis>1403458586155</millis>
+  <sequence>95</sequence>
   <logger>org.netbeans.ui.focus</logger>
   <level>FINE</level>
-  <thread>20</thread>
+  <thread>11</thread>
   <message>LOG_WINDOW_ACTIVATED</message>
   <key>LOG_WINDOW_ACTIVATED</key>
   <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-  <param>129</param>
+  <param>239</param>
 </record>
 <record>
-  <date>2013-07-15T14:07:22</date>
-  <millis>1373918842131</millis>
-  <sequence>31</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-15T14:07:22</date>
-  <millis>1373918842139</millis>
-  <sequence>32</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>SCREEN SIZE</message>
-  <param>2560</param>
-  <param>1600</param>
-  <param>2</param>
-</record>
-<record>
-  <date>2013-07-15T14:07:22</date>
-  <millis>1373918842140</millis>
-  <sequence>33</sequence>
-  <level>CONFIG</level>
-  <thread>10</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-15T14:07:30</date>
-  <millis>1373918850290</millis>
-  <sequence>45</sequence>
-  <level>FINEST</level>
-  <thread>11</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-15T14:07:30</date>
-  <millis>1373918850290</millis>
-  <sequence>46</sequence>
-  <level>FINEST</level>
-  <thread>11</thread>
-  <message>SCREEN SIZE</message>
-  <param>2560</param>
-  <param>1600</param>
-  <param>2</param>
-</record>
-<record>
-  <date>2013-07-15T14:07:30</date>
-  <millis>1373918850290</millis>
-  <sequence>47</sequence>
-  <level>CONFIG</level>
-  <thread>11</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-15T14:07:30</date>
-  <millis>1373918850284</millis>
-  <sequence>44</sequence>
-  <logger>org.netbeans.ui.metrics.projects</logger>
-  <level>INFO</level>
-  <thread>11</thread>
-  <message>USG_PROJECT_OPEN</message>
-  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
-</record>
-<record>
-  <date>2013-07-15T14:07:30</date>
-  <millis>1373918850362</millis>
-  <sequence>48</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-15T14:07:32</date>
-  <millis>1373918852508</millis>
-  <sequence>52</sequence>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>MEMORY</message>
-  <key>MEMORY</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>8589934592</param>
-</record>
-<record>
-  <date>2013-07-15T14:07:33</date>
-  <millis>1373918853801</millis>
-  <sequence>57</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>3438</param>
-</record>
-<record>
-  <date>2013-07-15T14:07:33</date>
-  <millis>1373918853802</millis>
-  <sequence>58</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-15T14:07:35</date>
-  <millis>1373918855305</millis>
-  <sequence>66</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>1503</param>
-  <param>TaskListIndexer</param>
-  <param>2</param>
-  <param>1</param>
-  <param>CopyResourcesIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>SpringBinary</param>
-  <param>25</param>
-  <param>2</param>
-  <param>jsfBinary</param>
-  <param>25</param>
-  <param>1</param>
-  <param>jsfCustomIndexer</param>
-  <param>2</param>
-  <param>0</param>
-  <param>java</param>
-  <param>26</param>
-  <param>116</param>
-  <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
-  <param>2</param>
-  <param>1</param>
-  <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
-  <param>2</param>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-15T14:08:07</date>
-  <millis>1373918887499</millis>
-  <sequence>81</sequence>
+  <date>2014-06-22T11:36:53</date>
+  <millis>1403458613072</millis>
+  <sequence>118</sequence>
   <logger>org.netbeans.ui.focus</logger>
   <level>FINE</level>
-  <thread>12</thread>
+  <thread>13</thread>
   <message>LOG_WINDOW_DEACTIVATED</message>
   <key>LOG_WINDOW_DEACTIVATED</key>
   <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
 </record>
 <record>
-  <date>2013-07-15T14:08:50</date>
-  <millis>1373918930148</millis>
-  <sequence>82</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>15</thread>
-  <message>LOG_WINDOW_ACTIVATED</message>
-  <key>LOG_WINDOW_ACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-  <param>133</param>
-</record>
-<record>
-  <date>2013-07-15T14:12:22</date>
-  <millis>1373919142031</millis>
-  <sequence>31</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-15T14:12:22</date>
-  <millis>1373919142054</millis>
-  <sequence>32</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>SCREEN SIZE</message>
-  <param>2560</param>
-  <param>1600</param>
-  <param>2</param>
-</record>
-<record>
-  <date>2013-07-15T14:12:22</date>
-  <millis>1373919142054</millis>
-  <sequence>33</sequence>
-  <level>CONFIG</level>
-  <thread>10</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-15T14:12:29</date>
-  <millis>1373919149936</millis>
-  <sequence>44</sequence>
-  <level>FINEST</level>
-  <thread>13</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-15T14:12:29</date>
-  <millis>1373919149937</millis>
-  <sequence>45</sequence>
-  <level>FINEST</level>
-  <thread>13</thread>
-  <message>SCREEN SIZE</message>
-  <param>2560</param>
-  <param>1600</param>
-  <param>2</param>
-</record>
-<record>
-  <date>2013-07-15T14:12:29</date>
-  <millis>1373919149937</millis>
-  <sequence>46</sequence>
-  <level>CONFIG</level>
-  <thread>13</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-15T14:12:29</date>
-  <millis>1373919149932</millis>
-  <sequence>43</sequence>
-  <logger>org.netbeans.ui.metrics.projects</logger>
-  <level>INFO</level>
-  <thread>13</thread>
-  <message>USG_PROJECT_OPEN</message>
-  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
-</record>
-<record>
-  <date>2013-07-15T14:12:29</date>
-  <millis>1373919149998</millis>
-  <sequence>47</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-15T14:12:32</date>
-  <millis>1373919152647</millis>
-  <sequence>51</sequence>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>MEMORY</message>
-  <key>MEMORY</key>
-  <catalog>&lt;null&gt;</catalog>
-  <param>8589934592</param>
-</record>
-<record>
-  <date>2013-07-15T14:12:34</date>
-  <millis>1373919154587</millis>
-  <sequence>56</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>4587</param>
-</record>
-<record>
-  <date>2013-07-15T14:12:34</date>
-  <millis>1373919154589</millis>
-  <sequence>57</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>2</param>
-</record>
-<record>
-  <date>2013-07-15T14:12:37</date>
-  <millis>1373919157853</millis>
-  <sequence>65</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>14</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>3263</param>
-  <param>TaskListIndexer</param>
-  <param>2</param>
-  <param>2</param>
-  <param>CopyResourcesIndexer</param>
-  <param>1</param>
-  <param>1</param>
-  <param>SpringBinary</param>
-  <param>25</param>
-  <param>2</param>
-  <param>jsfBinary</param>
-  <param>25</param>
-  <param>0</param>
-  <param>jsfCustomIndexer</param>
-  <param>2</param>
-  <param>0</param>
-  <param>java</param>
-  <param>26</param>
-  <param>305</param>
-  <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
-  <param>2</param>
-  <param>1</param>
-  <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
-  <param>2</param>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-15T14:15:41</date>
-  <millis>1373919341612</millis>
-  <sequence>89</sequence>
-  <logger>org.netbeans.ui.performance</logger>
-  <level>CONFIG</level>
-  <thread>17</thread>
-  <message>Snapshot statistics</message>
-  <param>1373919337460</param>
-  <param>Samples</param>
-  <param>414</param>
-  <param>Average</param>
-  <param>10.000222222222225</param>
-  <param>Minimum</param>
-  <param>1.861</param>
-  <param>Maximum</param>
-  <param>17.768</param>
-  <param>Std. deviation</param>
-  <param>1.2637780908062664</param>
-</record>
-<record>
-  <date>2013-07-15T14:15:57</date>
-  <millis>1373919357725</millis>
-  <sequence>255</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>LOG_WINDOW_DEACTIVATED</message>
-  <key>LOG_WINDOW_DEACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-</record>
-<record>
-  <date>2013-07-15T14:21:49</date>
-  <millis>1373919709351</millis>
-  <sequence>256</sequence>
+  <date>2014-06-22T11:44:02</date>
+  <millis>1403459042806</millis>
+  <sequence>119</sequence>
   <logger>org.netbeans.ui.focus</logger>
   <level>FINE</level>
   <thread>19</thread>
   <message>LOG_WINDOW_ACTIVATED</message>
   <key>LOG_WINDOW_ACTIVATED</key>
   <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-  <param>136</param>
+  <param>134</param>
 </record>
 <record>
-  <date>2013-07-15T14:23:49</date>
-  <millis>1373919829664</millis>
+  <date>2014-06-22T11:44:19</date>
+  <millis>1403459059284</millis>
+  <sequence>138</sequence>
+  <logger>org.netbeans.ui.performance</logger>
+  <level>CONFIG</level>
+  <thread>20</thread>
+  <message>Snapshot statistics</message>
+  <param>1403459055582</param>
+  <param>Samples</param>
+  <param>369</param>
+  <param>Average</param>
+  <param>9.995517615176142</param>
+  <param>Minimum</param>
+  <param>1.183</param>
+  <param>Maximum</param>
+  <param>18.45</param>
+  <param>Std. deviation</param>
+  <param>1.2040082110840116</param>
+</record>
+<record>
+  <date>2014-06-22T11:47:00</date>
+  <millis>1403459220389</millis>
   <sequence>31</sequence>
   <level>FINEST</level>
   <thread>10</thread>
@@ -2262,366 +417,162 @@
   <param>4</param>
 </record>
 <record>
-  <date>2013-07-15T14:23:49</date>
-  <millis>1373919829689</millis>
+  <date>2014-06-22T11:47:00</date>
+  <millis>1403459220410</millis>
   <sequence>32</sequence>
   <level>FINEST</level>
   <thread>10</thread>
   <message>SCREEN SIZE</message>
-  <param>2560</param>
-  <param>1600</param>
-  <param>2</param>
+  <param>1680</param>
+  <param>1050</param>
+  <param>1</param>
 </record>
 <record>
-  <date>2013-07-15T14:23:49</date>
-  <millis>1373919829690</millis>
+  <date>2014-06-22T11:47:00</date>
+  <millis>1403459220410</millis>
   <sequence>33</sequence>
   <level>CONFIG</level>
   <thread>10</thread>
   <message>IDE_STARTUP</message>
 </record>
 <record>
-  <date>2013-07-15T14:23:57</date>
-  <millis>1373919837460</millis>
-  <sequence>45</sequence>
+  <date>2014-06-22T11:47:13</date>
+  <millis>1403459233512</millis>
+  <sequence>48</sequence>
   <level>FINEST</level>
-  <thread>11</thread>
+  <thread>14</thread>
   <message>CPU INFO</message>
   <param>4</param>
 </record>
 <record>
-  <date>2013-07-15T14:23:57</date>
-  <millis>1373919837460</millis>
-  <sequence>46</sequence>
+  <date>2014-06-22T11:47:13</date>
+  <millis>1403459233512</millis>
+  <sequence>49</sequence>
   <level>FINEST</level>
-  <thread>11</thread>
+  <thread>14</thread>
   <message>SCREEN SIZE</message>
-  <param>2560</param>
-  <param>1600</param>
-  <param>2</param>
+  <param>1680</param>
+  <param>1050</param>
+  <param>1</param>
 </record>
 <record>
-  <date>2013-07-15T14:23:57</date>
-  <millis>1373919837460</millis>
-  <sequence>47</sequence>
+  <date>2014-06-22T11:47:13</date>
+  <millis>1403459233512</millis>
+  <sequence>50</sequence>
   <level>CONFIG</level>
-  <thread>11</thread>
+  <thread>14</thread>
   <message>IDE_STARTUP</message>
 </record>
 <record>
-  <date>2013-07-15T14:23:57</date>
-  <millis>1373919837459</millis>
-  <sequence>44</sequence>
+  <date>2014-06-22T11:47:13</date>
+  <millis>1403459233510</millis>
+  <sequence>47</sequence>
   <logger>org.netbeans.ui.metrics.projects</logger>
   <level>INFO</level>
-  <thread>11</thread>
+  <thread>14</thread>
   <message>USG_PROJECT_OPEN</message>
   <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
 </record>
 <record>
-  <date>2013-07-15T14:23:57</date>
-  <millis>1373919837523</millis>
-  <sequence>48</sequence>
+  <date>2014-06-22T11:47:14</date>
+  <millis>1403459234072</millis>
+  <sequence>51</sequence>
   <logger>org.netbeans.ui.indexing</logger>
   <level>INFO</level>
-  <thread>14</thread>
+  <thread>15</thread>
   <message>INDEXING_STARTED</message>
   <key>INDEXING_STARTED</key>
   <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
   <param>0</param>
 </record>
 <record>
-  <date>2013-07-15T14:23:59</date>
-  <millis>1373919839994</millis>
-  <sequence>52</sequence>
+  <date>2014-06-22T11:47:16</date>
+  <millis>1403459236620</millis>
+  <sequence>55</sequence>
   <level>INFO</level>
-  <thread>15</thread>
+  <thread>16</thread>
   <message>MEMORY</message>
   <key>MEMORY</key>
   <catalog>&lt;null&gt;</catalog>
   <param>8589934592</param>
 </record>
 <record>
-  <date>2013-07-15T14:24:01</date>
-  <millis>1373919841853</millis>
-  <sequence>57</sequence>
+  <date>2014-06-22T11:47:16</date>
+  <millis>1403459236952</millis>
+  <sequence>56</sequence>
   <logger>org.netbeans.ui.indexing</logger>
   <level>INFO</level>
-  <thread>14</thread>
+  <thread>15</thread>
   <message>INDEXING_FINISHED</message>
   <key>INDEXING_FINISHED</key>
   <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>4327</param>
+  <param>2823</param>
 </record>
 <record>
-  <date>2013-07-15T14:24:01</date>
-  <millis>1373919841854</millis>
-  <sequence>58</sequence>
+  <date>2014-06-22T11:47:17</date>
+  <millis>1403459237013</millis>
+  <sequence>57</sequence>
   <logger>org.netbeans.ui.indexing</logger>
   <level>INFO</level>
-  <thread>14</thread>
+  <thread>15</thread>
   <message>INDEXING_STARTED</message>
   <key>INDEXING_STARTED</key>
   <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>1</param>
+  <param>61</param>
 </record>
 <record>
-  <date>2013-07-15T14:24:05</date>
-  <millis>1373919845114</millis>
+  <date>2014-06-22T11:47:27</date>
+  <millis>1403459247287</millis>
   <sequence>67</sequence>
   <logger>org.netbeans.ui.indexing</logger>
   <level>INFO</level>
-  <thread>14</thread>
+  <thread>15</thread>
   <message>INDEXING_FINISHED</message>
   <key>INDEXING_FINISHED</key>
   <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>3260</param>
+  <param>10274</param>
   <param>TaskListIndexer</param>
   <param>2</param>
-  <param>2</param>
+  <param>50</param>
   <param>CopyResourcesIndexer</param>
   <param>1</param>
   <param>0</param>
   <param>SpringBinary</param>
   <param>25</param>
-  <param>1</param>
+  <param>76</param>
   <param>jsfBinary</param>
   <param>25</param>
-  <param>2</param>
+  <param>0</param>
   <param>jsfCustomIndexer</param>
   <param>2</param>
-  <param>0</param>
+  <param>3</param>
   <param>java</param>
   <param>26</param>
-  <param>208</param>
+  <param>792</param>
   <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
   <param>2</param>
   <param>1</param>
   <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
   <param>2</param>
-  <param>0</param>
+  <param>14</param>
 </record>
 <record>
-  <date>2013-07-15T14:24:23</date>
-  <millis>1373919863879</millis>
-  <sequence>89</sequence>
-  <logger>org.netbeans.ui.performance</logger>
-  <level>CONFIG</level>
-  <thread>19</thread>
-  <message>Snapshot statistics</message>
-  <param>1373919860563</param>
-  <param>Samples</param>
-  <param>330</param>
-  <param>Average</param>
-  <param>9.996178787878785</param>
-  <param>Minimum</param>
-  <param>0.989</param>
-  <param>Maximum</param>
-  <param>21.061</param>
-  <param>Std. deviation</param>
-  <param>1.5458268073046928</param>
-</record>
-<record>
-  <date>2013-07-15T14:24:34</date>
-  <millis>1373919874471</millis>
-  <sequence>270</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>LOG_WINDOW_DEACTIVATED</message>
-  <key>LOG_WINDOW_DEACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-</record>
-<record>
-  <date>2013-07-15T14:25:41</date>
-  <millis>1373919941209</millis>
-  <sequence>271</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>15</thread>
-  <message>LOG_WINDOW_ACTIVATED</message>
-  <key>LOG_WINDOW_ACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-  <param>131</param>
-</record>
-<record>
-  <date>2013-07-26T10:17:36</date>
-  <millis>1374855456282</millis>
-  <sequence>31</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-26T10:17:36</date>
-  <millis>1374855456304</millis>
-  <sequence>32</sequence>
-  <level>FINEST</level>
-  <thread>10</thread>
-  <message>SCREEN SIZE</message>
-  <param>1680</param>
-  <param>1050</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-26T10:17:36</date>
-  <millis>1374855456304</millis>
-  <sequence>33</sequence>
-  <level>CONFIG</level>
-  <thread>10</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-26T10:17:58</date>
-  <millis>1374855478284</millis>
-  <sequence>51</sequence>
-  <level>FINEST</level>
-  <thread>11</thread>
-  <message>CPU INFO</message>
-  <param>4</param>
-</record>
-<record>
-  <date>2013-07-26T10:17:58</date>
-  <millis>1374855478287</millis>
-  <sequence>52</sequence>
-  <level>FINEST</level>
-  <thread>11</thread>
-  <message>SCREEN SIZE</message>
-  <param>1680</param>
-  <param>1050</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-26T10:17:58</date>
-  <millis>1374855478287</millis>
-  <sequence>53</sequence>
-  <level>CONFIG</level>
-  <thread>11</thread>
-  <message>IDE_STARTUP</message>
-</record>
-<record>
-  <date>2013-07-26T10:17:58</date>
-  <millis>1374855478276</millis>
-  <sequence>50</sequence>
-  <logger>org.netbeans.ui.metrics.projects</logger>
-  <level>INFO</level>
-  <thread>11</thread>
-  <message>USG_PROJECT_OPEN</message>
-  <param>org.netbeans.modules.java.j2seproject.J2SEProject</param>
-</record>
-<record>
-  <date>2013-07-26T10:17:58</date>
-  <millis>1374855478886</millis>
-  <sequence>54</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>0</param>
-</record>
-<record>
-  <date>2013-07-26T10:18:05</date>
-  <millis>1374855485890</millis>
-  <sequence>56</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>6996</param>
-</record>
-<record>
-  <date>2013-07-26T10:18:05</date>
-  <millis>1374855485934</millis>
-  <sequence>57</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>INDEXING_STARTED</message>
-  <key>INDEXING_STARTED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>44</param>
-</record>
-<record>
-  <date>2013-07-26T10:18:19</date>
-  <millis>1374855499871</millis>
-  <sequence>68</sequence>
-  <logger>org.netbeans.ui.indexing</logger>
-  <level>INFO</level>
-  <thread>15</thread>
-  <message>INDEXING_FINISHED</message>
-  <key>INDEXING_FINISHED</key>
-  <catalog>org.netbeans.modules.parsing.impl.indexing.Bundle</catalog>
-  <param>13936</param>
-  <param>TaskListIndexer</param>
-  <param>2</param>
-  <param>13</param>
-  <param>CopyResourcesIndexer</param>
-  <param>1</param>
-  <param>0</param>
-  <param>SpringBinary</param>
-  <param>25</param>
-  <param>8</param>
-  <param>jsfBinary</param>
-  <param>25</param>
-  <param>1</param>
-  <param>jsfCustomIndexer</param>
-  <param>2</param>
-  <param>0</param>
-  <param>java</param>
-  <param>26</param>
-  <param>316</param>
-  <param>org.netbeans.modules.java.source.indexing.COSSynchronizingIndexer</param>
-  <param>2</param>
-  <param>1</param>
-  <param>org-netbeans-modules-jumpto-file-FileIndexer</param>
-  <param>2</param>
-  <param>1</param>
-</record>
-<record>
-  <date>2013-07-26T10:18:27</date>
-  <millis>1374855507613</millis>
-  <sequence>91</sequence>
+  <date>2014-06-22T11:47:28</date>
+  <millis>1403459248360</millis>
+  <sequence>69</sequence>
   <logger>org.netbeans.ui.performance</logger>
   <level>CONFIG</level>
   <thread>11</thread>
   <message>Snapshot statistics</message>
-  <param>1374855501865</param>
+  <param>1403459238431</param>
   <param>Samples</param>
-  <param>573</param>
+  <param>991</param>
   <param>Average</param>
-  <param>10.002534031413608</param>
+  <param>9.99727245206862</param>
   <param>Minimum</param>
-  <param>0.623</param>
+  <param>1.308</param>
   <param>Maximum</param>
-  <param>42.114</param>
+  <param>31.055</param>
   <param>Std. deviation</param>
-  <param>3.268141267418614</param>
-</record>
-<record>
-  <date>2013-07-26T10:19:21</date>
-  <millis>1374855561296</millis>
-  <sequence>285</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>12</thread>
-  <message>LOG_WINDOW_DEACTIVATED</message>
-  <key>LOG_WINDOW_DEACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-</record>
-<record>
-  <date>2013-07-26T10:19:31</date>
-  <millis>1374855571035</millis>
-  <sequence>286</sequence>
-  <logger>org.netbeans.ui.focus</logger>
-  <level>FINE</level>
-  <thread>15</thread>
-  <message>LOG_WINDOW_ACTIVATED</message>
-  <key>LOG_WINDOW_ACTIVATED</key>
-  <catalog>org.netbeans.core.ui.warmup.Bundle</catalog>
-  <param>196</param>
+  <param>2.431250344397758</param>
 </record>

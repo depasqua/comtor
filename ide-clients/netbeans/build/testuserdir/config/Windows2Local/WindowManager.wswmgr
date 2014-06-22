@@ -3,10 +3,10 @@
 <windowmanager version="2.1">
     <main-window>
   <joined-properties
-   x="27"
-   y="67"
+   x="17"
+   y="22"
    width="1512"
-   height="850"
+   height="868"
    relative-x="0.0"
    relative-y="0.0"
    relative-width="0.0"
@@ -19,9 +19,9 @@
 />
   <separated-properties
    x="168"
-   y="94"
+   y="96"
    width="1344"
-   height="75"
+   height="77"
    relative-x="0.0"
    relative-y="0.0"
    relative-width="0.0"
@@ -37,19 +37,17 @@
   <path orientation="vertical" number="40" weight="0.7" />
   <path orientation="horizontal" number="40" weight="0.7" />
   </constraints>
-  <bounds x="554" y="226" width="705" height="415" />
+  <bounds x="554" y="231" width="705" height="424" />
     </editor-area>
     <screen width="1680" height="1050"/>
     <active-mode name="editor"/>
     <toolbar configuration="Standard" preferred-icon-size="24"/>
     <tc-list>
-  <tc-id id="projectTab_tc"/>
-  <tc-id id="COMTOR Report_5"/>
-  <tc-id id="Welcome"/>
   <tc-id id="MultiView-java#002Eso1B6AF0E7xt#002Ehistory#007C_1"/>
   <tc-id id="MultiView-java#002Eso9FDCAE75text#002Ehistory#007C"/>
-  <tc-id id="services"/>
+  <tc-id id="projectTab_tc"/>
   <tc-id id="navigatorTC"/>
   <tc-id id="projectTabLogical_tc"/>
+  <tc-id id="services"/>
     </tc-list>
 </windowmanager>

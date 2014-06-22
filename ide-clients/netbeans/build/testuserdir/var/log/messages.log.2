@@ -1,10 +1,10 @@
 -------------------------------------------------------------------------------
->Log Session: Monday, July 15, 2013 2:12:04 PM MDT
+>Log Session: Sunday, June 22, 2014 11:24:26 AM MDT
 >System Info: 
   Product Version         = NetBeans IDE 7.2.1 (Build 201210100934) (#a183c5e41a19)
-  Operating System        = Mac OS X version 10.6.8 running on x86_64
-  Java; VM; Vendor        = 1.6.0_51; Java HotSpot(TM) 64-Bit Server VM 20.51-b01-457; Apple Inc.
-  Runtime                 = Java(TM) SE Runtime Environment 1.6.0_51-b11-457-10M4509
+  Operating System        = Mac OS X version 10.9.3 running on x86_64
+  Java; VM; Vendor        = 1.6.0_65; Java HotSpot(TM) 64-Bit Server VM 20.65-b04-462; Apple Inc.
+  Runtime                 = Java(TM) SE Runtime Environment 1.6.0_65-b14-462-11M4609
   Java Home               = /System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
   System Locale; Encoding = en_US (nb); MacRoman
   Home Directory          = /Users/michael
@@ -573,20 +573,19 @@ INFO [org.netbeans.core.startup.NbEvents]: Turning on modules:
 	org.eclipse.core.net [1.2.100 1.2.100.I20100511-0800]
 	org.eclipse.core.jobs [3.5.1 3.5.1.R36x_v20100824]
 	org.eclipse.core.contenttype [3.4.100 3.4.100.v20100505-1235]
-	org.comtor.cloudclients.netbeansclient [1.0 130715]
+	org.comtor.cloudclients.netbeansclient [1.0 140622]
 	org.apache.xmlrpc [3.0.0 3.0.0]
 	org.apache.ws.commons.util [1.0.1 1.0.1]
 	org.apache.commons.lang [2.4.0 2.4.0]
 	org.apache.commons.codec [1.3.0 1.3.0]
 	com.jcraft.jzlib [1.0.7 1.0.7]
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.osgi@3.7.1.R37x_v20110808-1106 started
+[COMTORJPanel]: createConfigDirectory() returned:true
+f exists at /Users/michael/.comtord/comtor-nb.properties
+[org.comtor.cloudclients.netbeansclient.COMTORJPanel]: tried to load properties file: /Users/michael/.comtord/comtor-nb.properties
+[COMTORJPanel]: checkLoadConfiguration() returned:true
 WARNING [org.netbeans.modules.editor.settings.storage.keybindings.KeyMapsStorage]: The keybinding 'A-MOUSE_WHEEL_UP' in Editors/Keybindings/NetBeans/Defaults/org-netbeans-modules-editor-keybindings.xml may not work correctly on Mac. Keybindings starting with Alt or Ctrl should be coded with latin capital letters 'O' or 'D' respectively. For details see org.openide.util.Utilities.stringToKey().
 WARNING [org.netbeans.modules.editor.settings.storage.keybindings.KeyMapsStorage]: The keybinding 'A-MOUSE_WHEEL_DOWN' in Editors/Keybindings/NetBeans/Defaults/org-netbeans-modules-editor-keybindings.xml may not work correctly on Mac. Keybindings starting with Alt or Ctrl should be coded with latin capital letters 'O' or 'D' respectively. For details see org.openide.util.Utilities.stringToKey().
-WARNING [org.netbeans.TopSecurityManager]: use of system property netbeans.user has been obsoleted in favor of InstalledFileLocator/Places at org.netbeans.modules.versioning.masterfs.FilesystemInterceptor.getRootFilesystem(FilesystemInterceptor.java:81)
-WARNING [org.netbeans.TopSecurityManager]: use of system property netbeans.user has been obsoleted in favor of InstalledFileLocator/Places at org.netbeans.modules.versioning.core.Utils.getUnversionedFolders(Utils.java:283)
-WARNING [org.netbeans.TopSecurityManager]: use of system property netbeans.user has been obsoleted in favor of InstalledFileLocator/Places at org.netbeans.modules.java.j2seproject.J2SEProject$ProjectOpenedHookImpl$1$1.run(J2SEProject.java:598)
-INFO [org.netbeans.ui.metrics.projects]: USG_PROJECT_OPEN
-WARNING [org.netbeans.TopSecurityManager]: use of system property netbeans.user has been obsoleted in favor of InstalledFileLocator/Places at org.netbeans.modules.versioning.core.VersioningManager.getLocalHistory(VersioningManager.java:483)
 Diagnostic information
 Input arguments:
 	-Djdk.home=/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
@@ -636,27 +635,39 @@ Input arguments:
 Compiler: HotSpot 64-Bit Tiered Compilers
 Heap memory usage: initial 32.0MB maximum 759.7MB
 Non heap memory usage: initial 34.4MB maximum 432.0MB
-Garbage collector: ParNew (Collections=74 Total time spent=0s)
+Garbage collector: ParNew (Collections=60 Total time spent=0s)
 Garbage collector: ConcurrentMarkSweep (Collections=7 Total time spent=0s)
-Classes: loaded=8788 total loaded=8788 unloaded 0
+Classes: loaded=6703 total loaded=6703 unloaded 0
 INFO [org.netbeans.core.ui.warmup.DiagnosticTask]: Total memory 8,589,934,592
-WARNING [org.netbeans.core.startup.InstalledFileLocatorImpl]: no code name base passed when looking up docs/javaee6-doc-api.zip at org.netbeans.modules.glassfish.javaee.JavaEEServerModuleFactory.ensureEclipseLinkSupport(JavaEEServerModuleFactory.java:206)
-WARNING [org.netbeans.core.startup.InstalledFileLocatorImpl]: no code name base passed when looking up docs/javaee6-doc-api.zip at org.netbeans.modules.glassfish.javaee.ide.Hk2PluginProperties.getJavadocs(Hk2PluginProperties.java:312)
-INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Resolving dependencies took: 3,032 ms
-INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Complete indexing of 0 binary roots took: 18 ms
-INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Resolving dependencies took: 8 ms
-WARNING [org.netbeans.core.startup.InstalledFileLocatorImpl]: no code name base passed when looking up docs/javaee6-doc-api.zip at org.netbeans.modules.glassfish.javaee.JavaEEServerModuleFactory.ensureGlassFishApiSupport(JavaEEServerModuleFactory.java:280)
-INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Complete indexing of 25 binary roots took: 1,835 ms
-INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Indexing of: /Users/michael/NetBeansProjects/HelloMichael/test took: 4 ms (New or modified files: 0, Deleted files: 0) [Adding listeners took: 0 ms]
-INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Indexing of: /Applications/NetBeans/NetBeans 7.2.1.app/Contents/Resources/NetBeans/ide/jsstubs/allstubs.zip took: 325 ms (New or modified files: 0, Deleted files: 0) [Adding listeners took: 0 ms]
-INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Indexing of: /Users/michael/NetBeansProjects/HelloMichael/src took: 1,084 ms (New or modified files: 0, Deleted files: 0) [Adding listeners took: 5 ms]
-INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Complete indexing of 3 source roots took: 1,413 ms (New or modified files: 0, Deleted files: 0) [Adding listeners took: 5 ms]
+INFO [null]: Total physical memory 8,589,934,592
+WARNING [org.netbeans.core.startup.InstalledFileLocatorImpl]: no code name base passed when looking up var/license_accepted at org.netbeans.modules.autoupdate.pluginimporter.libinstaller.InstallLibraryTask.run(InstallLibraryTask.java:76)
 WARNING [org.netbeans.TopSecurityManager]: use of system property netbeans.user has been obsoleted in favor of InstalledFileLocator/Places at org.netbeans.modules.spellchecker.ComponentPeer.getUsersLocalDictionary(ComponentPeer.java:441)
+WARNING [org.netbeans.core.startup.InstalledFileLocatorImpl]: no code name base passed when looking up modules/dict/ispell-enwl-3.1.20.zip at org.netbeans.core.startup.layers.NbinstURLMapper.decodeURL(NbinstURLMapper.java:121)
+WARNING [org.netbeans.core.startup.InstalledFileLocatorImpl]: no code name base passed when looking up modules/dict/ispell-enwl-3.1.20.zip at org.netbeans.core.startup.layers.NbinstURLMapper.decodeURL(NbinstURLMapper.java:121)
+WARNING [org.netbeans.core.startup.InstalledFileLocatorImpl]: no code name base passed when looking up modules/dict/ispell-enwl-3.1.20.zip at org.netbeans.core.startup.layers.NbinstURLMapper.decodeURL(NbinstURLMapper.java:121)
+WARNING [org.netbeans.core.startup.InstalledFileLocatorImpl]: no code name base passed when looking up modules/dict/ispell-enwl-3.1.20.zip at org.netbeans.core.startup.layers.NbinstURLMapper.decodeURL(NbinstURLMapper.java:121)
+WARNING [org.netbeans.core.startup.InstalledFileLocatorImpl]: no code name base passed when looking up modules/dict/ispell-enwl-3.1.20.zip at org.netbeans.core.startup.layers.NbinstURLMapper.decodeURL(NbinstURLMapper.java:121)
+WARNING [org.netbeans.core.startup.InstalledFileLocatorImpl]: no code name base passed when looking up modules/dict/ispell-enwl-3.1.20.zip at org.netbeans.core.startup.layers.NbinstURLMapper.decodeURL(NbinstURLMapper.java:121)
+WARNING [org.netbeans.core.startup.InstalledFileLocatorImpl]: no code name base passed when looking up modules/dict/ispell-enwl-3.1.20.zip at org.netbeans.core.startup.layers.NbinstURLMapper.decodeURL(NbinstURLMapper.java:121)
+INFO [org.netbeans.modules.autoupdate.pluginimporter.libinstaller.JUnitLibraryInstaller]: user denied JUnit installation
+WARNING [org.netbeans.TopSecurityManager]: use of system property netbeans.user has been obsoleted in favor of InstalledFileLocator/Places at org.netbeans.modules.java.j2seproject.J2SEProject$ProjectOpenedHookImpl$1$1.run(J2SEProject.java:598)
+INFO [org.netbeans.ui.metrics.projects]: USG_PROJECT_OPEN
+WARNING [org.netbeans.TopSecurityManager]: use of system property netbeans.user has been obsoleted in favor of InstalledFileLocator/Places at org.netbeans.modules.versioning.core.VersioningManager.getLocalHistory(VersioningManager.java:483)
+WARNING [org.netbeans.TopSecurityManager]: use of system property netbeans.user has been obsoleted in favor of InstalledFileLocator/Places at org.netbeans.modules.versioning.masterfs.FilesystemInterceptor.getRootFilesystem(FilesystemInterceptor.java:81)
+INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Resolving dependencies took: 56 ms
+INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Complete indexing of 0 binary roots took: 3 ms
+INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Resolving dependencies took: 3 ms
+INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Complete indexing of 25 binary roots took: 7,523 ms
+INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Indexing of: /Users/michael/NetBeansProjects/HelloMichael/test took: 5 ms (New or modified files: 0, Deleted files: 0) [Adding listeners took: 0 ms]
+INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Indexing of: /Applications/NetBeans/NetBeans 7.2.1.app/Contents/Resources/NetBeans/ide/jsstubs/allstubs.zip took: 4,414 ms (New or modified files: 189, Deleted files: 0) [Adding listeners took: 0 ms]
+INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Indexing of: /Users/michael/NetBeansProjects/HelloMichael/src took: 412 ms (New or modified files: 2, Deleted files: 0) [Adding listeners took: 6 ms]
+INFO [org.netbeans.modules.parsing.impl.indexing.RepositoryUpdater]: Complete indexing of 3 source roots took: 4,831 ms (New or modified files: 191, Deleted files: 0) [Adding listeners took: 6 ms]
+INFO [org.netbeans.modules.parsing.impl.TaskProcessor]: Task: class org.netbeans.modules.java.source.JavaSourceAccessor$CancelableTaskWrapper ignored cancel for 72 ms.
+INFO [org.netbeans.modules.parsing.impl.TaskProcessor]: Task: class org.netbeans.modules.java.source.JavaSourceAccessor$CancelableTaskWrapper ignored cancel for 116 ms.
 [org.comtor.cloudclients.netbeansclient.COMTORJPanel] found 1 projects in the IDE
 [org.comtor.cloudclients.netbeansclient.COMTORJPanel] planning to submit project at path [/Users/michael/NetBeansProjects/HelloMichael/src/] as a JAR file
-[org.comtor.cloudclients.netbeansclient.COMTORJPanel] creating JAR file: /Users/michael/data/git/comtor/cloudclients/netbeans-plugin/COMTORSubmission/comtor-submission-jar-1373919337362.jar
-Adding file (path) [/Users/michael/NetBeansProjects/HelloMichael/src]
-Adding file (name) [src]
+[org.comtor.cloudclients.netbeansclient.COMTORJPanel] creating JAR file: /private/var/folders/dd/c_x7vrd50lg833hmvnw9cd640000gp/T/comtor-submission-jar-1403457958831.jar
+[org.comtor.cloudclients.netbeansclient.COMTORJPanel]: ignoring non-readable file or empty file path: 
 Adding file (path) [/Users/michael/NetBeansProjects/HelloMichael/src/hellomichael]
 Adding file (name) [hellomichael]
 Adding file (path) [/Users/michael/NetBeansProjects/HelloMichael/src/hellomichael/HelloMichael.java]
@@ -665,44 +676,8 @@ Adding file (path) [/Users/michael/NetBeansProjects/HelloMichael/src/hellomichae
 Adding file (name) [util]
 Adding file (path) [/Users/michael/NetBeansProjects/HelloMichael/src/hellomichael/util/SomeOtherClass.java]
 Adding file (name) [SomeOtherClass.java]
-WARNING [org.netbeans.ProxyClassLoader]: Will not load class org.apache.commons.logging.impl.Log4JLogger arbitrarily from one of NetbinoxLoader delegating to org.apache.commons.logging_1.1.0 and ModuleCL@6da264f1[org.netbeans.libs.amazon] starting from SystemClassLoader[546 modules]; see http://wiki.netbeans.org/DevFaqModuleCCE
-WARNING [org.netbeans.ProxyClassLoader]: Will not load class org.apache.commons.logging.impl.Jdk14Logger arbitrarily from one of NetbinoxLoader delegating to org.apache.commons.logging_1.1.0 and ModuleCL@6da264f1[org.netbeans.libs.amazon] starting from SystemClassLoader[546 modules]; see http://wiki.netbeans.org/DevFaqModuleCCE
-[org.comtor.apiclient.COMTORCloudAPIClient]: HTTP/1.1 200 OK
-content length was -1
-buffered resEntity size: 9670
-[org.comtor.apiclient.COMTORCloudAPIClient] COMTORWebServiceResponse.loadFromRaw() succeeded
-[org.comtor.cloudclients.netbeansclient.COMTORJPanel] submit OK
-WARNING [null]: org.openide.windows.TopComponent should override preferredID()
-WARNING [org.netbeans.core.TimableEventQueue]: too much time in AWT thread org.netbeans.modules.sampler.InternalSampler@6af30e59
-m_raw length is 9670 bytes.
-[org.comtor.cloudclients.netbeansclient.COMTORJPanel] dock result: true
-[org.comtor.cloudclients.netbeansclient.COMTORJPanel] tab pos: 3
-[org.comtor.cloudclients.netbeansclient.COMTORJPanel] isOpened(): true
-WARNING [org.netbeans.TopSecurityManager]: use of system property netbeans.user has been obsoleted in favor of InstalledFileLocator/Places at org.netbeans.modules.uihandler.Installer.logsDirectory(Installer.java:851)
-[org.comtor.cloudclients.netbeansclient.COMTORJPanel] found 1 projects in the IDE
-[org.comtor.cloudclients.netbeansclient.COMTORJPanel] planning to submit project at path [/Users/michael/NetBeansProjects/HelloMichael/src/] as a JAR file
-[org.comtor.cloudclients.netbeansclient.COMTORJPanel] creating JAR file: /Users/michael/data/git/comtor/cloudclients/netbeans-plugin/COMTORSubmission/comtor-submission-jar-1373919718407.jar
-Adding file (path) [/Users/michael/NetBeansProjects/HelloMichael/src]
-Adding file (name) [src]
-Adding file (path) [/Users/michael/NetBeansProjects/HelloMichael/src/hellomichael]
-Adding file (name) [hellomichael]
-Adding file (path) [/Users/michael/NetBeansProjects/HelloMichael/src/hellomichael/HelloMichael.java]
-Adding file (name) [HelloMichael.java]
-Adding file (path) [/Users/michael/NetBeansProjects/HelloMichael/src/hellomichael/util]
-Adding file (name) [util]
-Adding file (path) [/Users/michael/NetBeansProjects/HelloMichael/src/hellomichael/util/SomeOtherClass.java]
-Adding file (name) [SomeOtherClass.java]
-[org.comtor.apiclient.COMTORCloudAPIClient]: HTTP/1.1 200 OK
-content length was -1
-buffered resEntity size: 30640
-[org.comtor.apiclient.COMTORCloudAPIClient] COMTORWebServiceResponse.loadFromRaw() succeeded
-[org.comtor.cloudclients.netbeansclient.COMTORJPanel] submit OK
-ERROR:  'The entity name must immediately follow the '&' in the entity reference.'
-[org.comtor.cloudclients.netbeansclient.COMTORJPanel]: problem reading string for XHTML viewing: Can't load the XML resource (using TRaX transformer). org.xml.sax.SAXParseException: The entity name must immediately follow the '&' in the entity reference.
-m_raw length is 30640 bytes.
-[org.comtor.cloudclients.netbeansclient.COMTORJPanel] dock result: true
-[org.comtor.cloudclients.netbeansclient.COMTORJPanel] tab pos: 3
-[org.comtor.cloudclients.netbeansclient.COMTORJPanel] isOpened(): true
+bad sink identifier
+submit failed
 WARNING [org.netbeans.TopSecurityManager]: use of system property netbeans.user has been obsoleted in favor of InstalledFileLocator/Places at org.netbeans.modules.websvc.saas.model.SaasServicesModel.<clinit>(SaasServicesModel.java:69)
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.osgi@3.7.1.R37x_v20110808-1106 256
 INFO [org.netbeans.core.netigso.Netigso]: bundle org.eclipse.osgi@3.7.1.R37x_v20110808-1106 stopped

@@ -33,7 +33,8 @@ import org.openide.util.*;
  * This JComponent provides a place to display the COMTOR
  * report in the NetBeans GUI itself.
  *
- * We don't need this class.
+ * We don't need this class. This source file should be removed
+ * in future releases of the code. -MEL 21 June 2014 
  * 
  * @author Michael E. Locasto
  */

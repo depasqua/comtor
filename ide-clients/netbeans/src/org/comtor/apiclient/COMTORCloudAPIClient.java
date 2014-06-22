@@ -56,19 +56,42 @@ import org.apache.http.entity.BufferedHttpEntity;
  */
 public final class COMTORCloudAPIClient
 {
-    
+    /**
+     * The URI / endpoint to request a key from. Sending a valid
+     * request to this endpoint will result in the creation of a new
+     * key (and registration of that email address) or in a lookup of
+     * the (existing) email and sending the existing key to that email
+     * address.
+     * 
+     * This is a default value; the in-memory variable copy should
+     * eventually live in a properties file.
+     */
     public static final String API_KEY_REQEUST_URI 
            // = "http://cloud.comtor.org/authservDev/keyrequest?email=";
-             = "http://dev.comtor.org:8080/apiServ/keyrequest";
+             = "http://dev.comtor.org/apiServ/keyrequest";
+
     public static final String APISERV_REQUEST_URI
            // = "http://cloud.comtor.org/authservDev/authserv?apikey=";
-             = "http://dev.comtor.org:8080/apiServ/submit";
+             = "http://dev.comtor.org/apiServ/submit";
         
     /** An in-memory copy of the user's COMTOR API Key */
     private String m_APIKey = "";
     
+    private String m_keyRequestURI = COMTORCloudAPIClient.API_KEY_REQEUST_URI; 
+    private String m_submitURI = COMTORCloudAPIClient.APISERV_REQUEST_URI;
+    
     /** Default constructor */
     public COMTORCloudAPIClient(){}
+    
+    public void setKeyRequestURI(String uri)
+    {
+        m_keyRequestURI = new String(uri);
+    }
+    
+    public void setSubmitURI(String uri)
+    {
+        m_submitURI = new String(uri);
+    }
     
     /** 
      * Allow classes that get a handle to this client to ask for
@@ -79,12 +102,17 @@ public final class COMTORCloudAPIClient
     public String getKey(){ return m_APIKey; }
     
     /**
-     * Allow clients of this class to tell us what the API key is. NB for
-     * developers: we should eventually implement a loading mechanism that
+     * Allow clients of this class to tell us what the API key is. 
+     * 
+     * NB for developers: 
+     * we should eventually implement a loading mechanism that
      * looks for a persistent copy of the key in a properties file, etc.
      * 
      * At the moment, the user of the UI has to remind us of the key
      * upon startup.
+     * 
+     * We have this key saved in a properties file, but loading is a
+     * slight problem. - MEL 21 June 2014
      * 
      * @param String k - the API key
      */
@@ -117,7 +145,7 @@ public final class COMTORCloudAPIClient
         try 
         {
             //email = URLEncoder.encode(email, "UTF-8");
-            u = new URL(COMTORCloudAPIClient.API_KEY_REQEUST_URI);
+            u = new URL(this.m_keyRequestURI);
             httpConn = (HttpURLConnection) u.openConnection();
             httpConn.setDoOutput(true);
             httpConn.setRequestMethod("POST");
@@ -166,7 +194,7 @@ public final class COMTORCloudAPIClient
     /**
      * A small method for reading a byte at a time from a JAR file.
      * 
-     * @param file the file to process
+     * @param file - the file to process
      */
     private String readJARFile(File file)
     {
@@ -201,7 +229,10 @@ public final class COMTORCloudAPIClient
     {
         boolean ret = false;
         
-        ret = s.equals("email") || s.equals("http");
+        ret = s.equals("email") 
+                || s.equals("http") 
+                || s.equals("email|http") 
+                || s.equals("http|email");
         
         return ret;
     }
@@ -209,8 +240,8 @@ public final class COMTORCloudAPIClient
     /**
      * Sanity check format before passing it to the COMTOR web service.
      * 
-     * NB: we purposefully ignore "json" as a legal value, although the
-     * COMTOR web service is happy to return it. For our purposes, either
+     * NB: we purposefully hide "json" as a legal value from the GUI, although 
+     * the COMTOR web service is happy to return it. For our purposes, either
      * HTML or plaintext suffices via email or for display in the IDE.
      * 
      * Further enhancements to the IDE may eventually prefer to receive a
@@ -220,7 +251,21 @@ public final class COMTORCloudAPIClient
     {
         boolean ret = false;
         
-        ret = f.equals("text") || f.equals("html");
+        ret = f.equals("text") 
+                || f.equals("html") 
+                || f.equals("text|html") 
+                || f.equals("html|text")
+                || f.equals("json")
+                || f.equals("json|text")
+                || f.equals("text|json")
+                || f.equals("json|html")
+                || f.equals("html|json")
+                || f.equals("text|json|html")
+                || f.equals("text|html|json")
+                || f.equals("json|text|html")
+                || f.equals("json|html|text")
+                || f.equals("html|json|text")
+                || f.equals("html|text|json");
         
         return ret;
     }
@@ -244,14 +289,17 @@ public final class COMTORCloudAPIClient
             return ret;
         }
         
+        // a Yoda conditional this is not.
         if(response.getStatusLine().getStatusCode()!=200)
         {
-            System.err.println("status code was "+ response.getStatusLine().getStatusCode());
+            System.err.println("status code was "
+                        + response.getStatusLine().getStatusCode());
             ret = false;
             return ret;
         }
             
-        System.err.println("["+this.getClass().getName()+"]: "+response.getStatusLine().toString());
+        System.err.println("["+this.getClass().getName()+"]: "
+                    +response.getStatusLine().toString());
         
         /*
          * this produces a NullPointerException
@@ -272,9 +320,10 @@ public final class COMTORCloudAPIClient
             System.err.println("content length was "+resEntity.getContentLength());
             //ret = false;
             //return ret;
+            //MEL: why do we fall through? can we handle this condition in the
+            //caller?
         }
-                
-              
+
         ret = true;
         return ret;
     }
@@ -312,7 +361,7 @@ public final class COMTORCloudAPIClient
         FileBody bin;
         StringBody comment; 
         StringBody key;
-        StringBody rtype;
+        StringBody rtype; // e.g., "email|http" to specify multiple
         StringBody rform;
         StringBody icli;
             
@@ -347,7 +396,7 @@ public final class COMTORCloudAPIClient
         
         try 
         {
-            post = new HttpPost(COMTORCloudAPIClient.APISERV_REQUEST_URI);
+            post = new HttpPost(this.m_submitURI);
             bin = new FileBody(jarFile);
             comment = new StringBody("JAR File of length "
                                      +jarFile.length()
@@ -400,7 +449,9 @@ public final class COMTORCloudAPIClient
             System.err.println("["+this.getClass().getName()
                                   +"]: error submitting JAR file: "
                                   +eee.getMessage());
-            ret = new COMTORWebServiceResponse("["+eee.getClass().getName()+"] exception occurred during submitting of JAR file");
+            ret = new COMTORWebServiceResponse("["
+                        +eee.getClass().getName()
+                        +"] exception occurred during submitting of JAR file");
         }finally{
             if(null!=post)
             {
@@ -409,7 +460,9 @@ public final class COMTORCloudAPIClient
             try{
                 client.getConnectionManager().shutdown();
             }catch(Exception ignore){
-                ret = new COMTORWebServiceResponse("ignored ["+ignore.getClass().getName()+"] exception during shutdown of HTTP connection");
+                ret = new COMTORWebServiceResponse("ignored ["
+                            +ignore.getClass().getName()
+                            +"] exception during shutdown of HTTP connection");
             }
         }
         

@@ -4,18 +4,5 @@
 <!-- If you delete this file and reopen the project it will be recreated. -->
 <project name="org.comtor.cloudclients.netbeansclient" default="netbeans" basedir=".">
     <description>Builds, tests, and runs the project org.comtor.cloudclients.netbeansclient.</description>
-    <!-- <import file="nbproject/build-impl.xml"/> -->
-
-	<echo>Subproject: Netbeans client</echo>
-
-	<!-- Removes the class files, source backups, and debug output -->
-	<target name="clean" description="Clean source backups and .class files">		
-		<delete>
-			<fileset dir="." casesensitive="yes">
-				<include name="**/*~"/>
-				<include name="**/*.class"/>
-				<include name="**/.DS_Store"/>
-			</fileset>
-		</delete>		
-	</target>
+    <import file="nbproject/build-impl.xml"/>
 </project>

@@ -95,17 +95,24 @@ import org.xhtmlrenderer.simple.XHTMLPanel;
  *   our GUI configuration dialog under "Advanced--Service Endpoints"
  * [DONE] - remove unused imports, unused components, debugging statements, etc.
  * - break out JAR file stuff into separate utility/class
+ * - provide support for multiple "developer" identities (i.e., COMTOR users)
+ *   by creating a hierarchy under ~/.comtord/IDE/VER for comtor.properties ?
+ * - Add a test of the dest URI at startup so we can assess our connectivity
+ * 
  * 
  * @author Michael E. Locasto
  */
-public class COMTORJPanel 
+public final class COMTORJPanel 
     extends javax.swing.JPanel 
 {
 
     /** A static handle to the default name for a configuration 
      * properties file for this plug-in. Currently "comtor-nb.properties".
-     * Likely causes the creation of this file in the NetBeans 
+     * conjecture: Likely causes the creation of this file in the NetBeans 
      * working directory.
+     * 
+     * need to define a consistent location for this file, likely under
+     * user's .comtor directory, or in /tmp/1234567890-comtor/
      */
     public static final String COMTOR_CONFIG_FILENAME = "comtor-nb.properties";
     
@@ -121,12 +128,26 @@ public class COMTORJPanel
      * is also reflected in two GUI components declared below.
      */
     private String m_APIKey = "";
-     
+    
+    /**
+     * The URI to send key (new or reminder) requests to. Obtained from
+     * the properties file, or defaults to the value in
+     * COMTORCloudAPIClient.API_KEY_REQUEST_URI;
+     */
+    private String m_keyRequestURI = "";
+    
+    /**
+     * The main COMTOR cloud service URI. The URI to submit a JAR file to.
+     * This class attempts to obtain it from an existing (or saved) properties
+     * file, but defaults to COMTORCloudAPIClient.APISERV_REQUEST_URI
+     */
+    private String m_submitURI = "";
+    
     /**
      * A runtime version of our persistent configuration data.
      */
     private Properties m_config = new Properties();
-    
+        
     /**
      * Create and display this after getting a COMTOR report.
      */
@@ -149,14 +170,23 @@ public class COMTORJPanel
      */
     public COMTORJPanel() 
     {
+        boolean status = false;
         initComponents();
-        if(null==m_client)
+        if (null==m_client)
         {
             m_client = new COMTORCloudAPIClient();
         }
         //tidy = new Tidy(); //XXX TODO
-        //we should probably check this return value...
-        checkLoadConfiguration(); //load prior config from properties file        
+        
+        //create configuration directory if needed
+        status = createConfigDirectory();
+        System.err.println("[COMTORJPanel]: createConfigDirectory() returned:"
+                    +status);
+        
+        //load prior config from properties file
+        status = checkLoadConfiguration();  
+        System.err.println("[COMTORJPanel]: checkLoadConfiguration() returned:"
+                    +status);
     }
 
     /**
@@ -186,9 +216,8 @@ public class COMTORJPanel
         jSeparator4 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
-        jPanel5 = new javax.swing.JPanel();
+        jCheckBox2 = new javax.swing.JCheckBox();
+        jCheckBox3 = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -289,18 +318,17 @@ public class COMTORJPanel
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(COMTORJPanel.class, "COMTORJPanel.jLabel2.text")); // NOI18N
 
-        buttonGroup2.add(jRadioButton3);
-        jRadioButton3.setSelected(true);
-        org.openide.awt.Mnemonics.setLocalizedText(jRadioButton3, org.openide.util.NbBundle.getMessage(COMTORJPanel.class, "COMTORJPanel.jRadioButton3.text")); // NOI18N
-        jRadioButton3.setToolTipText(org.openide.util.NbBundle.getMessage(COMTORJPanel.class, "COMTORJPanel.jRadioButton3.toolTipText")); // NOI18N
-        jRadioButton3.setFocusable(false);
-        jRadioButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jCheckBox2.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(jCheckBox2, org.openide.util.NbBundle.getMessage(COMTORJPanel.class, "COMTORJPanel.jCheckBox2.text")); // NOI18N
+        jCheckBox2.setToolTipText(org.openide.util.NbBundle.getMessage(COMTORJPanel.class, "COMTORJPanel.jCheckBox2.toolTipText")); // NOI18N
 
-        buttonGroup2.add(jRadioButton4);
-        org.openide.awt.Mnemonics.setLocalizedText(jRadioButton4, org.openide.util.NbBundle.getMessage(COMTORJPanel.class, "COMTORJPanel.jRadioButton4.text")); // NOI18N
-        jRadioButton4.setToolTipText(org.openide.util.NbBundle.getMessage(COMTORJPanel.class, "COMTORJPanel.jRadioButton4.toolTipText")); // NOI18N
-        jRadioButton4.setFocusable(false);
-        jRadioButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        org.openide.awt.Mnemonics.setLocalizedText(jCheckBox3, org.openide.util.NbBundle.getMessage(COMTORJPanel.class, "COMTORJPanel.jCheckBox3.text")); // NOI18N
+        jCheckBox3.setToolTipText(org.openide.util.NbBundle.getMessage(COMTORJPanel.class, "COMTORJPanel.jCheckBox3.toolTipText")); // NOI18N
+        jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox3ActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -318,9 +346,9 @@ public class COMTORJPanel
                                 .add(6, 6, 6)
                                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                     .add(jRadioButton2)
-                                    .add(jRadioButton4)
-                                    .add(jRadioButton3)
-                                    .add(jRadioButton1))))
+                                    .add(jRadioButton1)
+                                    .add(jCheckBox2)
+                                    .add(jCheckBox3))))
                         .add(0, 445, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -334,32 +362,17 @@ public class COMTORJPanel
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jRadioButton1)
                 .add(8, 8, 8)
-                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jPanel3Layout.createSequentialGroup()
-                        .add(jSeparator4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jLabel2)
-                        .add(36, 36, 36))
-                    .add(jRadioButton3))
+                .add(jSeparator4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jRadioButton4)
-                .addContainerGap(168, Short.MAX_VALUE))
+                .add(jLabel2)
+                .add(18, 18, 18)
+                .add(jCheckBox2)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jCheckBox3)
+                .addContainerGap(163, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(COMTORJPanel.class, "COMTORJPanel.jPanel3.TabConstraints.tabTitle"), jPanel3); // NOI18N
-
-        org.jdesktop.layout.GroupLayout jPanel5Layout = new org.jdesktop.layout.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 617, Short.MAX_VALUE)
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 354, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(COMTORJPanel.class, "COMTORJPanel.jPanel5.TabConstraints.tabTitle"), jPanel5); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel5, org.openide.util.NbBundle.getMessage(COMTORJPanel.class, "COMTORJPanel.jLabel5.text")); // NOI18N
 
@@ -516,10 +529,10 @@ public class COMTORJPanel
      * Currently this approach is just to grab the last thing returned
      * by the IDE; other projects may be open, and we don't yet supply a
      * way for the user to tell us to use a different project. Perhaps in
-     * the GUI configuration dialog we can have a textfield or pulldown of
-     * all available projects they can select from.
+     * the GUI configuration dialog we can have a text field or pulldown list
+     * of all available projects they can select from.
      * 
-     * @return a string containing the canonical path of the chosen project
+     * @return string array containing the canonical path of the chosen project
      */
     private String [] getTargetProjectRoot()
     {
@@ -546,12 +559,13 @@ public class COMTORJPanel
             }
         }
         
-        //if no prjects found, return String[0]
+        //if no projects found, return String[0]
         if(0==projects.length)
         {
             paths = new String[0];
             JOptionPane.showMessageDialog(this, "No projects found to submit to COMTOR; make sure you have a project opened or defined.");
-        }else{        
+        }else{
+            //'src' seems to be a magic default name for NetBeans
             paths[0]+=File.separator+"src"+File.separator;
             paths[1]+=File.separator+"src"+File.separator;
         }
@@ -564,32 +578,140 @@ public class COMTORJPanel
     }
     
     /**
+     * Create configuration directory at ~/.comtord if it doesn't
+     * already exist.
+     * 
+     * Should be called at object construction time.
+     */
+    private boolean createConfigDirectory()
+    {
+        boolean status = false;
+        File dir = null;
+        String configDir = java.lang.System.getProperty("user.home");
+        configDir+=File.separator;
+        configDir+=".comtord";
+        configDir+=File.separator;
+        
+        dir = new File(configDir);
+        if (dir.exists())
+        {
+            status = true;
+            return status;
+        }else{
+            try
+            {
+                status = dir.mkdir();
+                if (status)
+                {
+                    System.err.println("config directory created");
+                }else{
+                    System.err.println("config directory already exists");
+                }
+                status = true;
+                
+            }catch(SecurityException sex){
+                System.err.println("failed to create config directory: "
+                            +sex.getMessage());
+                status = false;
+            }
+        }
+        return status;
+    }
+    
+    private String getConfigLocation()
+    {
+        StringBuffer sb = new StringBuffer();
+        String userHome = "";
+
+        userHome = java.lang.System.getProperty("user.home");
+        
+        sb.append(userHome);         //  /home/michael
+        sb.append(File.separator);   //  /
+        sb.append(".comtord");       //  .comtord
+        sb.append(File.separator);   //  /
+        sb.append(COMTORJPanel.COMTOR_CONFIG_FILENAME); // comtor-nb.properties
+        
+        return sb.toString();
+    }
+    
+    /**
      * Attempt to locate and load .properties XML file and load any
      * settings from it. For now, just load the API key.
      * 
-     * Load comtor-nb.properties
+     * Load properties from the file named 'comtor-nb.properties' (this
+     * actual file name may change in the future, and its default value is
+     * governed by COMTORJPanel.COMTOR_CONFIG_FILENAME)
+     * 
+     * @return true if no I/O problems, false otherwise. NB: true does not
+     * mean that we've found an API key.
      */
     private boolean checkLoadConfiguration()
     {
         boolean ret = false;
         FileInputStream pin = null;
+        File f = null;
+        String filename = "";
+        boolean newfileOK = false;
         
         //assert(null!=m_config);
         
         try{
-            pin = new FileInputStream(COMTORJPanel.COMTOR_CONFIG_FILENAME);
-            m_config.loadFromXML(pin);
+            filename = getConfigLocation();            
+            f = new File(filename);
             
-            //returns NULL if this key does not exist
-            m_APIKey = m_config.getProperty("apikey");
+            if(f.exists()){
+                System.err.println("f exists at "+f.getCanonicalPath());
+            }else{
+                System.err.println("f does not exist");
+                try
+                {
+                    newfileOK = f.createNewFile();
+                }catch(IOException newfioex){
+                    System.err.println("could not create new config file: "
+                            +newfioex.getMessage());                    
+                }
+                if (!newfileOK)
+                {
+                    System.err.println("config file existed");
+                }
+            }
+            pin = new FileInputStream(f);
+            m_config.loadFromXML(pin);
+            pin.close();
 
-            if(null!=m_APIKey){
+            System.err.println("["+this.getClass().getName()
+                                  +"]: tried to load properties file: "
+                                  +f.getCanonicalPath());
+
+            //returns NULL if the named property does not exist
+            m_APIKey = m_config.getProperty("apikey");
+            m_keyRequestURI = m_config.getProperty("key.req.uri");
+            m_submitURI = m_config.getProperty("submit.uri");
+            
+            if (null!=m_APIKey){
                 m_client.setKey(m_APIKey);
                 jLabel6.setText(m_APIKey);
-                jTextField2.setText("");
+                jTextField2.setText("(previous API key now loaded...)");
             }else{
+                System.err.println("["+this.getClass().getName()
+                                  +"]: no saved API key found.");
                 //no previous key, let GUI tell us what the API key is
+                //no error here, just no previous state...
             }
+            
+            if (null==m_keyRequestURI)
+            {
+                m_keyRequestURI = COMTORCloudAPIClient.API_KEY_REQEUST_URI;
+            }
+            if (null==m_submitURI)
+            {
+                m_submitURI = COMTORCloudAPIClient.APISERV_REQUEST_URI;
+            }
+            
+            m_client.setKeyRequestURI(m_keyRequestURI);
+            jTextField3.setText(m_keyRequestURI);
+            m_client.setSubmitURI(m_submitURI);
+            jTextField4.setText(m_submitURI);
             
             ret = true;
         }catch(Exception ex){
@@ -607,15 +729,49 @@ public class COMTORJPanel
     private boolean saveConfiguration()
     {
         boolean ret = false;
-        FileOutputStream pin = null;
+        FileOutputStream pout = null;
+        File f = null;
+        String filename = "";
+        boolean newfileOK = false;
         
         try{
-            pin = new FileOutputStream(COMTORJPanel.COMTOR_CONFIG_FILENAME);
+
+            filename = getConfigLocation();            
+            f = new File(filename);            
+            //if an exception occurred from "new File(...)", then this
+            //test is never executed.
+            if(f.exists()){
+                System.err.println("f exists at "+f.getCanonicalPath());
+            }else{
+                System.err.println("f does not exist");
+                try
+                {
+                    newfileOK = f.createNewFile();
+                }catch(IOException newfioex){
+                    System.err.println("could not create new config file: "
+                            +newfioex.getMessage());                    
+                }
+                if (!newfileOK)
+                {
+                    System.err.println("could not create new config file");
+                }
+            }
+            
+            pout = new FileOutputStream(f);
             
             //save currently bound API key
             m_config.setProperty("apikey", m_APIKey);
-            m_config.storeToXML(pin, "COMTOR Properties version file saved "
+            m_config.setProperty("submit.uri", m_submitURI);
+            m_config.setProperty("key.req.uri", m_keyRequestURI);
+            
+            m_config.storeToXML(pout, "COMTOR Properties version file saved at "
                                      +System.currentTimeMillis());
+            
+            pout.flush();
+            pout.close();
+            System.err.println("["+this.getClass().getName()
+                                  +"]: saved properties file: "
+                                  +f.getCanonicalPath());
             ret = true;
         }catch(Exception ex){
             System.err.println("["+this.getClass().getName()
@@ -751,9 +907,17 @@ public class COMTORJPanel
         rootPath = paths[1]; //interested in ./src
         prefix = rootPath; //includes /src
         
-        //create "user.dir"/comtor-submission-jar-$TIME.jar
-        jarName.append(System.getProperty("user.dir"));
-        jarName.append(File.separator);
+        //create "java.io.tmpdir"/comtor-submission-jar-$TIME.jar        
+        String absPrefix = System.getProperty("java.io.tmpdir");
+        if(null!=absPrefix && !absPrefix.equals(""))
+        {
+            //could also create "user.dir"/comtor-submission-jar-$TIME.jar
+            //jarName.append(System.getProperty("user.dir"));
+            jarName.append(absPrefix);
+            jarName.append(File.separator);
+        }
+        
+        /* if absPrefix was null or empty, only create relative file path */
         jarName.append("comtor-submission-jar-");
         jarName.append(System.currentTimeMillis());
         jarName.append(".jar");
@@ -809,7 +973,7 @@ public class COMTORJPanel
         String format = "text";
         String sink = "email";
         boolean dock_result = false;        
-        Mode defaultMode;
+        Mode defaultMode;        
         
         defaultMode = WindowManager.getDefault().findMode("editor");
 
@@ -829,9 +993,13 @@ public class COMTORJPanel
             format = "html";
         }
         
-        if(jRadioButton3.isSelected())
+        if (jCheckBox2.isSelected() && jCheckBox3.isSelected())
         {
+            sink = "email|http";
+        }else if (jCheckBox2.isSelected()){
             sink = "http";
+        }else if (jCheckBox3.isSelected()){
+            sink = "email";
         }else{
             sink = "email";
         }
@@ -855,10 +1023,14 @@ public class COMTORJPanel
                                           "COMTOR submission failed:\n"+err);
         }else{
             //submission valid; pull apart 'ret' object reference
-            System.err.println("["+this.getClass().getName()+"] submit OK");
+            System.err.println("["
+                    +this.getClass().getName()
+                    +"] submission OK, returned valid response");
             
-            //check if email or http is the sink
-            if(sink.equals("http"))
+            //check if http is one of the intended sinks
+            if (sink.equals("http") 
+                    || sink.equals("http|email") 
+                    || sink.equals("email|http"))
             {
                 if(null!=defaultMode)
                 {
@@ -952,8 +1124,12 @@ public class COMTORJPanel
                 }else{
                     System.err.println("["+this.getClass().getName()+"] default Mode object is null. should not happen");
                 }
-            }else{
-                //this was email, do not display a new tab
+            }
+            
+            if (sink.equals("email") 
+                    || sink.equals("http|email") 
+                    || sink.equals("email|http"))
+            {
                 JOptionPane.showMessageDialog(this, "COMTOR sent report email to:\n "+ret.getEmail_from_apikey());
             }
         }
@@ -1021,12 +1197,18 @@ public class COMTORJPanel
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
 
+    private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBox3ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox2;
+    private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JDialog jDialog2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -1040,11 +1222,8 @@ public class COMTORJPanel
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JSeparator jSeparator4;

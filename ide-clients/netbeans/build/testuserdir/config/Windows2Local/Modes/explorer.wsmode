@@ -9,7 +9,7 @@
     <path orientation="horizontal" number="20" weight="0.3"/>
     <path orientation="vertical" number="20" weight="0.5"/>
   </constraints>
-  <bounds x="168" y="226" width="386" height="349" />
+  <bounds x="168" y="231" width="386" height="357" />
   <frame state="0"/>
     <active-tc  id="projectTab_tc" />
     <empty-behavior permanent="true"/>

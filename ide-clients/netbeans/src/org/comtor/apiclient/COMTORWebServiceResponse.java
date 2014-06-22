@@ -25,7 +25,7 @@ import org.json.JSONObject;
  * This class encapsulates a response object from the COMTORCloudAPIClient's
  * submit() method.
  * 
- * It also contains a convienience method fir wrapping the plaintext
+ * It also contains a convenience method for wrapping the plaintext
  * result in simple HTML with &lt;pre&gt; tags.
  *
  * @author Michael E. Locasto
@@ -39,6 +39,12 @@ public final class COMTORWebServiceResponse
     private String response_format;
 
     private String uploaded_filename;
+
+    /**
+     * The file size
+     * 
+     * expected: ...
+     */
     private String uploaded_file_size; //file size of submitted JAR file
     private String email_from_apikey; //email bound to m_apikey
     private String apikey; //key used in request
@@ -63,7 +69,7 @@ public final class COMTORWebServiceResponse
     }
     
     /** 
-     * A convieniance constructor for creating an "error" version of the
+     * A convenience constructor for creating an "error" version of the
      * response.
      * 
      * Takes a single string argument specifying the problem. Automatically
