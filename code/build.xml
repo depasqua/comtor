@@ -11,11 +11,11 @@
 	<property name="includejars" value="../third-party/lib"/>
 	<defaultexcludes remove="**/.DS_Store"/>
 
-	<condition property="deploymentPath" value="/" else="/comtorDev">
+	<condition property="deploymentPath" value="/comtorServlet" else="/comtorServletDev">
 		<isset property="release"/>
 	</condition>
 
-	<condition property="warfilename" value="ROOT.war" else="comtor.war">
+	<condition property="warfilename" value="comtorServlet.war" else="comtorServletDev.war">
 		<isset property="release"/>
 	</condition>
 
@@ -191,8 +191,8 @@
 			<fileset dir="." casesensitive="yes">
 				<include name="**/*~ "/>
 				<include name="**/.DS_Store"/>
-				<include name="ROOT.war"/>
-				<include name="comtor.war"/>
+				<include name="comtorServlet.war"/>
+				<include name="comtorServletDev.war"/>
 				<include name="${jarfilename}"/>
 				<include name="comtorSrc.jar"/>
 				<include name="comtor*Log.txt"/>
@@ -231,15 +231,19 @@
 	</target>
 
 	<!-- Deployment tasks -->
- 	<target name="warDeploy" depends="createWar" description="Deploys the key generator web application">
+ 	<target name="warDeploy" depends="createWar" description="Deploys the web application">
+ 		<echo>Deployment url: ${deployhost}</echo>
+ 		<echo>   Path: ${deploymentPath}</echo>
 		<deploy url="${deployhost}" username="${username}" password="${password}" path="${deploymentPath}" war="file:code/${warfilename}"/>
 	</target>
 
-	<target name="warUndeploy" description="Undeploys the cloud web application.">
+	<target name="warUndeploy" description="Undeploys the web application.">
+ 		<echo>Undeployment url: ${deployhost}</echo>
+ 		<echo>   Path: ${deploymentPath}</echo>
 		<undeploy url="${deployhost}" username="${username}" password="${password}" path="${deploymentPath}"/>
 	</target>
 
-	<target name="warRedeploy" depends="createWar" description="Redeploys the cloud web application.">
+	<target name="warRedeploy" depends="createWar" description="Redeploys the web application.">
 		<antcall target="createWar" inheritRefs="true"/>
 		<antcall target="warUndeploy" inheritRefs="true"/>
 		<antcall target="warDeploy" inheritRefs="true"/>
