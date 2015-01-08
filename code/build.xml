@@ -11,11 +11,11 @@
 	<property name="includejars" value="../third-party/lib"/>
 	<defaultexcludes remove="**/.DS_Store"/>
 
-	<condition property="deploymentPath" value="/comtorServlet" else="/comtorServletDev">
+	<condition property="deploymentPath" value="/ROOT" else="/comtorServletDev">
 		<isset property="release"/>
 	</condition>
 
-	<condition property="warfilename" value="comtorServlet.war" else="comtorServletDev.war">
+	<condition property="warfilename" value="ROOT.war" else="comtorServletDev.war">
 		<isset property="release"/>
 	</condition>
 
