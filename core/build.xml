@@ -37,8 +37,10 @@
 	</target>
 
 	<target name="jar" depends="compile" description="Create a jar file of the core COMTOR functionality">
-		<tstamp/>
-		<jar destfile="comtorcore.jar">
+		<tstamp>
+			<format property="TODAY" pattern="yyyy.MM.dd" locale="en,US"/>
+		</tstamp>
+		<jar destfile="comtorcore-${TODAY}.jar">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Implementation-Title" value="COMTOR CORE"/>
