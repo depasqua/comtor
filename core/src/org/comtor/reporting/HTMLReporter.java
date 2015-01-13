@@ -161,9 +161,14 @@ public class HTMLReporter extends COMTORReporter {
 					int success = Integer.valueOf(moduleScore.substring(0, moduleScore.length()-1));
 					int fail = 100 - success;
 					outFilePW.println("						<div class=\"progress\" style=\"margin-bottom: 0px; z-index: 2\">");
-					outFilePW.println("						<div class=\"bar bar-success\" style=\"width: " +  success + "%\">");
-					outFilePW.println("						<span>" + moduleScore + "</span></div>");
-					outFilePW.println("						<div class=\"bar bar-danger\" style=\"width: " +  fail + "%\"></div></div>");
+					outFilePW.print("						<div class=\"bar bar-success\" style=\"width: " +  success + "%\">");
+					if (success >= 25)
+						outFilePW.print("						<span>" + moduleScore + "</span>");
+					outFilePW.println("</div>");
+					outFilePW.print("						<div class=\"bar bar-danger\" style=\"width: " +  fail + "%\">");
+					if (success <= 25)
+						outFilePW.print("						<span>" + fail + "%</span>");
+					outFilePW.println("</div></div>");
 
 				} else
 					outFilePW.println(moduleScore);
@@ -199,7 +204,7 @@ public class HTMLReporter extends COMTORReporter {
 				String[] amble = getAmbleHTML("preamble");
 				if (amble != null && amble.length != 0) {
 					outFilePW.println("					<h4 class=\"toppad\">Pre-Report Notes</h4>");
-					outFilePW.println("					<ul class=\"unstyled\">");
+					outFilePW.println("					<ul>");
 					for (int index = 0; index < amble.length; index++) {
 						outFilePW.println("						<li>" + amble[index] + "</li>");
 					}
@@ -214,7 +219,15 @@ public class HTMLReporter extends COMTORReporter {
 
 				outFilePW.println("				<h4 class=\"toppad\">Analysis</h4>");
 				String [] classesList = getClassNames();
-				if (classesList != null && classesList.length > 0) {
+
+				// Check to see that at least 1 comment word was processed. Otherwise, don't produce an empty table here,
+				// and print a suitable message.
+				long numWords = getTotalNumberOfWords();
+				if (numWords == 0 && (reportName.equals("Offensive Words") || reportName.equals("Spell Check"))) {
+					outFilePW.println("			<p>No comment words were found and processed by this module. Please ensure that you are ");
+					outFilePW.println("using Javadoc-style commenting. Otherwise, comments need to be added to the submitted code.</p>");
+
+				} else if (classesList != null && classesList.length > 0) {
 					Arrays.sort(classesList);
 					outFilePW.println("				<table summary=\"Module analysis\" class=\"table table-bordered table-condensed\">");
 					outFilePW.println("					<thead>");
