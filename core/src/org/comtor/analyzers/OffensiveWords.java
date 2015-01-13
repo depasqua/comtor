@@ -106,7 +106,7 @@ public final class OffensiveWords implements ComtorDoclet {
 		report.appendLongToObject("information", "methods processed", numMethods);
 		report.appendLongToObject("information", "parameters processed", numParameters);
 		report.appendLongToObject("information", "fields processed", numFields);
-		report.appendLongToObject("information", "total number of words processed", totalNumWords);
+		report.appendLongToObject("information", "total words processed", totalNumWords);
 		report.addMetric(numPackages + " package(s) were processed.");
 		report.addMetric(numClasses + " class(es) were processed.");
 		report.addMetric(numConstructors + " constructor(s) were processed.");
@@ -264,7 +264,7 @@ public final class OffensiveWords implements ComtorDoclet {
 	 */
 	public float getGrade() {
 		if (totalNumWords == 0)
-			return 1.0f;
+			return 0.0f;
 		else
 			return (float) (totalNumWords - numBadWords) / totalNumWords;
 	}
