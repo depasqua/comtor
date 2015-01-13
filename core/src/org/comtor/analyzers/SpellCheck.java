@@ -258,6 +258,7 @@ public final class SpellCheck implements ComtorDoclet {
 		report.addMetric(duplicateGoodWords + " duplicate good words");
 		report.addMetric(duplicateBadWords + " duplicate bad words");
 		report.appendLongToObject("information", "classes processed", numClasses);
+		report.appendLongToObject("information", "total words processed", totalWordCount);
 		report.appendToAmble("preamble", "Constructor and method tags which are not @param, @return, or @throws are not currently processed.");
 		report.appendToAmble("preamble", "The score in this module is calculated by determining the overall percentage of correctly " +
 			"spelled words from all comments ");
@@ -469,7 +470,7 @@ public final class SpellCheck implements ComtorDoclet {
 	 */
 	public float getGrade() {
 		if (totalWordCount == 0)
-			return (float) 1.0;
+			return (float) 0.0;
 
 		else
 			return (float) (totalWordCount - (badWords.size() + duplicateBadWords)) / totalWordCount;
