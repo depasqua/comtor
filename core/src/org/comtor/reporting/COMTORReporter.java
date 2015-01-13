@@ -1136,6 +1136,23 @@ public abstract class COMTORReporter {
 		return result;
 	}
 
+
+	/**
+	 * Returns the number of words processed.
+	 *
+	 * @return a long value that contains the total number of words processed.
+	 */
+	protected long getTotalNumberOfWords() {
+		long result = 0;
+		try {
+			result = currentReport.getJSONObject("information").getLong("total words processed");
+
+		} catch (JSONException je) {
+			logger.error(je);
+		}
+		return result;
+	}
+
 	/**
 	 * Returns the name of the report block as all lowercase, and no spaces (used for link anchors).
 	 *
