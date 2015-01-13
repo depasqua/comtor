@@ -100,7 +100,7 @@ public class PercentageMethods implements ComtorDoclet {
 					if (constr.getRawCommentText().length() > 0)
 						localNumCommentedConstructors++;
 					else
-						report.appendMessage(ReportItem.LASTITEM, constr.qualifiedName() + constr.signature() +
+						report.appendMessage(ReportItem.LASTITEM, " " + constr.qualifiedName() + constr.signature() +
 							" is not commented at/near line " + constr.position().line() + ".");
 				}
 			}
@@ -114,7 +114,7 @@ public class PercentageMethods implements ComtorDoclet {
 				if (method.getRawCommentText().length() > 0)
 					localNumCommentedMethods++;
 				else
-					report.appendMessage(ReportItem.LASTITEM, method.qualifiedName() + method.signature() +
+					report.appendMessage(ReportItem.LASTITEM, " " + method.qualifiedName() + method.signature() +
 						" is not commented at/near line " + method.position().line() + ".");
 			}
 			
