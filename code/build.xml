@@ -14,6 +14,10 @@
 	<condition property="deploymentPath" value="/ROOT" else="/comtorServletDev">
 		<isset property="release"/>
 	</condition>
+	<echo>Deployment path set to ${deploymentPath}. The default setting is /comtorServletDev (development release). To 
+change this behavior, set the release property to any value:
+				* -Drelease=true
+	</echo>
 
 	<condition property="warfilename" value="ROOT.war" else="comtorServletDev.war">
 		<isset property="release"/>
@@ -30,7 +34,7 @@
 					<include name="*.jar"/>
 				</fileset>
 				<fileset dir="../core">
-					<include name="comtorcore.jar"/>
+					<include name="comtorcore-*.jar"/>
 				</fileset>
 			</classpath>
 		</javac>
