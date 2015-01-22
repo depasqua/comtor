@@ -31,7 +31,9 @@
 			<include name="*.jar"/>
 		</fileset>
 		<pathelement path="${toolsjar}"/>
-		<pathelement path="core/comtorcore.jar"/>
+		<fileset dir="core">
+			<include name="comtorcore-*.jar"/>
+		</fileset>
 	</path>
 	
 	<!-- ================ -->
@@ -66,17 +68,24 @@
 	
 	<!-- Sets the deployment host based on the user-provided input, or uses localhost (default) -->
 	<target name="-sethost" depends="-setport">
+		<echo>Setting the deployment host to ${deploy}. You can change this behavior via the deploy property:
+			* -Ddeploy=hostname
+		</echo>
 		<condition property="deployhost" value="http://${deploy}:${deployport}/manager/text"
 					else="http://localhost:${deployport}/manager/text">
 			<isset property="deploy"/>
 		</condition>
 	</target>
 
-	<!-- -->
+	<!-- Sets the deployment port to the user-provided input, or uses 80 as the default. -->
 	<target name="-setport">
-		<condition property="deployport" value="80" else="8080">
+		<condition property="deployport" value="${port}" else="80">
 			<isset property="port"/>
 		</condition>
+
+		<echo>Setting the deployment port to ${deployport}. You can change this behavior via the port property:
+			* -Dport=80 (presence of a value forces the use of port 80)
+		</echo>
 	</target>
 
 	<!-- Ensures that the user has set the deployment action property -->
@@ -98,7 +107,11 @@
 
 	<!-- Stops the build and outputs a message if the waraction property was not set by user -->
 	<target name="-waraction.fail" unless="waraction">
-		<fail message="Please the 'action' property to one of: 'deploy', 'undeploy', 'redeploy'"/>
+		<fail>Please the 'action' property to one of: 'deploy', 'undeploy', 'redeploy'. For example:
+			* -Daction=deploy
+			* -Daction=undeploy
+			* -Daction=redeploy
+		</fail>
 	</target>
 
 	<!-- Ensures the user has set the deployment properties to provide to the servlet container -->
