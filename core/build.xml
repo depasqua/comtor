@@ -7,7 +7,7 @@
 	<property name="coreBaseDir" location="."/>
 	<property name="coreSrc" location="${coreBaseDir}/src"/>
 	<property name="coreClasses" location="${coreBaseDir}/classes"/>
-	<property name="jarfilename" value="comtorcore.jar"/>
+	<property name="jarfilename" value="comtorcore"/>
 	<defaultexcludes remove="**/.DS_Store"/>
 
 	<!-- Compiles the source code of the core of COMTOR -->
@@ -31,16 +31,16 @@
 			<fileset dir="." casesensitive="yes">
 				<include name="**/*~ "/>
 				<include name="**/.DS_Store"/>
-				<include name="${jarfilename}"/>
+				<include name="${jarfilename}-*.jar"/>
 			</fileset>
 		</delete>		
 	</target>
 
 	<target name="jar" depends="compile" description="Create a jar file of the core COMTOR functionality">
 		<tstamp>
-			<format property="TODAY" pattern="yyyy.MM.dd" locale="en,US"/>
+			<format property="JARDATE" pattern="yyyy.MM.dd" locale="en,US"/>
 		</tstamp>
-		<jar destfile="comtorcore-${TODAY}.jar">
+		<jar destfile="${jarfilename}-${JARDATE}.jar">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Implementation-Title" value="COMTOR CORE"/>
